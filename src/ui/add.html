@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Add inspiration — MGD (private)</title>
+<style>
+  :root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--strong:#d4d4d4;--text:#171717;--muted:#737373;--accent:#171717;--r:10px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:640px;margin:0 auto;padding:1.5rem 1rem 4rem}
+  h1{font-size:1.2rem;margin:0 0 .3rem}
+  .sub{color:var(--muted);font-size:.85rem;margin:0 0 1.2rem}
+  label{font-weight:600;font-size:.85rem;display:block;margin:.9rem 0 .3rem}
+  input,select{width:100%;font:inherit;padding:.5rem .65rem;border:1px solid var(--strong);border-radius:7px;background:var(--surface)}
+  .drop{border:2px dashed var(--strong);border-radius:var(--r);padding:1.5rem;text-align:center;cursor:pointer;background:var(--surface);color:var(--muted)}
+  .drop.drag{border-color:#2563eb;background:#f5f8ff}
+  .preview{margin-top:.8rem;display:none;gap:1rem;align-items:flex-start}
+  .preview img{width:160px;height:auto;border-radius:8px;border:1px solid var(--border)}
+  .pal{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.4rem}
+  .sw{width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,.1)}
+  .btn{margin-top:1.2rem;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:.65rem 1.1rem;font:inherit;font-weight:600;cursor:pointer}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .note{margin-top:1rem;padding:.6rem .8rem;border-radius:7px;font-size:.85rem;display:none}
+  .note.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;display:block}
+  .note.err{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;display:block}
+  .muted{color:var(--muted);font-size:.8rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Add inspiration <span class="muted">(private)</span></h1>
+  <p class="sub">Hand-curation for the MGD inspiration gallery. Your admin token is stored only in this browser.</p>
+
+  <label for="token">Admin token</label>
+  <input type="password" id="token" placeholder="paste your ADMIN_TOKEN" />
+
+  <label>Image</label>
+  <div class="drop" id="drop"><input type="file" id="file" accept="image/*" hidden /><strong>Drop an image</strong> or click to choose</div>
+  <div class="preview" id="preview">
+    <img id="thumb" alt="" />
+    <div>
+      <div class="muted" id="dims"></div>
+      <div class="pal" id="pal"></div>
+      <div class="muted" style="margin-top:.4rem">Palette auto-extracted • tags &amp; description are AI-generated on save</div>
+    </div>
+  </div>
+
+  <label for="source">Source URL <span class="muted">(stored for reference; shown as plain text, never linked)</span></label>
+  <input type="url" id="source" placeholder="https://example.com/…" />
+
+  <label for="title">Title <span class="muted">(optional — AI fills if blank)</span></label>
+  <input type="text" id="title" placeholder="e.g. Pizza 4P's brand pattern" />
+
+  <label for="style">Style / SEO group <span class="muted">(optional — AI suggests if blank)</span></label>
+  <select id="style">
+    <option value="">— auto —</option>
+    <option value="serif-branding">serif-branding</option>
+    <option value="display-type">display-type</option>
+    <option value="editorial-layout">editorial-layout</option>
+    <option value="logo-wordmark">logo-wordmark</option>
+    <option value="monospace-terminal">monospace-terminal</option>
+    <option value="sans-branding">sans-branding</option>
+    <option value="lettering-script">lettering-script</option>
+  </select>
+
+  <label>Themes <span class="muted">(curated categories — pick any; AI pre-suggests if you leave all off)</span></label>
+  <div id="themes" style="display:flex;flex-wrap:wrap;gap:.4rem"></div>
+
+  <button class="btn" id="save" disabled>Save to gallery</button>
+  <div class="note" id="note"></div>
+  <p class="muted" style="margin-top:1.2rem"><a href="/">← View gallery</a></p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var API = (window.MGD_API_BASE || "").replace(/\/$/,"");
+  var $ = function(id){ return document.getElementById(id); };
+  var picked = null; // { displayBlob, probeDataUri, palette, w, h }
+
+  // curated theme chips (toggle)
+  var THEMES = ["retro","vintage","minimal","maximal","editorial","brutalist","y2k","monochrome","playful","luxury","hand-drawn","geometric","grunge","corporate"];
+  var chosenThemes = {};
+  (function(){ var box=$("themes"); THEMES.forEach(function(t){ var b=document.createElement("button"); b.type="button"; b.textContent=t; b.style.cssText="font:inherit;font-size:.8rem;padding:.3rem .7rem;border:1px solid var(--strong);border-radius:999px;background:var(--surface);cursor:pointer"; b.addEventListener("click",function(){ chosenThemes[t]=!chosenThemes[t]; b.style.background=chosenThemes[t]?"var(--accent)":"var(--surface)"; b.style.color=chosenThemes[t]?"#fff":"var(--text)"; }); box.appendChild(b); }); })();
+
+  $("token").value = localStorage.getItem("mgd_admin_token") || "";
+  $("token").addEventListener("input", function(){ localStorage.setItem("mgd_admin_token", $("token").value.trim()); });
+
+  var drop = $("drop");
+  drop.addEventListener("click", function(){ $("file").click(); });
+  $("file").addEventListener("change", function(e){ if(e.target.files[0]) handle(e.target.files[0]); });
+  ["dragenter","dragover"].forEach(function(ev){ drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add("drag");}); });
+  ["dragleave","drop"].forEach(function(ev){ drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove("drag");}); });
+  drop.addEventListener("drop", function(e){ if(e.dataTransfer.files[0]) handle(e.dataTransfer.files[0]); });
+
+  function handle(file){
+    var img = new Image();
+    img.onload = function(){
+      var w = img.naturalWidth, h = img.naturalHeight;
+      $("dims").textContent = w + " × " + h + " px";
+      var display = resize(img, 1600, 0.85, "blob");
+      var probe = resize(img, 672, 0.7, "dataurl");
+      var palette = extractPalette(img);
+      picked = { displayBlob: display, probeDataUri: probe, palette: palette, w: w, h: h };
+      $("thumb").src = probe;
+      renderPal(palette);
+      $("preview").style.display = "flex";
+      $("save").disabled = false;
+      URL.revokeObjectURL(img.src);
+    };
+    img.src = URL.createObjectURL(file);
+  }
+
+  function resize(img, max, q, out){
+    var w = img.naturalWidth, h = img.naturalHeight, scale = Math.min(1, max/Math.max(w,h));
+    var cw = Math.round(w*scale), ch = Math.round(h*scale);
+    var c = document.createElement("canvas"); c.width=cw; c.height=ch;
+    c.getContext("2d").drawImage(img,0,0,cw,ch);
+    if (out==="dataurl") return c.toDataURL("image/jpeg", q);
+    // synchronous blob via dataURL (keeps flow simple for a curation tool)
+    var durl = c.toDataURL("image/jpeg", q);
+    return dataUriToBlob(durl);
+  }
+
+  function dataUriToBlob(durl){
+    var parts = durl.split(","), mime = parts[0].match(/:(.*?);/)[1], bin = atob(parts[1]);
+    var arr = new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
+    return new Blob([arr], {type:mime});
+  }
+
+  // frequency-bucket palette extraction (top distinct colors)
+  function extractPalette(img){
+    var s=64, c=document.createElement("canvas"); c.width=s; c.height=s;
+    var ctx=c.getContext("2d"); ctx.drawImage(img,0,0,s,s);
+    var data=ctx.getImageData(0,0,s,s).data, counts={};
+    for(var i=0;i<data.length;i+=4){
+      if(data[i+3]<125) continue;
+      var r=data[i]&0xF0, g=data[i+1]&0xF0, b=data[i+2]&0xF0;
+      var k=r+","+g+","+b; counts[k]=(counts[k]||0)+1;
+    }
+    var arr=Object.keys(counts).map(function(k){var p=k.split(",").map(Number);return {r:p[0],g:p[1],b:p[2],n:counts[k]};});
+    arr.sort(function(a,b){return b.n-a.n;});
+    var out=[];
+    for(var j=0;j<arr.length && out.length<6;j++){
+      var col=arr[j], dup=false;
+      for(var m=0;m<out.length;m++){ if(Math.abs(out[m].r-col.r)+Math.abs(out[m].g-col.g)+Math.abs(out[m].b-col.b)<40){dup=true;break;} }
+      if(!dup) out.push(col);
+    }
+    return out.map(function(c){return "#"+[c.r,c.g,c.b].map(function(x){return ("0"+x.toString(16)).slice(-2);}).join("");});
+  }
+
+  function renderPal(pal){ var box=$("pal"); box.innerHTML=""; pal.forEach(function(hex){ var d=document.createElement("div"); d.className="sw"; d.style.background=hex; d.title=hex; box.appendChild(d); }); }
+
+  $("save").addEventListener("click", function(){
+    var token = $("token").value.trim();
+    if(!token){ return show("err","Enter your admin token first."); }
+    if(!picked){ return show("err","Choose an image first."); }
+    $("save").disabled = true; show("ok","Saving & tagging…");
+    var fd = new FormData();
+    fd.append("image", picked.displayBlob, "image.jpg");
+    fd.append("probe", picked.probeDataUri);
+    fd.append("source_url", $("source").value.trim());
+    fd.append("title", $("title").value.trim());
+    fd.append("style", $("style").value);
+    fd.append("themes", JSON.stringify(Object.keys(chosenThemes).filter(function(k){return chosenThemes[k];})));
+    fd.append("palette", JSON.stringify(picked.palette));
+    fd.append("width", picked.w); fd.append("height", picked.h);
+    fetch(API+"/api/items", { method:"POST", headers:{ "Authorization":"Bearer "+token }, body: fd })
+      .then(function(r){ return r.json().then(function(d){ return {ok:r.ok, d:d}; }); })
+      .then(function(res){
+        $("save").disabled = false;
+        if(!res.ok){ return show("err", res.d.error==="unauthorized"?"Bad admin token.":("Error: "+(res.d.message||res.d.error))); }
+        var it = res.d.item;
+        var msg = "Saved “"+(it.title||"Untitled")+"”. Tags: "+(it.tags||[]).join(", ");
+        if(res.d.enrich_error) msg += "  (AI tagging skipped: "+res.d.enrich_error+")";
+        show("ok", msg);
+        // reset for next
+        picked=null; $("preview").style.display="none"; $("file").value=""; $("source").value=""; $("title").value=""; $("style").value="";
+      })
+      .catch(function(e){ $("save").disabled=false; show("err","Network error: "+e.message); });
+  });
+
+  function show(kind,msg){ var n=$("note"); n.className="note "+kind; n.textContent=msg; }
+})();
+</script>
+</body>
+</html>

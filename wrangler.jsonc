@@ -1,0 +1,57 @@
+{
+  // MGD Inspiration — Cloudflare Worker (API + gallery + curation UI)
+  // Serverless: D1 (SQLite) for data, R2 for images. No VPS.
+  "name": "mgd-inspiration",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Import .html files as text modules (the gallery + curation UIs).
+  "rules": [
+    { "type": "Text", "globs": ["**/*.html"], "fallthrough": true }
+  ],
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mgd-inspiration",
+      // Replace after `wrangler d1 create mgd-inspiration` (see DEPLOY.md)
+      "database_id": "15c05947-7edb-4dcc-9d3c-784a2f5dc5c1"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "BUCKET",
+      "bucket_name": "mgd-inspiration-images"
+    }
+  ],
+
+  "vars": {
+    // Vision enrichment on NVIDIA Build (NIM), OpenAI-compatible.
+    // Primary + automatic fallback (fallback fires on error / 429 / empty result).
+    // 11B is primary: on NVIDIA's free tier the 90B is heavily queued (~45s+),
+    // while the 11B answers in ~5s with equally good tags for design images.
+    // 90B stays as the fallback for the rare case the 11B returns nothing.
+    "NVIDIA_MODEL": "meta/llama-3.2-11b-vision-instruct",
+    "NVIDIA_MODEL_FALLBACK": "meta/llama-3.2-90b-vision-instruct",
+    "NVIDIA_BASE_URL": "https://integrate.api.nvidia.com/v1",
+    // CORS: the gallery is embedded on the WordPress site and calls this Worker.
+    "ALLOWED_ORIGIN": "https://madegooddesigns.com",
+    // Mount the whole Worker under madegooddesigns.com/inspiration/ (see routes below).
+    "BASE_PATH": "/inspiration"
+  },
+
+  "routes": [
+    { "pattern": "madegooddesigns.com/inspiration*", "zone_name": "madegooddesigns.com" }
+  ]
+
+  // Secrets (set via `wrangler secret put`, NOT stored here):
+  //   NVIDIA_API_KEY           — build.nvidia.com key for the PRIMARY model (Llama 11B)
+  //   NVIDIA_API_KEY_FALLBACK  — key for the FALLBACK model (Llama 90B); optional, defaults to NVIDIA_API_KEY
+  //   ADMIN_TOKEN              — gate for /add curation, delete, and CSV user export
+  //   SESSION_SECRET           — signs login session cookies
+  //   GOOGLE_CLIENT_ID         — Google OAuth web client id
+  //   GOOGLE_CLIENT_SECRET     — Google OAuth web client secret
+  // (Local only, in .dev.vars: DEV_LOGIN="1" enables /auth/dev-login to bypass Google.)
+}

@@ -1,0 +1,16 @@
+{
+  "name": "mgd-inspiration",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MGD Inspiration — design-inspiration gallery (Cloudflare Worker + D1 + R2)",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:local": "wrangler d1 execute mgd-inspiration --local --file=./schema.sql",
+    "db:local:reset": "for t in items users boards saves; do wrangler d1 execute mgd-inspiration --local --command \"DROP TABLE IF EXISTS $t\"; done && wrangler d1 execute mgd-inspiration --local --file=./schema.sql",
+    "db:remote": "wrangler d1 execute mgd-inspiration --remote --file=./schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

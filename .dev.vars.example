@@ -1,0 +1,11 @@
+# Copy this file to `.dev.vars` (git-ignored) for local `wrangler dev`.
+# In production these are set with `wrangler secret put <NAME>` instead.
+NVIDIA_API_KEY="nvapi-primary-key-for-llama-11b"
+NVIDIA_API_KEY_FALLBACK="nvapi-fallback-key-for-llama-90b"
+ADMIN_TOKEN="choose-a-long-random-string"
+SESSION_SECRET="another-long-random-string"
+# Local only: bypass Google OAuth for testing boards. Visit /auth/dev-login
+DEV_LOGIN="1"
+# For real Google sign-in locally, also set these (from your Google OAuth client):
+# GOOGLE_CLIENT_ID=""
+# GOOGLE_CLIENT_SECRET=""

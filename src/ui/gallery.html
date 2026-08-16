@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inspiration — Made Good Designs</title>
+<style>
+  :root{
+    --bg:#fafafa; --surface:#fff; --border:#e5e5e5; --border-strong:#d4d4d4;
+    --text:#171717; --muted:#737373; --accent:#171717; --radius:12px; --radius-sm:7px;
+    --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.5}
+  a{color:inherit}
+  .mgd-insp{max-width:1200px;margin:0 auto;padding:1.25rem 1rem 4rem}
+  .mgd-insp__head{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;justify-content:space-between;margin-bottom:1rem}
+  .mgd-insp__title{font-size:1.35rem;font-weight:700;margin:0;cursor:pointer}
+  .mgd-insp__search{flex:1 1 220px;max-width:400px;display:flex;gap:.4rem}
+  .mgd-insp__search input{width:100%;font:inherit;padding:.5rem .7rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface)}
+  .mgd-acct{display:flex;align-items:center;gap:.5rem}
+  .mgd-btn{font:inherit;font-size:.85rem;font-weight:500;padding:.45rem .8rem;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;text-decoration:none}
+  .mgd-btn--dark{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .mgd-avatar{width:30px;height:30px;border-radius:50%;background:#ddd;object-fit:cover}
+  .mgd-name{font-size:.85rem;font-weight:600}
+  .mgd-insp__chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;align-items:center}
+  .mgd-insp__chip{cursor:pointer;border:1px solid var(--border-strong);background:var(--surface);border-radius:999px;padding:.3rem .8rem;font-size:.83rem;color:var(--text)}
+  .mgd-insp__chip.is-active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .mgd-insp__grid{columns:4 240px;column-gap:1rem}
+  @media(max-width:640px){.mgd-insp__grid{columns:2 150px;column-gap:.6rem}}
+  .mgd-card{break-inside:avoid;margin:0 0 1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:block;position:relative;text-decoration:none;color:var(--text)}
+  .mgd-card:hover{border-color:var(--border-strong)}
+  .mgd-card__imgwrap{position:relative;cursor:zoom-in;background:#f0f0f0}
+  .mgd-card__save{position:absolute;top:.5rem;right:.5rem;border:none;background:var(--accent);color:#fff;cursor:pointer;font-size:.78rem;font-weight:600;line-height:1;display:inline-flex;align-items:center;gap:.3em;padding:.4rem .7rem;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.28);transition:transform .12s}
+  .mgd-card__save:hover{transform:scale(1.06);background:#000}
+  .mgd-card__save.is-saved{background:#16a34a}
+  .mgd-card__save.is-saved{opacity:1;background:var(--accent);color:#fff}
+  .mgd-card__meta{padding:.55rem .7rem}
+  .mgd-card__t{font-size:.85rem;font-weight:600;margin:0 0 .15rem;line-height:1.3;text-decoration:none}
+  .mgd-card__s{font-size:.72rem;color:var(--muted)}
+  .mgd-insp__empty,.mgd-insp__more{text-align:center;color:var(--muted);padding:2rem 0;font-size:.9rem}
+  .mgd-insp__foot{margin-top:3.5rem;padding:1.1rem 1rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;justify-content:center;text-align:center;font-size:.85rem;color:var(--muted)}
+  .mgd-insp__foot code{font-family:var(--mono);font-size:.78rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.35rem .55rem;color:var(--text)}
+  /* modal */
+  .mgd-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow:auto;z-index:9999}
+  .mgd-modal.is-open{display:flex}
+  .mgd-modal__box{background:var(--surface);border-radius:var(--radius);max-width:920px;width:100%;display:grid;grid-template-columns:1.4fr 1fr;overflow:hidden;position:relative}
+  @media(max-width:720px){.mgd-modal__box{grid-template-columns:1fr}}
+  .mgd-modal__img{background:#f0f0f0;display:flex;align-items:center;justify-content:center}
+  .mgd-modal__img img{width:100%;height:auto;display:block;max-height:80vh;object-fit:contain}
+  .mgd-modal__side{padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.7rem;min-width:0}
+  .mgd-modal__t{font-size:1.05rem;font-weight:700;margin:0}
+  .mgd-modal__d{font-size:.9rem;color:#404040;margin:0}
+  .mgd-modal__label{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:.2rem 0 -.2rem}
+  .mgd-tags{display:flex;flex-wrap:wrap;gap:.35rem}
+  .mgd-tag{font-size:.75rem;background:#f3f4f6;border:1px solid var(--border);border-radius:999px;padding:.2rem .6rem;color:#374151}
+  .mgd-pal{display:flex;flex-wrap:wrap;gap:.4rem}
+  .mgd-sw{width:34px;height:34px;border-radius:8px;border:1px solid rgba(0,0,0,.1);cursor:pointer}
+  .mgd-fmt{display:flex;gap:.3rem;margin-top:.2rem}
+  .mgd-fmt button{font:inherit;font-size:.72rem;border:1px solid var(--border-strong);background:var(--surface);border-radius:999px;padding:.15rem .55rem;cursor:pointer}
+  .mgd-fmt button.is-active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .mgd-src{font-size:.8rem;color:var(--muted)}
+  .mgd-copy-note{font-size:.72rem;color:#16a34a;min-height:1em}
+  .mgd-modal__close{position:absolute;top:1rem;right:1rem;background:#fff;border:1px solid var(--border-strong);border-radius:999px;width:34px;height:34px;font-size:1.1rem;cursor:pointer;line-height:1;z-index:2}
+  /* save popover */
+  .mgd-pop{position:fixed;z-index:10001;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:0 8px 30px rgba(0,0,0,.18);width:260px;padding:.7rem;display:none}
+  .mgd-pop.is-open{display:block}
+  .mgd-pop h4{margin:.1rem 0 .5rem;font-size:.85rem}
+  .mgd-pop__list{max-height:200px;overflow:auto;display:flex;flex-direction:column;gap:.2rem;margin-bottom:.5rem}
+  .mgd-pop__b{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.4rem .5rem;border-radius:6px;cursor:pointer;font-size:.85rem}
+  .mgd-pop__b:hover{background:#f3f4f6}
+  .mgd-pop__new{display:flex;gap:.35rem}
+  .mgd-pop__new input{flex:1;font:inherit;font-size:.85rem;padding:.35rem .5rem;border:1px solid var(--border-strong);border-radius:6px}
+  .mgd-overlay{position:fixed;inset:0;z-index:10000;display:none}
+  .mgd-overlay.is-open{display:block}
+  /* boards view */
+  .mgd-boards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+  .mgd-board{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface);cursor:pointer}
+  .mgd-board__cov{height:130px;background:#eee center/cover no-repeat}
+  .mgd-board__m{padding:.6rem .7rem}
+  .mgd-board__n{font-weight:600;font-size:.9rem}
+  .mgd-board__c{font-size:.75rem;color:var(--muted)}
+  .mgd-sub{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+  /* newsletter toast */
+  .mgd-toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;border-radius:999px;padding:.6rem 1rem;font-size:.85rem;display:none;align-items:center;gap:.7rem;z-index:10002;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  .mgd-toast.is-open{display:flex}
+  .mgd-toast button{font:inherit;font-size:.8rem;border:none;border-radius:999px;padding:.3rem .7rem;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="mgd-insp">
+  <div class="mgd-insp__head">
+    <h1 class="mgd-insp__title" id="insp-home">Design Inspiration</h1>
+    <form class="mgd-insp__search" id="insp-search-form"><input type="search" id="insp-search" placeholder="Search…" autocomplete="off" /></form>
+    <div class="mgd-acct" id="insp-acct"></div>
+  </div>
+  <div class="mgd-insp__chips" id="insp-chips"></div>
+  <div class="mgd-sub" id="insp-sub" style="display:none"></div>
+  <div class="mgd-insp__grid" id="insp-grid"></div>
+  <div class="mgd-insp__more" id="insp-more"></div>
+  <div id="insp-sentinel"></div>
+
+  <footer class="mgd-insp__foot">
+    <span>🔌 Available as an <strong>MCP server</strong> — connect any AI assistant to search this inspiration library.</span>
+    <code id="mcp-url">https://madegooddesigns.com/inspiration/mcp</code>
+    <button class="mgd-btn" id="mcp-copy" type="button">Copy</button>
+  </footer>
+</div>
+
+<div class="mgd-modal" id="insp-modal" aria-hidden="true">
+  <div class="mgd-modal__box" role="dialog" aria-modal="true">
+    <button class="mgd-modal__close" id="insp-close" aria-label="Close">×</button>
+    <div class="mgd-modal__img"><img id="m-img" alt="" /></div>
+    <div class="mgd-modal__side">
+      <h2 class="mgd-modal__t" id="m-title"></h2>
+      <button class="mgd-btn mgd-btn--dark" id="m-save" style="align-self:flex-start">♡ Save to board</button>
+      <p class="mgd-modal__d" id="m-desc"></p>
+      <div class="mgd-modal__label">Tags</div><div class="mgd-tags" id="m-tags"></div>
+      <div class="mgd-modal__label">Palette</div><div class="mgd-pal" id="m-pal"></div>
+      <div class="mgd-fmt" id="m-fmt"><button data-fmt="hex" class="is-active">HEX</button><button data-fmt="rgb">RGB</button><button data-fmt="oklch">OKLCH</button></div>
+      <div class="mgd-copy-note" id="m-copynote"></div>
+      <div class="mgd-src" id="m-src"></div>
+    </div>
+  </div>
+</div>
+
+<div class="mgd-overlay" id="insp-overlay"></div>
+<div class="mgd-pop" id="insp-pop">
+  <h4>Save to board</h4>
+  <div class="mgd-pop__list" id="pop-list"></div>
+  <form class="mgd-pop__new" id="pop-newform"><input id="pop-new" placeholder="New board name" /><button class="mgd-btn mgd-btn--dark" type="submit">Add</button></form>
+</div>
+
+<div class="mgd-toast" id="insp-toast">
+  <span>Get a monthly dose of design inspiration?</span>
+  <button class="mgd-btn mgd-btn--dark" id="toast-yes">Yes</button>
+  <button class="mgd-btn" id="toast-no">No thanks</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var API = (window.MGD_API_BASE || "").replace(/\/$/, "");
+  var $ = function(id){ return document.getElementById(id); };
+  var api = function(path, opts){ opts = opts || {}; opts.credentials = "include"; return fetch(API + path, opts); };
+
+  var THEMES = ["retro","vintage","minimal","maximal","editorial","brutalist","y2k","monochrome","playful","luxury","hand-drawn","geometric","grunge","corporate"];
+  var state = { theme:"", cursor:null, loading:false, done:false, mode:"feed", q:"", fmt:"hex", user:null, view:"feed", saveItem:null };
+
+  // ---------- auth ----------
+  function loadMe(){
+    return api("/api/me").then(function(r){return r.json();}).then(function(d){ state.user = d.user; renderAcct(); if(d.user && d.user.newsletter_opt_in===false && !localStorage.getItem("mgd_nl_dismissed")) maybeToast(); });
+  }
+  function renderAcct(){
+    var box = $("insp-acct");
+    if (state.user){
+      box.innerHTML = '<button class="mgd-btn" id="acct-boards">My boards</button>'
+        + (state.user.picture?'<img class="mgd-avatar" src="'+esc(state.user.picture)+'" alt="" />':'')
+        + '<span class="mgd-name">'+esc((state.user.name||state.user.email||"").split(" ")[0])+'</span>'
+        + '<a class="mgd-btn" href="'+API+'/auth/logout">Log out</a>';
+      $("acct-boards").addEventListener("click", showBoards);
+    } else {
+      box.innerHTML = '<a class="mgd-btn mgd-btn--dark" href="'+API+'/auth/google/login">Sign in with Google</a>';
+    }
+  }
+  function maybeToast(){ setTimeout(function(){ $("insp-toast").classList.add("is-open"); }, 2500); }
+  $("toast-yes").addEventListener("click", function(){ api("/api/me/newsletter",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({opt_in:true})}); dismissToast(); });
+  $("toast-no").addEventListener("click", dismissToast);
+  function dismissToast(){ $("insp-toast").classList.remove("is-open"); localStorage.setItem("mgd_nl_dismissed","1"); }
+
+  // ---------- rendering ----------
+  function card(item){
+    var el = document.createElement("div"); el.className="mgd-card"; el.setAttribute("data-id", item.id);
+    var ratio = (item.width && item.height) ? (item.height/item.width*100) : 66;
+    el.innerHTML =
+      '<div class="mgd-card__imgwrap" style="padding-top:'+ratio+'%">'
+        +'<img loading="lazy" src="'+API+item.image+'" alt="'+esc(item.title)+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />'
+        +'<button class="mgd-card__save" title="Save to a board">♥ Save</button></div>'
+      +'<div class="mgd-card__meta"><p class="mgd-card__t">'+esc(item.title||"Untitled")+'</p>'
+      +(item.source_host?'<span class="mgd-card__s">'+esc(item.source_host)+'</span>':'')+'</div>';
+    el.querySelector(".mgd-card__imgwrap").addEventListener("click", function(e){ if(e.target.classList.contains("mgd-card__save")) return; openModal(item); });
+    el.querySelector(".mgd-card__save").addEventListener("click", function(e){ e.stopPropagation(); openSave(item, e.clientX, e.clientY); });
+    return el;
+  }
+  function renderAppend(items){ var g=$("insp-grid"); items.forEach(function(it){ g.appendChild(card(it)); }); }
+
+  function chips(){
+    var box=$("insp-chips"); box.innerHTML="";
+    var mk=function(slug,label){ var b=document.createElement("button"); b.className="mgd-insp__chip"+((slug===state.theme&&state.mode==="feed"&&state.view==="feed")?" is-active":""); b.textContent=label; b.addEventListener("click",function(){ state.q=""; $("insp-search").value=""; setTheme(slug); }); box.appendChild(b); };
+    mk("","All");
+    THEMES.forEach(function(t){ mk(t, t.charAt(0).toUpperCase()+t.slice(1).replace("-"," ")); });
+  }
+
+  // ---------- feed ----------
+  function reset(){ $("insp-grid").innerHTML=""; state.cursor=null; state.done=false; }
+  function loadFeed(){
+    if (state.loading||state.done||state.mode!=="feed"||state.view!=="feed") return;
+    state.loading=true; $("insp-more").textContent="Loading…";
+    var u="/api/feed?limit=24"+(state.theme?"&theme="+encodeURIComponent(state.theme):"")+(state.cursor?"&cursor="+state.cursor:"");
+    api(u).then(function(r){return r.json();}).then(function(d){
+      renderAppend(d.items||[]); state.cursor=d.nextCursor;
+      if(!d.nextCursor){ state.done=true; $("insp-more").textContent=$("insp-grid").children.length?"":"Nothing here yet."; } else $("insp-more").textContent="";
+      state.loading=false;
+    }).catch(function(){ state.loading=false; $("insp-more").textContent="Couldn’t load."; });
+  }
+  function setTheme(slug){ state.view="feed"; state.mode="feed"; state.theme=slug; $("insp-sub").style.display="none"; $("insp-chips").style.display=""; reset(); chips(); loadFeed(); }
+
+  function runSearch(q){ state.view="feed"; state.mode="search"; state.q=q; reset(); chips(); $("insp-sub").style.display="none";
+    $("insp-more").textContent="Searching…";
+    api("/api/search?q="+encodeURIComponent(q)+"&limit=48").then(function(r){return r.json();}).then(function(d){ renderAppend(d.items||[]); $("insp-more").textContent=(d.items&&d.items.length)?"":"No matches for “"+q+"”."; state.done=true; });
+  }
+
+  // ---------- boards ----------
+  function showBoards(){
+    if(!state.user) return;
+    state.view="boards"; $("insp-chips").style.display="none"; reset(); $("insp-more").textContent="";
+    $("insp-sub").style.display="flex"; $("insp-sub").style.flexWrap="wrap";
+    $("insp-sub").innerHTML='<strong style="margin-right:auto">My boards</strong>'
+      +'<form id="nb-form" style="display:flex;gap:.4rem"><input id="nb-name" placeholder="New board name…" style="font:inherit;padding:.45rem .8rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface)" /><button class="mgd-btn mgd-btn--dark" type="submit">＋ New board</button></form>';
+    $("nb-form").addEventListener("submit", function(e){ e.preventDefault(); var n=($("nb-name").value||"").trim(); if(!n) return; api("/api/boards",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:n})}).then(function(r){return r.json();}).then(function(){ showBoards(); }); });
+    $("insp-grid").className=""; // switch off masonry
+    api("/api/boards").then(function(r){return r.json();}).then(function(d){
+      var g=$("insp-grid"); g.className="mgd-boards";
+      if(!d.boards||!d.boards.length){ $("insp-grid").className=""; $("insp-more").innerHTML="<p style='margin:0;font-size:1rem;line-height:1.6'>No boards yet. Create one above ↑, then <strong>paste any URL</strong> into it to save inspiration from anywhere on the web — or hit <strong>♥ Save</strong> on images in the gallery.</p>"; return; }
+      d.boards.forEach(function(b){
+        var el=document.createElement("div"); el.className="mgd-board";
+        el.innerHTML='<div class="mgd-board__cov" style="'+(b.cover?'background-image:url('+API+b.cover+')':'')+'"></div><div class="mgd-board__m"><div class="mgd-board__n">'+esc(b.name)+'</div><div class="mgd-board__c">'+b.count+' saved</div></div>';
+        el.addEventListener("click", function(){ openBoard(b); });
+        g.appendChild(el);
+      });
+    });
+  }
+  function openBoard(b){
+    state.view="board"; state.currentBoard=b; reset(); $("insp-grid").className="mgd-insp__grid";
+    $("insp-sub").style.display="flex"; $("insp-sub").style.flexWrap="wrap";
+    $("insp-sub").innerHTML=
+      '<button class="mgd-btn" id="b-back">← Boards</button>'
+      +'<strong style="margin-right:auto">'+esc(b.name)+'</strong>'
+      +'<form id="b-addurl" style="display:flex;gap:.4rem;flex:1 1 300px;max-width:560px" title="Paste a link from any website">'
+      +'<input id="b-url" type="url" placeholder="Paste any image or page URL to add it here…" style="flex:1;font:inherit;padding:.5rem .8rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface)" />'
+      +'<button class="mgd-btn mgd-btn--dark" type="submit" id="b-addbtn">＋ Add from URL</button></form>';
+    $("b-back").addEventListener("click", showBoards);
+    $("b-addurl").addEventListener("submit", function(e){ e.preventDefault(); addUrlToBoard(b); });
+    loadBoardItems(b);
+  }
+  function loadBoardItems(b){
+    reset();
+    api("/api/boards/"+b.id).then(function(r){return r.json();}).then(function(d){
+      renderAppend(d.items||[]);
+      $("insp-more").innerHTML=(d.items&&d.items.length)?"":"This board is empty. <strong>Paste any URL above</strong> to add inspiration from around the web, or hit <strong>♥ Save</strong> on images in the gallery.";
+      state.done=true;
+    });
+  }
+  function addUrlToBoard(b){
+    var url=($("b-url").value||"").trim(); if(!url) return;
+    var btn=$("b-addbtn"); btn.textContent="Adding…"; btn.disabled=true;
+    api("/api/boards/"+b.id+"/add-url",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:url})})
+      .then(function(r){return r.json();}).then(function(d){
+        btn.textContent="＋ Add from URL"; btn.disabled=false;
+        if(!d.ok){ toastMsg(d.message||"Couldn’t add that link"); return; }
+        $("b-url").value=""; toastMsg("Added to "+b.name); loadBoardItems(b);
+      }).catch(function(){ btn.textContent="＋ Add from URL"; btn.disabled=false; toastMsg("Network error"); });
+  }
+  function goHome(){ state.view="feed"; $("insp-grid").className="mgd-insp__grid"; $("insp-chips").style.display=""; setTheme(""); }
+
+  // ---------- save popover ----------
+  function openSave(item, x, y){
+    if(!state.user){ if(confirm("Sign in with Google to save to a board?")) location.href=API+"/auth/google/login"; return; }
+    state.saveItem=item;
+    var pop=$("insp-pop"); pop.style.left=Math.min(x, window.innerWidth-280)+"px"; pop.style.top=Math.min(y, window.innerHeight-260)+"px";
+    $("pop-list").innerHTML='<div class="mgd-board__c">Loading…</div>';
+    $("insp-overlay").classList.add("is-open"); pop.classList.add("is-open");
+    api("/api/boards").then(function(r){return r.json();}).then(function(d){
+      var list=$("pop-list"); list.innerHTML="";
+      if(!d.boards.length) list.innerHTML='<div class="mgd-board__c">No boards yet — create one below.</div>';
+      d.boards.forEach(function(b){ var row=document.createElement("div"); row.className="mgd-pop__b"; row.innerHTML='<span>'+esc(b.name)+'</span><span class="mgd-board__c">'+b.count+'</span>'; row.addEventListener("click",function(){ saveTo(b.id, b.name); }); list.appendChild(row); });
+    });
+  }
+  function closeSave(){ $("insp-pop").classList.remove("is-open"); $("insp-overlay").classList.remove("is-open"); }
+  function saveTo(boardId, name){
+    api("/api/boards/"+boardId+"/saves",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({item_id:state.saveItem.id})})
+      .then(function(r){return r.json();}).then(function(){ closeSave(); toastMsg("Saved to "+name); });
+  }
+  $("pop-newform").addEventListener("submit", function(e){ e.preventDefault(); var name=$("pop-new").value.trim(); if(!name) return;
+    api("/api/boards",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:name})}).then(function(r){return r.json();}).then(function(d){ $("pop-new").value=""; if(d.board) saveTo(d.board.id, d.board.name); }); });
+  $("insp-overlay").addEventListener("click", closeSave);
+
+  function toastMsg(msg){ var t=document.createElement("div"); t.className="mgd-toast is-open"; t.style.background="var(--accent)"; t.innerHTML='<span>'+esc(msg)+'</span>'; document.body.appendChild(t); setTimeout(function(){ t.remove(); },1600); }
+
+  // ---------- modal ----------
+  function openModal(item){
+    $("m-img").src=API+item.image; $("m-title").textContent=item.title||"Untitled"; $("m-desc").textContent=item.description||"";
+    var tg=$("m-tags"); tg.innerHTML=""; (item.tags||[]).forEach(function(t){ var s=document.createElement("span"); s.className="mgd-tag"; s.textContent=t; tg.appendChild(s); });
+    renderPalette(item.palette||[]);
+    $("m-src").textContent=item.source_host?("Source: "+item.source_host):""; $("m-copynote").textContent="";
+    $("m-save").onclick=function(e){ var r=$("m-save").getBoundingClientRect(); openSave(item, r.left, r.bottom+6); };
+    $("insp-modal").classList.add("is-open"); $("insp-modal").setAttribute("aria-hidden","false");
+  }
+  function closeModal(){ $("insp-modal").classList.remove("is-open"); $("insp-modal").setAttribute("aria-hidden","true"); }
+  function renderPalette(pal){ var box=$("m-pal"); box.innerHTML=""; pal.forEach(function(hex){ var sw=document.createElement("div"); sw.className="mgd-sw"; sw.style.background=hex; sw.title="Copy"; sw.addEventListener("click",function(){ copyColor(hex); }); box.appendChild(sw); }); }
+  function copyColor(hex){ var val=formatColor(hex,state.fmt); (navigator.clipboard?navigator.clipboard.writeText(val):Promise.reject()).then(done,done); function done(){ $("m-copynote").textContent="Copied "+val; setTimeout(function(){ $("m-copynote").textContent=""; },1500); } }
+
+  // ---------- color ----------
+  function hexToRgb(h){ h=h.replace("#",""); if(h.length===3)h=h.split("").map(function(c){return c+c;}).join(""); return {r:parseInt(h.slice(0,2),16),g:parseInt(h.slice(2,4),16),b:parseInt(h.slice(4,6),16)}; }
+  function srgbLin(c){ c/=255; return c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4); }
+  function rgbToOklch(r,g,b){ var lr=srgbLin(r),lg=srgbLin(g),lb=srgbLin(b);
+    var l=0.4122214708*lr+0.5363325363*lg+0.0514459929*lb,m=0.2119034982*lr+0.6806995451*lg+0.1073969566*lb,s=0.0883024619*lr+0.2817188376*lg+0.6299787005*lb;
+    var l_=Math.cbrt(l),m_=Math.cbrt(m),s_=Math.cbrt(s);
+    var L=0.2104542553*l_+0.7936177850*m_-0.0040720468*s_,A=1.9779984951*l_-2.4285922050*m_+0.4505937099*s_,B=0.0259040371*l_+0.7827717662*m_-0.8086757660*s_;
+    var C=Math.sqrt(A*A+B*B),H=Math.atan2(B,A)*180/Math.PI; if(H<0)H+=360; return "oklch("+(L*100).toFixed(1)+"% "+C.toFixed(3)+" "+H.toFixed(1)+")"; }
+  function formatColor(hex,fmt){ var c=hexToRgb(hex); if(fmt==="rgb")return "rgb("+c.r+", "+c.g+", "+c.b+")"; if(fmt==="oklch")return rgbToOklch(c.r,c.g,c.b); return hex.toLowerCase(); }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+
+  // ---------- wiring ----------
+  $("insp-search-form").addEventListener("submit",function(e){ e.preventDefault(); var q=$("insp-search").value.trim(); if(q)runSearch(q); else setTheme(state.theme); });
+  $("insp-home").addEventListener("click", goHome);
+  $("insp-close").addEventListener("click", closeModal);
+  $("insp-modal").addEventListener("click",function(e){ if(e.target===$("insp-modal")) closeModal(); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ closeModal(); closeSave(); } });
+  Array.prototype.forEach.call($("m-fmt").querySelectorAll("button"),function(b){ b.addEventListener("click",function(){ state.fmt=b.getAttribute("data-fmt"); Array.prototype.forEach.call($("m-fmt").querySelectorAll("button"),function(x){ x.classList.toggle("is-active",x===b); }); }); });
+  if("IntersectionObserver" in window){ new IntersectionObserver(function(en){ if(en[0].isIntersecting) loadFeed(); },{rootMargin:"600px"}).observe($("insp-sentinel")); }
+
+  var mcpCopy=$("mcp-copy");
+  if(mcpCopy) mcpCopy.addEventListener("click",function(){ var t=($("mcp-url")||{}).textContent||"https://madegooddesigns.com/inspiration/mcp"; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(done,done); function done(){ mcpCopy.textContent="Copied!"; setTimeout(function(){ mcpCopy.textContent="Copy"; },1400); } });
+
+  chips(); loadFeed(); loadMe();
+})();
+</script>
+</body>
+</html>
