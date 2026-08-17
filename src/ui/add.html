@@ -80,7 +80,7 @@
   var picked = null; // { displayBlob, probeDataUri, palette, w, h }
 
   // curated theme chips (toggle)
-  var THEMES = ["retro","vintage","minimal","maximal","editorial","brutalist","y2k","monochrome","playful","luxury","hand-drawn","geometric","grunge","corporate"];
+  var THEMES = ["retro","vintage","minimal","maximal","editorial","brutalist","y2k","monochrome","playful","luxury","hand-drawn","geometric","grunge","corporate","art-deco","psychedelic","swiss","gradient","typographic","vaporwave","neon","collage","art-nouveau","memphis","pop-art","pastel"];
   var chosenThemes = {};
   (function(){ var box=$("themes"); THEMES.forEach(function(t){ var b=document.createElement("button"); b.type="button"; b.textContent=t; b.style.cssText="font:inherit;font-size:.8rem;padding:.3rem .7rem;border:1px solid var(--strong);border-radius:999px;background:var(--surface);cursor:pointer"; b.addEventListener("click",function(){ chosenThemes[t]=!chosenThemes[t]; b.style.background=chosenThemes[t]?"var(--accent)":"var(--surface)"; b.style.color=chosenThemes[t]?"#fff":"var(--text)"; }); box.appendChild(b); }); })();
 

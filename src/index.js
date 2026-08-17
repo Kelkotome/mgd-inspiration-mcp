@@ -381,7 +381,7 @@ function isoOrEmpty(ms) { if (!ms) return ""; try { return new Date(ms).toISOStr
 // ---------------------------------------------------------------------------
 
 const MCP_SITE = "https://madegooddesigns.com/inspiration";
-const MCP_THEMES = ["retro","vintage","minimal","maximal","editorial","brutalist","y2k","monochrome","playful","luxury","hand-drawn","geometric","grunge","corporate"];
+const MCP_THEMES = ["retro","vintage","minimal","maximal","editorial","brutalist","y2k","monochrome","playful","luxury","hand-drawn","geometric","grunge","corporate","art-deco","psychedelic","swiss","gradient","typographic","vaporwave","neon","collage","art-nouveau","memphis","pop-art","pastel"];
 
 const MCP_TOOLS = [
   {

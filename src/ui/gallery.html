@@ -145,7 +145,7 @@
   var $ = function(id){ return document.getElementById(id); };
   var api = function(path, opts){ opts = opts || {}; opts.credentials = "include"; return fetch(API + path, opts); };
 
-  var THEMES = ["retro","vintage","minimal","maximal","editorial","brutalist","y2k","monochrome","playful","luxury","hand-drawn","geometric","grunge","corporate"];
+  var THEMES = ["retro","vintage","minimal","maximal","editorial","brutalist","y2k","monochrome","playful","luxury","hand-drawn","geometric","grunge","corporate","art-deco","psychedelic","swiss","gradient","typographic","vaporwave","neon","collage","art-nouveau","memphis","pop-art","pastel"];
   var state = { theme:"", cursor:null, loading:false, done:false, mode:"feed", q:"", fmt:"hex", user:null, view:"feed", saveItem:null };
 
   // ---------- auth ----------
