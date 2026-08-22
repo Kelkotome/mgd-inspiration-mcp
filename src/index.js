@@ -317,7 +317,7 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
     ${chips ? `<div class="chips">${chips}</div>` : ""}
   </div>
 </div>
-<footer class="rights">Cover thumbnail shown for reference and commentary${it.source ? `; source: ${escHtml(it.source)}` : ""}. We claim no rights over the reproduced work — rights holders may request removal via <a href="mailto:hello@freelanceseo.sg">hello@freelanceseo.sg</a>.</footer>
+<footer class="rights">Cover thumbnail shown for reference and commentary${it.source ? `; source: ${escHtml(it.source)}` : ""}. We claim no rights over the reproduced work — rights holders may request removal via <a href="mailto:hello@madegooddesigns.com">hello@madegooddesigns.com</a>.</footer>
 </div></body></html>`;
   return new Response(body, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
 }
@@ -380,7 +380,7 @@ ${section("Countries", "country", tally("country"))}
 ${section("Designers", "designer", tally("designer"))}
 ${section("Companies", "company", tally("company"))}
 ${section("Industries", "industry", tally("industry"))}
-<footer class="rights">Cover thumbnails shown for reference and commentary; full reports are held by their original sources. Rights holders may request removal via <a href="mailto:hello@freelanceseo.sg">hello@freelanceseo.sg</a>.</footer>
+<footer class="rights">Cover thumbnails shown for reference and commentary; full reports are held by their original sources. Rights holders may request removal via <a href="mailto:hello@madegooddesigns.com">hello@madegooddesigns.com</a>.</footer>
 </div></body></html>`;
   return html(body);
 }
@@ -415,7 +415,7 @@ ${ANNUAL_PAGE_CSS}</head><body><div class="wrap">
 <h1>${escHtml(heading)}</h1>
 <p class="lead">${items.length} ${items.length === 1 ? "report" : "reports"} in the archive.</p>
 <div class="grid">${cards}</div>
-<footer class="rights">Cover thumbnails shown for reference and commentary; full reports are held by their original sources. Rights holders may request removal via <a href="mailto:hello@freelanceseo.sg">hello@freelanceseo.sg</a>.</footer>
+<footer class="rights">Cover thumbnails shown for reference and commentary; full reports are held by their original sources. Rights holders may request removal via <a href="mailto:hello@madegooddesigns.com">hello@madegooddesigns.com</a>.</footer>
 </div></body></html>`;
   return html(body);
 }
