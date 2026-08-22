@@ -238,6 +238,8 @@ function prettySource(host) {
     "nas.gov.sg": "National Archives of Singapore",
     "eresources.nlb.gov.sg": "National Library Board Singapore",
     "graphic.sg": "graphic.sg",
+    "sr692.com": "Swissair Report Archive",
+    "designreviewed.com": "Design Reviewed",
   };
   return map[h] || host || "source";
 }
