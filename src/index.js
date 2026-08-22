@@ -32,6 +32,7 @@ export default {
       if (path.startsWith("/annual-reports/designer/") && method === "GET") return annualFacetPage("designer", decodeURIComponent(path.slice("/annual-reports/designer/".length)), env, base);
       if (path.startsWith("/annual-reports/company/") && method === "GET") return annualFacetPage("company", decodeURIComponent(path.slice("/annual-reports/company/".length)), env, base);
       if (path.startsWith("/annual-reports/industry/") && method === "GET") return annualFacetPage("industry", decodeURIComponent(path.slice("/annual-reports/industry/".length)), env, base);
+      if (path.startsWith("/annual-reports/country/") && method === "GET") return annualFacetPage("country", decodeURIComponent(path.slice("/annual-reports/country/".length)), env, base);
       if (path.startsWith("/annual-reports/") && method === "GET") return annualItemPage(path.slice(16), env, base);
 
       // ---- MCP server (public, for AI assistants) ----
@@ -99,6 +100,7 @@ async function addItem(request, env) {
   const reportYear = parseInt(form.get("report_year"), 10) || null;
   const designer = (form.get("designer") || "").toString().trim() || null;
   const industry = (form.get("industry") || "").toString().trim() || null;
+  const country = (form.get("country") || "").toString().trim() || null;
 
   if (!file || typeof file === "string") return json({ error: "no_image" }, 400, env, request);
 
@@ -134,12 +136,12 @@ async function addItem(request, env) {
   const now = Date.now();
   const host = hostOf(sourceUrl);
   await env.DB.prepare(
-    `INSERT INTO items (id,title,description,source_url,source_host,image_key,width,height,tags,themes,palette,style,status,created_at,collection,company,report_year,designer,industry)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'published',?,?,?,?,?,?)`
+    `INSERT INTO items (id,title,description,source_url,source_host,image_key,width,height,tags,themes,palette,style,status,created_at,collection,company,report_year,designer,industry,country)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'published',?,?,?,?,?,?,?)`
   ).bind(
     id, ai.title, ai.description, sourceUrl || null, host, key, width, height,
     JSON.stringify(ai.tags), JSON.stringify(ai.themes || []), JSON.stringify(palette), ai.style, now,
-    collection, company, reportYear, designer, industry
+    collection, company, reportYear, designer, industry, country
   ).run();
 
   return json({ ok: true, item: rowToItem({
@@ -159,6 +161,7 @@ async function feed(url, env, request) {
   const year = parseInt(url.searchParams.get("year"), 10) || null;
   const industry = (url.searchParams.get("industry") || "").trim();
   const designer = (url.searchParams.get("designer") || "").trim();
+  const country = (url.searchParams.get("country") || "").trim();
   const cursor = parseInt(url.searchParams.get("cursor"), 10) || null; // created_at of last seen
 
   const where = ["status = 'published'", "owner_id IS NULL"]; // public feed = curated only
@@ -169,6 +172,7 @@ async function feed(url, env, request) {
   if (year) { where.push("report_year = ?"); binds.push(year); }
   if (industry) { where.push("industry = ?"); binds.push(industry); }
   if (designer) { where.push("designer = ?"); binds.push(designer); }
+  if (country) { where.push("country = ?"); binds.push(country); }
   if (cursor) { where.push("created_at < ?"); binds.push(cursor); }
 
   const rows = await env.DB.prepare(
@@ -261,6 +265,7 @@ async function annualItemPage(rest, env, base) {
     it.report_year ? `Year: ${it.report_year}` : null,
     it.designer ? `Designer / agency: ${it.designer}` : null,
     it.industry ? `Industry: ${it.industry}` : null,
+    it.country ? `Country: ${it.country}` : null,
     it.source ? `Source: ${it.source}` : null,
   ].filter(Boolean);
   const jsonld = {
@@ -317,11 +322,11 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
 
 async function annualSitemap(env, base) {
   const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
-  const rows = (await env.DB.prepare(`SELECT id,company,report_year,title,designer,industry FROM items WHERE status='published' AND collection='annual-report' ORDER BY created_at DESC`).all()).results || [];
+  const rows = (await env.DB.prepare(`SELECT id,company,report_year,title,designer,industry,country FROM items WHERE status='published' AND collection='annual-report' ORDER BY created_at DESC`).all()).results || [];
   const facet = (key, kind) => [...new Set(rows.map((r) => (r[key] || "").trim()).filter(Boolean))]
     .map((v) => `${site}${base}/annual-reports/${kind}/${slugify(v)}`);
   const urls = [`${site}${base}/annual-reports`, `${site}${base}/annual-reports/index`]
-    .concat(facet("designer", "designer"), facet("company", "company"), facet("industry", "industry"))
+    .concat(facet("country", "country"), facet("designer", "designer"), facet("company", "company"), facet("industry", "industry"))
     .concat(rows.map((r) => site + annualItemPath(rowToItem(r, env), base)));
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
     + urls.map((u) => `  <url><loc>${escHtml(u)}</loc></url>`).join("\n") + `\n</urlset>\n`;
@@ -350,7 +355,7 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
 // Browse hub: /annual-reports/index — lists designers, companies, industries as internal links.
 async function annualIndexPage(env, base) {
   const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
-  const rows = (await env.DB.prepare(`SELECT company,designer,industry FROM items WHERE status='published' AND collection='annual-report'`).all()).results || [];
+  const rows = (await env.DB.prepare(`SELECT company,designer,industry,country FROM items WHERE status='published' AND collection='annual-report'`).all()).results || [];
   const tally = (key) => {
     const m = new Map();
     for (const r of rows) { const v = (r[key] || "").trim(); if (!v) continue; m.set(v, (m.get(v) || 0) + 1); }
@@ -368,7 +373,8 @@ async function annualIndexPage(env, base) {
 ${ANNUAL_PAGE_CSS}</head><body><div class="wrap">
 <nav class="crumb"><a href="${escHtml(base)}/annual-reports">Annual Report Archive</a> › Browse</nav>
 <h1>Browse the Annual Report Archive</h1>
-<p class="lead">A reference archive of vintage corporate annual-report cover design. Browse by designer, company, or industry.</p>
+<p class="lead">A reference archive of vintage corporate annual-report cover design. Browse by country, designer, company, or industry.</p>
+${section("Countries", "country", tally("country"))}
 ${section("Designers", "designer", tally("designer"))}
 ${section("Companies", "company", tally("company"))}
 ${section("Industries", "industry", tally("industry"))}
@@ -379,7 +385,7 @@ ${section("Industries", "industry", tally("industry"))}
 
 // Facet listing: /annual-reports/{designer|company|industry}/<slug>
 async function annualFacetPage(kind, slug, env, base) {
-  const col = kind === "designer" ? "designer" : kind === "industry" ? "industry" : "company";
+  const col = kind === "designer" ? "designer" : kind === "industry" ? "industry" : kind === "country" ? "country" : "company";
   const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
   const distinct = (await env.DB.prepare(`SELECT DISTINCT ${col} AS v FROM items WHERE status='published' AND collection='annual-report' AND ${col} IS NOT NULL AND ${col}<>''`).all()).results || [];
   const match = distinct.find((r) => slugify(r.v) === slug);
@@ -387,7 +393,7 @@ async function annualFacetPage(kind, slug, env, base) {
   const value = match.v;
   const rows = (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND collection='annual-report' AND ${col}=? ORDER BY report_year, company`).bind(value).all()).results || [];
   const items = rows.map((r) => rowToItem(r, env));
-  const heading = kind === "designer" ? `Designed by ${value}` : `${value} annual reports`;
+  const heading = kind === "designer" ? `Designed by ${value}` : kind === "country" ? `Annual reports from ${value}` : `${value} annual reports`;
   const canonical = `${site}${base}/annual-reports/${kind}/${slugify(value)}`;
   const cards = items.map((it) => {
     const href = annualItemPath(it, base);
@@ -766,6 +772,7 @@ function mcpItems(rows, header) {
       isReport && it.company ? `  company: ${it.company}${it.report_year ? " ("+it.report_year+")" : ""}` : null,
       isReport && it.designer ? `  designer/agency: ${it.designer}` : null,
       isReport && it.industry ? `  industry: ${it.industry}` : null,
+      isReport && it.country ? `  country: ${it.country}` : null,
       it.description ? `  ${it.description}` : null,
       it.tags.length ? `  tags: ${it.tags.join(", ")}` : null,
       it.themes.length ? `  themes: ${it.themes.join(", ")}` : null,
@@ -892,6 +899,7 @@ function rowToItem(r, env) {
     item.report_year = r.report_year || null;
     item.designer = r.designer || null;
     item.industry = r.industry || null;
+    item.country = r.country || null;
   }
   return item;
 }

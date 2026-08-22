@@ -52,6 +52,7 @@
   .card .meta{color:var(--muted);font-size:.78rem;line-height:1.35}
   .card .chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.15rem}
   .card .chip{font-size:.68rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.05rem .45rem}
+  .card .chip--country{color:var(--text);border-color:var(--text)}
   .card .full{margin-top:auto;padding-top:.5rem;font-size:.82rem;font-weight:600;text-decoration:none;color:var(--text)}
   .card .full:hover{text-decoration:underline}
   .empty,.end{text-align:center;color:var(--muted);font-size:.9rem;padding:2rem 1rem}
@@ -72,6 +73,7 @@
   <div class="controls">
     <input id="q" type="search" placeholder="Search company, designer, style…" />
     <input id="year" type="number" inputmode="numeric" placeholder="Year (e.g. 1972)" min="1900" max="2030" />
+    <input id="country" type="text" placeholder="Country (e.g. Singapore)" />
     <input id="industry" type="text" placeholder="Industry (e.g. transit)" />
     <button id="apply">Filter</button>
     <button id="clear">Clear</button>
@@ -95,6 +97,7 @@
   var qEl = document.getElementById("q");
   var yearEl = document.getElementById("year");
   var industryEl = document.getElementById("industry");
+  var countryEl = document.getElementById("country");
 
   var cursor = null, loading = false, done = false, mode = "feed", query = "";
 
@@ -112,6 +115,7 @@
     var src = it.source || it.source_host;
     if (src) metaBits.push('Source: '+esc(src));
     var chips = "";
+    if (it.country) chips += '<span class="chip chip--country">'+esc(it.country)+'</span>';
     if (it.industry) chips += '<span class="chip">'+esc(it.industry)+'</span>';
     (it.themes||[]).slice(0,2).forEach(function(t){ chips += '<span class="chip">'+esc(t)+'</span>'; });
     var pal = "";
@@ -145,6 +149,7 @@
     } else {
       var p = "collection=annual-report&limit=24";
       if (yearEl.value) p += "&year=" + encodeURIComponent(yearEl.value);
+      if (countryEl.value.trim()) p += "&country=" + encodeURIComponent(countryEl.value.trim());
       if (industryEl.value.trim()) p += "&industry=" + encodeURIComponent(industryEl.value.trim());
       if (cursor) p += "&cursor=" + cursor;
       url = API + "/api/feed?" + p;
@@ -165,7 +170,7 @@
     load(true);
   }
   document.getElementById("apply").addEventListener("click", function(){ clearColorHighlight(); apply(); });
-  document.getElementById("clear").addEventListener("click", function(){ qEl.value=""; yearEl.value=""; industryEl.value=""; query=""; colorFilter=null; clearColorHighlight(); mode="feed"; load(true); });
+  document.getElementById("clear").addEventListener("click", function(){ qEl.value=""; yearEl.value=""; industryEl.value=""; countryEl.value=""; query=""; colorFilter=null; clearColorHighlight(); mode="feed"; load(true); });
   qEl.addEventListener("keydown", function(e){ if(e.key==="Enter"){ clearColorHighlight(); apply(); } });
 
   // ---- Colour facet (client-side over the full archive) ----

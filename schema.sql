@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS items (
   company      TEXT,                      -- annual-report only: issuing company/entity
   report_year  INTEGER,                   -- annual-report only: fiscal/report year
   designer     TEXT,                      -- annual-report only: designer/agency (curated, not AI)
-  industry     TEXT                       -- annual-report only: industry/sector
+  industry     TEXT,                      -- annual-report only: industry/sector
+  country      TEXT                       -- annual-report only: country of the issuing entity
 );
 CREATE INDEX IF NOT EXISTS idx_items_created ON items(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_items_style   ON items(style, created_at DESC);
