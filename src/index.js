@@ -4,6 +4,7 @@
 
 import GALLERY_HTML from "./ui/gallery.html";
 import ADD_HTML from "./ui/add.html";
+import ANNUAL_HTML from "./ui/annual-reports.html";
 import { getUser, googleLogin, googleCallback, logout, devLogin } from "./auth.js";
 
 export default {
@@ -25,6 +26,9 @@ export default {
       // ---- Pages (inject the mount base so the front-end builds correct URLs) ----
       if (path === "/" && method === "GET") return html(injectBase(GALLERY_HTML, base));
       if (path === "/add" && method === "GET") return html(injectBase(ADD_HTML, base));
+      if (path === "/annual-reports" && method === "GET") return html(injectBase(ANNUAL_HTML, base));
+      if (path === "/annual-reports/sitemap.xml" && method === "GET") return annualSitemap(env, base);
+      if (path.startsWith("/annual-reports/") && method === "GET") return annualItemPage(path.slice(16), env, base);
 
       // ---- MCP server (public, for AI assistants) ----
       if (path === "/mcp") return mcpHandler(request, env);
@@ -85,6 +89,12 @@ async function addItem(request, env) {
   try { palette = JSON.parse(form.get("palette") || "[]"); } catch (_) {}
   let themesIn = [];
   try { themesIn = JSON.parse(form.get("themes") || "[]"); } catch (_) {}
+  // Collection + annual-report metadata (curated; NULL for the default design gallery).
+  const collection = (form.get("collection") || "design").toString().trim() || "design";
+  const company = (form.get("company") || "").toString().trim() || null;
+  const reportYear = parseInt(form.get("report_year"), 10) || null;
+  const designer = (form.get("designer") || "").toString().trim() || null;
+  const industry = (form.get("industry") || "").toString().trim() || null;
 
   if (!file || typeof file === "string") return json({ error: "no_image" }, 400, env, request);
 
@@ -96,14 +106,14 @@ async function addItem(request, env) {
 
   const id = genId();
   const ext = (file.type && file.type.includes("png")) ? "png" : "jpg";
-  const key = `items/${id}.${ext}`;
+  const key = `${collection === "annual-report" ? "annual" : "items"}/${id}.${ext}`;
   const bytes = new Uint8Array(await file.arrayBuffer());
   await env.BUCKET.put(key, bytes, { httpMetadata: { contentType: file.type || "image/jpeg" } });
 
   // Enrich (best-effort — never block a save on the model).
   let ai = { description: "", tags: [], style: styleIn || null, title: titleIn || null, themes: themesIn };
   try {
-    const enriched = await enrich(probeB64 ? String(probeB64) : bytesToDataUri(bytes, file.type), env);
+    const enriched = await enrich(probeB64 ? String(probeB64) : bytesToDataUri(bytes, file.type), env, collection);
     ai = {
       description: enriched.description || "",
       tags: Array.isArray(enriched.tags) ? enriched.tags.slice(0, 12) : [],
@@ -120,17 +130,19 @@ async function addItem(request, env) {
   const now = Date.now();
   const host = hostOf(sourceUrl);
   await env.DB.prepare(
-    `INSERT INTO items (id,title,description,source_url,source_host,image_key,width,height,tags,themes,palette,style,status,created_at)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'published',?)`
+    `INSERT INTO items (id,title,description,source_url,source_host,image_key,width,height,tags,themes,palette,style,status,created_at,collection,company,report_year,designer,industry)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'published',?,?,?,?,?,?)`
   ).bind(
     id, ai.title, ai.description, sourceUrl || null, host, key, width, height,
-    JSON.stringify(ai.tags), JSON.stringify(ai.themes || []), JSON.stringify(palette), ai.style, now
+    JSON.stringify(ai.tags), JSON.stringify(ai.themes || []), JSON.stringify(palette), ai.style, now,
+    collection, company, reportYear, designer, industry
   ).run();
 
   return json({ ok: true, item: rowToItem({
     id, title: ai.title, description: ai.description, source_url: sourceUrl, source_host: host,
     image_key: key, width, height, tags: JSON.stringify(ai.tags), themes: JSON.stringify(ai.themes || []),
     palette: JSON.stringify(palette), style: ai.style, created_at: now,
+    collection, company, report_year: reportYear, designer, industry,
   }, env), enrich_error: ai.enrich_error || null, enrich_model: ai.model || null }, 200, env, request);
 }
 
@@ -138,12 +150,21 @@ async function feed(url, env, request) {
   const limit = clampInt(url.searchParams.get("limit"), 24, 1, 60);
   const style = (url.searchParams.get("style") || "").trim();
   const theme = (url.searchParams.get("theme") || "").trim();
+  // Collection scope: defaults to the design gallery so annual reports never leak in.
+  const collection = (url.searchParams.get("collection") || "design").trim();
+  const year = parseInt(url.searchParams.get("year"), 10) || null;
+  const industry = (url.searchParams.get("industry") || "").trim();
+  const designer = (url.searchParams.get("designer") || "").trim();
   const cursor = parseInt(url.searchParams.get("cursor"), 10) || null; // created_at of last seen
 
   const where = ["status = 'published'", "owner_id IS NULL"]; // public feed = curated only
   const binds = [];
+  where.push("collection = ?"); binds.push(collection);
   if (style) { where.push("style = ?"); binds.push(style); }
   if (theme) { where.push("themes LIKE ?"); binds.push(`%"${theme}"%`); }
+  if (year) { where.push("report_year = ?"); binds.push(year); }
+  if (industry) { where.push("industry = ?"); binds.push(industry); }
+  if (designer) { where.push("designer = ?"); binds.push(designer); }
   if (cursor) { where.push("created_at < ?"); binds.push(cursor); }
 
   const rows = await env.DB.prepare(
@@ -158,12 +179,13 @@ async function feed(url, env, request) {
 async function search(url, env, request) {
   const q = (url.searchParams.get("q") || "").trim();
   const limit = clampInt(url.searchParams.get("limit"), 40, 1, 60);
+  const collection = (url.searchParams.get("collection") || "design").trim();
   if (!q) return json({ items: [] }, 200, env, request);
   const like = `%${q}%`;
   const rows = await env.DB.prepare(
-    `SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND (title LIKE ? OR description LIKE ? OR tags LIKE ?)
+    `SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection = ? AND (title LIKE ? OR description LIKE ? OR tags LIKE ? OR company LIKE ?)
      ORDER BY created_at DESC LIMIT ?`
-  ).bind(like, like, like, limit).all();
+  ).bind(collection, like, like, like, like, limit).all();
   return json({ items: (rows.results || []).map((r) => rowToItem(r, env)) }, 200, env, request);
 }
 
@@ -177,6 +199,107 @@ async function removeItem(id, request, env) {
   if (!isAdmin(request, env)) return json({ error: "unauthorized" }, 401, env, request);
   await env.DB.prepare(`UPDATE items SET status='removed' WHERE id = ?`).bind(id).run();
   return json({ ok: true }, 200, env, request);
+}
+
+// ---------------------------------------------------------------------------
+// Annual Reports — per-item permalink pages (server-rendered, schema.org) + sitemap.
+// These give AI assistants and Google a citable URL per report (the GEO surface).
+// ---------------------------------------------------------------------------
+
+function slugify(s) {
+  return (s || "").toString().toLowerCase()
+    .replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "report";
+}
+function escHtml(s) {
+  return (s == null ? "" : String(s)).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+// Canonical path for an annual-report item: /annual-reports/<company>-<year>-<id>
+function annualItemPath(item, base) {
+  const yr = item.report_year ? `-${item.report_year}` : "";
+  return `${base}/annual-reports/${slugify(item.company || item.title)}${yr}-${item.id}`;
+}
+const GTAG = `<script async src="https://www.googletagmanager.com/gtag/js?id=GT-5M8SNVPM"></script>`
+  + `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','GT-5M8SNVPM');</script>`;
+
+async function annualItemPage(rest, env, base) {
+  // The 12-hex item id is the last hyphen-separated token; everything before it is a cosmetic slug.
+  const m = (rest || "").match(/([0-9a-f]{12})$/);
+  if (!m) return new Response("not found", { status: 404 });
+  const row = await env.DB.prepare(`SELECT * FROM items WHERE id=? AND status='published' AND collection='annual-report'`).bind(m[1]).first();
+  if (!row) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
+  const it = rowToItem(row, env);
+  const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
+  const canonical = site + annualItemPath(it, base);
+  const imgAbs = site + base + it.image;
+  const name = `${it.company || it.title || "Annual report"}${it.report_year ? " Annual Report " + it.report_year : ""}`;
+  const facts = [
+    it.company ? `Company: ${it.company}` : null,
+    it.report_year ? `Year: ${it.report_year}` : null,
+    it.designer ? `Designer / agency: ${it.designer}` : null,
+    it.industry ? `Industry: ${it.industry}` : null,
+    it.source_host ? `Source archive: ${it.source_host}` : null,
+  ].filter(Boolean);
+  const jsonld = {
+    "@context": "https://schema.org", "@type": "VisualArtwork",
+    name, artform: "Annual report cover", url: canonical, image: imgAbs,
+    creator: it.designer ? { "@type": "Person", name: it.designer } : (it.company ? { "@type": "Organization", name: it.company } : undefined),
+    about: it.industry || undefined,
+    dateCreated: it.report_year ? String(it.report_year) : undefined,
+    description: it.description || undefined,
+    isBasedOn: it.source_link || undefined, sameAs: it.source_link || undefined,
+    isPartOf: { "@type": "Collection", name: "Annual Report Archive", url: `${site}${base}/annual-reports` },
+    publisher: { "@type": "Organization", name: "Made Good Designs", url: site },
+  };
+  const chips = [it.industry, ...(it.themes || [])].filter(Boolean).map((t) => `<span class="chip">${escHtml(t)}</span>`).join("");
+  const body = `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+${GTAG}
+<title>${escHtml(name)} — Made Good Designs</title>
+<meta name="description" content="${escHtml(it.description || name)}"/>
+<link rel="canonical" href="${escHtml(canonical)}"/>
+<meta property="og:type" content="article"/><meta property="og:title" content="${escHtml(name)}"/>
+<meta property="og:image" content="${escHtml(imgAbs)}"/><meta property="og:url" content="${escHtml(canonical)}"/>
+<script type="application/ld+json">${JSON.stringify(jsonld)}</script>
+<style>
+:root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#0f0f0f;--surface:#171717;--border:#262626;--text:#fafafa;--muted:#a3a3a3}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+a{color:inherit}.wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 4rem}
+nav.crumb{font-size:.82rem;color:var(--muted);margin:.25rem 0 1rem}nav.crumb a{text-decoration:none}
+.detail{display:grid;grid-template-columns:minmax(0,320px) 1fr;gap:1.5rem}
+@media(max-width:640px){.detail{grid-template-columns:1fr}}
+.detail img{width:100%;height:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+h1{font-size:1.35rem;margin:.1rem 0 .5rem;letter-spacing:-.01em}
+.desc{color:var(--text);font-size:.98rem;line-height:1.5;margin:.4rem 0 1rem}
+ul.facts{list-style:none;padding:0;margin:0 0 1.1rem;color:var(--muted);font-size:.9rem;line-height:1.7}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.2rem 0 1.1rem}
+.chip{font-size:.72rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.1rem .55rem}
+.cta{display:inline-block;font-size:.9rem;font-weight:600;text-decoration:none;border:1px solid var(--text);border-radius:8px;padding:.5rem .9rem}
+footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;line-height:1.5;max-width:70ch}
+</style></head><body><div class="wrap">
+<nav class="crumb"><a href="${escHtml(base)}/annual-reports">Annual Report Archive</a> › ${escHtml(name)}</nav>
+<div class="detail">
+  <div><img src="${escHtml(base + it.image)}" alt="${escHtml(name)} cover"/></div>
+  <div>
+    <h1>${escHtml(name)}</h1>
+    ${it.description ? `<p class="desc">${escHtml(it.description)}</p>` : ""}
+    <ul class="facts">${facts.map((f) => `<li>${escHtml(f)}</li>`).join("")}</ul>
+    ${chips ? `<div class="chips">${chips}</div>` : ""}
+    ${it.source_link ? `<a class="cta" href="${escHtml(it.source_link)}" target="_blank" rel="noopener nofollow">View the full report at ${escHtml(it.source_host || "source")} →</a>` : ""}
+  </div>
+</div>
+<footer class="rights">Cover thumbnail shown for reference and commentary; the full report is held by its source archive (linked above). We claim no rights over the reproduced work — rights holders may request removal via <a href="mailto:hello@freelanceseo.sg">hello@freelanceseo.sg</a>.</footer>
+</div></body></html>`;
+  return new Response(body, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
+}
+
+async function annualSitemap(env, base) {
+  const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
+  const rows = await env.DB.prepare(`SELECT id,company,report_year,title FROM items WHERE status='published' AND collection='annual-report' ORDER BY created_at DESC`).all();
+  const urls = [`${site}${base}/annual-reports`].concat((rows.results || []).map((r) => site + annualItemPath(rowToItem(r, env), base)));
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
+    + urls.map((u) => `  <url><loc>${escHtml(u)}</loc></url>`).join("\n") + `\n</urlset>\n`;
+  return new Response(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
 }
 
 async function serveImage(key, env) {
@@ -414,6 +537,20 @@ const MCP_TOOLS = [
       required: ["theme"],
     },
   },
+  {
+    name: "search_annual_reports",
+    description: "Search Made Good Designs' curated archive of VINTAGE CORPORATE ANNUAL REPORT cover designs (the 1950s–80s golden age of corporate design — Paul Rand, Chermayeff & Geismar, transit/utility authorities, etc.). Each result gives the company, year, designer/agency, industry, a design description, and a link to the full report in its source archive. Use for questions about annual-report design history, corporate identity, and mid-century graphic design.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "Free-text search over company, title, description and tags, e.g. 'transit authority', 'modernist grid', 'Paul Rand'." },
+        year: { type: "integer", description: "Optional exact report/fiscal year filter, e.g. 1972." },
+        industry: { type: "string", description: "Optional industry/sector filter, e.g. 'transit', 'oil', 'retail'." },
+        limit: { type: "integer", description: "Max results (1-20, default 8).", minimum: 1, maximum: 20 },
+      },
+      required: ["query"],
+    },
+  },
 ];
 
 function mcpCors() {
@@ -475,15 +612,15 @@ async function mcpCallTool(params, env) {
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
     const limit = clampInt(a.limit, 8, 1, 20);
-    const binds = ["published"];
-    let where = "status=? AND owner_id IS NULL";
+    const binds = ["published", "design"];
+    let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.theme) { where += " AND themes LIKE ?"; binds.push(`%"${a.theme}"%`); }
     if (q) { const like = `%${q}%`; where += " AND (title LIKE ? OR description LIKE ? OR tags LIKE ?)"; binds.push(like, like, like); }
     const rows = await env.DB.prepare(`SELECT * FROM items WHERE ${where} ORDER BY created_at DESC LIMIT ?`).bind(...binds, limit).all();
     return mcpItems(rows.results || [], `${(rows.results||[]).length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}`);
   }
   if (name === "list_inspiration_themes") {
-    const rows = await env.DB.prepare(`SELECT themes FROM items WHERE status='published' AND owner_id IS NULL`).all();
+    const rows = await env.DB.prepare(`SELECT themes FROM items WHERE status='published' AND owner_id IS NULL AND collection='design'`).all();
     const counts = {};
     (rows.results || []).forEach((r) => safeArr(r.themes).forEach((t) => { counts[t] = (counts[t] || 0) + 1; }));
     const lines = MCP_THEMES.map((t) => `- ${t}: ${counts[t] || 0} items  (${MCP_SITE}/?theme=${t})`);
@@ -492,8 +629,19 @@ async function mcpCallTool(params, env) {
   if (name === "browse_inspiration_by_theme") {
     const theme = (a.theme || "").toString().trim();
     const limit = clampInt(a.limit, 10, 1, 20);
-    const rows = await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND themes LIKE ? ORDER BY created_at DESC LIMIT ?`).bind(`%"${theme}"%`, limit).all();
+    const rows = await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='design' AND themes LIKE ? ORDER BY created_at DESC LIMIT ?`).bind(`%"${theme}"%`, limit).all();
     return mcpItems(rows.results || [], `${(rows.results||[]).length} item(s) in theme "${theme}"`);
+  }
+  if (name === "search_annual_reports") {
+    const q = (a.query || "").toString().trim();
+    const limit = clampInt(a.limit, 8, 1, 20);
+    const binds = ["published", "annual-report"];
+    let where = "status=? AND owner_id IS NULL AND collection=?";
+    if (a.year) { const y = parseInt(a.year, 10); if (y) { where += " AND report_year = ?"; binds.push(y); } }
+    if (a.industry) { where += " AND industry = ?"; binds.push(a.industry.toString().trim()); }
+    if (q) { const like = `%${q}%`; where += " AND (company LIKE ? OR title LIKE ? OR description LIKE ? OR tags LIKE ?)"; binds.push(like, like, like, like); }
+    const rows = await env.DB.prepare(`SELECT * FROM items WHERE ${where} ORDER BY report_year DESC, created_at DESC LIMIT ?`).bind(...binds, limit).all();
+    return mcpItems(rows.results || [], `${(rows.results||[]).length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}`);
   }
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
 }
@@ -502,13 +650,19 @@ function mcpItems(rows, header) {
   if (!rows.length) return { content: [{ type: "text", text: header + ". No matches — try a broader query or a different theme. Browse all at " + MCP_SITE + "/" }] };
   const blocks = rows.map((r) => {
     const it = rowToItem(r, null);
+    const isReport = it.collection === "annual-report";
     return [
-      `• ${it.title || "Untitled"}`,
+      `• ${it.title || it.company || "Untitled"}`,
+      isReport && it.company ? `  company: ${it.company}${it.report_year ? " ("+it.report_year+")" : ""}` : null,
+      isReport && it.designer ? `  designer/agency: ${it.designer}` : null,
+      isReport && it.industry ? `  industry: ${it.industry}` : null,
       it.description ? `  ${it.description}` : null,
       it.tags.length ? `  tags: ${it.tags.join(", ")}` : null,
       it.themes.length ? `  themes: ${it.themes.join(", ")}` : null,
       it.palette.length ? `  palette: ${it.palette.join(" ")}` : null,
       it.source_host ? `  source: ${it.source_host}` : null,
+      isReport ? `  page (cite this): ${MCP_SITE}/annual-reports/${slugify(it.company || it.title)}${it.report_year ? "-" + it.report_year : ""}-${it.id}` : null,
+      isReport && it.source_link ? `  full report: ${it.source_link}` : null,
       `  image: ${MCP_SITE}${it.image}`,
     ].filter(Boolean).join("\n");
   });
@@ -530,10 +684,24 @@ const ENRICH_PROMPT =
   `"themes": array of 1-3 curated vibe slugs chosen ONLY from: ` +
   `retro, vintage, minimal, maximal, editorial, brutalist, y2k, monochrome, playful, luxury, hand-drawn, geometric, grunge, corporate.`;
 
+// Annual-report covers: extract DESIGN attributes only. Company/year/designer come from
+// curated metadata (a vision model can't read "designed by Chermayeff & Geismar" reliably).
+const ANNUAL_PROMPT =
+  `You are tagging the COVER of a vintage corporate ANNUAL REPORT for a graphic-design archive. ` +
+  `Focus only on the visual design. Respond with ONLY a compact JSON object, no prose, no markdown fences, with keys:\n` +
+  `"description": one factual sentence describing the cover design (typography, layout, imagery, colour, era feel),\n` +
+  `"tags": array of 5-8 lowercase design tags (e.g. "modernist","serif","grid","photography","duotone","swiss","corporate"),\n` +
+  `"style": a single kebab-case design slug like "modernist-cover","swiss-grid","photographic-cover","type-driven",\n` +
+  `"themes": array of 1-3 curated vibe slugs chosen ONLY from: ` +
+  `retro, vintage, minimal, maximal, editorial, brutalist, y2k, monochrome, playful, luxury, hand-drawn, geometric, grunge, corporate.`;
+
+function promptFor(collection) { return collection === "annual-report" ? ANNUAL_PROMPT : ENRICH_PROMPT; }
+
 // Try the primary vision model, fall back to the secondary on error / 429 / empty result.
 // Each model can have its OWN API key (NVIDIA gives a separate key per model page).
-async function enrich(imageDataUri, env) {
+async function enrich(imageDataUri, env, collection) {
   const NV = env.NVIDIA_BASE_URL;
+  const prompt = promptFor(collection);
   const attempts = [
     { model: env.NVIDIA_MODEL, key: env.NVIDIA_API_KEY, base: NV },
     { model: env.NVIDIA_MODEL_FALLBACK, key: env.NVIDIA_API_KEY_FALLBACK || env.NVIDIA_API_KEY, base: NV },
@@ -544,7 +712,7 @@ async function enrich(imageDataUri, env) {
   let lastErr;
   for (const a of attempts) {
     try {
-      const r = await callModel(a.model, a.key, a.base, imageDataUri);
+      const r = await callModel(a.model, a.key, a.base, imageDataUri, prompt);
       if (r && (r.description || (Array.isArray(r.tags) && r.tags.length))) { r._model = a.model; return r; }
       lastErr = new Error(`empty result from ${a.model}`);
     } catch (e) {
@@ -554,13 +722,13 @@ async function enrich(imageDataUri, env) {
   throw lastErr || new Error("enrichment failed");
 }
 
-async function callModel(model, apiKey, baseUrl, imageDataUri) {
+async function callModel(model, apiKey, baseUrl, imageDataUri, prompt) {
   const body = {
     model,
     messages: [{
       role: "user",
       content: [
-        { type: "text", text: ENRICH_PROMPT },
+        { type: "text", text: prompt || ENRICH_PROMPT },
         { type: "image_url", image_url: { url: imageDataUri } },
       ],
     }],
@@ -590,11 +758,12 @@ async function callModel(model, apiKey, baseUrl, imageDataUri) {
 // ---------------------------------------------------------------------------
 
 function rowToItem(r, env) {
-  return {
+  const collection = r.collection || "design";
+  const item = {
     id: r.id,
     title: r.title || "",
     description: r.description || "",
-    source_host: r.source_host || "",   // NOTE: source shown as plain text; source_url is NOT exposed to the public API
+    source_host: r.source_host || "",   // NOTE: for the design gallery, source is shown as PLAIN TEXT; source_url is NOT exposed
     image: `/img/${r.image_key}`,
     width: r.width || null,
     height: r.height || null,
@@ -602,8 +771,19 @@ function rowToItem(r, env) {
     themes: safeArr(r.themes),
     palette: safeArr(r.palette),
     style: r.style || null,
+    collection,
     created_at: r.created_at,
   };
+  // Annual-report collection: expose the outbound source link + curated facets.
+  // (Deliberately inverts the design gallery's no-link rule — here we point to the source archive.)
+  if (collection === "annual-report") {
+    item.source_link = r.source_url || null;
+    item.company = r.company || null;
+    item.report_year = r.report_year || null;
+    item.designer = r.designer || null;
+    item.industry = r.industry || null;
+  }
+  return item;
 }
 
 function safeArr(s) { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } }

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Google tag (gtag.js) — same tag as madegooddesigns.com, tracks this sub-page from day one -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GT-5M8SNVPM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','GT-5M8SNVPM');</script>
+<title>Annual Report Archive — Made Good Designs</title>
+<meta name="description" content="A curated archive of vintage corporate annual-report cover designs — the golden age of corporate graphic design. Browse by company, year, designer and industry." />
+<style>
+  :root{
+    --bg:#fafafa; --surface:#fff; --border:#e5e5e5; --border-strong:#d4d4d4;
+    --text:#171717; --muted:#737373; --accent:#171717; --radius:12px; --radius-sm:7px;
+    --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0f0f0f; --surface:#171717; --border:#262626; --border-strong:#333;
+      --text:#fafafa; --muted:#a3a3a3; --accent:#fafafa; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1240px;margin:0 auto;padding:1.25rem 1rem 5rem}
+  header.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem 1rem;margin:.25rem 0 1rem}
+  header.top h1{font-size:1.35rem;margin:0;letter-spacing:-.01em}
+  header.top .tag{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.15rem .55rem}
+  header.top .back{margin-left:auto;font-size:.85rem;color:var(--muted);text-decoration:none}
+  header.top .back:hover{color:var(--text)}
+  p.lede{margin:.1rem 0 1.1rem;color:var(--muted);font-size:.92rem;max-width:60ch}
+  .controls{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.25rem}
+  .controls input,.controls select{font:inherit;font-size:.88rem;padding:.5rem .7rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);color:var(--text)}
+  .controls input[type=search]{min-width:220px;flex:1 1 240px}
+  .controls button{font:inherit;font-size:.85rem;padding:.5rem .9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);cursor:pointer}
+  .controls button:hover{border-color:var(--text)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+  .card .cover{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--bg)}
+  .card .body{padding:.7rem .75rem .8rem;display:flex;flex-direction:column;gap:.25rem;flex:1}
+  .card .co{font-weight:650;font-size:.92rem;line-height:1.25}
+  .card .yr{color:var(--muted);font-size:.82rem}
+  .card .meta{color:var(--muted);font-size:.78rem;line-height:1.35}
+  .card .chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.15rem}
+  .card .chip{font-size:.68rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.05rem .45rem}
+  .card .full{margin-top:auto;padding-top:.5rem;font-size:.82rem;font-weight:600;text-decoration:none;color:var(--text)}
+  .card .full:hover{text-decoration:underline}
+  .empty,.end{text-align:center;color:var(--muted);font-size:.9rem;padding:2rem 1rem}
+  #sentinel{height:1px}
+  footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;line-height:1.5;max-width:70ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Annual Report Archive</h1>
+    <span class="tag">Made Good Designs</span>
+    <a class="back" href="./">← Design inspiration</a>
+  </header>
+  <p class="lede">A curated archive of vintage corporate annual-report cover designs — the golden age of corporate graphic design. Browse by company, year, designer, and industry. Full reports open in their source archive.</p>
+
+  <div class="controls">
+    <input id="q" type="search" placeholder="Search company, designer, style…" />
+    <input id="year" type="number" inputmode="numeric" placeholder="Year (e.g. 1972)" min="1900" max="2030" />
+    <input id="industry" type="text" placeholder="Industry (e.g. transit)" />
+    <button id="apply">Filter</button>
+    <button id="clear">Clear</button>
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <div id="status" class="empty" style="display:none"></div>
+  <div id="sentinel"></div>
+
+  <footer class="rights">
+    Cover thumbnails are shown for reference and commentary; each links to the full report held by its source archive (Internet Archive, university libraries, and public/investor sources). We claim no rights over the reproduced works. Rights holders may request removal — contact <a href="mailto:hello@freelanceseo.sg">hello@freelanceseo.sg</a>.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var API = (window.MGD_API_BASE || "").replace(/\/$/, "");
+  var grid = document.getElementById("grid");
+  var statusEl = document.getElementById("status");
+  var qEl = document.getElementById("q");
+  var yearEl = document.getElementById("year");
+  var industryEl = document.getElementById("industry");
+
+  var cursor = null, loading = false, done = false, mode = "feed", query = "";
+
+  function esc(s){ return (s==null?"":String(s)).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+  function slugify(s){ return (s||"").toString().toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||"report"; }
+  function pageUrl(it){ return API + "/annual-reports/" + slugify(it.company||it.title) + (it.report_year?"-"+it.report_year:"") + "-" + it.id; }
+
+  function card(it){
+    var img = API + it.image;
+    var href = pageUrl(it);
+    var co = esc(it.company || it.title || "Untitled");
+    var yr = it.report_year ? '<span class="yr">'+esc(it.report_year)+'</span>' : "";
+    var metaBits = [];
+    if (it.designer) metaBits.push(esc(it.designer));
+    if (it.source_host) metaBits.push(esc(it.source_host));
+    var chips = "";
+    if (it.industry) chips += '<span class="chip">'+esc(it.industry)+'</span>';
+    (it.themes||[]).slice(0,2).forEach(function(t){ chips += '<span class="chip">'+esc(t)+'</span>'; });
+    var full = it.source_link ? '<a class="full" href="'+esc(it.source_link)+'" target="_blank" rel="noopener nofollow">View full report →</a>' : "";
+    return '<div class="card">'
+      + '<a href="'+esc(href)+'"><img class="cover" loading="lazy" src="'+esc(img)+'" alt="'+co+(it.report_year?" "+esc(it.report_year):"")+' annual report cover" /></a>'
+      + '<div class="body">'
+      +   '<div class="co"><a href="'+esc(href)+'" style="text-decoration:none">'+co+' '+yr+'</a></div>'
+      +   (metaBits.length?'<div class="meta">'+metaBits.join(" · ")+'</div>':'')
+      +   (it.description?'<div class="meta">'+esc(it.description)+'</div>':'')
+      +   (chips?'<div class="chips">'+chips+'</div>':'')
+      +   full
+      + '</div></div>';
+  }
+
+  function render(items, append){
+    var htmlStr = items.map(card).join("");
+    if (append) grid.insertAdjacentHTML("beforeend", htmlStr);
+    else grid.innerHTML = htmlStr;
+  }
+
+  function setStatus(msg){ if(!msg){statusEl.style.display="none";return;} statusEl.textContent=msg; statusEl.style.display="block"; }
+
+  function load(reset){
+    if (loading || (done && !reset)) return;
+    loading = true;
+    if (reset){ cursor=null; done=false; grid.innerHTML=""; }
+    var url;
+    if (mode === "search"){
+      url = API + "/api/search?collection=annual-report&limit=60&q=" + encodeURIComponent(query);
+    } else {
+      var p = "collection=annual-report&limit=24";
+      if (yearEl.value) p += "&year=" + encodeURIComponent(yearEl.value);
+      if (industryEl.value.trim()) p += "&industry=" + encodeURIComponent(industryEl.value.trim());
+      if (cursor) p += "&cursor=" + cursor;
+      url = API + "/api/feed?" + p;
+    }
+    fetch(url).then(function(r){return r.json();}).then(function(d){
+      var items = d.items || [];
+      render(items, mode==="feed" && cursor);
+      if (mode === "search"){ done = true; }
+      else { cursor = d.nextCursor; if (!cursor) done = true; }
+      loading = false;
+      if (!grid.children.length) setStatus("No reports match. Try a broader search."); else if (done) setStatus(""); else setStatus("");
+    }).catch(function(){ loading=false; setStatus("Couldn’t load. Try again."); });
+  }
+
+  function apply(){
+    query = qEl.value.trim();
+    mode = query ? "search" : "feed";
+    load(true);
+  }
+  document.getElementById("apply").addEventListener("click", apply);
+  document.getElementById("clear").addEventListener("click", function(){ qEl.value=""; yearEl.value=""; industryEl.value=""; query=""; mode="feed"; load(true); });
+  qEl.addEventListener("keydown", function(e){ if(e.key==="Enter") apply(); });
+
+  // Infinite scroll (feed mode only)
+  var sentinel = document.getElementById("sentinel");
+  if ("IntersectionObserver" in window){
+    new IntersectionObserver(function(entries){
+      if (entries[0].isIntersecting && mode==="feed") load(false);
+    }, { rootMargin: "600px" }).observe(sentinel);
+  }
+
+  load(true);
+})();
+</script>
+</body>
+</html>

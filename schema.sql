@@ -17,11 +17,17 @@ CREATE TABLE IF NOT EXISTS items (
   style        TEXT,                      -- AI style slug, e.g. "serif-branding"
   owner_id     TEXT,                      -- NULL = curated/public; set = user-added (private to their boards)
   status       TEXT NOT NULL DEFAULT 'published',
-  created_at   INTEGER NOT NULL
+  created_at   INTEGER NOT NULL,
+  collection   TEXT DEFAULT 'design',     -- 'design' (default gallery) | 'annual-report'
+  company      TEXT,                      -- annual-report only: issuing company/entity
+  report_year  INTEGER,                   -- annual-report only: fiscal/report year
+  designer     TEXT,                      -- annual-report only: designer/agency (curated, not AI)
+  industry     TEXT                       -- annual-report only: industry/sector
 );
 CREATE INDEX IF NOT EXISTS idx_items_created ON items(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_items_style   ON items(style, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_items_status  ON items(status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_items_collection ON items(collection, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS users (
   id                TEXT PRIMARY KEY,
