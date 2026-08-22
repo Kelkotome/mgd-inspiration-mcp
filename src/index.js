@@ -248,6 +248,46 @@ function prettySource(host) {
   };
   return map[h] || host || "source";
 }
+
+// Shared sign-in + save-to-board widget for the server-rendered annual pages
+// (detail + facet). Fills #insp-acct, adds a board-picker popover, and wires any
+// .card__save[data-id] button via delegation. Mirrors the annual gallery's save UI.
+function saveWidget(base) {
+  return `<style>
+.mgd-acct{position:absolute;top:1rem;right:1rem;display:flex;gap:.4rem;align-items:center;z-index:5}
+.mgd-btn{font:inherit;font-size:.8rem;font-weight:500;padding:.35rem .7rem;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;text-decoration:none}
+.mgd-btn--dark{background:var(--text);color:var(--bg);border-color:var(--text)}
+.mgd-acct .who{font-size:.78rem;color:var(--muted)}
+.card__save{position:absolute;top:.5rem;right:.5rem;border:none;background:var(--text);color:var(--bg);cursor:pointer;font-size:.76rem;font-weight:600;line-height:1;display:inline-flex;gap:.3em;padding:.4rem .7rem;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.28);z-index:3}
+.card__save:hover{transform:scale(1.05)}
+.mgd-overlay{position:fixed;inset:0;z-index:10000;display:none}.mgd-overlay.is-open{display:block}
+.mgd-pop{position:fixed;z-index:10001;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.18);width:260px;padding:.7rem;display:none}
+.mgd-pop.is-open{display:block}.mgd-pop h4{margin:.1rem 0 .5rem;font-size:.85rem}
+.mgd-pop__list{max-height:200px;overflow:auto;display:flex;flex-direction:column;gap:.2rem;margin-bottom:.5rem}
+.mgd-pop__b{display:flex;justify-content:space-between;gap:.5rem;padding:.4rem .5rem;border-radius:6px;cursor:pointer;font-size:.85rem}
+.mgd-pop__b:hover{background:rgba(128,128,128,.12)}
+.mgd-pop__new{display:flex;gap:.35rem}.mgd-pop__new input{flex:1;font:inherit;font-size:.85rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text)}
+.mgd-toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);border-radius:999px;padding:.6rem 1rem;font-size:.85rem;z-index:10002}
+</style>
+<div class="mgd-acct" id="insp-acct"></div>
+<div class="mgd-overlay" id="insp-overlay"></div>
+<div class="mgd-pop" id="insp-pop"><h4>Save to board</h4><div class="mgd-pop__list" id="pop-list"></div><form class="mgd-pop__new" id="pop-newform"><input id="pop-new" placeholder="New board name"/><button class="mgd-btn mgd-btn--dark" type="submit">Add</button></form></div>
+<script>(function(){
+var API=${JSON.stringify(base || "")};var user=null,saveId=null;
+var acct=document.getElementById("insp-acct"),pop=document.getElementById("insp-pop"),ov=document.getElementById("insp-overlay");
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function api(p,o){return fetch(API+p,o||{});}
+function render(){acct.innerHTML=user?'<span class="who">Signed in</span><a class="mgd-btn" href="'+API+'/auth/logout">Log out</a>':'<a class="mgd-btn mgd-btn--dark" href="'+API+'/auth/google/login">Sign in to save</a>';}
+api("/api/me").then(function(r){return r.json();}).then(function(d){user=d.user||null;render();}).catch(function(){render();});
+function openSave(id,x,y){if(!user){if(confirm("Sign in with Google to save to a board?"))location.href=API+"/auth/google/login";return;}saveId=id;pop.style.left=Math.min(x,window.innerWidth-280)+"px";pop.style.top=Math.min(y,window.innerHeight-260)+"px";document.getElementById("pop-list").innerHTML='<div class="who">Loading…</div>';ov.classList.add("is-open");pop.classList.add("is-open");api("/api/boards").then(function(r){return r.json();}).then(function(d){var l=document.getElementById("pop-list");l.innerHTML="";if(!d.boards||!d.boards.length)l.innerHTML='<div class="who">No boards yet — create one below.</div>';(d.boards||[]).forEach(function(b){var row=document.createElement("div");row.className="mgd-pop__b";row.innerHTML='<span>'+esc(b.name)+'</span><span class="who">'+b.count+'</span>';row.addEventListener("click",function(){saveTo(b.id,b.name);});l.appendChild(row);});});}
+function closeSave(){pop.classList.remove("is-open");ov.classList.remove("is-open");}
+function saveTo(bid,name){api("/api/boards/"+bid+"/saves",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({item_id:saveId})}).then(function(r){return r.json();}).then(function(){closeSave();toast("Saved to "+name);});}
+function toast(m){var t=document.createElement("div");t.className="mgd-toast";t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove();},1600);}
+document.getElementById("pop-newform").addEventListener("submit",function(e){e.preventDefault();var n=document.getElementById("pop-new").value.trim();if(!n)return;api("/api/boards",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:n})}).then(function(r){return r.json();}).then(function(d){document.getElementById("pop-new").value="";if(d.board)saveTo(d.board.id,d.board.name);});});
+ov.addEventListener("click",closeSave);document.addEventListener("keydown",function(e){if(e.key==="Escape")closeSave();});
+document.addEventListener("click",function(e){var b=e.target.closest?e.target.closest(".card__save"):null;if(!b)return;e.preventDefault();e.stopPropagation();openSave(b.getAttribute("data-id"),e.clientX,e.clientY);});
+})();</script>`;
+}
 // Canonical path for an annual-report item: /annual-reports/<company>-<year>-<id>
 function annualItemPath(item, base) {
   const yr = item.report_year ? `-${item.report_year}` : "";
@@ -321,7 +361,7 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
 </style></head><body><div class="wrap">
 <nav class="crumb"><a href="${escHtml(base)}/annual-reports">Annual Report Archive</a> › ${escHtml(name)}</nav>
 <div class="detail">
-  <div><img src="${escHtml(base + it.image)}" alt="${escHtml(name)} cover"/></div>
+  <div style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥ Save</button><img src="${escHtml(base + it.image)}" alt="${escHtml(name)} cover"/></div>
   <div>
     <h1>${escHtml(name)}</h1>
     ${it.description ? `<p class="desc">${escHtml(it.description)}</p>` : ""}
@@ -331,7 +371,7 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
 </div>
 ${arId ? `<section class="fullreport"><h2>Full report</h2><iframe src="https://archive.org/embed/${escHtml(arId)}" title="${escHtml(name)} — full report" loading="lazy" allowfullscreen></iframe><p class="fr-note">Full report embedded from the Internet Archive.</p></section>` : ""}
 <footer class="rights">Cover thumbnail shown for reference and commentary${it.source ? `; source: ${escHtml(it.source)}` : ""}. We claim no rights over the reproduced work — rights holders may request removal via <a href="mailto:hello@madegooddesigns.com">hello@madegooddesigns.com</a>.</footer>
-</div></body></html>`;
+</div>${saveWidget(base)}</body></html>`;
   return new Response(body, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
 }
 
@@ -415,7 +455,7 @@ async function annualFacetPage(kind, slug, env, base) {
     const img = base + it.image;
     const co = escHtml(`${it.company || it.title || ""}${it.report_year ? " " + it.report_year : ""}`);
     const meta = [kind !== "designer" ? it.designer : null, kind !== "industry" ? it.industry : null].filter(Boolean).map(escHtml).join(" · ");
-    return `<a class="card" href="${escHtml(href)}"><img loading="lazy" src="${escHtml(img)}" alt="${co} cover"/><div class="b"><div class="co">${co}</div>${meta ? `<div class="m">${meta}</div>` : ""}</div></a>`;
+    return `<div class="card" style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥</button><a href="${escHtml(href)}" style="text-decoration:none;display:block"><img loading="lazy" src="${escHtml(img)}" alt="${co} cover"/><div class="b"><div class="co">${co}</div>${meta ? `<div class="m">${meta}</div>` : ""}</div></a></div>`;
   }).join("");
   const jsonld = { "@context": "https://schema.org", "@type": "CollectionPage", name: heading, url: canonical, isPartOf: { "@type": "Collection", name: "Annual Report Archive", url: `${site}${base}/annual-reports` }, mainEntity: { "@type": "ItemList", numberOfItems: items.length } };
   const body = `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>${GTAG}
@@ -429,7 +469,7 @@ ${ANNUAL_PAGE_CSS}</head><body><div class="wrap">
 <p class="lead">${items.length} ${items.length === 1 ? "report" : "reports"} in the archive.</p>
 <div class="grid">${cards}</div>
 <footer class="rights">Cover thumbnails shown for reference and commentary; full reports are held by their original sources. Rights holders may request removal via <a href="mailto:hello@madegooddesigns.com">hello@madegooddesigns.com</a>.</footer>
-</div></body></html>`;
+</div>${saveWidget(base)}</body></html>`;
   return html(body);
 }
 
