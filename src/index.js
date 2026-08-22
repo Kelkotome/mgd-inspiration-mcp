@@ -67,6 +67,7 @@ export default {
 
       // ---- Admin ----
       if (path === "/api/admin/export/users.csv" && method === "GET") return exportUsers(request, env);
+      if (path === "/api/admin/reenrich" && method === "POST") return reenrich(request, env);
 
       return json({ error: "not_found" }, 404, env, request);
     } catch (err) {
@@ -924,6 +925,37 @@ function isAdmin(request, env) {
   const h = request.headers.get("Authorization") || "";
   const token = h.startsWith("Bearer ") ? h.slice(7) : "";
   return !!env.ADMIN_TOKEN && token === env.ADMIN_TOKEN;
+}
+
+// Backfill vision enrichment on an item that was bulk-ingested with skip_enrich
+// (fills description/tags/themes/style from its stored thumbnail). Idempotent: skips
+// items that already have a description. One item per request (enrich is a slow subrequest).
+async function reenrich(request, env) {
+  if (!isAdmin(request, env)) return json({ error: "unauthorized" }, 401, env, request);
+  const body = await request.json().catch(() => ({}));
+  const id = (body && body.id || "").toString();
+  if (!id) return json({ error: "no_id" }, 400, env, request);
+  const row = await env.DB.prepare(
+    "SELECT id, image_key, collection, description FROM items WHERE id=? AND status='published'"
+  ).bind(id).first();
+  if (!row) return json({ error: "not_found" }, 404, env, request);
+  if (row.description && row.description.trim()) return json({ ok: true, skipped: "has_description" }, 200, env, request);
+  const obj = await env.BUCKET.get(row.image_key);
+  if (!obj) return json({ error: "no_image" }, 404, env, request);
+  const bytes = new Uint8Array(await obj.arrayBuffer());
+  let enriched;
+  try {
+    enriched = await enrich(bytesToDataUri(bytes, "image/jpeg"), env, row.collection || "annual-report");
+  } catch (e) {
+    return json({ ok: false, error: "enrich_failed", detail: String(e && e.message || e) }, 200, env, request);
+  }
+  await env.DB.prepare("UPDATE items SET description=?, tags=?, themes=?, style=? WHERE id=?").bind(
+    enriched.description || "",
+    JSON.stringify(Array.isArray(enriched.tags) ? enriched.tags.slice(0, 12) : []),
+    JSON.stringify(Array.isArray(enriched.themes) ? enriched.themes.slice(0, 6) : []),
+    enriched.style || null, id
+  ).run();
+  return json({ ok: true, model: enriched._model || null }, 200, env, request);
 }
 
 function genId() {
