@@ -258,6 +258,10 @@ async function annualItemPage(rest, env, base) {
   const row = await env.DB.prepare(`SELECT * FROM items WHERE id=? AND status='published' AND collection='annual-report'`).bind(m[1]).first();
   if (!row) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
   const it = rowToItem(row, env);
+  // Full report: for archive.org-sourced items, embed the Internet Archive BookReader inline
+  // (viewer stays on our page, no outbound link, nothing rehosted). Other sources hold only a cover.
+  const arId = (row.source_host === "archive.org" && row.source_url)
+    ? ((row.source_url.match(/archive\.org\/(?:details|embed)\/([^/?#]+)/) || [])[1] || null) : null;
   const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
   const canonical = site + annualItemPath(it, base);
   const imgAbs = site + base + it.image;
@@ -305,6 +309,9 @@ ul.facts{list-style:none;padding:0;margin:0 0 1.1rem;color:var(--muted);font-siz
 .chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.2rem 0 1.1rem}
 .chip{font-size:.72rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.1rem .55rem}
 .cta{display:inline-block;font-size:.9rem;font-weight:600;text-decoration:none;border:1px solid var(--text);border-radius:8px;padding:.5rem .9rem}
+.fullreport{margin-top:2rem}.fullreport h2{font-size:1rem;margin:0 0 .6rem}
+.fullreport iframe{width:100%;height:680px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.fullreport .fr-note{color:var(--muted);font-size:.75rem;margin:.5rem 0 0}
 footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;line-height:1.5;max-width:70ch}
 </style></head><body><div class="wrap">
 <nav class="crumb"><a href="${escHtml(base)}/annual-reports">Annual Report Archive</a> › ${escHtml(name)}</nav>
@@ -317,6 +324,7 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
     ${chips ? `<div class="chips">${chips}</div>` : ""}
   </div>
 </div>
+${arId ? `<section class="fullreport"><h2>Full report</h2><iframe src="https://archive.org/embed/${escHtml(arId)}" title="${escHtml(name)} — full report" loading="lazy" allowfullscreen></iframe><p class="fr-note">Full report embedded from the Internet Archive.</p></section>` : ""}
 <footer class="rights">Cover thumbnail shown for reference and commentary${it.source ? `; source: ${escHtml(it.source)}` : ""}. We claim no rights over the reproduced work — rights holders may request removal via <a href="mailto:hello@madegooddesigns.com">hello@madegooddesigns.com</a>.</footer>
 </div></body></html>`;
   return new Response(body, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
