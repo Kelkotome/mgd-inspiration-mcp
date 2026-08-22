@@ -59,6 +59,26 @@
   .empty,.end{text-align:center;color:var(--muted);font-size:.9rem;padding:2rem 1rem}
   #sentinel{height:1px}
   footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;line-height:1.5;max-width:70ch}
+  /* account + save-to-board (ported from the design gallery) */
+  .mgd-btn{font:inherit;font-size:.82rem;font-weight:500;padding:.4rem .75rem;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;text-decoration:none}
+  .mgd-btn--dark{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+  .acct{margin-left:auto;display:flex;align-items:center;gap:.5rem}
+  .acct .who{font-size:.8rem;color:var(--muted)}
+  .card{position:relative}
+  .card__save{position:absolute;top:.5rem;right:.5rem;border:none;background:var(--accent);color:var(--surface);cursor:pointer;font-size:.78rem;font-weight:600;line-height:1;display:inline-flex;align-items:center;gap:.3em;padding:.4rem .7rem;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.28);transition:transform .12s;z-index:2}
+  .card__save:hover{transform:scale(1.06)}
+  .card__save.is-saved{background:#16a34a;color:#fff}
+  .mgd-overlay{position:fixed;inset:0;z-index:10000;display:none}
+  .mgd-overlay.is-open{display:block}
+  .mgd-pop{position:fixed;z-index:10001;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:0 8px 30px rgba(0,0,0,.18);width:260px;padding:.7rem;display:none}
+  .mgd-pop.is-open{display:block}
+  .mgd-pop h4{margin:.1rem 0 .5rem;font-size:.85rem}
+  .mgd-pop__list{max-height:200px;overflow:auto;display:flex;flex-direction:column;gap:.2rem;margin-bottom:.5rem}
+  .mgd-pop__b{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.4rem .5rem;border-radius:6px;cursor:pointer;font-size:.85rem}
+  .mgd-pop__b:hover{background:rgba(128,128,128,.12)}
+  .mgd-pop__new{display:flex;gap:.35rem}
+  .mgd-pop__new input{flex:1;font:inherit;font-size:.85rem;padding:.35rem .5rem;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);color:var(--text)}
+  .mgd-toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--surface);border-radius:999px;padding:.6rem 1rem;font-size:.85rem;z-index:10002;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 </style>
 </head>
 <body>
@@ -68,6 +88,7 @@
     <span class="tag">Made Good Designs</span>
     <a class="back" href="./">← Design inspiration</a>
     <a class="back" href="./annual-reports/index">Browse by designer ›</a>
+    <div class="acct" id="insp-acct"></div>
   </header>
   <p class="lede">A curated reference archive of vintage corporate annual-report cover designs — the golden age of corporate graphic design. Browse by country, decade, designer, company, and industry. Cover thumbnails are shown for reference; sources are credited in plain text.</p>
 
@@ -84,6 +105,13 @@
   <div id="grid" class="grid"></div>
   <div id="status" class="empty" style="display:none"></div>
   <div id="sentinel"></div>
+
+  <div class="mgd-overlay" id="insp-overlay"></div>
+  <div class="mgd-pop" id="insp-pop">
+    <h4>Save to board</h4>
+    <div class="mgd-pop__list" id="pop-list"></div>
+    <form class="mgd-pop__new" id="pop-newform"><input id="pop-new" placeholder="New board name" /><button class="mgd-btn mgd-btn--dark" type="submit">Add</button></form>
+  </div>
 
   <footer class="rights">
     Cover thumbnails are shown for reference and commentary; the full reports are held by their original sources (Internet Archive, university libraries, national archives, and public/investor sources), noted in plain text on each item. We claim no rights over the reproduced works. Rights holders may request removal — contact <a href="mailto:hello@madegooddesigns.com">hello@madegooddesigns.com</a>.
@@ -122,6 +150,7 @@
     var pal = "";
     (it.palette||[]).slice(0,6).forEach(function(h){ if(/^#[0-9a-fA-F]{6}$/.test(h)) pal += '<span class="sw" style="background:'+h+'"></span>'; });
     return '<div class="card">'
+      + '<button class="card__save" data-id="'+esc(it.id)+'" title="Save to a board">♥ Save</button>'
       + '<a href="'+esc(href)+'"><img class="cover" loading="lazy" src="'+esc(img)+'" alt="'+co+(it.report_year?" "+esc(it.report_year):"")+' annual report cover" /></a>'
       + '<div class="body">'
       +   '<div class="co"><a href="'+esc(href)+'" style="text-decoration:none">'+co+' '+yr+'</a></div>'
@@ -222,6 +251,42 @@
     })(null);
   }
   loadAll();
+
+  // ---- Account + save-to-board (signed-in users can pin any annual report) ----
+  var user = null, saveItemId = null;
+  var acctEl = document.getElementById("insp-acct");
+  var pop = document.getElementById("insp-pop"), overlay = document.getElementById("insp-overlay");
+  function api(path, opts){ return fetch(API+path, opts||{}); }
+  function fetchMe(){ api("/api/me").then(function(r){return r.json();}).then(function(d){ user=d.user||null; renderAcct(); }).catch(function(){}); }
+  function renderAcct(){
+    if(!acctEl) return;
+    if(user){ acctEl.innerHTML='<span class="who">Signed in</span><a class="mgd-btn" href="./">My boards ↗</a><a class="mgd-btn" href="'+API+'/auth/logout">Log out</a>'; }
+    else { acctEl.innerHTML='<a class="mgd-btn mgd-btn--dark" href="'+API+'/auth/google/login">Sign in to save</a>'; }
+  }
+  function openSave(id, x, y){
+    if(!user){ if(confirm("Sign in with Google to save annual reports to a board?")) location.href=API+"/auth/google/login"; return; }
+    saveItemId=id;
+    pop.style.left=Math.min(x, window.innerWidth-280)+"px"; pop.style.top=Math.min(y, window.innerHeight-260)+"px";
+    document.getElementById("pop-list").innerHTML='<div class="who">Loading…</div>';
+    overlay.classList.add("is-open"); pop.classList.add("is-open");
+    api("/api/boards").then(function(r){return r.json();}).then(function(d){
+      var list=document.getElementById("pop-list"); list.innerHTML="";
+      if(!d.boards||!d.boards.length) list.innerHTML='<div class="who">No boards yet — create one below.</div>';
+      (d.boards||[]).forEach(function(b){ var row=document.createElement("div"); row.className="mgd-pop__b"; row.innerHTML='<span>'+esc(b.name)+'</span><span class="who">'+b.count+'</span>'; row.addEventListener("click",function(){ saveTo(b.id,b.name); }); list.appendChild(row); });
+    });
+  }
+  function closeSave(){ pop.classList.remove("is-open"); overlay.classList.remove("is-open"); }
+  function saveTo(boardId, name){
+    api("/api/boards/"+boardId+"/saves",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({item_id:saveItemId})})
+      .then(function(r){return r.json();}).then(function(){ closeSave(); toastMsg("Saved to "+name); });
+  }
+  function toastMsg(msg){ var t=document.createElement("div"); t.className="mgd-toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(function(){ t.remove(); },1600); }
+  document.getElementById("pop-newform").addEventListener("submit", function(e){ e.preventDefault(); var name=document.getElementById("pop-new").value.trim(); if(!name) return;
+    api("/api/boards",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:name})}).then(function(r){return r.json();}).then(function(d){ document.getElementById("pop-new").value=""; if(d.board) saveTo(d.board.id,d.board.name); }); });
+  overlay.addEventListener("click", closeSave);
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeSave(); });
+  grid.addEventListener("click", function(e){ var b=e.target.closest?e.target.closest(".card__save"):null; if(!b) return; e.preventDefault(); e.stopPropagation(); openSave(b.getAttribute("data-id"), e.clientX, e.clientY); });
+  fetchMe();
 
   // Infinite scroll (feed mode only)
   var sentinel = document.getElementById("sentinel");
