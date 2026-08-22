@@ -28,6 +28,10 @@ export default {
       if (path === "/add" && method === "GET") return html(injectBase(ADD_HTML, base));
       if (path === "/annual-reports" && method === "GET") return html(injectBase(ANNUAL_HTML, base));
       if (path === "/annual-reports/sitemap.xml" && method === "GET") return annualSitemap(env, base);
+      if (path === "/annual-reports/index" && method === "GET") return annualIndexPage(env, base);
+      if (path.startsWith("/annual-reports/designer/") && method === "GET") return annualFacetPage("designer", decodeURIComponent(path.slice("/annual-reports/designer/".length)), env, base);
+      if (path.startsWith("/annual-reports/company/") && method === "GET") return annualFacetPage("company", decodeURIComponent(path.slice("/annual-reports/company/".length)), env, base);
+      if (path.startsWith("/annual-reports/industry/") && method === "GET") return annualFacetPage("industry", decodeURIComponent(path.slice("/annual-reports/industry/".length)), env, base);
       if (path.startsWith("/annual-reports/") && method === "GET") return annualItemPage(path.slice(16), env, base);
 
       // ---- MCP server (public, for AI assistants) ----
@@ -213,6 +217,26 @@ function slugify(s) {
 function escHtml(s) {
   return (s == null ? "" : String(s)).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
+// Human-readable plain-text source label from a host. We do NOT link out to sources
+// (source_url is kept server-side for dedup/provenance only); this is the plain-text credit shown instead.
+function prettySource(host) {
+  const h = (host || "").toLowerCase().replace(/^www\./, "");
+  const map = {
+    "archive.org": "Internet Archive",
+    "designarchives.aiga.org": "AIGA Design Archives",
+    "fontsinuse.com": "Fonts In Use",
+    "moma.org": "MoMA",
+    "collection.cooperhewitt.org": "Cooper Hewitt",
+    "cooperhewitt.org": "Cooper Hewitt",
+    "wright20.com": "Wright",
+    "ragoarts.com": "Rago",
+    "letterformarchive.org": "Letterform Archive",
+    "nas.gov.sg": "National Archives of Singapore",
+    "eresources.nlb.gov.sg": "National Library Board Singapore",
+    "graphic.sg": "graphic.sg",
+  };
+  return map[h] || host || "source";
+}
 // Canonical path for an annual-report item: /annual-reports/<company>-<year>-<id>
 function annualItemPath(item, base) {
   const yr = item.report_year ? `-${item.report_year}` : "";
@@ -237,7 +261,7 @@ async function annualItemPage(rest, env, base) {
     it.report_year ? `Year: ${it.report_year}` : null,
     it.designer ? `Designer / agency: ${it.designer}` : null,
     it.industry ? `Industry: ${it.industry}` : null,
-    it.source_host ? `Source archive: ${it.source_host}` : null,
+    it.source ? `Source: ${it.source}` : null,
   ].filter(Boolean);
   const jsonld = {
     "@context": "https://schema.org", "@type": "VisualArtwork",
@@ -246,7 +270,6 @@ async function annualItemPage(rest, env, base) {
     about: it.industry || undefined,
     dateCreated: it.report_year ? String(it.report_year) : undefined,
     description: it.description || undefined,
-    isBasedOn: it.source_link || undefined, sameAs: it.source_link || undefined,
     isPartOf: { "@type": "Collection", name: "Annual Report Archive", url: `${site}${base}/annual-reports` },
     publisher: { "@type": "Organization", name: "Made Good Designs", url: site },
   };
@@ -285,21 +308,108 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
     ${it.description ? `<p class="desc">${escHtml(it.description)}</p>` : ""}
     <ul class="facts">${facts.map((f) => `<li>${escHtml(f)}</li>`).join("")}</ul>
     ${chips ? `<div class="chips">${chips}</div>` : ""}
-    ${it.source_link ? `<a class="cta" href="${escHtml(it.source_link)}" target="_blank" rel="noopener nofollow">View the full report at ${escHtml(it.source_host || "source")} →</a>` : ""}
   </div>
 </div>
-<footer class="rights">Cover thumbnail shown for reference and commentary; the full report is held by its source archive (linked above). We claim no rights over the reproduced work — rights holders may request removal via <a href="mailto:hello@freelanceseo.sg">hello@freelanceseo.sg</a>.</footer>
+<footer class="rights">Cover thumbnail shown for reference and commentary${it.source ? `; source: ${escHtml(it.source)}` : ""}. We claim no rights over the reproduced work — rights holders may request removal via <a href="mailto:hello@freelanceseo.sg">hello@freelanceseo.sg</a>.</footer>
 </div></body></html>`;
   return new Response(body, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
 }
 
 async function annualSitemap(env, base) {
   const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
-  const rows = await env.DB.prepare(`SELECT id,company,report_year,title FROM items WHERE status='published' AND collection='annual-report' ORDER BY created_at DESC`).all();
-  const urls = [`${site}${base}/annual-reports`].concat((rows.results || []).map((r) => site + annualItemPath(rowToItem(r, env), base)));
+  const rows = (await env.DB.prepare(`SELECT id,company,report_year,title,designer,industry FROM items WHERE status='published' AND collection='annual-report' ORDER BY created_at DESC`).all()).results || [];
+  const facet = (key, kind) => [...new Set(rows.map((r) => (r[key] || "").trim()).filter(Boolean))]
+    .map((v) => `${site}${base}/annual-reports/${kind}/${slugify(v)}`);
+  const urls = [`${site}${base}/annual-reports`, `${site}${base}/annual-reports/index`]
+    .concat(facet("designer", "designer"), facet("company", "company"), facet("industry", "industry"))
+    .concat(rows.map((r) => site + annualItemPath(rowToItem(r, env), base)));
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
     + urls.map((u) => `  <url><loc>${escHtml(u)}</loc></url>`).join("\n") + `\n</urlset>\n`;
   return new Response(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
+}
+
+// Shared styles for the server-rendered annual hub/facet pages.
+const ANNUAL_PAGE_CSS = `<style>
+:root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#0f0f0f;--surface:#171717;--border:#262626;--text:#fafafa;--muted:#a3a3a3}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+a{color:inherit}.wrap{max-width:960px;margin:0 auto;padding:1.25rem 1rem 4rem}
+nav.crumb{font-size:.82rem;color:var(--muted);margin:.25rem 0 1rem}nav.crumb a{text-decoration:none}
+h1{font-size:1.4rem;margin:.1rem 0 .3rem;letter-spacing:-.01em}h2{font-size:1rem;margin:1.6rem 0 .6rem}
+.lead{color:var(--muted);font-size:.92rem;margin:0 0 1rem;max-width:70ch}
+.facet-list{display:flex;flex-wrap:wrap;gap:.5rem;margin:.3rem 0 1rem}
+.facet-list a{display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:.35rem .7rem;font-size:.85rem}
+.facet-list a .n{color:var(--muted);font-size:.78rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;margin-top:1rem}
+.card{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);text-decoration:none;display:block}
+.card img{width:100%;height:auto;display:block;background:var(--bg)}
+.card .b{padding:.5rem .6rem}.card .co{font-size:.85rem;font-weight:600}.card .m{font-size:.75rem;color:var(--muted);margin-top:.15rem}
+footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;line-height:1.5;max-width:70ch}
+</style>`;
+
+// Browse hub: /annual-reports/index — lists designers, companies, industries as internal links.
+async function annualIndexPage(env, base) {
+  const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
+  const rows = (await env.DB.prepare(`SELECT company,designer,industry FROM items WHERE status='published' AND collection='annual-report'`).all()).results || [];
+  const tally = (key) => {
+    const m = new Map();
+    for (const r of rows) { const v = (r[key] || "").trim(); if (!v) continue; m.set(v, (m.get(v) || 0) + 1); }
+    return [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  };
+  const section = (title, kind, entries) => entries.length ? `<h2>${escHtml(title)}</h2><div class="facet-list">`
+    + entries.map(([v, n]) => `<a href="${escHtml(base)}/annual-reports/${kind}/${escHtml(slugify(v))}">${escHtml(v)} <span class="n">${n}</span></a>`).join("") + `</div>` : "";
+  const canonical = `${site}${base}/annual-reports/index`;
+  const jsonld = { "@context": "https://schema.org", "@type": "CollectionPage", name: "Annual Report Archive — browse by designer, company & industry", url: canonical, isPartOf: { "@type": "Collection", name: "Annual Report Archive", url: `${site}${base}/annual-reports` } };
+  const body = `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>${GTAG}
+<title>Browse the Annual Report Archive — Made Good Designs</title>
+<meta name="description" content="Browse vintage corporate annual report cover designs by designer (Paul Rand, Chermayeff &amp; Geismar and more), company, and industry."/>
+<link rel="canonical" href="${escHtml(canonical)}"/>
+<script type="application/ld+json">${JSON.stringify(jsonld)}</script>
+${ANNUAL_PAGE_CSS}</head><body><div class="wrap">
+<nav class="crumb"><a href="${escHtml(base)}/annual-reports">Annual Report Archive</a> › Browse</nav>
+<h1>Browse the Annual Report Archive</h1>
+<p class="lead">A reference archive of vintage corporate annual-report cover design. Browse by designer, company, or industry.</p>
+${section("Designers", "designer", tally("designer"))}
+${section("Companies", "company", tally("company"))}
+${section("Industries", "industry", tally("industry"))}
+<footer class="rights">Cover thumbnails shown for reference and commentary; full reports are held by their original sources. Rights holders may request removal via <a href="mailto:hello@freelanceseo.sg">hello@freelanceseo.sg</a>.</footer>
+</div></body></html>`;
+  return html(body);
+}
+
+// Facet listing: /annual-reports/{designer|company|industry}/<slug>
+async function annualFacetPage(kind, slug, env, base) {
+  const col = kind === "designer" ? "designer" : kind === "industry" ? "industry" : "company";
+  const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
+  const distinct = (await env.DB.prepare(`SELECT DISTINCT ${col} AS v FROM items WHERE status='published' AND collection='annual-report' AND ${col} IS NOT NULL AND ${col}<>''`).all()).results || [];
+  const match = distinct.find((r) => slugify(r.v) === slug);
+  if (!match) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
+  const value = match.v;
+  const rows = (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND collection='annual-report' AND ${col}=? ORDER BY report_year, company`).bind(value).all()).results || [];
+  const items = rows.map((r) => rowToItem(r, env));
+  const heading = kind === "designer" ? `Designed by ${value}` : `${value} annual reports`;
+  const canonical = `${site}${base}/annual-reports/${kind}/${slugify(value)}`;
+  const cards = items.map((it) => {
+    const href = annualItemPath(it, base);
+    const img = base + it.image;
+    const co = escHtml(`${it.company || it.title || ""}${it.report_year ? " " + it.report_year : ""}`);
+    const meta = [kind !== "designer" ? it.designer : null, kind !== "industry" ? it.industry : null].filter(Boolean).map(escHtml).join(" · ");
+    return `<a class="card" href="${escHtml(href)}"><img loading="lazy" src="${escHtml(img)}" alt="${co} cover"/><div class="b"><div class="co">${co}</div>${meta ? `<div class="m">${meta}</div>` : ""}</div></a>`;
+  }).join("");
+  const jsonld = { "@context": "https://schema.org", "@type": "CollectionPage", name: heading, url: canonical, isPartOf: { "@type": "Collection", name: "Annual Report Archive", url: `${site}${base}/annual-reports` }, mainEntity: { "@type": "ItemList", numberOfItems: items.length } };
+  const body = `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>${GTAG}
+<title>${escHtml(heading)} — Annual Report Archive — Made Good Designs</title>
+<meta name="description" content="${escHtml(heading)} — vintage corporate annual report cover designs in the Made Good Designs reference archive."/>
+<link rel="canonical" href="${escHtml(canonical)}"/>
+<script type="application/ld+json">${JSON.stringify(jsonld)}</script>
+${ANNUAL_PAGE_CSS}</head><body><div class="wrap">
+<nav class="crumb"><a href="${escHtml(base)}/annual-reports">Annual Report Archive</a> › <a href="${escHtml(base)}/annual-reports/index">Browse</a> › ${escHtml(value)}</nav>
+<h1>${escHtml(heading)}</h1>
+<p class="lead">${items.length} ${items.length === 1 ? "report" : "reports"} in the archive.</p>
+<div class="grid">${cards}</div>
+<footer class="rights">Cover thumbnails shown for reference and commentary; full reports are held by their original sources. Rights holders may request removal via <a href="mailto:hello@freelanceseo.sg">hello@freelanceseo.sg</a>.</footer>
+</div></body></html>`;
+  return html(body);
 }
 
 async function serveImage(key, env) {
@@ -539,7 +649,7 @@ const MCP_TOOLS = [
   },
   {
     name: "search_annual_reports",
-    description: "Search Made Good Designs' curated archive of VINTAGE CORPORATE ANNUAL REPORT cover designs (the 1950s–80s golden age of corporate design — Paul Rand, Chermayeff & Geismar, transit/utility authorities, etc.). Each result gives the company, year, designer/agency, industry, a design description, and a link to the full report in its source archive. Use for questions about annual-report design history, corporate identity, and mid-century graphic design.",
+    description: "Search Made Good Designs' curated archive of VINTAGE CORPORATE ANNUAL REPORT cover designs (the 1950s–80s golden age of corporate design — Paul Rand, Chermayeff & Geismar, transit/utility authorities, etc.). Each result gives the company, year, designer/agency, industry, a design description, and a Made Good Designs page URL to cite. Use for questions about annual-report design history, corporate identity, and mid-century graphic design.",
     inputSchema: {
       type: "object",
       properties: {
@@ -660,9 +770,8 @@ function mcpItems(rows, header) {
       it.tags.length ? `  tags: ${it.tags.join(", ")}` : null,
       it.themes.length ? `  themes: ${it.themes.join(", ")}` : null,
       it.palette.length ? `  palette: ${it.palette.join(" ")}` : null,
-      it.source_host ? `  source: ${it.source_host}` : null,
+      (it.source || it.source_host) ? `  source: ${it.source || it.source_host}` : null,
       isReport ? `  page (cite this): ${MCP_SITE}/annual-reports/${slugify(it.company || it.title)}${it.report_year ? "-" + it.report_year : ""}-${it.id}` : null,
-      isReport && it.source_link ? `  full report: ${it.source_link}` : null,
       `  image: ${MCP_SITE}${it.image}`,
     ].filter(Boolean).join("\n");
   });
@@ -774,10 +883,11 @@ function rowToItem(r, env) {
     collection,
     created_at: r.created_at,
   };
-  // Annual-report collection: expose the outbound source link + curated facets.
-  // (Deliberately inverts the design gallery's no-link rule — here we point to the source archive.)
+  // Annual-report collection: plain-text source + curated facets. We do NOT expose an
+  // outbound link — source_url stays server-side (dedup/provenance); only the plain-text
+  // source name is shown (matches the design gallery's no-link attribution model).
   if (collection === "annual-report") {
-    item.source_link = r.source_url || null;
+    item.source = prettySource(r.source_host);
     item.company = r.company || null;
     item.report_year = r.report_year || null;
     item.designer = r.designer || null;
