@@ -117,8 +117,12 @@ async function addItem(request, env) {
   await env.BUCKET.put(key, bytes, { httpMetadata: { contentType: file.type || "image/jpeg" } });
 
   // Enrich (best-effort — never block a save on the model).
+  // Fast path: bulk ingests pass skip_enrich=1 to skip the (slow) vision call — the item still
+  // carries curated company/year/country/designer/industry + a palette backfilled separately.
+  const skipEnrich = (form.get("skip_enrich") || "").toString() === "1";
   let ai = { description: "", tags: [], style: styleIn || null, title: titleIn || null, themes: themesIn };
   try {
+    if (skipEnrich) throw { message: "skipped" };
     const enriched = await enrich(probeB64 ? String(probeB64) : bytesToDataUri(bytes, file.type), env, collection);
     ai = {
       description: enriched.description || "",
