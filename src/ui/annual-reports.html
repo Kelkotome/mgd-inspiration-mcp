@@ -213,9 +213,15 @@
     });
   }
   function loadAll(){
-    fetch(API+"/api/feed?collection=annual-report&limit=200").then(function(r){return r.json();}).then(function(d){
-      allItems=d.items||[]; if(colorbar) buildColorbar();
-    }).catch(function(){});
+    var acc=[];
+    (function page(cur){
+      var u=API+"/api/feed?collection=annual-report&limit=60"+(cur?"&cursor="+cur:"");
+      fetch(u).then(function(r){return r.json();}).then(function(d){
+        acc=acc.concat(d.items||[]);
+        if(d.nextCursor){ page(d.nextCursor); }
+        else { allItems=acc; if(colorbar) buildColorbar(); }
+      }).catch(function(){ allItems=acc; if(colorbar&&acc.length) buildColorbar(); });
+    })(null);
   }
   loadAll();
 
