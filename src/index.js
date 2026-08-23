@@ -71,6 +71,7 @@ export default {
       // ---- Admin ----
       if (path === "/api/admin/export/users.csv" && method === "GET") return exportUsers(request, env);
       if (path === "/api/admin/reenrich" && method === "POST") return reenrich(request, env);
+      if (path === "/api/admin/mcp-stats" && method === "GET") return mcpStats(request, env);
 
       return json({ error: "not_found" }, 404, env, request);
     } catch (err) {
@@ -783,9 +784,18 @@ async function mcpHandler(request, env) {
   return res ? mcpJson(res) : mcpJson(null);
 }
 
+// Best-effort MCP usage log (never blocks/breaks a tool call).
+async function logMcp(env, tool, query) {
+  try {
+    await env.DB.prepare("INSERT INTO mcp_calls (id,tool,query,created_at) VALUES (?,?,?,?)")
+      .bind(genId(), (tool || "").toString().slice(0, 60), (query || "").toString().slice(0, 200), Date.now()).run();
+  } catch (_) { /* logging must never affect the response */ }
+}
+
 async function mcpCallTool(params, env) {
   const name = params.name;
   const a = params.arguments || {};
+  await logMcp(env, name, a.query || a.q || a.theme || "");
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
     const limit = clampInt(a.limit, 8, 1, 20);
@@ -966,6 +976,24 @@ function rowToItem(r, env) {
 }
 
 function safeArr(s) { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } }
+
+// MCP usage stats (admin): totals, per-tool, per-day (30d), top queries.
+async function mcpStats(request, env) {
+  if (!isAdmin(request, env)) return json({ error: "unauthorized" }, 401, env, request);
+  const day = 86400000, now = Date.now();
+  const total = (await env.DB.prepare("SELECT COUNT(*) n FROM mcp_calls").first()) || { n: 0 };
+  const last30 = (await env.DB.prepare("SELECT COUNT(*) n FROM mcp_calls WHERE created_at > ?").bind(now - 30 * day).first()) || { n: 0 };
+  const last7 = (await env.DB.prepare("SELECT COUNT(*) n FROM mcp_calls WHERE created_at > ?").bind(now - 7 * day).first()) || { n: 0 };
+  const byTool = (await env.DB.prepare("SELECT tool, COUNT(*) n FROM mcp_calls GROUP BY tool ORDER BY n DESC").all()).results || [];
+  const perDay = (await env.DB.prepare(
+    "SELECT CAST((created_at)/? AS INT) d, COUNT(*) n FROM mcp_calls WHERE created_at > ? GROUP BY d ORDER BY d DESC").bind(day, now - 30 * day).all()).results || [];
+  const topQueries = (await env.DB.prepare(
+    "SELECT query, COUNT(*) n FROM mcp_calls WHERE query<>'' GROUP BY query ORDER BY n DESC LIMIT 25").all()).results || [];
+  const days = perDay.map((r) => ({ date: new Date(r.d * day).toISOString().slice(0, 10), calls: r.n }));
+  return json({ total: total.n, last_30d: last30.n, last_7d: last7.n,
+    by_tool: byTool.map((r) => ({ tool: r.tool, calls: r.n })),
+    per_day_30d: days, top_queries: topQueries.map((r) => ({ query: r.query, calls: r.n })) }, 200, env, request);
+}
 
 function isAdmin(request, env) {
   const h = request.headers.get("Authorization") || "";
