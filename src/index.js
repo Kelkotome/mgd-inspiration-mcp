@@ -146,12 +146,12 @@ async function addItem(request, env) {
   const now = Date.now();
   const host = hostOf(sourceUrl);
   await env.DB.prepare(
-    `INSERT INTO items (id,title,description,source_url,source_host,image_key,width,height,tags,themes,palette,style,status,created_at,collection,company,report_year,designer,industry,country)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'published',?,?,?,?,?,?,?)`
+    `INSERT INTO items (id,title,description,source_url,source_host,image_key,width,height,tags,themes,palette,style,status,created_at,collection,company,report_year,designer,industry,country,hue)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'published',?,?,?,?,?,?,?,?)`
   ).bind(
     id, ai.title, ai.description, sourceUrl || null, host, key, width, height,
     JSON.stringify(ai.tags), JSON.stringify(ai.themes || []), JSON.stringify(palette), ai.style, now,
-    collection, company, reportYear, designer, industry, country
+    collection, company, reportYear, designer, industry, country, hueOf(palette)
   ).run();
 
   return json({ ok: true, item: rowToItem({
@@ -197,6 +197,8 @@ async function feed(url, env, request) {
     if (sort === "year_desc") order = "report_year IS NULL, report_year DESC, created_at DESC";
     else if (sort === "year_asc") order = "report_year IS NULL, report_year ASC, created_at DESC";
     else if (sort === "company") order = "company COLLATE NOCASE ASC, report_year ASC";
+    else if (sort === "color") order = "hue IS NULL, hue ASC, created_at DESC";
+    else if (sort === "style") order = "style IS NULL OR style='', style COLLATE NOCASE ASC, created_at DESC";
   }
   const sql = `SELECT * FROM items WHERE ${where.join(" AND ")} ORDER BY ${order} LIMIT ?` + (useOffset ? " OFFSET ?" : "");
   const rows = await env.DB.prepare(sql).bind(...binds, limit, ...(useOffset ? [offset] : [])).all();
@@ -1067,6 +1069,29 @@ async function reenrich(request, env) {
 
 function genId() {
   return crypto.randomUUID().replace(/-/g, "").slice(0, 12);
+}
+
+// Sortable color key from a palette's dominant color, for the "by colour" rainbow sort.
+// Chromatic covers sort 0..359 by hue; near-neutral (grey/black/white) covers cluster
+// after them (1000 + lightness) so they don't scatter through the spectrum.
+function hueOf(palette) {
+  let hexes = palette;
+  if (typeof hexes === "string") { try { hexes = JSON.parse(hexes); } catch (_) { hexes = []; } }
+  if (!Array.isArray(hexes) || !hexes.length) return null;
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(hexes[0]).trim());
+  if (!m) return null;
+  const n = parseInt(m[1], 16);
+  const r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  const l = (max + min) / 2;
+  const sat = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+  if (sat < 0.12) return 1000 + l * 100; // near-neutral → cluster at the end, dark→light
+  let h;
+  if (max === r) h = ((g - b) / d) % 6;
+  else if (max === g) h = (b - r) / d + 2;
+  else h = (r - g) / d + 4;
+  h *= 60; if (h < 0) h += 360;
+  return h;
 }
 
 function hostOf(u) {
