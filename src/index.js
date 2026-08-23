@@ -250,6 +250,7 @@ function prettySource(host) {
     "designreviewed.com": "Design Reviewed",
     "collections.vam.ac.uk": "Victoria & Albert Museum",
     "vam.ac.uk": "Victoria & Albert Museum",
+    "europeana.eu": "Europeana",
   };
   return map[h] || host || "source";
 }
