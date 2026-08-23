@@ -174,6 +174,10 @@ async function feed(url, env, request) {
   const country = (url.searchParams.get("country") || "").trim();
   const decade = parseInt(url.searchParams.get("decade"), 10) || null;
   const cursor = parseInt(url.searchParams.get("cursor"), 10) || null; // created_at of last seen
+  const attributed = url.searchParams.get("attributed") === "1"; // has a documented designer
+  const sort = (url.searchParams.get("sort") || "").trim();
+  const useOffset = url.searchParams.has("offset"); // offset paging enables arbitrary sort
+  const offset = Math.max(0, parseInt(url.searchParams.get("offset"), 10) || 0);
 
   const where = ["status = 'published'", "owner_id IS NULL"]; // public feed = curated only
   const binds = [];
@@ -185,13 +189,23 @@ async function feed(url, env, request) {
   if (designer) { where.push("designer = ?"); binds.push(designer); }
   if (country) { where.push("country = ?"); binds.push(country); }
   if (decade) { where.push("report_year >= ? AND report_year <= ?"); binds.push(decade, decade + 9); }
-  if (cursor) { where.push("created_at < ?"); binds.push(cursor); }
+  if (attributed) { where.push("designer IS NOT NULL AND designer <> ''"); }
+  if (!useOffset && cursor) { where.push("created_at < ?"); binds.push(cursor); }
 
-  const rows = await env.DB.prepare(
-    `SELECT * FROM items WHERE ${where.join(" AND ")} ORDER BY created_at DESC LIMIT ?`
-  ).bind(...binds, limit).all();
+  let order = "created_at DESC";
+  if (useOffset) {
+    if (sort === "year_desc") order = "report_year IS NULL, report_year DESC, created_at DESC";
+    else if (sort === "year_asc") order = "report_year IS NULL, report_year ASC, created_at DESC";
+    else if (sort === "company") order = "company COLLATE NOCASE ASC, report_year ASC";
+  }
+  const sql = `SELECT * FROM items WHERE ${where.join(" AND ")} ORDER BY ${order} LIMIT ?` + (useOffset ? " OFFSET ?" : "");
+  const rows = await env.DB.prepare(sql).bind(...binds, limit, ...(useOffset ? [offset] : [])).all();
 
   const items = (rows.results || []).map((r) => rowToItem(r, env));
+  if (useOffset) {
+    const nextOffset = items.length === limit ? offset + limit : null;
+    return json({ items, nextOffset }, 200, env, request);
+  }
   const nextCursor = items.length === limit ? items[items.length - 1].created_at : null;
   return json({ items, nextCursor }, 200, env, request);
 }

@@ -34,6 +34,8 @@
   .controls input[type=search]{min-width:220px;flex:1 1 240px}
   .controls button{font:inherit;font-size:.85rem;padding:.5rem .9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);cursor:pointer}
   .controls button:hover{border-color:var(--text)}
+  .controls .chk{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;color:var(--text);cursor:pointer;white-space:nowrap}
+  .controls .chk input{width:auto;margin:0;cursor:pointer}
   .quickbar{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 1.25rem}
   .quickbar .qlabel{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
   .quickbar .qlabel.sep{margin-left:.7rem}
@@ -98,6 +100,8 @@
     <select id="decade" title="Decade"><option value="">All decades</option></select>
     <select id="industry" title="Industry"><option value="">All industries</option></select>
     <select id="designer" title="Designer"><option value="">Any designer</option></select>
+    <select id="sort" title="Sort"><option value="">Sort: newest added</option><option value="year_desc">Year: newest first</option><option value="year_asc">Year: oldest first</option><option value="company">Company A–Z</option></select>
+    <label class="chk"><input type="checkbox" id="attributed" /> Designer&nbsp;only</label>
     <button id="clear">Clear</button>
   </div>
 
@@ -127,8 +131,10 @@
   var decadeEl = document.getElementById("decade");
   var industryEl = document.getElementById("industry");
   var designerEl = document.getElementById("designer");
+  var sortEl = document.getElementById("sort");
+  var attributedEl = document.getElementById("attributed");
 
-  var cursor = null, loading = false, done = false, mode = "feed", query = "";
+  var off = 0, loading = false, done = false, mode = "feed", query = "";
 
   function esc(s){ return (s==null?"":String(s)).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
   function slugify(s){ return (s||"").toString().toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||"report"; }
@@ -172,24 +178,26 @@
   function load(reset){
     if (loading || (done && !reset)) return;
     loading = true;
-    if (reset){ cursor=null; done=false; grid.innerHTML=""; }
+    if (reset){ off=0; done=false; grid.innerHTML=""; }
+    var appending = mode==="feed" && off>0;
     var url;
     if (mode === "search"){
       url = API + "/api/search?collection=annual-report&limit=60&q=" + encodeURIComponent(query);
     } else {
-      var p = "collection=annual-report&limit=24";
+      var p = "collection=annual-report&limit=24&offset=" + off;
       if (countryEl.value) p += "&country=" + encodeURIComponent(countryEl.value);
       if (decadeEl.value) p += "&decade=" + encodeURIComponent(decadeEl.value);
       if (industryEl.value) p += "&industry=" + encodeURIComponent(industryEl.value);
       if (designerEl.value) p += "&designer=" + encodeURIComponent(designerEl.value);
-      if (cursor) p += "&cursor=" + cursor;
+      if (sortEl.value) p += "&sort=" + encodeURIComponent(sortEl.value);
+      if (attributedEl.checked) p += "&attributed=1";
       url = API + "/api/feed?" + p;
     }
     fetch(url).then(function(r){return r.json();}).then(function(d){
       var items = d.items || [];
-      render(items, mode==="feed" && cursor);
+      render(items, appending);
       if (mode === "search"){ done = true; }
-      else { cursor = d.nextCursor; if (!cursor) done = true; }
+      else { if (d.nextOffset != null) off = d.nextOffset; else done = true; }
       loading = false;
       if (!grid.children.length) setStatus("No reports match. Try a broader search."); else if (done) setStatus(""); else setStatus("");
     }).catch(function(){ loading=false; setStatus("Couldn’t load. Try again."); });
@@ -201,11 +209,11 @@
     load(true);
   }
   // Dropdowns filter server-side (scales to any size); the search box is a separate text mode.
-  [countryEl, decadeEl, industryEl, designerEl].forEach(function(sel){
-    sel.addEventListener("change", function(){ qEl.value=""; query=""; apply(); });
+  [countryEl, decadeEl, industryEl, designerEl, sortEl, attributedEl].forEach(function(el){
+    el.addEventListener("change", function(){ qEl.value=""; query=""; apply(); });
   });
   document.getElementById("clear").addEventListener("click", function(){
-    qEl.value=""; countryEl.value=""; decadeEl.value=""; industryEl.value=""; designerEl.value=""; query=""; mode="feed"; load(true);
+    qEl.value=""; countryEl.value=""; decadeEl.value=""; industryEl.value=""; designerEl.value=""; sortEl.value=""; attributedEl.checked=false; query=""; mode="feed"; load(true);
   });
   qEl.addEventListener("keydown", function(e){ if(e.key==="Enter") apply(); });
 
