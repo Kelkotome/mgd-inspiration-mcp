@@ -245,6 +245,8 @@ function prettySource(host) {
     "graphic.sg": "graphic.sg",
     "sr692.com": "Swissair Report Archive",
     "designreviewed.com": "Design Reviewed",
+    "collections.vam.ac.uk": "Victoria & Albert Museum",
+    "vam.ac.uk": "Victoria & Albert Museum",
   };
   return map[h] || host || "source";
 }
