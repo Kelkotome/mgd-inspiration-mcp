@@ -28,6 +28,9 @@ export default {
       if (path === "/add" && method === "GET") return html(injectBase(ADD_HTML, base));
       if (path === "/annual-reports" && method === "GET") return html(injectBase(ANNUAL_HTML, base));
       if (path === "/annual-reports/sitemap.xml" && method === "GET") return annualSitemap(env, base);
+      // IndexNow key file (lets us push URL updates to Bing/Yandex; keyLocation points here)
+      if (path === "/a7f3c9e14b8d4a2f9c6e1d0b3a5f8e2c.txt" && method === "GET")
+        return new Response("a7f3c9e14b8d4a2f9c6e1d0b3a5f8e2c", { headers: { "Content-Type": "text/plain" } });
       if (path === "/annual-reports/index" && method === "GET") return annualIndexPage(env, base);
       if (path.startsWith("/annual-reports/designer/") && method === "GET") return annualFacetPage("designer", decodeURIComponent(path.slice("/annual-reports/designer/".length)), env, base);
       if (path.startsWith("/annual-reports/company/") && method === "GET") return annualFacetPage("company", decodeURIComponent(path.slice("/annual-reports/company/".length)), env, base);
