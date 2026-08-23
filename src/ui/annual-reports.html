@@ -94,13 +94,12 @@
 
   <div class="controls">
     <input id="q" type="search" placeholder="Search company, designer, style…" />
-    <input id="year" type="number" inputmode="numeric" placeholder="Year (e.g. 1972)" min="1900" max="2030" />
-    <input id="country" type="text" placeholder="Country (e.g. Singapore)" />
-    <input id="industry" type="text" placeholder="Industry (e.g. transit)" />
-    <button id="apply">Filter</button>
+    <select id="country" title="Country"><option value="">All countries</option></select>
+    <select id="decade" title="Decade"><option value="">All decades</option></select>
+    <select id="industry" title="Industry"><option value="">All industries</option></select>
+    <select id="designer" title="Designer"><option value="">Any designer</option></select>
     <button id="clear">Clear</button>
   </div>
-  <div class="quickbar" id="quickbar" aria-label="Quick filters"></div>
 
   <div id="grid" class="grid"></div>
   <div id="status" class="empty" style="display:none"></div>
@@ -124,9 +123,10 @@
   var grid = document.getElementById("grid");
   var statusEl = document.getElementById("status");
   var qEl = document.getElementById("q");
-  var yearEl = document.getElementById("year");
-  var industryEl = document.getElementById("industry");
   var countryEl = document.getElementById("country");
+  var decadeEl = document.getElementById("decade");
+  var industryEl = document.getElementById("industry");
+  var designerEl = document.getElementById("designer");
 
   var cursor = null, loading = false, done = false, mode = "feed", query = "";
 
@@ -178,9 +178,10 @@
       url = API + "/api/search?collection=annual-report&limit=60&q=" + encodeURIComponent(query);
     } else {
       var p = "collection=annual-report&limit=24";
-      if (yearEl.value) p += "&year=" + encodeURIComponent(yearEl.value);
-      if (countryEl.value.trim()) p += "&country=" + encodeURIComponent(countryEl.value.trim());
-      if (industryEl.value.trim()) p += "&industry=" + encodeURIComponent(industryEl.value.trim());
+      if (countryEl.value) p += "&country=" + encodeURIComponent(countryEl.value);
+      if (decadeEl.value) p += "&decade=" + encodeURIComponent(decadeEl.value);
+      if (industryEl.value) p += "&industry=" + encodeURIComponent(industryEl.value);
+      if (designerEl.value) p += "&designer=" + encodeURIComponent(designerEl.value);
       if (cursor) p += "&cursor=" + cursor;
       url = API + "/api/feed?" + p;
     }
@@ -199,58 +200,23 @@
     mode = query ? "search" : "feed";
     load(true);
   }
-  document.getElementById("apply").addEventListener("click", function(){ clearQuickHighlight(); apply(); });
-  document.getElementById("clear").addEventListener("click", function(){ qEl.value=""; yearEl.value=""; industryEl.value=""; countryEl.value=""; query=""; quickFilter=null; clearQuickHighlight(); mode="feed"; load(true); });
-  qEl.addEventListener("keydown", function(e){ if(e.key==="Enter"){ clearQuickHighlight(); apply(); } });
+  // Dropdowns filter server-side (scales to any size); the search box is a separate text mode.
+  [countryEl, decadeEl, industryEl, designerEl].forEach(function(sel){
+    sel.addEventListener("change", function(){ qEl.value=""; query=""; apply(); });
+  });
+  document.getElementById("clear").addEventListener("click", function(){
+    qEl.value=""; countryEl.value=""; decadeEl.value=""; industryEl.value=""; designerEl.value=""; query=""; mode="feed"; load(true);
+  });
+  qEl.addEventListener("keydown", function(e){ if(e.key==="Enter") apply(); });
 
-  // ---- Quick filters: country + decade (client-side over the full archive) ----
-  var quickFilter = null, allItems = null;
-  var quickbar = document.getElementById("quickbar");
-  function decadeOf(y){ return y ? (Math.floor(y/10)*10) + "s" : null; }
-  function tally(keyfn){ var m={}; (allItems||[]).forEach(function(it){ var k=keyfn(it); if(k) m[k]=(m[k]||0)+1; }); return m; }
-  function clearQuickHighlight(){ if(quickbar) quickbar.querySelectorAll(".cf").forEach(function(b){ b.classList.remove("active"); }); }
-  function subsetFor(kind,val){
-    return allItems.filter(function(it){
-      if(kind==="country") return it.country===val;
-      if(kind==="decade") return decadeOf(it.report_year)===val;
-      return true;
-    });
-  }
-  function buildQuickbar(){
-    if(!quickbar) return;
-    var countries=tally(function(it){return it.country;});
-    var decades=tally(function(it){return decadeOf(it.report_year);});
-    var html="";
-    var cKeys=Object.keys(countries).sort(function(a,b){return countries[b]-countries[a]||a.localeCompare(b);});
-    if(cKeys.length){ html+='<span class="qlabel">Country</span>'; cKeys.forEach(function(c){ html+='<button class="cf" data-kind="country" data-val="'+esc(c)+'">'+esc(c)+' <span class="cfn">'+countries[c]+'</span></button>'; }); }
-    var dKeys=Object.keys(decades).sort();
-    if(dKeys.length){ html+='<span class="qlabel sep">Decade</span>'; dKeys.forEach(function(d){ html+='<button class="cf" data-kind="decade" data-val="'+esc(d)+'">'+esc(d)+' <span class="cfn">'+decades[d]+'</span></button>'; }); }
-    if(!html){ quickbar.style.display="none"; return; }
-    quickbar.innerHTML=html;
-    quickbar.querySelectorAll(".cf").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        var kind=btn.getAttribute("data-kind"), val=btn.getAttribute("data-val"), key=kind+":"+val;
-        if(quickFilter===key){ quickFilter=null; clearQuickHighlight(); mode="feed"; load(true); return; }
-        quickFilter=key; mode="filter"; done=true; loading=false;
-        clearQuickHighlight(); btn.classList.add("active");
-        var subset=subsetFor(kind,val);
-        render(subset, false);
-        setStatus(subset.length?"":"Nothing matches that filter.");
-      });
-    });
-  }
-  function loadAll(){
-    var acc=[];
-    (function page(cur){
-      var u=API+"/api/feed?collection=annual-report&limit=60"+(cur?"&cursor="+cur:"");
-      fetch(u).then(function(r){return r.json();}).then(function(d){
-        acc=acc.concat(d.items||[]);
-        if(d.nextCursor){ page(d.nextCursor); }
-        else { allItems=acc; buildQuickbar(); }
-      }).catch(function(){ allItems=acc; if(acc.length) buildQuickbar(); });
-    })(null);
-  }
-  loadAll();
+  // ---- Populate filter dropdowns from the facets endpoint (one request; no pagination) ----
+  function opt(sel, v, label){ var o=document.createElement("option"); o.value=v; o.textContent=label; sel.appendChild(o); }
+  fetch(API+"/api/annual-facets").then(function(r){return r.json();}).then(function(f){
+    (f.countries||[]).forEach(function(x){ opt(countryEl, x.v, x.v+" ("+x.n+")"); });
+    (f.decades||[]).forEach(function(x){ opt(decadeEl, String(x.year), x.v+" ("+x.n+")"); });
+    (f.industries||[]).forEach(function(x){ opt(industryEl, x.v, x.v+" ("+x.n+")"); });
+    (f.designers||[]).forEach(function(x){ opt(designerEl, x.v, x.v+" ("+x.n+")"); });
+  }).catch(function(){});
 
   // ---- Account + save-to-board (signed-in users can pin any annual report) ----
   var user = null, saveItemId = null;

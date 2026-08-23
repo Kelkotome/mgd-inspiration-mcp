@@ -53,6 +53,7 @@ export default {
       // ---- Content API ----
       if (path === "/api/items" && method === "POST") return addItem(request, env);
       if (path === "/api/feed" && method === "GET") return feed(url, env, request);
+      if (path === "/api/annual-facets" && method === "GET") return annualFacets(env, request);
       if (path === "/api/search" && method === "GET") return search(url, env, request);
       if (path.startsWith("/api/item/") && method === "GET") return getItem(path.slice(10), env, request);
       if (path.startsWith("/api/items/") && method === "DELETE") return removeItem(path.slice(11), request, env);
@@ -171,6 +172,7 @@ async function feed(url, env, request) {
   const industry = (url.searchParams.get("industry") || "").trim();
   const designer = (url.searchParams.get("designer") || "").trim();
   const country = (url.searchParams.get("country") || "").trim();
+  const decade = parseInt(url.searchParams.get("decade"), 10) || null;
   const cursor = parseInt(url.searchParams.get("cursor"), 10) || null; // created_at of last seen
 
   const where = ["status = 'published'", "owner_id IS NULL"]; // public feed = curated only
@@ -182,6 +184,7 @@ async function feed(url, env, request) {
   if (industry) { where.push("industry = ?"); binds.push(industry); }
   if (designer) { where.push("designer = ?"); binds.push(designer); }
   if (country) { where.push("country = ?"); binds.push(country); }
+  if (decade) { where.push("report_year >= ? AND report_year <= ?"); binds.push(decade, decade + 9); }
   if (cursor) { where.push("created_at < ?"); binds.push(cursor); }
 
   const rows = await env.DB.prepare(
@@ -380,6 +383,21 @@ ${arId ? `<section class="fullreport"><h2>Full report</h2><iframe src="https://a
 <footer class="rights">Cover thumbnail shown for reference and commentary${it.source ? `; source: ${escHtml(it.source)}` : ""}. We claim no rights over the reproduced work — rights holders may request removal via <a href="mailto:hello@madegooddesigns.com">hello@madegooddesigns.com</a>.</footer>
 </div>${saveWidget(base)}</body></html>`;
   return new Response(body, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
+}
+
+// Distinct filter values + counts for the annual archive (powers the dropdowns; one request, no pagination).
+async function annualFacets(env, request) {
+  const P = "collection='annual-report' AND status='published' AND owner_id IS NULL";
+  const grp = (col) => env.DB.prepare(
+    `SELECT ${col} v, COUNT(*) n FROM items WHERE ${P} AND ${col} IS NOT NULL AND ${col}<>'' GROUP BY ${col} ORDER BY n DESC`).all();
+  const [ctry, ind, des] = await Promise.all([grp("country"), grp("industry"), grp("designer")]);
+  const dec = (await env.DB.prepare(
+    `SELECT (report_year/10)*10 d, COUNT(*) n FROM items WHERE ${P} AND report_year IS NOT NULL GROUP BY d ORDER BY d`).all()).results || [];
+  const map = (rows) => (rows.results || rows || []).map((r) => ({ v: r.v, n: r.n }));
+  return json({
+    countries: map(ctry), industries: map(ind), designers: map(des),
+    decades: dec.map((r) => ({ v: r.d + "s", year: r.d, n: r.n })),
+  }, 200, env, request);
 }
 
 async function annualSitemap(env, base) {
