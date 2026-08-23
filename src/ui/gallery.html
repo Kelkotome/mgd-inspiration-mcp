@@ -20,6 +20,8 @@
   .mgd-insp{max-width:1200px;margin:0 auto;padding:1.25rem 1rem 4rem}
   .mgd-insp__head{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;justify-content:space-between;margin-bottom:1rem}
   .mgd-insp__title{font-size:1.35rem;font-weight:700;margin:0;cursor:pointer}
+  .mgd-home{flex-basis:100%;font-size:.8rem;color:var(--muted,#666);text-decoration:none;margin-bottom:.15rem}
+  .mgd-home:hover{color:var(--accent,#000);text-decoration:underline}
   .mgd-insp__search{flex:1 1 220px;max-width:400px;display:flex;gap:.4rem}
   .mgd-insp__search input{width:100%;font:inherit;padding:.5rem .7rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface)}
   .mgd-acct{display:flex;align-items:center;gap:.5rem}
@@ -94,6 +96,7 @@
 <body>
 <div class="mgd-insp">
   <div class="mgd-insp__head">
+    <a class="mgd-home" href="https://madegooddesigns.com/">← madegooddesigns.com</a>
     <h1 class="mgd-insp__title" id="insp-home">Design Inspiration</h1>
     <a class="mgd-btn" href="https://madegooddesigns.com/inspiration/annual-reports">📊 Annual Report Archive</a>
     <form class="mgd-insp__search" id="insp-search-form"><input type="search" id="insp-search" placeholder="Search…" autocomplete="off" /></form>
