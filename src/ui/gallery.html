@@ -182,7 +182,7 @@
         +'<img loading="lazy" src="'+API+item.image+'" alt="'+esc(item.title)+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />'
         +'<button class="mgd-card__save" title="Save to a board">♥ Save</button></div>'
       +'<div class="mgd-card__meta"><p class="mgd-card__t">'+esc(item.title||"Untitled")+'</p>'
-      +(item.source_host?'<span class="mgd-card__s">'+esc(item.source_host)+'</span>':'')+'</div>';
+      +((item.designer||item.source_host)?'<span class="mgd-card__s">'+esc(item.designer||item.source_host)+'</span>':'')+'</div>';
     el.querySelector(".mgd-card__imgwrap").addEventListener("click", function(e){ if(e.target.classList.contains("mgd-card__save")) return; openModal(item); });
     el.querySelector(".mgd-card__save").addEventListener("click", function(e){ e.stopPropagation(); openSave(item, e.clientX, e.clientY); });
     return el;
@@ -297,7 +297,7 @@
     $("m-img").src=API+item.image; $("m-title").textContent=item.title||"Untitled"; $("m-desc").textContent=item.description||"";
     var tg=$("m-tags"); tg.innerHTML=""; (item.tags||[]).forEach(function(t){ var s=document.createElement("span"); s.className="mgd-tag"; s.textContent=t; tg.appendChild(s); });
     renderPalette(item.palette||[]);
-    $("m-src").textContent=item.source_host?("Source: "+item.source_host):""; $("m-copynote").textContent="";
+    $("m-src").textContent=item.designer?("Photo: "+item.designer+(item.source_host?" · via "+item.source_host:"")):(item.source_host?("Source: "+item.source_host):""); $("m-copynote").textContent="";
     $("m-save").onclick=function(e){ var r=$("m-save").getBoundingClientRect(); openSave(item, r.left, r.bottom+6); };
     $("insp-modal").classList.add("is-open"); $("insp-modal").setAttribute("aria-hidden","false");
   }

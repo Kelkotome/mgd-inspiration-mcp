@@ -990,6 +990,7 @@ function rowToItem(r, env) {
     themes: safeArr(r.themes),
     palette: safeArr(r.palette),
     style: r.style || null,
+    designer: r.designer || null,   // design gallery: photographer credit (shown plain-text, no link)
     collection,
     created_at: r.created_at,
   };
