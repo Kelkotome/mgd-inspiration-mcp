@@ -619,7 +619,7 @@ const MUSEUM_GUIDES = {
     "islamic-art": ["islamic-art", "islamic-geometric-patterns"], "engraving": ["etching", "albrecht-durer", "renaissance-art"], "printmaking": ["woodblock-printing", "lithography", "etching"], "glass": ["venetian-glass", "stained-glass"], "expressionism": ["expressionism-art"], "woodcut": ["woodblock-printing", "albrecht-durer"], "aesthetic-movement": ["aubrey-beardsley"],
     "maps": ["old-maps"], "fashion-plates": ["fashion-plates"], "art-deco": ["art-deco-vs-art-nouveau"], "chinese-art": ["chinese-art", "chinese-calligraphy"], "botanical": ["botanical-illustration", "audubon-birds"], "ornament": ["rococo", "celtic-knot", "renaissance-art"],
     "katagami": ["japanese-patterns", "japanese-art"], "indian-painting": ["indian-art", "islamic-art"], "ceramics": ["majolica", "delftware", "chinese-art"] },
-  artist: [[/caspar david friedrich/i, ["caspar-david-friedrich"]], [/constable/i, ["john-constable"]], [/jacques-louis david/i, ["jacques-louis-david"]],
+  artist: [[/dante gabriel rossetti/i, ["dante-gabriel-rossetti"]], [/modigliani/i, ["amedeo-modigliani"]], [/klimt/i, ["gustav-klimt"]], [/mondria/i, ["piet-mondrian"]], [/franz marc/i, ["franz-marc"]], [/kandinsk/i, ["wassily-kandinsky"]], [/rackham/i, ["arthur-rackham"]], [/caillebotte/i, ["gustave-caillebotte"]], [/walter crane/i, ["walter-crane"]], [/kuniyoshi/i, ["utagawa-kuniyoshi"]], [/caspar david friedrich/i, ["caspar-david-friedrich"]], [/constable/i, ["john-constable"]], [/jacques-louis david/i, ["jacques-louis-david"]],
     [/delacroix/i, ["eugene-delacroix"]], [/thomas cole/i, ["thomas-cole"]], [/frederic edwin church/i, ["frederic-edwin-church"]], [/daumier/i, ["honore-daumier"]],
     [/hogarth/i, ["william-hogarth"]],
     [/degas/i, ["edgar-degas"]], [/morisot/i, ["berthe-morisot"]], [/winslow homer/i, ["winslow-homer"]], [/turner/i, ["jmw-turner"]],
@@ -667,7 +667,7 @@ const MUSEUM_GUIDES = {
     "jan-van-eyck": "Jan van Eyck", "peter-paul-rubens": "Peter Paul Rubens",
     "caspar-david-friedrich": "Caspar David Friedrich", "john-constable": "John Constable", "jacques-louis-david": "Jacques-Louis David", "eugene-delacroix": "Eugène Delacroix",
     "thomas-cole": "Thomas Cole", "frederic-edwin-church": "Frederic Edwin Church", "honore-daumier": "Honoré Daumier", "william-hogarth": "William Hogarth",
-    "utagawa-kuniyoshi": "Utagawa Kuniyoshi", "walter-crane": "Walter Crane" },
+    "utagawa-kuniyoshi": "Utagawa Kuniyoshi", "walter-crane": "Walter Crane", "dante-gabriel-rossetti": "Dante Gabriel Rossetti", "amedeo-modigliani": "Amedeo Modigliani", "gustav-klimt": "Gustav Klimt", "piet-mondrian": "Piet Mondrian", "franz-marc": "Franz Marc", "wassily-kandinsky": "Wassily Kandinsky", "arthur-rackham": "Arthur Rackham", "gustave-caillebotte": "Gustave Caillebotte" },
 };
 function museumGuides({ theme, artist }) {
   const out = [];
