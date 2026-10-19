@@ -619,7 +619,10 @@ const MUSEUM_GUIDES = {
     "islamic-art": ["islamic-art", "islamic-geometric-patterns"], "engraving": ["etching", "albrecht-durer", "renaissance-art"], "printmaking": ["woodblock-printing", "lithography", "etching"], "glass": ["venetian-glass", "stained-glass"], "expressionism": ["expressionism-art"], "woodcut": ["woodblock-printing", "albrecht-durer"], "aesthetic-movement": ["aubrey-beardsley"],
     "maps": ["old-maps"], "fashion-plates": ["fashion-plates"], "art-deco": ["art-deco-vs-art-nouveau"], "chinese-art": ["chinese-art", "chinese-calligraphy"], "botanical": ["botanical-illustration", "audubon-birds"], "ornament": ["rococo", "celtic-knot", "renaissance-art"],
     "katagami": ["japanese-patterns", "japanese-art"], "indian-painting": ["indian-art", "islamic-art"], "ceramics": ["majolica", "delftware", "chinese-art"] },
-  artist: [[/hokusai/i, ["great-wave-off-kanagawa", "hokusai"]], [/hiroshige/i, ["hiroshige"]], [/mucha/i, ["alphonse-mucha"]], [/toulouse-lautrec/i, ["toulouse-lautrec-posters"]],
+  artist: [[/van gogh/i, ["vincent-van-gogh"]], [/monet/i, ["claude-monet"]], [/rembrandt/i, ["rembrandt"]], [/caravaggio/i, ["caravaggio"]],
+    [/munch/i, ["edvard-munch"]], [/cassatt/i, ["mary-cassatt"]], [/seurat/i, ["georges-seurat"]], [/sargent/i, ["john-singer-sargent"]],
+    [/el greco|theotokopoulos/i, ["el-greco"]], [/goya/i, ["francisco-goya"]],
+    [/hokusai/i, ["great-wave-off-kanagawa", "hokusai"]], [/hiroshige/i, ["hiroshige"]], [/mucha/i, ["alphonse-mucha"]], [/toulouse-lautrec/i, ["toulouse-lautrec-posters"]],
     [/d[uü]rer/i, ["albrecht-durer"]], [/beardsley/i, ["aubrey-beardsley"]], [/william morris/i, ["william-morris-patterns"]], [/walter crane|ashbee|voysey/i, ["arts-and-crafts-movement"]], [/blake/i, ["william-blake"]],
     [/rossetti|burne-jones|millais|holman hunt/i, ["pre-raphaelite"]], [/audubon|havell/i, ["audubon-birds"]], [/rembrandt|piranesi|goya|callot|whistler/i, ["etching"]], [/daumier|senefelder/i, ["lithography"]],
     [/tiffany|la farge/i, ["stained-glass"]], [/bewick/i, ["woodblock-printing"]], [/redout[eé]|merian|ehret|curtis/i, ["botanical-illustration"]], [/sullivan|horta|guimard|mackintosh/i, ["art-nouveau-architecture"]], [/monet|renoir|pissarro|morisot|cassatt|degas|sisley/i, ["impressionism"]],
@@ -646,7 +649,9 @@ const MUSEUM_GUIDES = {
     "japonisme": "Japonisme", "toile-de-jouy": "Toile de Jouy", "venetian-glass": "Venetian glass",
     "cameo-jewelry": "Cameo jewellery", "art-nouveau-jewelry": "Art Nouveau jewellery", "silhouette-art": "Silhouette art", "victorian-art": "Victorian art",
     "persian-art": "Persian art", "viking-art": "Viking art", "delftware": "Delftware", "damask-pattern": "Damask pattern",
-    "japanese-family-crests": "Japanese family crests", "dutch-golden-age-painting": "Dutch Golden Age painting" },
+    "japanese-family-crests": "Japanese family crests", "dutch-golden-age-painting": "Dutch Golden Age painting",
+    "vincent-van-gogh": "Vincent van Gogh", "claude-monet": "Claude Monet", "rembrandt": "Rembrandt", "caravaggio": "Caravaggio", "edvard-munch": "Edvard Munch",
+    "mary-cassatt": "Mary Cassatt", "georges-seurat": "Georges Seurat", "john-singer-sargent": "John Singer Sargent", "el-greco": "El Greco", "francisco-goya": "Francisco Goya" },
 };
 function museumGuides({ theme, artist }) {
   const out = [];
