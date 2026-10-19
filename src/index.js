@@ -1182,7 +1182,7 @@ async function mcpCallTool(params, env, ip, ua) {
     const m = link.match(/manage=([a-z0-9]{10})\.([a-z0-9]{24})/) || link.match(/sites\/([a-z0-9]{10})\/feedback\.md\?k=([a-z0-9]{24})/);
     const id = m ? m[1] : (a.id || "").toString().trim(), key = m ? m[2] : (a.key || "").toString().trim();
     if (!/^[a-z0-9]{10}$/.test(id) || !/^[a-z0-9]{24}$/.test(key)) return { content: [{ type: "text", text: "Pass the owner link from https://madegooddesigns.com/tools/html-to-link/ (it contains #manage=ID.KEY), or id and key." }], isError: true };
-    const r = await fetch(`https://mgd-share.marketingagency.workers.dev/api/sites/${id}/feedback.md?k=${key}`, { headers: { "user-agent": "mgd-inspiration-mcp" } });
+    const r = await fetch(`https://mgdshare.com/api/sites/${id}/feedback.md?k=${key}`, { headers: { "user-agent": "mgd-inspiration-mcp" } });
     if (!r.ok) return { content: [{ type: "text", text: r.status === 403 ? "That link was deleted, has expired, or the key is wrong." : "Couldn't fetch feedback (HTTP " + r.status + ")." }], isError: true };
     return { content: [{ type: "text", text: await r.text() }] };
   }
