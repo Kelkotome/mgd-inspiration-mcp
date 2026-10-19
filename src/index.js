@@ -467,7 +467,7 @@ ${backLink(base, "/annual-reports", "Back to archive")}
 ${arId ? `<section class="fullreport"><h2>Full report</h2><iframe src="https://archive.org/embed/${escHtml(arId)}" title="${escHtml(name)} — full report" loading="lazy" allowfullscreen></iframe><p class="fr-note">Full report embedded from the Internet Archive.</p></section>` : ""}
 <footer class="rights">Cover thumbnail shown for reference and commentary${it.source ? `; source: ${escHtml(it.source)}` : ""}. We claim no rights over the reproduced work — rights holders may request removal via <a href="mailto:hello@madegooddesigns.com">hello@madegooddesigns.com</a>.</footer>
 </div>${saveWidget(base)}</body></html>`;
-  return new Response(body, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
+  return new Response(themeify(body), { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
 }
 
 // Distinct filter values + counts for the annual archive (powers the dropdowns; one request, no pagination).
@@ -695,7 +695,7 @@ ${backLink(base, "/museum", "Back to collection")}
 </div>
 <footer class="rights">Image: ${escHtml(it.museum || "the holding museum")}, open access — public domain (CC0). Description and design tags by Made Good Designs.</footer>
 </div>${saveWidget(base)}</body></html>`;
-  return new Response(body, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
+  return new Response(themeify(body), { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
 }
 
 async function museumFacets(env, request) {
@@ -1579,6 +1579,21 @@ function injectBase(htmlStr, base) {
   return htmlStr.replace("</head>", `<script>window.MGD_API_BASE=${JSON.stringify(base || "")};</script>\n</head>`);
 }
 
+
+// ---- Light / dark theme (user choice, remembered in localStorage; light is the default) ----
+const THEME_HEAD = `<script>try{if(localStorage.getItem("mgd-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<style>:root[data-theme=dark]{--bg:#0f0f0f;--surface:#171717;--border:#2a2a2a;--border-strong:#3a3a3a;--text:#f5f5f5;--muted:#a3a3a3;--accent:#f5f5f5;--on-accent:#171717;--accent-hover:#d4d4d4;--imgbg:#1f1f1f;--tag:#1f1f1f;--text-2:#d4d4d4;color-scheme:dark}
+:root[data-theme=dark] .backbtn{background:var(--surface)!important;color:var(--text)!important;border-color:var(--border-strong)!important}
+.mgd-theme-toggle{position:fixed;left:14px;bottom:14px;z-index:9990;display:inline-flex;align-items:center;gap:.4em;font:600 12px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:.55em .9em;border-radius:999px;border:1px solid var(--border-strong,#d4d4d4);background:var(--surface,#fff);color:var(--text,#171717);cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.mgd-theme-toggle:hover{border-color:var(--text,#171717)}@media print{.mgd-theme-toggle{display:none}}</style>`;
+const THEME_TOGGLE = `<button type="button" class="mgd-theme-toggle" aria-label="Switch light or dark mode"></button>
+<script>(function(){var b=document.querySelector(".mgd-theme-toggle"),r=document.documentElement;function lab(){var d=r.getAttribute("data-theme")==="dark";b.textContent=d?"☀ Light mode":"☾ Dark mode";b.setAttribute("aria-pressed",String(d))}b.onclick=function(){var d=r.getAttribute("data-theme")!=="dark";if(d)r.setAttribute("data-theme","dark");else r.removeAttribute("data-theme");try{localStorage.setItem("mgd-theme",d?"dark":"light")}catch(e){}lab()};lab()})();</script>`;
+function themeify(body) {
+  if (typeof body !== "string" || body.indexOf("</head>") < 0 || body.indexOf("mgd-theme-toggle") >= 0) return body;
+  body = body.replace("</head>", THEME_HEAD + "</head>");
+  const i = body.lastIndexOf("</body>");
+  return i < 0 ? body + THEME_TOGGLE : body.slice(0, i) + THEME_TOGGLE + body.slice(i);
+}
 function html(body) {
-  return new Response(body, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache" } });
+  return new Response(themeify(body), { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache" } });
 }
