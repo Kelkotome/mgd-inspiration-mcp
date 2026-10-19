@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Google tag (gtag.js) — same tag as madegooddesigns.com, tracks this sub-page from day one -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GT-5M8SNVPM"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','GT-5M8SNVPM');</script>
+<title>Museum Collection: Public-Domain Art for Designers — Made Good Designs</title>
+<meta name="description" content="Public-domain artworks chosen for designers — posters, Art Nouveau, Bauhaus, ukiyo-e, lettering, ornament and pattern from The Met, the Art Institute of Chicago and the Cleveland Museum of Art. Free to reuse (CC0)." />
+<style>
+  :root{
+    --bg:#fafafa; --surface:#fff; --border:#e5e5e5; --border-strong:#d4d4d4;
+    --text:#171717; --muted:#737373; --accent:#171717; --radius:12px; --radius-sm:7px;
+    --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0f0f0f; --surface:#171717; --border:#262626; --border-strong:#333;
+      --text:#fafafa; --muted:#a3a3a3; --accent:#fafafa; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1240px;margin:0 auto;padding:1.25rem 1rem 5rem}
+  header.top{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem 1rem;margin:.25rem 0 1rem}
+  header.top h1{font-size:1.35rem;margin:0;letter-spacing:-.01em}
+  header.top .tag{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.15rem .55rem}
+  header.top .back{margin-left:auto;font-size:.85rem;color:var(--muted);text-decoration:none}
+  header.top .home{flex-basis:100%;font-size:.8rem;color:var(--muted);text-decoration:none}
+  header.top .home:hover{color:var(--accent);text-decoration:underline}
+  header.top .back:hover{color:var(--text)}
+  p.lede{margin:.1rem 0 1.1rem;color:var(--muted);font-size:.92rem;max-width:60ch}
+  .controls{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.25rem}
+  .controls input,.controls select{font:inherit;font-size:.88rem;padding:.5rem .7rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);color:var(--text)}
+  .controls input[type=search]{min-width:220px;flex:1 1 240px}
+  .controls button{font:inherit;font-size:.85rem;padding:.5rem .9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);cursor:pointer}
+  .controls button:hover{border-color:var(--text)}
+  .controls .chk{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;color:var(--text);cursor:pointer;white-space:nowrap}
+  .controls .chk input{width:auto;margin:0;cursor:pointer}
+  .quickbar{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 1.25rem}
+  .quickbar .qlabel{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .quickbar .qlabel.sep{margin-left:.7rem}
+  .quickbar .cf{display:inline-flex;align-items:center;gap:.35rem;font:inherit;font-size:.8rem;padding:.3rem .6rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface);color:var(--text);cursor:pointer}
+  .quickbar .cf:hover{border-color:var(--text)}
+  .quickbar .cf.active{border-color:var(--text);background:var(--text);color:var(--surface)}
+  .quickbar .cf .cfn{color:var(--muted);font-size:.72rem}
+  .quickbar .cf.active .cfn{color:var(--surface);opacity:.8}
+  .card .pal{display:flex;gap:0;margin-top:.35rem;border-radius:4px;overflow:hidden}
+  .card .pal .sw{width:100%;height:.55rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+  .card .cover{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;background:var(--bg)}
+  .card .body{padding:.7rem .75rem .8rem;display:flex;flex-direction:column;gap:.25rem;flex:1}
+  .card .co{font-weight:650;font-size:.92rem;line-height:1.25}
+  .card .yr{color:var(--muted);font-size:.82rem}
+  .card .meta{color:var(--muted);font-size:.78rem;line-height:1.35}
+  .card .chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.15rem}
+  .card .chip{font-size:.68rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.05rem .45rem}
+  .card .chip--country{color:var(--text);border-color:var(--text)}
+  .card .full{margin-top:auto;padding-top:.5rem;font-size:.82rem;font-weight:600;text-decoration:none;color:var(--text)}
+  .card .full:hover{text-decoration:underline}
+  .empty,.end{text-align:center;color:var(--muted);font-size:.9rem;padding:2rem 1rem}
+  #sentinel{height:1px}
+  footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;line-height:1.5;max-width:70ch}
+  /* account + save-to-board (ported from the design gallery) */
+  .mgd-btn{font:inherit;font-size:.82rem;font-weight:500;padding:.4rem .75rem;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;text-decoration:none}
+  .mgd-btn--dark{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+  .acct{margin-left:auto;display:flex;align-items:center;gap:.5rem}
+  .acct .who{font-size:.8rem;color:var(--muted)}
+  .card{position:relative}
+  .card__save{position:absolute;top:.5rem;right:.5rem;border:none;background:var(--accent);color:var(--surface);cursor:pointer;font-size:.78rem;font-weight:600;line-height:1;display:inline-flex;align-items:center;gap:.3em;padding:.4rem .7rem;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.28);transition:transform .12s;z-index:2}
+  .card__save:hover{transform:scale(1.06)}
+  .card__save.is-saved{background:#16a34a;color:#fff}
+  .mgd-overlay{position:fixed;inset:0;z-index:10000;display:none}
+  .mgd-overlay.is-open{display:block}
+  .mgd-pop{position:fixed;z-index:10001;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:0 8px 30px rgba(0,0,0,.18);width:260px;padding:.7rem;display:none}
+  .mgd-pop.is-open{display:block}
+  .mgd-pop h4{margin:.1rem 0 .5rem;font-size:.85rem}
+  .mgd-pop__list{max-height:200px;overflow:auto;display:flex;flex-direction:column;gap:.2rem;margin-bottom:.5rem}
+  .mgd-pop__b{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.4rem .5rem;border-radius:6px;cursor:pointer;font-size:.85rem}
+  .mgd-pop__b:hover{background:rgba(128,128,128,.12)}
+  .mgd-pop__new{display:flex;gap:.35rem}
+  .mgd-pop__new input{flex:1;font:inherit;font-size:.85rem;padding:.35rem .5rem;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);color:var(--text)}
+  .mgd-toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--surface);border-radius:999px;padding:.6rem 1rem;font-size:.85rem;z-index:10002;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.guides{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin:-4px 0 18px;font-size:13px}.guides span{font-weight:600;opacity:.7}.guides a{color:inherit;border:1px solid rgba(127,127,127,.35);border-radius:999px;padding:3px 10px;text-decoration:none}.guides a:hover{border-color:currentColor}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="home" href="https://madegooddesigns.com/">← madegooddesigns.com</a>
+    <h1>Museum Collection</h1>
+    <span class="tag">Made Good Designs</span>
+    <a class="back" href="./">← Design inspiration</a><a class="back" href="./annual-reports">Annual reports</a>
+    <a class="back" href="./museum/index">Browse by theme ›</a>
+    <div class="acct" id="insp-acct"></div>
+  </header>
+  <p class="lede">Public-domain artworks chosen for designers — posters, prints, lettering, ornament, pattern and textiles from the open-access collections of The Met, the Art Institute of Chicago and the Cleveland Museum of Art. Every image here is free to reuse (CC0); each links to its museum page.</p>
+  <nav class="guides" aria-label="Design guides"><span>Guides:</span><a href="https://madegooddesigns.com/great-wave-off-kanagawa/">The Great Wave</a><a href="https://madegooddesigns.com/hokusai/">Hokusai</a><a href="https://madegooddesigns.com/ukiyo-e/">Ukiyo-e</a><a href="https://madegooddesigns.com/alphonse-mucha/">Alphonse Mucha</a><a href="https://madegooddesigns.com/toulouse-lautrec-posters/">Toulouse-Lautrec posters</a><a href="https://madegooddesigns.com/art-deco-vs-art-nouveau/">Art Deco vs Art Nouveau</a><a href="https://madegooddesigns.com/william-morris-patterns/">William Morris patterns</a><a href="https://madegooddesigns.com/illuminated-manuscripts/">Illuminated manuscripts</a><a href="https://madegooddesigns.com/medieval-fonts/">Medieval fonts</a><a href="https://madegooddesigns.com/public-domain-art/">Public domain art</a><a href="https://madegooddesigns.com/hiroshige/">Hiroshige</a><a href="https://madegooddesigns.com/albrecht-durer/">Albrecht Dürer</a><a href="https://madegooddesigns.com/aubrey-beardsley/">Aubrey Beardsley</a><a href="https://madegooddesigns.com/arts-and-crafts-movement/">Arts and Crafts</a><a href="https://madegooddesigns.com/gothic-art/">Gothic art</a><a href="https://madegooddesigns.com/japanese-calligraphy/">Japanese calligraphy</a><a href="https://madegooddesigns.com/chinese-calligraphy/">Chinese calligraphy</a><a href="https://madegooddesigns.com/islamic-geometric-patterns/">Islamic geometric patterns</a><a href="https://madegooddesigns.com/old-maps/">Old maps</a><a href="https://madegooddesigns.com/fashion-plates/">Fashion plates</a></nav>
+
+  <div class="controls">
+    <input id="q" type="search" placeholder="Search title, artist, style…" />
+    <select id="theme" title="Theme"><option value="">All themes</option></select>
+    <select id="country" title="Culture"><option value="">All cultures</option></select>
+    <select id="decade" title="Century"><option value="">All centuries</option></select>
+    <select id="industry" title="Type"><option value="">All types</option></select>
+    <select id="designer" title="Artist"><option value="">Any artist</option></select>
+    <select id="museum" title="Museum"><option value="">All museums</option></select>
+    <select id="sort" title="Sort"><option value="">Sort: featured</option><option value="year_asc">Oldest first</option><option value="year_desc">Newest first</option><option value="color">Colour: by hue 🌈</option><option value="style">Design style</option></select>
+    <button id="clear">Clear</button>
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <div id="status" class="empty" style="display:none"></div>
+  <div id="sentinel"></div>
+
+  <div class="mgd-overlay" id="insp-overlay"></div>
+  <div class="mgd-pop" id="insp-pop">
+    <h4>Save to board</h4>
+    <div class="mgd-pop__list" id="pop-list"></div>
+    <form class="mgd-pop__new" id="pop-newform"><input id="pop-new" placeholder="New board name" /><button class="mgd-btn mgd-btn--dark" type="submit">Add</button></form>
+  </div>
+
+  <footer class="rights">
+    Images come from the open-access programmes of The Metropolitan Museum of Art, the Art Institute of Chicago and the Cleveland Museum of Art and are in the public domain (CC0). Titles, artists and dates are from the museums' records; design descriptions and tags are by Made Good Designs. Questions — <a href="mailto:hello@madegooddesigns.com">hello@madegooddesigns.com</a>.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var API = (window.MGD_API_BASE || "").replace(/\/$/, "");
+  var grid = document.getElementById("grid");
+  var statusEl = document.getElementById("status");
+  var qEl = document.getElementById("q");
+  var countryEl = document.getElementById("country");
+  var decadeEl = document.getElementById("decade");
+  var industryEl = document.getElementById("industry");
+  var designerEl = document.getElementById("designer");
+  var sortEl = document.getElementById("sort");
+  var themeEl = document.getElementById("theme"), museumEl = document.getElementById("museum");
+
+  var off = 0, loading = false, done = false, mode = "feed", query = "";
+
+  function esc(s){ return (s==null?"":String(s)).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+  function slugify(s){ return (s||"").toString().toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||"report"; }
+  function pageUrl(it){ return API + "/museum/" + slugify(it.title||it.artist||"artwork") + (it.year?"-"+it.year:"") + "-" + it.id; }
+
+  function wait(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
+  function backoff(n){ return (n===1?600:n===2?1600:3500) + Math.floor(Math.random()*250); }
+  // Retry idempotent GETs on a transient 429 / 5xx / network error with backoff.
+  function fetchRetry(u, opts){
+    opts = opts || {};
+    function attempt(n){
+      return fetch(u, opts).then(function(r){
+        if (n < 3 && (r.status===429 || r.status===500 || r.status===502 || r.status===503))
+          return wait(backoff(n)).then(function(){ return attempt(n+1); });
+        return r;
+      }).catch(function(err){
+        if (n < 3) return wait(backoff(n)).then(function(){ return attempt(n+1); });
+        throw err;
+      });
+    }
+    return attempt(1);
+  }
+  function card(it){
+    var img = API + it.image;
+    var href = pageUrl(it);
+    var co = esc(it.title || "Untitled");
+    var yr = it.year ? '<span class="yr">'+esc(it.year)+'</span>' : "";
+    var metaBits = [];
+    if (it.artist) metaBits.push(esc(it.artist));
+    if (it.museum) metaBits.push(esc(it.museum));
+    var chips = "";
+    if (it.culture) chips += '<span class="chip chip--country">'+esc(it.culture)+'</span>';
+    if (it.type) chips += '<span class="chip">'+esc(it.type)+'</span>';
+    (it.themes||[]).slice(0,2).forEach(function(t){ chips += '<span class="chip">'+esc(t)+'</span>'; });
+    var pal = "";
+    (it.palette||[]).slice(0,6).forEach(function(h){ if(/^#[0-9a-fA-F]{6}$/.test(h)) pal += '<span class="sw" style="background:'+h+'"></span>'; });
+    return '<div class="card">'
+      + '<button class="card__save" data-id="'+esc(it.id)+'" title="Save to a board">♥ Save</button>'
+      + '<a href="'+esc(href)+'"><img class="cover" loading="lazy" decoding="async" data-src="'+esc(img)+'" alt="'+co+(it.artist?" by "+esc(it.artist):"")+'" /></a>'
+      + '<div class="body">'
+      +   '<div class="co"><a href="'+esc(href)+'" style="text-decoration:none">'+co+' '+yr+'</a></div>'
+      +   (metaBits.length?'<div class="meta">'+metaBits.join(" · ")+'</div>':'')
+
+      +   (chips?'<div class="chips">'+chips+'</div>':'')
+      +   (pal?'<div class="pal">'+pal+'</div>':'')
+      + '</div></div>';
+  }
+
+  function render(items, append){
+    var htmlStr = items.map(card).join("");
+    if (append) grid.insertAdjacentHTML("beforeend", htmlStr);
+    else grid.innerHTML = htmlStr;
+    // Stagger cover-image loads + auto-retry transient failures (mirrors gallery.html).
+    var imgs = grid.querySelectorAll('img.cover:not([data-wired])');
+    Array.prototype.forEach.call(imgs, function(img, i){
+      img.setAttribute('data-wired','1');
+      img.addEventListener('error', function(){
+        var n = +(img.getAttribute('data-retry')||0); if (n>=2) return;
+        img.setAttribute('data-retry', n+1);
+        setTimeout(function(){ var u=img.getAttribute('data-src'); img.src = u + (u.indexOf('?')<0?'?':'&') + 'r=' + Date.now(); }, n===0?1200:4000);
+      });
+      setTimeout(function(){ if(!img.getAttribute('src')) img.src = img.getAttribute('data-src'); }, i*45);
+    });
+  }
+
+  function setStatus(msg){ if(!msg){statusEl.style.display="none";return;} statusEl.textContent=msg; statusEl.style.display="block"; }
+
+  function load(reset){
+    if (loading || (done && !reset)) return;
+    loading = true;
+    if (reset){ off=0; done=false; grid.innerHTML=""; }
+    var appending = mode==="feed" && off>0;
+    var url;
+    if (mode === "search"){
+      url = API + "/api/search?collection=museum&limit=60&q=" + encodeURIComponent(query);
+    } else {
+      var p = "collection=museum&limit=24&offset=" + off;
+      if (themeEl.value) p += "&category=" + encodeURIComponent(themeEl.value);
+      if (museumEl.value) p += "&company=" + encodeURIComponent(museumEl.value);
+      if (countryEl.value) p += "&country=" + encodeURIComponent(countryEl.value);
+      if (decadeEl.value) p += "&century=" + encodeURIComponent(decadeEl.value);
+      if (industryEl.value) p += "&industry=" + encodeURIComponent(industryEl.value);
+      if (designerEl.value) p += "&designer=" + encodeURIComponent(designerEl.value);
+      if (sortEl.value) p += "&sort=" + encodeURIComponent(sortEl.value);
+      url = API + "/api/feed?" + p;
+    }
+    fetchRetry(url).then(function(r){return r.json();}).then(function(d){
+      var items = d.items || [];
+      render(items, appending);
+      if (mode === "search"){ done = true; }
+      else { if (d.nextOffset != null) off = d.nextOffset; else done = true; }
+      loading = false;
+      if (!grid.children.length) setStatus("No artworks match. Try a broader search."); else if (done) setStatus(""); else setStatus("");
+    }).catch(function(){ loading=false; setStatus("Couldn’t load. Try again."); });
+  }
+
+  function apply(){
+    query = qEl.value.trim();
+    mode = query ? "search" : "feed";
+    load(true);
+  }
+  // Dropdowns filter server-side (scales to any size); the search box is a separate text mode.
+  [themeEl, museumEl, countryEl, decadeEl, industryEl, designerEl, sortEl].forEach(function(el){
+    el.addEventListener("change", function(){ qEl.value=""; query=""; apply(); });
+  });
+  document.getElementById("clear").addEventListener("click", function(){
+    qEl.value=""; themeEl.value=""; museumEl.value=""; countryEl.value=""; decadeEl.value=""; industryEl.value=""; designerEl.value=""; sortEl.value=""; query=""; mode="feed"; load(true);
+  });
+  qEl.addEventListener("keydown", function(e){ if(e.key==="Enter") apply(); });
+
+  // ---- Populate filter dropdowns from the facets endpoint (one request; no pagination) ----
+  function opt(sel, v, label){ var o=document.createElement("option"); o.value=v; o.textContent=label; sel.appendChild(o); }
+  fetchRetry(API+"/api/museum-facets").then(function(r){return r.json();}).then(function(f){
+    (f.themes||[]).forEach(function(x){ opt(themeEl, x.v, x.label+" ("+x.n+")"); });
+    (f.museums||[]).forEach(function(x){ opt(museumEl, x.v, x.v+" ("+x.n+")"); });
+    (f.cultures||[]).forEach(function(x){ opt(countryEl, x.v, x.v+" ("+x.n+")"); });
+    (f.centuries||[]).forEach(function(x){ opt(decadeEl, String(x.year), x.v+" ("+x.n+")"); });
+    (f.types||[]).forEach(function(x){ opt(industryEl, x.v, x.v+" ("+x.n+")"); });
+    (f.artists||[]).forEach(function(x){ opt(designerEl, x.v, x.v+" ("+x.n+")"); });
+  }).catch(function(){});
+
+  // ---- Account + save-to-board (signed-in users can pin any annual report) ----
+  var user = null, saveItemId = null;
+  var acctEl = document.getElementById("insp-acct");
+  var pop = document.getElementById("insp-pop"), overlay = document.getElementById("insp-overlay");
+  function api(path, opts){ return fetch(API+path, opts||{}); }
+  function fetchMe(){ api("/api/me").then(function(r){return r.json();}).then(function(d){ user=d.user||null; renderAcct(); }).catch(function(){}); }
+  function renderAcct(){
+    if(!acctEl) return;
+    if(user){ acctEl.innerHTML='<span class="who">Signed in</span><a class="mgd-btn" href="./">My boards ↗</a><a class="mgd-btn" href="'+API+'/auth/logout">Log out</a>'; }
+    else { acctEl.innerHTML='<a class="mgd-btn mgd-btn--dark" href="'+API+'/auth/google/login">Sign in to save</a>'; }
+  }
+  function openSave(id, x, y){
+    if(!user){ if(confirm("Sign in with Google to save artworks to a board?")) location.href=API+"/auth/google/login"; return; }
+    saveItemId=id;
+    pop.style.left=Math.min(x, window.innerWidth-280)+"px"; pop.style.top=Math.min(y, window.innerHeight-260)+"px";
+    document.getElementById("pop-list").innerHTML='<div class="who">Loading…</div>';
+    overlay.classList.add("is-open"); pop.classList.add("is-open");
+    api("/api/boards").then(function(r){return r.json();}).then(function(d){
+      var list=document.getElementById("pop-list"); list.innerHTML="";
+      if(!d.boards||!d.boards.length) list.innerHTML='<div class="who">No boards yet — create one below.</div>';
+      (d.boards||[]).forEach(function(b){ var row=document.createElement("div"); row.className="mgd-pop__b"; row.innerHTML='<span>'+esc(b.name)+'</span><span class="who">'+b.count+'</span>'; row.addEventListener("click",function(){ saveTo(b.id,b.name); }); list.appendChild(row); });
+    });
+  }
+  function closeSave(){ pop.classList.remove("is-open"); overlay.classList.remove("is-open"); }
+  function saveTo(boardId, name){
+    api("/api/boards/"+boardId+"/saves",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({item_id:saveItemId})})
+      .then(function(r){return r.json();}).then(function(){ closeSave(); toastMsg("Saved to "+name); });
+  }
+  function toastMsg(msg){ var t=document.createElement("div"); t.className="mgd-toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(function(){ t.remove(); },1600); }
+  document.getElementById("pop-newform").addEventListener("submit", function(e){ e.preventDefault(); var name=document.getElementById("pop-new").value.trim(); if(!name) return;
+    api("/api/boards",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:name})}).then(function(r){return r.json();}).then(function(d){ document.getElementById("pop-new").value=""; if(d.board) saveTo(d.board.id,d.board.name); }); });
+  overlay.addEventListener("click", closeSave);
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeSave(); });
+  grid.addEventListener("click", function(e){ var b=e.target.closest?e.target.closest(".card__save"):null; if(!b) return; e.preventDefault(); e.stopPropagation(); openSave(b.getAttribute("data-id"), e.clientX, e.clientY); });
+  fetchMe();
+
+  // Infinite scroll (feed mode only)
+  var sentinel = document.getElementById("sentinel");
+  if ("IntersectionObserver" in window){
+    new IntersectionObserver(function(entries){
+      if (entries[0].isIntersecting && mode==="feed") load(false);
+    }, { rootMargin: "600px" }).observe(sentinel);
+  }
+
+  load(true);
+})();
+</script>
+</body>
+</html>

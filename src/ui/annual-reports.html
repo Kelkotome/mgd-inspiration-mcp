@@ -91,7 +91,7 @@
     <a class="home" href="https://madegooddesigns.com/">← madegooddesigns.com</a>
     <h1>Annual Report Archive</h1>
     <span class="tag">Made Good Designs</span>
-    <a class="back" href="./">← Design inspiration</a>
+    <a class="back" href="./">← Design inspiration</a><a class="back" href="./museum">Museum collection</a>
     <a class="back" href="./annual-reports/index">Browse by designer ›</a>
     <div class="acct" id="insp-acct"></div>
   </header>
@@ -143,6 +143,23 @@
   function slugify(s){ return (s||"").toString().toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||"report"; }
   function pageUrl(it){ return API + "/annual-reports/" + slugify(it.company||it.title) + (it.report_year?"-"+it.report_year:"") + "-" + it.id; }
 
+  function wait(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
+  function backoff(n){ return (n===1?600:n===2?1600:3500) + Math.floor(Math.random()*250); }
+  // Retry idempotent GETs on a transient 429 / 5xx / network error with backoff.
+  function fetchRetry(u, opts){
+    opts = opts || {};
+    function attempt(n){
+      return fetch(u, opts).then(function(r){
+        if (n < 3 && (r.status===429 || r.status===500 || r.status===502 || r.status===503))
+          return wait(backoff(n)).then(function(){ return attempt(n+1); });
+        return r;
+      }).catch(function(err){
+        if (n < 3) return wait(backoff(n)).then(function(){ return attempt(n+1); });
+        throw err;
+      });
+    }
+    return attempt(1);
+  }
   function card(it){
     var img = API + it.image;
     var href = pageUrl(it);
@@ -160,7 +177,7 @@
     (it.palette||[]).slice(0,6).forEach(function(h){ if(/^#[0-9a-fA-F]{6}$/.test(h)) pal += '<span class="sw" style="background:'+h+'"></span>'; });
     return '<div class="card">'
       + '<button class="card__save" data-id="'+esc(it.id)+'" title="Save to a board">♥ Save</button>'
-      + '<a href="'+esc(href)+'"><img class="cover" loading="lazy" src="'+esc(img)+'" alt="'+co+(it.report_year?" "+esc(it.report_year):"")+' annual report cover" /></a>'
+      + '<a href="'+esc(href)+'"><img class="cover" loading="lazy" decoding="async" data-src="'+esc(img)+'" alt="'+co+(it.report_year?" "+esc(it.report_year):"")+' annual report cover" /></a>'
       + '<div class="body">'
       +   '<div class="co"><a href="'+esc(href)+'" style="text-decoration:none">'+co+' '+yr+'</a></div>'
       +   (metaBits.length?'<div class="meta">'+metaBits.join(" · ")+'</div>':'')
@@ -174,6 +191,17 @@
     var htmlStr = items.map(card).join("");
     if (append) grid.insertAdjacentHTML("beforeend", htmlStr);
     else grid.innerHTML = htmlStr;
+    // Stagger cover-image loads + auto-retry transient failures (mirrors gallery.html).
+    var imgs = grid.querySelectorAll('img.cover:not([data-wired])');
+    Array.prototype.forEach.call(imgs, function(img, i){
+      img.setAttribute('data-wired','1');
+      img.addEventListener('error', function(){
+        var n = +(img.getAttribute('data-retry')||0); if (n>=2) return;
+        img.setAttribute('data-retry', n+1);
+        setTimeout(function(){ var u=img.getAttribute('data-src'); img.src = u + (u.indexOf('?')<0?'?':'&') + 'r=' + Date.now(); }, n===0?1200:4000);
+      });
+      setTimeout(function(){ if(!img.getAttribute('src')) img.src = img.getAttribute('data-src'); }, i*45);
+    });
   }
 
   function setStatus(msg){ if(!msg){statusEl.style.display="none";return;} statusEl.textContent=msg; statusEl.style.display="block"; }
@@ -196,7 +224,7 @@
       if (attributedEl.checked) p += "&attributed=1";
       url = API + "/api/feed?" + p;
     }
-    fetch(url).then(function(r){return r.json();}).then(function(d){
+    fetchRetry(url).then(function(r){return r.json();}).then(function(d){
       var items = d.items || [];
       render(items, appending);
       if (mode === "search"){ done = true; }
@@ -222,7 +250,7 @@
 
   // ---- Populate filter dropdowns from the facets endpoint (one request; no pagination) ----
   function opt(sel, v, label){ var o=document.createElement("option"); o.value=v; o.textContent=label; sel.appendChild(o); }
-  fetch(API+"/api/annual-facets").then(function(r){return r.json();}).then(function(f){
+  fetchRetry(API+"/api/annual-facets").then(function(r){return r.json();}).then(function(f){
     (f.countries||[]).forEach(function(x){ opt(countryEl, x.v, x.v+" ("+x.n+")"); });
     (f.decades||[]).forEach(function(x){ opt(decadeEl, String(x.year), x.v+" ("+x.n+")"); });
     (f.industries||[]).forEach(function(x){ opt(industryEl, x.v, x.v+" ("+x.n+")"); });

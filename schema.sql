@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS items (
   owner_id     TEXT,                      -- NULL = curated/public; set = user-added (private to their boards)
   status       TEXT NOT NULL DEFAULT 'published',
   created_at   INTEGER NOT NULL,
-  collection   TEXT DEFAULT 'design',     -- 'design' (default gallery) | 'annual-report'
+  collection   TEXT DEFAULT 'design',     -- sourcing/provenance unit: 'design' | 'annual-report' | 'brand-guidelines' | 'posters' | ...
+  category     TEXT,                      -- cross-cutting discipline TAB (spans collections): typography|branding|editorial|print|packaging|logos|interface|illustration
   company      TEXT,                      -- annual-report only: issuing company/entity
   report_year  INTEGER,                   -- annual-report only: fiscal/report year
   designer     TEXT,                      -- annual-report only: designer/agency (curated, not AI)
@@ -29,6 +30,8 @@ CREATE INDEX IF NOT EXISTS idx_items_created ON items(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_items_style   ON items(style, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_items_status  ON items(status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_items_collection ON items(collection, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_items_category ON items(collection, category, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_items_source_url ON items(source_url);  -- de-dup lookups on ingest were full-table scans without this
 
 CREATE TABLE IF NOT EXISTS users (
   id                TEXT PRIMARY KEY,

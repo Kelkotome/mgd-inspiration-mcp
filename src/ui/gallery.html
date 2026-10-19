@@ -68,6 +68,22 @@
   .mgd-src{font-size:.8rem;color:var(--muted)}
   .mgd-copy-note{font-size:.72rem;color:#16a34a;min-height:1em}
   .mgd-modal__close{position:absolute;top:1rem;right:1rem;background:#fff;border:1px solid var(--border-strong);border-radius:999px;width:34px;height:34px;font-size:1.1rem;cursor:pointer;line-height:1;z-index:2}
+  /* listen (narration) */
+  .mgd-listen{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:.7rem;margin-top:.1rem}
+  .mgd-listen__play{align-self:flex-start;gap:.45rem}
+  .mgd-listen__play svg{width:15px;height:15px;fill:currentColor}
+  .mgd-listen__play.is-playing{background:#000}
+  .mgd-listen__rate{font:inherit;font-size:.78rem;font-weight:700;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);border-radius:8px;padding:.42rem .55rem;cursor:pointer;min-width:2.7em;text-align:center}
+  .mgd-listen__voice{font:inherit;font-size:.78rem;padding:.42rem .5rem;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);color:var(--text);max-width:190px}
+  /* share */
+  .mgd-share{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:.8rem;margin-top:.1rem}
+  .mgd-share__label{font-size:.8rem;font-weight:700;margin-right:.1rem}
+  .mgd-share__native{gap:.4rem}
+  .mgd-share__native svg{width:15px;height:15px;fill:currentColor}
+  .mgd-share__icons{display:flex;gap:.35rem;flex-wrap:wrap}
+  .mgd-share__ic{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer;text-decoration:none;padding:0}
+  .mgd-share__ic:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .mgd-share__ic svg{width:16px;height:16px;fill:currentColor}
   /* save popover */
   .mgd-pop{position:fixed;z-index:10001;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:0 8px 30px rgba(0,0,0,.18);width:260px;padding:.7rem;display:none}
   .mgd-pop.is-open{display:block}
@@ -99,6 +115,7 @@
     <a class="mgd-home" href="https://madegooddesigns.com/">← madegooddesigns.com</a>
     <h1 class="mgd-insp__title" id="insp-home">Design Inspiration</h1>
     <a class="mgd-btn" href="https://madegooddesigns.com/inspiration/annual-reports">📊 Annual Report Archive</a>
+    <a class="mgd-btn" href="https://madegooddesigns.com/inspiration/museum">🖼 Museum Collection</a>
     <form class="mgd-insp__search" id="insp-search-form"><input type="search" id="insp-search" placeholder="Search…" autocomplete="off" /></form>
     <div class="mgd-acct" id="insp-acct"></div>
   </div>
@@ -122,12 +139,35 @@
     <div class="mgd-modal__side">
       <h2 class="mgd-modal__t" id="m-title"></h2>
       <button class="mgd-btn mgd-btn--dark" id="m-save" style="align-self:flex-start">♡ Save to board</button>
+      <div class="mgd-listen" id="m-listen">
+        <button class="mgd-btn mgd-btn--dark mgd-listen__play" id="m-listen-play" type="button" aria-label="Listen to this description">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <span id="m-listen-label">Listen</span>
+        </button>
+        <button class="mgd-listen__rate" id="m-listen-rate" type="button" title="Playback speed">1&times;</button>
+        <select class="mgd-listen__voice" id="m-listen-voice" aria-label="Narration voice"></select>
+      </div>
       <p class="mgd-modal__d" id="m-desc"></p>
       <div class="mgd-modal__label">Tags</div><div class="mgd-tags" id="m-tags"></div>
       <div class="mgd-modal__label">Palette</div><div class="mgd-pal" id="m-pal"></div>
       <div class="mgd-fmt" id="m-fmt"><button data-fmt="hex" class="is-active">HEX</button><button data-fmt="rgb">RGB</button><button data-fmt="oklch">OKLCH</button></div>
       <div class="mgd-copy-note" id="m-copynote"></div>
       <div class="mgd-src" id="m-src"></div>
+      <div class="mgd-share" id="m-share">
+        <span class="mgd-share__label">Share this</span>
+        <button class="mgd-btn mgd-btn--dark mgd-share__native" id="m-share-native" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+          <span>Share</span>
+        </button>
+        <div class="mgd-share__icons" id="m-share-icons">
+          <a href="#" class="mgd-share__ic" data-net="x" title="Share on X" aria-label="Share on X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+          <a href="#" class="mgd-share__ic" data-net="facebook" title="Share on Facebook" aria-label="Share on Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+          <a href="#" class="mgd-share__ic" data-net="pinterest" title="Save to Pinterest" aria-label="Save to Pinterest"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345c-.091.378-.293 1.194-.333 1.361-.052.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.372 12-12 0-6.628-5.373-12-12-12z"/></svg></a>
+          <a href="#" class="mgd-share__ic" data-net="whatsapp" title="Share on WhatsApp" aria-label="Share on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.945C.157 5.335 5.492 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.044zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.612-.916-2.206-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg></a>
+          <a href="#" class="mgd-share__ic" data-net="email" title="Share by email" aria-label="Share by email"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg></a>
+          <button type="button" class="mgd-share__ic" data-net="copy" title="Copy link" aria-label="Copy link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg></button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -297,14 +337,17 @@
 
   // ---------- modal ----------
   function openModal(item){
+    state.modalItem=item;
     $("m-img").src=API+item.image; $("m-title").textContent=item.title||"Untitled"; $("m-desc").textContent=item.description||"";
     var tg=$("m-tags"); tg.innerHTML=""; (item.tags||[]).forEach(function(t){ var s=document.createElement("span"); s.className="mgd-tag"; s.textContent=t; tg.appendChild(s); });
     renderPalette(item.palette||[]);
     $("m-src").textContent=item.designer?("Photo: "+item.designer+(item.source_host?" · via "+item.source_host:"")):(item.source_host?("Source: "+item.source_host):""); $("m-copynote").textContent="";
     $("m-save").onclick=function(e){ var r=$("m-save").getBoundingClientRect(); openSave(item, r.left, r.bottom+6); };
+    narrStop(); narr.utext=narrText(item);
     $("insp-modal").classList.add("is-open"); $("insp-modal").setAttribute("aria-hidden","false");
+    setHash(item);
   }
-  function closeModal(){ $("insp-modal").classList.remove("is-open"); $("insp-modal").setAttribute("aria-hidden","true"); }
+  function closeModal(){ narrStop(); $("insp-modal").classList.remove("is-open"); $("insp-modal").setAttribute("aria-hidden","true"); state.modalItem=null; clearHash(); }
   function renderPalette(pal){ var box=$("m-pal"); box.innerHTML=""; pal.forEach(function(hex){ var sw=document.createElement("div"); sw.className="mgd-sw"; sw.style.background=hex; sw.title="Copy"; sw.addEventListener("click",function(){ copyColor(hex); }); box.appendChild(sw); }); }
   function copyColor(hex){ var val=formatColor(hex,state.fmt); (navigator.clipboard?navigator.clipboard.writeText(val):Promise.reject()).then(done,done); function done(){ $("m-copynote").textContent="Copied "+val; setTimeout(function(){ $("m-copynote").textContent=""; },1500); } }
 
@@ -319,6 +362,79 @@
   function formatColor(hex,fmt){ var c=hexToRgb(hex); if(fmt==="rgb")return "rgb("+c.r+", "+c.g+", "+c.b+")"; if(fmt==="oklch")return rgbToOklch(c.r,c.g,c.b); return hex.toLowerCase(); }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
 
+  // ---------- analytics ----------
+  function gaEvent(name, params){ try{ if(typeof gtag==="function") gtag("event", name, params||{}); }catch(_){} }
+
+  // ---------- narration (Web Speech API, fully on-device) ----------
+  var synth = window.speechSynthesis;
+  var RATES = [1, 1.25, 1.5, 2, 0.75];
+  var narr = { utext:"", rateIdx:0, voice:null, voices:[], playing:false };
+  function narrSupported(){ return !!synth && typeof window.SpeechSynthesisUtterance !== "undefined"; }
+  function narrText(item){ var t=(item.title||"Untitled")+". "+(item.description||""); if(item.tags&&item.tags.length) t+=" Tags: "+item.tags.join(", ")+"."; return t; }
+  function loadVoices(){
+    if(!narrSupported()) return;
+    var all = synth.getVoices()||[];
+    var en = all.filter(function(v){ return /^en(-|_|$)/i.test(v.lang); });
+    narr.voices = en.length ? en : all;
+    var sel = $("m-listen-voice"); if(!sel) return;
+    var saved = localStorage.getItem("mgd_voice");
+    sel.innerHTML = "";
+    narr.voices.forEach(function(v){ var o=document.createElement("option"); o.value=v.name; o.textContent=v.name.replace(/\s*\(.+\)$/,"")+" · "+v.lang; if(v.name===saved) o.selected=true; sel.appendChild(o); });
+    narr.voice = narr.voices.filter(function(v){ return v.name===sel.value; })[0] || narr.voices[0] || null;
+  }
+  function setListenLabel(on){ var l=$("m-listen-label"); if(l) l.textContent=on?"Stop":"Listen"; var b=$("m-listen-play"); if(b) b.classList.toggle("is-playing", on); }
+  function narrStop(){ if(narrSupported()) synth.cancel(); narr.playing=false; setListenLabel(false); }
+  function narrToggle(){
+    if(!narrSupported() || !narr.utext) return;
+    if(narr.playing){ narrStop(); return; }
+    synth.cancel();
+    var u = new window.SpeechSynthesisUtterance(narr.utext);
+    u.rate = RATES[narr.rateIdx]; if(narr.voice){ u.voice=narr.voice; u.lang=narr.voice.lang; }
+    u.onend = function(){ narr.playing=false; setListenLabel(false); };
+    u.onerror = function(){ narr.playing=false; setListenLabel(false); };
+    synth.speak(u); narr.playing=true; setListenLabel(true);
+    gaEvent("listen_play", { rate: RATES[narr.rateIdx] });
+  }
+  function cycleRate(){
+    narr.rateIdx = (narr.rateIdx+1) % RATES.length;
+    var btn=$("m-listen-rate"); if(btn) btn.innerHTML = RATES[narr.rateIdx] + "&times;";
+    if(narr.playing){ narrStop(); narrToggle(); }
+  }
+
+  // ---------- share ----------
+  function shareUrl(item){ return location.origin + location.pathname + "#i/" + encodeURIComponent(item.id); }
+  function shareTitle(item){ return (item.title || "Design inspiration") + " · Made Good Designs"; }
+  function nativeShare(item){
+    var d = { title: shareTitle(item), text: (item.description||"").slice(0,180), url: shareUrl(item) };
+    if(navigator.share){ navigator.share(d).then(function(){ gaEvent("share",{method:"native"}); }).catch(function(){}); }
+    else { copyLink(item); }
+  }
+  function openNet(net, item){
+    var u = encodeURIComponent(shareUrl(item));
+    var t = encodeURIComponent(shareTitle(item));
+    var img = encodeURIComponent(location.origin + API + item.image);
+    var map = {
+      x: "https://twitter.com/intent/tweet?url="+u+"&text="+t,
+      facebook: "https://www.facebook.com/sharer/sharer.php?u="+u,
+      pinterest: "https://pinterest.com/pin/create/button/?url="+u+"&media="+img+"&description="+t,
+      whatsapp: "https://api.whatsapp.com/send?text="+t+"%20"+u,
+      email: "mailto:?subject="+t+"&body="+encodeURIComponent("Thought you'd like this design: ")+u
+    };
+    if(net==="email"){ location.href = map.email; }
+    else { window.open(map[net], "_blank", "noopener,noreferrer,width=600,height=540"); }
+    gaEvent("share", { method: net });
+  }
+  function copyLink(item){ var url=shareUrl(item); (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(ok,ok); function ok(){ toastMsg("Link copied"); gaEvent("share",{method:"copy"}); } }
+
+  // ---------- deep link (#i/<id>) ----------
+  function setHash(item){ try{ history.replaceState(null,"","#i/"+encodeURIComponent(item.id)); }catch(_){} }
+  function clearHash(){ if(/^#i\//.test(location.hash)){ try{ history.replaceState(null,"",location.pathname+location.search); }catch(_){} } }
+  function openFromHash(){
+    var m=/^#i\/(.+)$/.exec(location.hash); if(!m) return;
+    var id=decodeURIComponent(m[1]);
+    api("/api/item/"+encodeURIComponent(id)).then(function(r){return r.json();}).then(function(d){ if(d&&d.item) openModal(d.item); }).catch(function(){});
+  }
+
   // ---------- wiring ----------
   $("insp-search-form").addEventListener("submit",function(e){ e.preventDefault(); var q=$("insp-search").value.trim(); if(q)runSearch(q); else setTheme(state.theme); });
   $("insp-home").addEventListener("click", goHome);
@@ -331,7 +447,22 @@
   var mcpCopy=$("mcp-copy");
   if(mcpCopy) mcpCopy.addEventListener("click",function(){ var t=($("mcp-url")||{}).textContent||"https://madegooddesigns.com/inspiration/mcp"; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(done,done); function done(){ mcpCopy.textContent="Copied!"; setTimeout(function(){ mcpCopy.textContent="Copy"; },1400); } });
 
-  chips(); loadFeed(); loadMe();
+  // narration controls
+  if(narrSupported()){
+    loadVoices();
+    if(typeof synth.onvoiceschanged !== "undefined") synth.onvoiceschanged = loadVoices;
+    $("m-listen-play").addEventListener("click", narrToggle);
+    $("m-listen-rate").addEventListener("click", cycleRate);
+    $("m-listen-voice").addEventListener("change", function(){ var sel=$("m-listen-voice"); narr.voice=narr.voices.filter(function(v){return v.name===sel.value;})[0]||narr.voice; localStorage.setItem("mgd_voice", sel.value); if(narr.playing){ narrStop(); narrToggle(); } });
+  } else { var lw=$("m-listen"); if(lw) lw.style.display="none"; }
+
+  // share controls
+  $("m-share-native").addEventListener("click", function(){ if(state.modalItem) nativeShare(state.modalItem); });
+  Array.prototype.forEach.call(document.querySelectorAll("#m-share-icons [data-net]"), function(b){
+    b.addEventListener("click", function(e){ e.preventDefault(); if(!state.modalItem) return; var net=b.getAttribute("data-net"); if(net==="copy") copyLink(state.modalItem); else openNet(net, state.modalItem); });
+  });
+
+  chips(); loadFeed(); loadMe(); openFromHash();
 })();
 </script>
 </body>

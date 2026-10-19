@@ -1,0 +1,11 @@
+-- 2026-09-02: cut D1 rows_read on the public feed hot path.
+-- The base feed query is:
+--   SELECT * FROM items
+--    WHERE status='published' AND owner_id IS NULL AND collection = ?
+--    ORDER BY created_at DESC LIMIT ?
+-- The pre-existing idx_items_collection(collection, created_at DESC) lets SQLite
+-- range-scan by collection in created_at order, but it must then residual-check
+-- status/owner_id on each candidate row. This composite index puts all three
+-- equality/IS-NULL predicates ahead of created_at so the base feed is a tight
+-- index range scan reading ~LIMIT rows (no residual filtering, no wider scan).
+CREATE INDEX IF NOT EXISTS idx_items_feed ON items(collection, status, owner_id, created_at DESC);
