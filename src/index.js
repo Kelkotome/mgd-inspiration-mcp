@@ -454,6 +454,7 @@ ul.facts{list-style:none;padding:0;margin:0 0 1.1rem;color:var(--muted);font-siz
 .fullreport .fr-note{color:var(--muted);font-size:.75rem;margin:.5rem 0 0}
 footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;line-height:1.5;max-width:70ch}
 </style></head><body><div class="wrap">
+${backLink(base, "/annual-reports", "Back to archive")}
 <nav class="crumb"><a href="${escHtml(base)}/annual-reports">Annual Report Archive</a> › ${escHtml(name)}</nav>
 <div class="detail">
   <div style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥ Save</button><img src="${escHtml(base + it.image)}" alt="${escHtml(name)} cover"/></div>
@@ -499,7 +500,14 @@ async function annualSitemap(env, base) {
 }
 
 // Shared styles for the server-rendered annual hub/facet pages.
+// "← Back" for collection detail pages: returns to the previous collection view (keeps filters + scroll) when the
+// visitor came from within the collection, otherwise links to the collection home.
+function backLink(base, path, label) {
+  const href = `${base}${path}`;
+  return `<a class="backbtn" href="${escHtml(href)}" onclick="try{var r=document.referrer;if(r&&r.indexOf(location.origin+${escHtml(JSON.stringify(href))})===0&&history.length>1){history.back();return false}}catch(e){}">← ${escHtml(label)}</a>`;
+}
 const ANNUAL_PAGE_CSS = `<style>
+.backbtn{display:inline-flex;align-items:center;gap:.35em;font-size:.85rem;font-weight:600;text-decoration:none;border:1px solid var(--line,rgba(127,127,127,.35));border-radius:999px;padding:.35em .9em;margin:.25rem 0 .6rem}.backbtn:hover{border-color:currentColor}
 :root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 @media(prefers-color-scheme:dark){:root{--bg:#0f0f0f;--surface:#171717;--border:#262626;--text:#fafafa;--muted:#a3a3a3}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
@@ -536,6 +544,7 @@ async function annualIndexPage(env, base) {
 <link rel="canonical" href="${escHtml(canonical)}"/>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 ${ANNUAL_PAGE_CSS}</head><body><div class="wrap">
+${backLink(base, "/annual-reports", "Back to archive")}
 <nav class="crumb"><a href="${escHtml(base)}/annual-reports">Annual Report Archive</a> › Browse</nav>
 <h1>Browse the Annual Report Archive</h1>
 <p class="lead">A reference archive of vintage corporate annual-report cover design. Browse by country, designer, company, or industry.</p>
@@ -574,6 +583,7 @@ async function annualFacetPage(kind, slug, env, base) {
 <link rel="canonical" href="${escHtml(canonical)}"/>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 ${ANNUAL_PAGE_CSS}</head><body><div class="wrap">
+${backLink(base, "/annual-reports", "Back to archive")}
 <nav class="crumb"><a href="${escHtml(base)}/annual-reports">Annual Report Archive</a> › <a href="${escHtml(base)}/annual-reports/index">Browse</a> › ${escHtml(value)}</nav>
 <h1>${escHtml(heading)}</h1>
 <p class="lead">${items.length} ${items.length === 1 ? "report" : "reports"} in the archive.</p>
@@ -673,6 +683,7 @@ dl.facts dt{color:var(--muted)}dl.facts dd{margin:0}
 .cta{display:inline-block;font-size:.9rem;font-weight:600;text-decoration:none;border:1px solid var(--text);border-radius:8px;padding:.5rem .9rem;margin-right:.5rem}
 footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;line-height:1.5;max-width:70ch}
 </style></head><body><div class="wrap">
+${backLink(base, "/museum", "Back to collection")}
 <nav class="crumb"><a href="${escHtml(base)}/museum">Museum Collection</a>${themeLabel ? ` › <a href="${escHtml(base)}/museum/theme/${escHtml(slugify(it.theme))}">${escHtml(themeLabel)}</a>` : ""} › ${escHtml(name)}</nav>
 <div class="detail">
   <div style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥ Save</button><img src="${escHtml(base + it.image)}" alt="${escHtml(name)}${it.artist ? " by " + escHtml(it.artist) : ""}"/></div>
@@ -738,6 +749,7 @@ async function museumIndexPage(env, base) {
 <link rel="canonical" href="${escHtml(canonical)}"/>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 ${ANNUAL_PAGE_CSS}</head><body><div class="wrap">
+${backLink(base, "/museum", "Back to collection")}
 <nav class="crumb"><a href="${escHtml(base)}/museum">Museum Collection</a> › Browse</nav>
 <h1>Browse the Museum Collection</h1>
 <p class="lead">Public-domain artworks chosen for designers. Browse by theme, artist, culture, object type or holding museum.</p>
@@ -777,6 +789,7 @@ async function museumFacetPage(kind, slug, env, base) {
 <link rel="canonical" href="${escHtml(canonical)}"/>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 ${ANNUAL_PAGE_CSS}</head><body><div class="wrap">
+${backLink(base, "/museum", "Back to collection")}
 <nav class="crumb"><a href="${escHtml(base)}/museum">Museum Collection</a> › <a href="${escHtml(base)}/museum/index">Browse</a> › ${escHtml(label)}</nav>
 <h1>${escHtml(heading)}</h1>
 <p class="lead">${items.length} ${items.length === 1 ? "artwork" : "artworks"} in the collection.</p>
