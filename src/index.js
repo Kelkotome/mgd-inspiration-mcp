@@ -612,19 +612,23 @@ const MUSEUM_THEMES = {
 };
 // Editorial guides on madegooddesigns.com that go with museum themes / artists (internal links both ways).
 const MUSEUM_GUIDES = {
-  theme: { "ukiyo-e": ["ukiyo-e", "hokusai", "hiroshige"], "japanese-prints": ["ukiyo-e", "hokusai"], "art-nouveau": ["alphonse-mucha", "art-deco-vs-art-nouveau"],
-    "posters": ["toulouse-lautrec-posters", "alphonse-mucha"], "arts-and-crafts": ["arts-and-crafts-movement", "william-morris-patterns"],
+  theme: { "ukiyo-e": ["ukiyo-e", "hokusai", "hiroshige"], "japanese-prints": ["ukiyo-e", "japanese-art"], "art-nouveau": ["alphonse-mucha", "art-deco-vs-art-nouveau"],
+    "posters": ["vintage-posters", "toulouse-lautrec-posters", "alphonse-mucha"], "arts-and-crafts": ["arts-and-crafts-movement", "william-morris-patterns"],
     "wallpaper": ["william-morris-patterns"], "textiles": ["william-morris-patterns"], "illuminated-manuscripts": ["illuminated-manuscripts", "gothic-art"],
     "lettering": ["illuminated-manuscripts", "medieval-fonts"], "alphabets": ["medieval-fonts", "albrecht-durer"], "calligraphy": ["japanese-calligraphy", "chinese-calligraphy"],
-    "islamic-art": ["islamic-geometric-patterns"], "engraving": ["albrecht-durer"], "woodcut": ["albrecht-durer"], "aesthetic-movement": ["aubrey-beardsley"],
-    "maps": ["old-maps"], "fashion-plates": ["fashion-plates"], "art-deco": ["art-deco-vs-art-nouveau"], "chinese-art": ["chinese-calligraphy"] },
+    "islamic-art": ["islamic-art", "islamic-geometric-patterns"], "engraving": ["albrecht-durer", "renaissance-art"], "woodcut": ["albrecht-durer"], "aesthetic-movement": ["aubrey-beardsley"],
+    "maps": ["old-maps"], "fashion-plates": ["fashion-plates"], "art-deco": ["art-deco-vs-art-nouveau"], "chinese-art": ["chinese-calligraphy"], "botanical": ["audubon-birds"], "ornament": ["rococo", "renaissance-art"],
+    "katagami": ["japanese-art"], "indian-painting": ["islamic-art"], "ceramics": ["rococo"] },
   artist: [[/hokusai/i, ["great-wave-off-kanagawa", "hokusai"]], [/hiroshige/i, ["hiroshige"]], [/mucha/i, ["alphonse-mucha"]], [/toulouse-lautrec/i, ["toulouse-lautrec-posters"]],
-    [/d[uü]rer/i, ["albrecht-durer"]], [/beardsley/i, ["aubrey-beardsley"]], [/william morris/i, ["william-morris-patterns"]], [/walter crane|ashbee|voysey/i, ["arts-and-crafts-movement"]]],
+    [/d[uü]rer/i, ["albrecht-durer"]], [/beardsley/i, ["aubrey-beardsley"]], [/william morris/i, ["william-morris-patterns"]], [/walter crane|ashbee|voysey/i, ["arts-and-crafts-movement"]], [/blake/i, ["william-blake"]],
+    [/rossetti|burne-jones|millais|holman hunt/i, ["pre-raphaelite"]], [/audubon|havell/i, ["audubon-birds"]], [/ch[eé]ret|grasset|steinlen|bonnard|privat-livemont|penfield/i, ["vintage-posters"]]],
   names: { "ukiyo-e": "Ukiyo-e", "hokusai": "Hokusai", "hiroshige": "Hiroshige", "great-wave-off-kanagawa": "The Great Wave", "alphonse-mucha": "Alphonse Mucha",
     "art-deco-vs-art-nouveau": "Art Deco vs Art Nouveau", "toulouse-lautrec-posters": "Toulouse-Lautrec posters", "arts-and-crafts-movement": "The Arts and Crafts movement",
     "william-morris-patterns": "William Morris patterns", "illuminated-manuscripts": "Illuminated manuscripts", "gothic-art": "Gothic art", "medieval-fonts": "Medieval fonts",
     "albrecht-durer": "Albrecht Dürer", "japanese-calligraphy": "Japanese calligraphy", "chinese-calligraphy": "Chinese calligraphy",
-    "islamic-geometric-patterns": "Islamic geometric patterns", "aubrey-beardsley": "Aubrey Beardsley", "old-maps": "Old maps", "fashion-plates": "Fashion plates" },
+    "islamic-geometric-patterns": "Islamic geometric patterns", "aubrey-beardsley": "Aubrey Beardsley", "old-maps": "Old maps", "fashion-plates": "Fashion plates", "vintage-posters": "Vintage posters", "islamic-art": "Islamic art",
+    "japanese-art": "Japanese art", "renaissance-art": "Renaissance art", "rococo": "Rococo", "audubon-birds": "Audubon’s birds", "william-blake": "William Blake",
+    "pre-raphaelite": "The Pre-Raphaelites", "medieval-art": "Medieval art", "baroque-art": "Baroque art" },
 };
 function museumGuides({ theme, artist }) {
   const out = [];
