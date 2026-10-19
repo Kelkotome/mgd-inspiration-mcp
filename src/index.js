@@ -614,11 +614,11 @@ const MUSEUM_THEMES = {
 const MUSEUM_GUIDES = {
   theme: { "ukiyo-e": ["ukiyo-e", "hokusai", "hiroshige"], "japanese-prints": ["ukiyo-e", "japanese-art"], "art-nouveau": ["alphonse-mucha", "art-deco-vs-art-nouveau"],
     "posters": ["vintage-posters", "toulouse-lautrec-posters", "alphonse-mucha"], "arts-and-crafts": ["arts-and-crafts-movement", "william-morris-patterns"],
-    "wallpaper": ["william-morris-patterns"], "textiles": ["toile-de-jouy", "paisley-pattern", "unicorn-tapestries"], "illuminated-manuscripts": ["illuminated-manuscripts", "gothic-art"],
+    "wallpaper": ["william-morris-patterns"], "textiles": ["toile-de-jouy", "damask-pattern", "paisley-pattern"], "illuminated-manuscripts": ["illuminated-manuscripts", "gothic-art"],
     "lettering": ["illuminated-manuscripts", "medieval-fonts"], "alphabets": ["medieval-fonts", "albrecht-durer"], "calligraphy": ["japanese-calligraphy", "chinese-calligraphy"],
     "islamic-art": ["islamic-art", "islamic-geometric-patterns"], "engraving": ["etching", "albrecht-durer", "renaissance-art"], "printmaking": ["woodblock-printing", "lithography", "etching"], "glass": ["venetian-glass", "stained-glass"], "expressionism": ["expressionism-art"], "woodcut": ["woodblock-printing", "albrecht-durer"], "aesthetic-movement": ["aubrey-beardsley"],
     "maps": ["old-maps"], "fashion-plates": ["fashion-plates"], "art-deco": ["art-deco-vs-art-nouveau"], "chinese-art": ["chinese-art", "chinese-calligraphy"], "botanical": ["botanical-illustration", "audubon-birds"], "ornament": ["rococo", "celtic-knot", "renaissance-art"],
-    "katagami": ["japanese-patterns", "japanese-art"], "indian-painting": ["indian-art", "islamic-art"], "ceramics": ["majolica", "chinese-art", "chinoiserie"] },
+    "katagami": ["japanese-patterns", "japanese-art"], "indian-painting": ["indian-art", "islamic-art"], "ceramics": ["majolica", "delftware", "chinese-art"] },
   artist: [[/hokusai/i, ["great-wave-off-kanagawa", "hokusai"]], [/hiroshige/i, ["hiroshige"]], [/mucha/i, ["alphonse-mucha"]], [/toulouse-lautrec/i, ["toulouse-lautrec-posters"]],
     [/d[uü]rer/i, ["albrecht-durer"]], [/beardsley/i, ["aubrey-beardsley"]], [/william morris/i, ["william-morris-patterns"]], [/walter crane|ashbee|voysey/i, ["arts-and-crafts-movement"]], [/blake/i, ["william-blake"]],
     [/rossetti|burne-jones|millais|holman hunt/i, ["pre-raphaelite"]], [/audubon|havell/i, ["audubon-birds"]], [/rembrandt|piranesi|goya|callot|whistler/i, ["etching"]], [/daumier|senefelder/i, ["lithography"]],
@@ -626,7 +626,8 @@ const MUSEUM_GUIDES = {
     [/van gogh|gauguin|c[eé]zanne/i, ["post-impressionism"]], [/seurat|signac|\bcross\b/i, ["pointillism", "post-impressionism"]], [/turner|constable|friedrich|delacroix|g[eé]ricault/i, ["romanticism-art"]],
     [/jacques-louis david|canova|flaxman|wedgwood/i, ["neoclassical-art"]], [/courbet|\bmillet\b|winslow homer|eakins|bonheur/i, ["realism-art"]], [/thomas cole|frederic edwin church|lorrain|ruisdael/i, ["landscape-painting"]], [/pillement/i, ["chinoiserie"]], [/kirchner|munch|franz marc|kandinsky|schmidt-rottluff|nolde/i, ["expressionism-art"]],
     [/redon|moreau|puvis|khnopff|b[oö]cklin/i, ["symbolism-art"]], [/harnett|peto|gijsbrechts/i, ["trompe-loeil"]], [/hicks|ammi phillips/i, ["folk-art"]],
-    [/oberkampf|huet/i, ["toile-de-jouy"]], [/salviati|barovier/i, ["venetian-glass"]], [/cassatt|whistler|bracquemond/i, ["japonisme"]], [/ch[eé]ret|grasset|steinlen|bonnard|privat-livemont|penfield/i, ["vintage-posters"]]],
+    [/oberkampf|huet/i, ["toile-de-jouy"]], [/salviati|barovier/i, ["venetian-glass"]], [/cassatt|whistler|bracquemond/i, ["japonisme"]], [/lalique|vever|fouquet/i, ["art-nouveau-jewelry"]], [/edouart/i, ["silhouette-art"]],
+    [/vermeer|de hooch|hals|steen|de witte/i, ["dutch-golden-age-painting"]], [/pugin|dresser/i, ["victorian-art"]], [/ch[eé]ret|grasset|steinlen|bonnard|privat-livemont|penfield/i, ["vintage-posters"]]],
   names: { "ukiyo-e": "Ukiyo-e", "hokusai": "Hokusai", "hiroshige": "Hiroshige", "great-wave-off-kanagawa": "The Great Wave", "alphonse-mucha": "Alphonse Mucha",
     "art-deco-vs-art-nouveau": "Art Deco vs Art Nouveau", "toulouse-lautrec-posters": "Toulouse-Lautrec posters", "arts-and-crafts-movement": "The Arts and Crafts movement",
     "william-morris-patterns": "William Morris patterns", "illuminated-manuscripts": "Illuminated manuscripts", "gothic-art": "Gothic art", "medieval-fonts": "Medieval fonts",
@@ -642,7 +643,10 @@ const MUSEUM_GUIDES = {
     "chinoiserie": "Chinoiserie", "paisley-pattern": "Paisley pattern", "romanticism-art": "Romanticism", "neoclassical-art": "Neoclassical art",
     "landscape-painting": "Landscape painting", "realism-art": "Realism", "trompe-loeil": "Trompe l’oeil", "folk-art": "Folk art",
     "medieval-bestiary": "The medieval bestiary", "majolica": "Majolica", "expressionism-art": "Expressionism", "symbolism-art": "Symbolism", "indian-art": "Indian art",
-    "japonisme": "Japonisme", "toile-de-jouy": "Toile de Jouy", "venetian-glass": "Venetian glass" },
+    "japonisme": "Japonisme", "toile-de-jouy": "Toile de Jouy", "venetian-glass": "Venetian glass",
+    "cameo-jewelry": "Cameo jewellery", "art-nouveau-jewelry": "Art Nouveau jewellery", "silhouette-art": "Silhouette art", "victorian-art": "Victorian art",
+    "persian-art": "Persian art", "viking-art": "Viking art", "delftware": "Delftware", "damask-pattern": "Damask pattern",
+    "japanese-family-crests": "Japanese family crests", "dutch-golden-age-painting": "Dutch Golden Age painting" },
 };
 function museumGuides({ theme, artist }) {
   const out = [];
