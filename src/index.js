@@ -436,7 +436,6 @@ ${GTAG}
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 <style>
 :root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-@media(prefers-color-scheme:dark){:root{--bg:#0f0f0f;--surface:#171717;--border:#262626;--text:#fafafa;--muted:#a3a3a3}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
 a{color:inherit}.wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 4rem}
 nav.crumb{font-size:.82rem;color:var(--muted);margin:.25rem 0 1rem}nav.crumb a{text-decoration:none}
@@ -504,12 +503,11 @@ async function annualSitemap(env, base) {
 // visitor came from within the collection, otherwise links to the collection home.
 function backLink(base, path, label) {
   const href = `${base}${path}`;
-  return `<a class="backbtn" href="${escHtml(href)}" onclick="try{var r=document.referrer;if(r&&r.indexOf(location.origin+${escHtml(JSON.stringify(href))})===0&&history.length>1){history.back();return false}}catch(e){}">← ${escHtml(label)}</a>`;
+  return `<a class="backbtn" style="display:inline-flex;align-items:center;gap:.35em;font-size:.85rem;font-weight:600;text-decoration:none;border:1px solid #d4d4d4;background:#fff;border-radius:999px;padding:.35em .9em;margin:.25rem 0 .6rem;color:#171717" href="${escHtml(href)}" onclick="try{var r=document.referrer;if(r&&r.indexOf(location.origin+${escHtml(JSON.stringify(href))})===0&&history.length>1){history.back();return false}}catch(e){}">← ${escHtml(label)}</a>`;
 }
 const ANNUAL_PAGE_CSS = `<style>
 .backbtn{display:inline-flex;align-items:center;gap:.35em;font-size:.85rem;font-weight:600;text-decoration:none;border:1px solid var(--line,rgba(127,127,127,.35));border-radius:999px;padding:.35em .9em;margin:.25rem 0 .6rem}.backbtn:hover{border-color:currentColor}
 :root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-@media(prefers-color-scheme:dark){:root{--bg:#0f0f0f;--surface:#171717;--border:#262626;--text:#fafafa;--muted:#a3a3a3}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
 a{color:inherit}.wrap{max-width:960px;margin:0 auto;padding:1.25rem 1rem 4rem}
 nav.crumb{font-size:.82rem;color:var(--muted);margin:.25rem 0 1rem}nav.crumb a{text-decoration:none}
@@ -666,7 +664,6 @@ ${GTAG}
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 <style>
 :root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-@media(prefers-color-scheme:dark){:root{--bg:#0f0f0f;--surface:#171717;--border:#262626;--text:#fafafa;--muted:#a3a3a3}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
 a{color:inherit}.wrap{max-width:1000px;margin:0 auto;padding:1.25rem 1rem 4rem}
 nav.crumb{font-size:.82rem;color:var(--muted);margin:.25rem 0 1rem}nav.crumb a{text-decoration:none}
