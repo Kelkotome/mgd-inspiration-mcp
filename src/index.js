@@ -610,6 +610,31 @@ const MUSEUM_THEMES = {
   "engraving": "Engraving", "expressionism": "Expressionism", "islamic-art": "Islamic art", "indian-painting": "Indian painting",
   "chinese-art": "Chinese art", "ceramics": "Ceramics", "glass": "Glass",
 };
+// Editorial guides on madegooddesigns.com that go with museum themes / artists (internal links both ways).
+const MUSEUM_GUIDES = {
+  theme: { "ukiyo-e": ["ukiyo-e", "hokusai", "hiroshige"], "japanese-prints": ["ukiyo-e", "hokusai"], "art-nouveau": ["alphonse-mucha", "art-deco-vs-art-nouveau"],
+    "posters": ["toulouse-lautrec-posters", "alphonse-mucha"], "arts-and-crafts": ["arts-and-crafts-movement", "william-morris-patterns"],
+    "wallpaper": ["william-morris-patterns"], "textiles": ["william-morris-patterns"], "illuminated-manuscripts": ["illuminated-manuscripts", "gothic-art"],
+    "lettering": ["illuminated-manuscripts", "medieval-fonts"], "alphabets": ["medieval-fonts", "albrecht-durer"], "calligraphy": ["japanese-calligraphy", "chinese-calligraphy"],
+    "islamic-art": ["islamic-geometric-patterns"], "engraving": ["albrecht-durer"], "woodcut": ["albrecht-durer"], "aesthetic-movement": ["aubrey-beardsley"],
+    "maps": ["old-maps"], "fashion-plates": ["fashion-plates"], "art-deco": ["art-deco-vs-art-nouveau"], "chinese-art": ["chinese-calligraphy"] },
+  artist: [[/hokusai/i, ["great-wave-off-kanagawa", "hokusai"]], [/hiroshige/i, ["hiroshige"]], [/mucha/i, ["alphonse-mucha"]], [/toulouse-lautrec/i, ["toulouse-lautrec-posters"]],
+    [/d[uü]rer/i, ["albrecht-durer"]], [/beardsley/i, ["aubrey-beardsley"]], [/william morris/i, ["william-morris-patterns"]], [/walter crane|ashbee|voysey/i, ["arts-and-crafts-movement"]]],
+  names: { "ukiyo-e": "Ukiyo-e", "hokusai": "Hokusai", "hiroshige": "Hiroshige", "great-wave-off-kanagawa": "The Great Wave", "alphonse-mucha": "Alphonse Mucha",
+    "art-deco-vs-art-nouveau": "Art Deco vs Art Nouveau", "toulouse-lautrec-posters": "Toulouse-Lautrec posters", "arts-and-crafts-movement": "The Arts and Crafts movement",
+    "william-morris-patterns": "William Morris patterns", "illuminated-manuscripts": "Illuminated manuscripts", "gothic-art": "Gothic art", "medieval-fonts": "Medieval fonts",
+    "albrecht-durer": "Albrecht Dürer", "japanese-calligraphy": "Japanese calligraphy", "chinese-calligraphy": "Chinese calligraphy",
+    "islamic-geometric-patterns": "Islamic geometric patterns", "aubrey-beardsley": "Aubrey Beardsley", "old-maps": "Old maps", "fashion-plates": "Fashion plates" },
+};
+function museumGuides({ theme, artist }) {
+  const out = [];
+  for (const [re, slugs] of MUSEUM_GUIDES.artist) if (artist && re.test(artist)) out.push(...slugs);
+  if (theme && MUSEUM_GUIDES.theme[theme]) out.push(...MUSEUM_GUIDES.theme[theme]);
+  const uniq = [...new Set(out)].slice(0, 3);
+  if (!uniq.length) return "";
+  return `<p class="guides-line" style="font-size:.9rem;margin:1rem 0 0"><strong>Read the guide:</strong> ` +
+    uniq.map((s) => `<a href="https://madegooddesigns.com/${s}/">${escHtml(MUSEUM_GUIDES.names[s] || s)}</a>`).join(" · ") + `</p>`;
+}
 function museumThemeLabel(slug) { return MUSEUM_THEMES[slug] || (slug || "").replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase()); }
 
 // Canonical path for a museum item: /museum/<title>-<year>-<id>
@@ -691,6 +716,7 @@ ${backLink(base, "/museum", "Back to collection")}
     ${pal ? `<div class="pal">${pal}</div>` : ""}
     ${chips ? `<div class="chips">${chips}</div>` : ""}
     ${it.source_link ? `<a class="cta" href="${escHtml(it.source_link)}" rel="noopener" target="_blank">View at ${escHtml(it.museum || "the museum")} ↗</a>` : ""}
+    ${museumGuides({ theme: it.theme ? slugify(it.theme) : "", artist: it.artist })}
   </div>
 </div>
 <footer class="rights">Image: ${escHtml(it.museum || "the holding museum")}, open access — public domain (CC0). Description and design tags by Made Good Designs.</footer>
@@ -790,6 +816,7 @@ ${backLink(base, "/museum", "Back to collection")}
 <nav class="crumb"><a href="${escHtml(base)}/museum">Museum Collection</a> › <a href="${escHtml(base)}/museum/index">Browse</a> › ${escHtml(label)}</nav>
 <h1>${escHtml(heading)}</h1>
 <p class="lead">${items.length} ${items.length === 1 ? "artwork" : "artworks"} in the collection.</p>
+${museumGuides(kind === "theme" ? { theme: slugify(value) } : kind === "artist" ? { artist: value } : {})}
 <div class="grid">${cards}</div>
 <footer class="rights">Images from museum open-access programmes — public domain (CC0).</footer>
 </div>${saveWidget(base)}</body></html>`;
