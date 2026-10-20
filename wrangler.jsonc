@@ -39,11 +39,19 @@
     // CORS: the gallery is embedded on the WordPress site and calls this Worker.
     "ALLOWED_ORIGIN": "https://madegooddesigns.com",
     // Mount the whole Worker under madegooddesigns.com/inspiration/ (see routes below).
-    "BASE_PATH": "/inspiration"
+    "BASE_PATH": "/inspiration",
+    // Canonical public origin for the OAuth issuer / MCP resource URLs (src/oauth.js).
+    "PUBLIC_ORIGIN": "https://madegooddesigns.com"
   },
 
   "routes": [
-    { "pattern": "madegooddesigns.com/inspiration*", "zone_name": "madegooddesigns.com" }
+    { "pattern": "madegooddesigns.com/inspiration*", "zone_name": "madegooddesigns.com" },
+    // OAuth discovery for the authenticated MCP endpoint (/inspiration/mcp/me). RFC 8414 /
+    // RFC 9728 put well-known docs at the ROOT with the issuer/resource path appended, i.e.
+    // OUTSIDE /inspiration*. These two narrow routes claim only those exact sub-paths, so
+    // WordPress keeps everything else under /.well-known/.
+    { "pattern": "madegooddesigns.com/.well-known/oauth-authorization-server/inspiration*", "zone_name": "madegooddesigns.com" },
+    { "pattern": "madegooddesigns.com/.well-known/oauth-protected-resource/inspiration*", "zone_name": "madegooddesigns.com" }
   ]
 
   // Secrets (set via `wrangler secret put`, NOT stored here):

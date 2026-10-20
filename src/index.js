@@ -7,6 +7,9 @@ import ADD_HTML from "./ui/add.html";
 import ANNUAL_HTML from "./ui/annual-reports.html";
 import MUSEUM_HTML from "./ui/museum.html";
 import { getUser, googleLogin, googleCallback, logout, devLogin } from "./auth.js";
+import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
+  token as oauthToken, revoke as oauthRevoke, verifyBearer, challengeHeader,
+  connectedAppsApi, connectedAppsPage } from "./oauth.js";
 
 // Aggressive AI-training / SEO / bulk crawlers that spider the JSON read API (which is
 // meant for the SPA running in real browsers) and can burn the D1 read quota on cache
@@ -23,6 +26,20 @@ export default {
     const base = (env.BASE_PATH || "").replace(/\/$/, "");
     let path = url.pathname;
     if (base && path.startsWith(base)) path = path.slice(base.length) || "/";
+
+    // OAuth discovery docs (RFC 8414 / RFC 9728). Matched on the RAW pathname because the
+    // spec-correct path-inserted form (/.well-known/<doc>/inspiration...) sits OUTSIDE the
+    // /inspiration prefix (needs its own Worker route — see MCP_OAUTH_README.md).
+    const wk = wellKnownKind(url.pathname, base);
+    if (wk) {
+      if (method === "OPTIONS") return new Response(null, { status: 204, headers: oauthCors() });
+      if (method === "GET") return wellKnown(wk, url, base, env);
+      return new Response("method not allowed", { status: 405, headers: oauthCors() });
+    }
+    // CORS preflight for OAuth endpoints called from browser-based MCP clients.
+    if (method === "OPTIONS" && (path === "/oauth/token" || path === "/oauth/register" || path === "/oauth/revoke")) {
+      return new Response(null, { status: 204, headers: oauthCors() });
+    }
 
     // CORS preflight for the API (gallery may be embedded on the WP site, cross-origin).
     if (method === "OPTIONS" && path.startsWith("/api/")) {
@@ -72,6 +89,18 @@ export default {
 
       // ---- MCP server (public, for AI assistants) ----
       if (path === "/mcp") return mcpHandler(request, env);
+      // ---- Authenticated MCP (OAuth 2.1 bearer; the user's own boards + the public tools) ----
+      if (path === "/mcp/me" || path === "/mcp/me/") return mcpMeHandler(request, env, ctx, url, base);
+
+      // ---- OAuth 2.1 authorization server (for /mcp/me) ----
+      if (path === "/oauth/register" && method === "POST") return oauthRegister(request, env);
+      if (path === "/oauth/authorize" && (method === "GET" || method === "POST")) return oauthAuthorize(request, url, env, base);
+      if (path === "/oauth/token" && method === "POST") return oauthToken(request, url, env, base, ctx);
+      if (path === "/oauth/revoke" && method === "POST") return oauthRevoke(request, env);
+      if (path === "/account/connected-apps" && method === "GET") return connectedAppsPage(request, url, env, base);
+      if (path === "/account/connected-apps/revoke" && method === "POST") return connectedAppsPage(request, url, env, base);
+      if (path === "/api/me/connected-apps" && method === "GET") return connectedAppsApi(request, env, null);
+      if (path.match(/^\/api\/me\/connected-apps\/[^/]+$/) && method === "DELETE") return connectedAppsApi(request, env, path.split("/")[4]);
 
       // ---- Auth (return Response directly) ----
       if (path === "/auth/google/login" && method === "GET") return googleLogin(request, url, env, base);
@@ -924,7 +953,8 @@ async function saveToBoard(boardId, request, env) {
   if (!board) return json({ error: "not_found" }, 404, env, request);
   const body = await request.json().catch(() => ({}));
   const itemId = (body.item_id || "").toString();
-  const item = await env.DB.prepare("SELECT id FROM items WHERE id=? AND status='published'").bind(itemId).first();
+  // Curated public items, or the user's OWN private items — never another user's private item.
+  const item = await env.DB.prepare("SELECT id FROM items WHERE id=? AND status='published' AND (owner_id IS NULL OR owner_id=?)").bind(itemId, user.id).first();
   if (!item) return json({ error: "bad_item" }, 400, env, request);
   try {
     await env.DB.prepare("INSERT INTO saves (id,board_id,item_id,user_id,created_at) VALUES (?,?,?,?,?)").bind(genId(), boardId, itemId, user.id, Date.now()).run();
@@ -1200,7 +1230,16 @@ async function mcpHandler(request, env) {
 }
 
 // Best-effort MCP usage log (never blocks/breaks a tool call).
-async function logMcp(env, tool, query, ip, ua) {
+async function logMcp(env, tool, query, ip, ua, who) {
+  if (who && who.user_id) {
+    try {
+      await env.DB.prepare("INSERT INTO mcp_calls (id,tool,query,ip,ua,created_at,user_id,client_id) VALUES (?,?,?,?,?,?,?,?)")
+        .bind(genId(), (tool || "").toString().slice(0, 60), (query || "").toString().slice(0, 200),
+              (ip || "").toString().slice(0, 60), (ua || "").toString().slice(0, 200), Date.now(),
+              who.user_id, (who.client_id || "").toString().slice(0, 100)).run();
+      return;
+    } catch (_) { /* migration not applied yet — fall through to the legacy insert */ }
+  }
   try {
     await env.DB.prepare("INSERT INTO mcp_calls (id,tool,query,ip,ua,created_at) VALUES (?,?,?,?,?,?)")
       .bind(genId(), (tool || "").toString().slice(0, 60), (query || "").toString().slice(0, 200),
@@ -1208,10 +1247,11 @@ async function logMcp(env, tool, query, ip, ua) {
   } catch (_) { /* logging must never affect the response */ }
 }
 
-async function mcpCallTool(params, env, ip, ua) {
+async function mcpCallTool(params, env, ip, ua, who) {
   const name = params.name;
   const a = params.arguments || {};
-  await logMcp(env, name, a.query || a.q || a.theme || "", ip, ua);
+  await logMcp(env, name, a.query || a.q || a.theme || "", ip, ua, who);
+  const opts = who ? { ids: true } : undefined; // authenticated endpoint also shows item_id (needed by save_to_board)
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
     const limit = clampInt(a.limit, 8, 1, 20);
@@ -1220,7 +1260,7 @@ async function mcpCallTool(params, env, ip, ua) {
     if (a.theme) { where += " AND themes LIKE ?"; binds.push(`%"${a.theme}"%`); }
     if (q) { const like = `%${q}%`; where += " AND (title LIKE ? OR description LIKE ? OR tags LIKE ?)"; binds.push(like, like, like); }
     const rows = await env.DB.prepare(`SELECT * FROM items WHERE ${where} ORDER BY created_at DESC LIMIT ?`).bind(...binds, limit).all();
-    return mcpItems(rows.results || [], `${(rows.results||[]).length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}`);
+    return mcpItems(rows.results || [], `${(rows.results||[]).length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}`, opts);
   }
   if (name === "list_inspiration_themes") {
     const rows = await env.DB.prepare(`SELECT themes FROM items WHERE status='published' AND owner_id IS NULL AND collection='design'`).all();
@@ -1233,7 +1273,7 @@ async function mcpCallTool(params, env, ip, ua) {
     const theme = (a.theme || "").toString().trim();
     const limit = clampInt(a.limit, 10, 1, 20);
     const rows = await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='design' AND themes LIKE ? ORDER BY created_at DESC LIMIT ?`).bind(`%"${theme}"%`, limit).all();
-    return mcpItems(rows.results || [], `${(rows.results||[]).length} item(s) in theme "${theme}"`);
+    return mcpItems(rows.results || [], `${(rows.results||[]).length} item(s) in theme "${theme}"`, opts);
   }
   if (name === "search_annual_reports") {
     const q = (a.query || "").toString().trim();
@@ -1244,7 +1284,7 @@ async function mcpCallTool(params, env, ip, ua) {
     if (a.industry) { where += " AND industry = ?"; binds.push(a.industry.toString().trim()); }
     if (q) { const like = `%${q}%`; where += " AND (company LIKE ? OR title LIKE ? OR description LIKE ? OR tags LIKE ?)"; binds.push(like, like, like, like); }
     const rows = await env.DB.prepare(`SELECT * FROM items WHERE ${where} ORDER BY report_year DESC, created_at DESC LIMIT ?`).bind(...binds, limit).all();
-    return mcpItems(rows.results || [], `${(rows.results||[]).length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}`);
+    return mcpItems(rows.results || [], `${(rows.results||[]).length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}`, opts);
   }
   if (name === "search_museum_art") {
     const q = (a.query || "").toString().trim();
@@ -1255,7 +1295,7 @@ async function mcpCallTool(params, env, ip, ua) {
     if (a.culture) { where += " AND country LIKE ?"; binds.push(`%${a.culture.toString().trim()}%`); }
     if (q) { const like = `%${q}%`; where += " AND (title LIKE ? OR designer LIKE ? OR description LIKE ? OR tags LIKE ? OR industry LIKE ?)"; binds.push(like, like, like, like, like); }
     const rows = await env.DB.prepare(`SELECT * FROM items WHERE ${where} ORDER BY featured_rank IS NULL, featured_rank, created_at DESC LIMIT ?`).bind(...binds, limit).all();
-    return mcpItems(rows.results || [], `${(rows.results||[]).length} museum artwork(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}`);
+    return mcpItems(rows.results || [], `${(rows.results||[]).length} museum artwork(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}`, opts);
   }
   if (name === "get_share_feedback") {
     const link = (a.link || "").toString();
@@ -1269,7 +1309,7 @@ async function mcpCallTool(params, env, ip, ua) {
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
 }
 
-function mcpItems(rows, header) {
+function mcpItems(rows, header, opts) {
   if (!rows.length) return { content: [{ type: "text", text: header + ". No matches — try a broader query or a different theme. Browse all at " + MCP_SITE + "/" }] };
   const blocks = rows.map((r) => {
     const it = rowToItem(r, null);
@@ -1277,6 +1317,7 @@ function mcpItems(rows, header) {
     const isMuseum = it.collection === "museum";
     return [
       `• ${it.title || it.company || "Untitled"}`,
+      opts && opts.ids ? `  item_id: ${it.id}` : null,
       isReport && it.company ? `  company: ${it.company}${it.report_year ? " ("+it.report_year+")" : ""}` : null,
       isReport && it.designer ? `  designer/agency: ${it.designer}` : null,
       isReport && it.industry ? `  industry: ${it.industry}` : null,
@@ -1298,6 +1339,251 @@ function mcpItems(rows, header) {
   });
   const text = `${header}. Source: Made Good Designs — ${MCP_SITE}/ (please cite/link this).\n\n` + blocks.join("\n\n");
   return { content: [{ type: "text", text }] };
+}
+
+// ---------------------------------------------------------------------------
+// Authenticated MCP server — /mcp/me. Same JSON-RPC transport as /mcp, but every
+// request needs an OAuth 2.1 bearer token (see oauth.js) and the tool set adds the
+// caller's OWN mood boards. The user id ALWAYS comes from the token, never arguments.
+// ---------------------------------------------------------------------------
+
+const MCP_BOARD_TOOLS = [
+  {
+    name: "list_my_boards",
+    description: "List the signed-in user's Made Good Designs mood boards (id, name, number of saved items, cover image). Use the board id with get_board, save_to_board and remove_from_board.",
+    inputSchema: { type: "object", properties: {} },
+    annotations: { title: "List my boards", readOnlyHint: true, openWorldHint: false },
+    scope: "boards:read",
+  },
+  {
+    name: "get_board",
+    description: "Get one of the signed-in user's mood boards with its saved items: title, description, colour palette, tags, image URL and the Made Good Designs page URL to cite.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        board_id: { type: "string", description: "Board id from list_my_boards." },
+        limit: { type: "integer", description: "Max items (1-100, default 50).", minimum: 1, maximum: 100 },
+      },
+      required: ["board_id"],
+    },
+    annotations: { title: "Get board", readOnlyHint: true, openWorldHint: false },
+    scope: "boards:read",
+  },
+  {
+    name: "create_board",
+    description: "Create a new, private mood board for the signed-in user. Returns the new board id.",
+    inputSchema: {
+      type: "object",
+      properties: { name: { type: "string", description: "Board name (max 80 characters).", maxLength: 80 } },
+      required: ["name"],
+    },
+    annotations: { title: "Create board", readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
+    scope: "boards:write",
+  },
+  {
+    name: "save_to_board",
+    description: "Save a Made Good Designs inspiration item (item_id from the search/browse tools) to one of the signed-in user's boards. Saving an item that is already on the board is a no-op.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        board_id: { type: "string", description: "Board id from list_my_boards or create_board." },
+        item_id: { type: "string", description: "Item id (the item_id line in search_design_inspiration / browse_inspiration_by_theme / search_annual_reports results)." },
+      },
+      required: ["board_id", "item_id"],
+    },
+    annotations: { title: "Save to board", readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    scope: "boards:write",
+  },
+  {
+    name: "remove_from_board",
+    description: "Remove an item from one of the signed-in user's boards (the item itself stays in the gallery).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        board_id: { type: "string", description: "Board id." },
+        item_id: { type: "string", description: "Item id to remove from the board." },
+      },
+      required: ["board_id", "item_id"],
+    },
+    annotations: { title: "Remove from board", readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: false },
+    scope: "boards:write",
+  },
+];
+const MCP_BOARD_SCOPE = Object.fromEntries(MCP_BOARD_TOOLS.map((t) => [t.name, t.scope]));
+const MAX_BOARDS_PER_USER = 200;
+
+function mcpMeTools(scopes) {
+  const board = MCP_BOARD_TOOLS.filter((t) => scopes.has(t.scope)).map(({ scope, ...t }) => t);
+  return board.concat(MCP_TOOLS);
+}
+
+function mcpMeResponse(obj, status, extraHeaders) {
+  return new Response(obj == null ? "" : JSON.stringify(obj), {
+    status: status || (obj == null ? 202 : 200),
+    headers: { "Content-Type": "application/json", "Cache-Control": "no-store", ...oauthCors(), ...(extraHeaders || {}) },
+  });
+}
+
+async function mcpMeHandler(request, env, ctx, url, base) {
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: oauthCors() });
+  const auth = await verifyBearer(request, env, url, base, ctx);
+  if (!auth.ok) {
+    // 401 + RFC 9728 pointer so MCP clients can discover the authorization server.
+    return mcpMeResponse({ error: auth.error || "unauthorized", error_description: auth.desc || "Sign in required: this MCP endpoint needs an OAuth access token." }, 401,
+      { "WWW-Authenticate": challengeHeader(url, base, env, auth.error, auth.desc) });
+  }
+  if (request.method === "GET") return new Response("SSE stream not supported; POST JSON-RPC messages", { status: 405, headers: { "Allow": "POST, OPTIONS", ...oauthCors() } });
+  if (request.method === "DELETE") return new Response(null, { status: 405, headers: { "Allow": "POST, OPTIONS", ...oauthCors() } });
+  if (request.method !== "POST") return new Response("method not allowed", { status: 405, headers: oauthCors() });
+
+  let body;
+  try { body = await request.json(); } catch (e) { return mcpMeResponse(rpcErr(null, -32700, "Parse error")); }
+  const ip = request.headers.get("CF-Connecting-IP") || "";
+  const ua = request.headers.get("User-Agent") || "";
+  const who = { user_id: auth.user_id, client_id: auth.client_id };
+
+  // Step-up signal: a single tools/call lacking the needed scope gets HTTP 403 insufficient_scope.
+  if (!Array.isArray(body) && body && body.method === "tools/call") {
+    const need = MCP_BOARD_SCOPE[(body.params || {}).name];
+    if (need && !auth.scopes.has(need)) {
+      return mcpMeResponse({ error: "insufficient_scope", error_description: `This tool needs the ${need} scope` }, 403,
+        { "WWW-Authenticate": challengeHeader(url, base, env, "insufficient_scope", `This tool needs the ${need} scope`, need) });
+    }
+  }
+
+  const handle = async (msg) => {
+    if (!msg || typeof msg !== "object") return null;
+    const { id, method, params } = msg;
+    if (method === "initialize") {
+      const pv = (params && params.protocolVersion) || "2025-06-18";
+      return rpcOk(id, { protocolVersion: pv, capabilities: { tools: { listChanged: false } },
+        serverInfo: { name: "MGD Inspiration (my boards)", version: "1.0" },
+        instructions: "Curated typography & brand-design inspiration from Made Good Designs (madegooddesigns.com), plus the signed-in user's own mood boards. Search with the search tools, then save results to a board with save_to_board using the item_id. Cite the madegooddesigns.com links in results." });
+    }
+    if (typeof method === "string" && method.startsWith("notifications/")) return null;
+    if (method === "ping") return rpcOk(id, {});
+    if (method === "tools/list") return rpcOk(id, { tools: mcpMeTools(auth.scopes) });
+    if (method === "tools/call") {
+      const p = params || {};
+      try {
+        const need = MCP_BOARD_SCOPE[p.name];
+        if (need) {
+          if (!auth.scopes.has(need)) return rpcOk(id, { content: [{ type: "text", text: `Error: this tool needs the ${need} scope. Reconnect the app and allow it.` }], isError: true });
+          return rpcOk(id, await mcpBoardTool(p, env, auth, ip, ua));
+        }
+        return rpcOk(id, await mcpCallTool(p, env, ip, ua, who));
+      } catch (e) { return rpcOk(id, { content: [{ type: "text", text: "Error: " + (e && e.message || e) }], isError: true }); }
+    }
+    return rpcErr(id, -32601, "Method not found: " + method);
+  };
+
+  if (Array.isArray(body)) {
+    const out = (await Promise.all(body.map(handle))).filter(Boolean);
+    return out.length ? mcpMeResponse(out) : mcpMeResponse(null);
+  }
+  const res = await handle(body);
+  return res ? mcpMeResponse(res) : mcpMeResponse(null);
+}
+
+// Page URL to cite for an item: annual reports have permalinks; gallery items deep-link via #i/<id>.
+function mcpItemPage(it) {
+  if (it.collection === "annual-report") return `${MCP_SITE}/annual-reports/${slugify(it.company || it.title)}${it.report_year ? "-" + it.report_year : ""}-${it.id}`;
+  return `${MCP_SITE}/#i/${encodeURIComponent(it.id)}`;
+}
+const mcpText = (text, isError) => (isError ? { content: [{ type: "text", text }], isError: true } : { content: [{ type: "text", text }] });
+const cleanId = (v) => (v == null ? "" : String(v)).trim().slice(0, 64);
+
+async function mcpBoardTool(params, env, auth, ip, ua) {
+  const name = params.name;
+  const a = params.arguments || {};
+  const uid = auth.user_id; // ownership is ALWAYS taken from the token
+  await logMcp(env, name, a.name || a.board_id || "", ip, ua, { user_id: uid, client_id: auth.client_id });
+  const ownBoard = (id) => env.DB.prepare("SELECT id,name,created_at FROM boards WHERE id=? AND user_id=?").bind(id, uid).first();
+  const notFound = (id) => mcpText(`No board with id "${id}" was found on your account. Call list_my_boards to see your boards.`, true);
+
+  if (name === "list_my_boards") {
+    const rows = (await env.DB.prepare(
+      `SELECT b.id,b.name,b.created_at,
+         (SELECT COUNT(*) FROM saves s WHERE s.board_id=b.id) AS count,
+         (SELECT i.image_key FROM saves s JOIN items i ON i.id=s.item_id WHERE s.board_id=b.id ORDER BY s.created_at DESC LIMIT 1) AS cover
+       FROM boards b WHERE b.user_id=? ORDER BY b.created_at DESC LIMIT ?`
+    ).bind(uid, MAX_BOARDS_PER_USER).all()).results || [];
+    if (!rows.length) return mcpText(`You have no mood boards yet. Create one with create_board. Your boards are also at ${MCP_SITE}/ (Boards tab, signed in).`);
+    const lines = rows.map((b) => [
+      `• ${b.name}`, `  board_id: ${b.id}`, `  items: ${b.count || 0}`,
+      b.cover ? `  cover: ${MCP_SITE}/img/${b.cover}` : null,
+      `  created: ${new Date(b.created_at).toISOString().slice(0, 10)}`,
+    ].filter(Boolean).join("\n"));
+    return mcpText(`${rows.length} board(s) on your Made Good Designs account — view them at ${MCP_SITE}/ (Boards tab, signed in).\n\n` + lines.join("\n\n"));
+  }
+
+  if (name === "get_board") {
+    const bid = cleanId(a.board_id);
+    const board = bid && await ownBoard(bid);
+    if (!board) return notFound(bid);
+    const limit = clampInt(a.limit, 50, 1, 100);
+    const rows = (await env.DB.prepare(
+      `SELECT i.*, s.created_at AS saved_at FROM saves s JOIN items i ON i.id=s.item_id
+        WHERE s.board_id=? AND s.user_id=? AND i.status='published' ORDER BY s.created_at DESC LIMIT ?`
+    ).bind(board.id, uid, limit).all()).results || [];
+    const total = (await env.DB.prepare("SELECT COUNT(*) n FROM saves WHERE board_id=? AND user_id=?").bind(board.id, uid).first()) || { n: rows.length };
+    const head = `Board "${board.name}" (board_id: ${board.id}) — ${total.n} item(s)${total.n > rows.length ? `, showing ${rows.length}` : ""}. Source: Made Good Designs — ${MCP_SITE}/ (please cite/link this).`;
+    if (!rows.length) return mcpText(head + "\n\nThis board is empty. Find items with search_design_inspiration or search_annual_reports, then save_to_board.");
+    const blocks = rows.map((r) => {
+      const it = rowToItem(r, null);
+      const own = r.owner_id && r.owner_id === uid; // the user's own "paste a URL" saves
+      return [
+        `• ${it.title || it.company || "Untitled"}`,
+        `  item_id: ${it.id}`,
+        it.collection === "annual-report" && it.company ? `  company: ${it.company}${it.report_year ? " (" + it.report_year + ")" : ""}` : null,
+        it.designer ? `  designer: ${it.designer}` : null,
+        it.description ? `  ${it.description}` : null,
+        it.tags.length ? `  tags: ${it.tags.join(", ")}` : null,
+        it.palette.length ? `  palette: ${it.palette.join(" ")}` : null,
+        own ? (r.source_url ? `  saved from (your link): ${r.source_url}` : null)
+            : ((it.source || it.source_host) ? `  source: ${it.source || it.source_host}` : null),
+        own ? null : `  page (cite this): ${mcpItemPage(it)}`,
+        `  image: ${MCP_SITE}${it.image}`,
+      ].filter(Boolean).join("\n");
+    });
+    return mcpText(head + "\n\n" + blocks.join("\n\n"));
+  }
+
+  if (name === "create_board") {
+    const bname = (a.name == null ? "" : String(a.name)).replace(/[\x00-\x1f\x7f]/g, " ").trim().slice(0, 80);
+    if (!bname) return mcpText("Error: a board name is required.", true);
+    const n = await env.DB.prepare("SELECT COUNT(*) n FROM boards WHERE user_id=?").bind(uid).first();
+    if (n && n.n >= MAX_BOARDS_PER_USER) return mcpText(`Error: you already have ${n.n} boards (limit ${MAX_BOARDS_PER_USER}).`, true);
+    const id = genId();
+    await env.DB.prepare("INSERT INTO boards (id,user_id,name,created_at) VALUES (?,?,?,?)").bind(id, uid, bname, Date.now()).run();
+    return mcpText(`Created board "${bname}" (board_id: ${id}). Save items to it with save_to_board. View it at ${MCP_SITE}/ (Boards tab, signed in).`);
+  }
+
+  if (name === "save_to_board") {
+    const bid = cleanId(a.board_id), iid = cleanId(a.item_id);
+    const board = bid && await ownBoard(bid);
+    if (!board) return notFound(bid);
+    // Curated public items, or the user's OWN private items — never another user's private item.
+    const item = iid && await env.DB.prepare("SELECT * FROM items WHERE id=? AND status='published' AND (owner_id IS NULL OR owner_id=?)").bind(iid, uid).first();
+    if (!item) return mcpText(`No inspiration item with id "${iid}". Use the item_id from search_design_inspiration, browse_inspiration_by_theme, search_annual_reports or search_museum_art.`, true);
+    let already = false;
+    try {
+      await env.DB.prepare("INSERT INTO saves (id,board_id,item_id,user_id,created_at) VALUES (?,?,?,?,?)").bind(genId(), board.id, item.id, uid, Date.now()).run();
+    } catch (e) { already = true; /* UNIQUE(board_id,item_id) */ }
+    const it = rowToItem(item, null);
+    return mcpText(`${already ? "Already on" : "Saved to"} board "${board.name}": ${it.title || it.company || it.id} (item_id: ${it.id}). Page: ${mcpItemPage(it)}`);
+  }
+
+  if (name === "remove_from_board") {
+    const bid = cleanId(a.board_id), iid = cleanId(a.item_id);
+    const board = bid && await ownBoard(bid);
+    if (!board) return notFound(bid);
+    const r = await env.DB.prepare("DELETE FROM saves WHERE board_id=? AND item_id=? AND user_id=?").bind(board.id, iid, uid).run();
+    const removed = r.meta && r.meta.changes > 0;
+    return mcpText(removed ? `Removed item ${iid} from board "${board.name}".` : `Item ${iid} was not on board "${board.name}" (nothing changed).`);
+  }
+
+  return mcpText("Unknown tool: " + name, true);
 }
 
 // ---------------------------------------------------------------------------

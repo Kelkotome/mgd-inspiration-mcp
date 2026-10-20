@@ -4,7 +4,9 @@
 const SESSION_COOKIE = "mgd_sess";
 const STATE_COOKIE = "mgd_oauth_state";
 const RETURN_COOKIE = "mgd_return";
-const safePath = (p) => (typeof p === "string" && /^\/[^/]/.test(p)) ? p : null; // same-origin path, no "//"
+// Same-origin path only: must start with a single "/", never "//" or "/\\" (browsers treat
+// "/\\evil.com" as protocol-relative), and no backslashes/control chars anywhere.
+const safePath = (p) => (typeof p === "string" && /^\/(?![\/\\])/.test(p) && !/[\\\x00-\x1f]/.test(p) && p.length <= 2048) ? p : null;
 const SESSION_TTL = 60 * 60 * 24 * 30; // 30 days (seconds)
 
 // ---- base64url + HMAC ------------------------------------------------------
@@ -32,7 +34,10 @@ async function signSession(uid, secret) {
 async function verifySession(token, secret) {
   if (!token || token.indexOf(".") < 0) return null;
   const [payload, sig] = token.split(".");
-  if ((await hmac(secret, payload)) !== sig) return null;
+  const expected = await hmac(secret, payload);
+  if (typeof sig !== "string" || sig.length !== expected.length) return null;
+  let d = 0; for (let i = 0; i < sig.length; i++) d |= sig.charCodeAt(i) ^ expected.charCodeAt(i); // constant-time
+  if (d !== 0) return null;
   try {
     const obj = JSON.parse(b64urlDecode(payload));
     if (!obj.uid || !obj.exp || obj.exp < Math.floor(Date.now() / 1000)) return null;
@@ -151,8 +156,10 @@ export async function devLogin(request, url, env, base) {
   const email = url.searchParams.get("email") || "dev@example.com";
   const uid = await upsertUser(env, { sub: "dev-" + email, email, name: url.searchParams.get("name") || "Dev User", picture: "" });
   const sess = await signSession(uid, env.SESSION_SECRET);
+  // Optional same-origin ?return= (lets local tests stand in for Google in the OAuth authorize flow).
+  const dest = safePath(url.searchParams.get("return")) || `${base}/`;
   return new Response(null, {
     status: 302,
-    headers: { "Location": `${base}/`, "Set-Cookie": cookie(SESSION_COOKIE, sess, { maxAge: SESSION_TTL, secure: isSecure(url) }) },
+    headers: { "Location": dest, "Set-Cookie": cookie(SESSION_COOKIE, sess, { maxAge: SESSION_TTL, secure: isSecure(url) }) },
   });
 }

@@ -8,3 +8,10 @@ node_modules/
 
 # transient data dumps, ingest scripts, curated lists (kept locally)
 scratchpad/
+# local OAuth/MCP test artifacts (run_local_tests.sh)
+test_baseline/
+wrangler.test.jsonc
+wrangler.baseline.jsonc
+dev_*.log
+public_mcp_orig.json
+.test_tokens
