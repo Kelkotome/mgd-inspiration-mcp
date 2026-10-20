@@ -90,9 +90,9 @@ export default {
       // ---- MCP server (public, for AI assistants) ----
       if (path === "/mcp") return mcpHandler(request, env);
       // ---- Authenticated MCP (OAuth 2.1 bearer; the user's own boards + the public tools) ----
-      if (path === "/mcp/me" || path === "/mcp/me/") return mcpMeHandler(request, env, ctx, url, base);
+      if (path === "/mcp/boards" || path === "/mcp/boards/") return mcpMeHandler(request, env, ctx, url, base);
 
-      // ---- OAuth 2.1 authorization server (for /mcp/me) ----
+      // ---- OAuth 2.1 authorization server (for /mcp/boards) ----
       if (path === "/oauth/register" && method === "POST") return oauthRegister(request, env);
       if (path === "/oauth/authorize" && (method === "GET" || method === "POST")) return oauthAuthorize(request, url, env, base);
       if (path === "/oauth/token" && method === "POST") return oauthToken(request, url, env, base, ctx);
@@ -1342,7 +1342,7 @@ function mcpItems(rows, header, opts) {
 }
 
 // ---------------------------------------------------------------------------
-// Authenticated MCP server — /mcp/me. Same JSON-RPC transport as /mcp, but every
+// Authenticated MCP server — /mcp/boards. Same JSON-RPC transport as /mcp, but every
 // request needs an OAuth 2.1 bearer token (see oauth.js) and the tool set adds the
 // caller's OWN mood boards. The user id ALWAYS comes from the token, never arguments.
 // ---------------------------------------------------------------------------

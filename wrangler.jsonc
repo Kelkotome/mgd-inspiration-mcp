@@ -46,7 +46,7 @@
 
   "routes": [
     { "pattern": "madegooddesigns.com/inspiration*", "zone_name": "madegooddesigns.com" },
-    // OAuth discovery for the authenticated MCP endpoint (/inspiration/mcp/me). RFC 8414 /
+    // OAuth discovery for the authenticated MCP endpoint (/inspiration/mcp/boards). RFC 8414 /
     // RFC 9728 put well-known docs at the ROOT with the issuer/resource path appended, i.e.
     // OUTSIDE /inspiration*. These two narrow routes claim only those exact sub-paths, so
     // WordPress keeps everything else under /.well-known/.

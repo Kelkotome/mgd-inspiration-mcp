@@ -34,7 +34,7 @@ export function oauthUrls(url, base, env) {
   const issuer = publicOrigin(url, env) + base;
   return {
     issuer,
-    resource: `${issuer}/mcp/me`,
+    resource: `${issuer}/mcp/boards`,
     // Under the existing /inspiration* route, so it works even without the extra root routes.
     prm: `${issuer}/.well-known/oauth-protected-resource`,
     authorize: `${issuer}/oauth/authorize`,
@@ -48,13 +48,13 @@ export function oauthUrls(url, base, env) {
 // Which raw pathnames are well-known docs (checked BEFORE the base prefix is stripped).
 //   RFC 8414 path-insertion:  /.well-known/oauth-authorization-server/inspiration
 //   path-appended fallback:   /inspiration/.well-known/oauth-authorization-server
-//   RFC 9728 path-insertion:  /.well-known/oauth-protected-resource/inspiration/mcp/me
-//   path-appended fallback:   /inspiration/.well-known/oauth-protected-resource[/mcp/me]
+//   RFC 9728 path-insertion:  /.well-known/oauth-protected-resource/inspiration/mcp/boards
+//   path-appended fallback:   /inspiration/.well-known/oauth-protected-resource[/mcp/boards]
 export function wellKnownKind(pathname, base) {
   const p = pathname.replace(/\/+$/, "");
   const as = "/.well-known/oauth-authorization-server", pr = "/.well-known/oauth-protected-resource";
   if (p === as + base || p === base + as) return "as";
-  if (p === pr + base + "/mcp/me" || p === pr + base || p === base + pr || p === base + pr + "/mcp/me") return "prm";
+  if (p === pr + base + "/mcp/boards" || p === pr + base || p === base + pr || p === base + pr + "/mcp/boards") return "prm";
   return null;
 }
 

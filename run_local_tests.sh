@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Local-only test runner for the /mcp/me OAuth build. NEVER deploys, never touches remote D1.
+# Local-only test runner for the /mcp/boards OAuth build. NEVER deploys, never touches remote D1.
 #  1. (re)builds a throwaway local D1 under ./.wrangler/state (schema + migrations + 3 seed items)
 #  2. runs the ORIGINAL worker (./test_baseline/src = untouched copy of the deployed src) with
 #     `wrangler dev --local` on :8798 and records its public /mcp responses, then stops it
@@ -59,5 +59,5 @@ if [ -f .test_tokens ]; then
   done < .test_tokens
   [ $LEAK = 0 ] && echo "PASS no raw access/refresh token in dev logs or local D1 (only SHA-256 hashes stored)"
 fi
-$D1 --json --command "SELECT COUNT(*) AS n, SUM(user_id IS NOT NULL) AS with_user FROM mcp_calls" 2>/dev/null | python3 -c 'import json,sys; r=json.load(sys.stdin)[0]["results"][0]; ok=r["with_user"] and r["n"]>r["with_user"]; print(("PASS" if ok else "FAIL")+" mcp_calls logged: %s rows, %s attributed to a user (/mcp/me), rest anonymous (/mcp)" % (r["n"], r["with_user"])); sys.exit(0 if ok else 1)' || LEAK=1
+$D1 --json --command "SELECT COUNT(*) AS n, SUM(user_id IS NOT NULL) AS with_user FROM mcp_calls" 2>/dev/null | python3 -c 'import json,sys; r=json.load(sys.stdin)[0]["results"][0]; ok=r["with_user"] and r["n"]>r["with_user"]; print(("PASS" if ok else "FAIL")+" mcp_calls logged: %s rows, %s attributed to a user (/mcp/boards), rest anonymous (/mcp)" % (r["n"], r["with_user"])); sys.exit(0 if ok else 1)' || LEAK=1
 [ $RC = 0 ] && [ $LEAK = 0 ] && echo "ALL TESTS PASSED" || { echo "TESTS FAILED"; exit 1; }

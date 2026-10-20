@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""End-to-end test of the authenticated MCP endpoint (/inspiration/mcp/me) + OAuth 2.1 AS,
+"""End-to-end test of the authenticated MCP endpoint (/inspiration/mcp/boards) + OAuth 2.1 AS,
 against a LOCAL `wrangler dev --local` (DEV_LOGIN=1 stands in for Google).
 
   python3 test_mcp_oauth.py --base http://localhost:8797 [--baseline-file public_mcp_orig.json]
@@ -21,8 +21,8 @@ args = ap.parse_args()
 ORIGIN = args.base.rstrip("/")
 P = "/inspiration"
 ISSUER = ORIGIN + P
-RESOURCE = ISSUER + "/mcp/me"
-MCP_ME = P + "/mcp/me"
+RESOURCE = ISSUER + "/mcp/boards"
+MCP_ME = P + "/mcp/boards"
 UA = "mgd-oauth-test/1.0"
 
 RESULTS = []
@@ -169,7 +169,7 @@ if args.baseline_file:
 
 # ---------------------------------------------------------------- discovery
 print("\n-- discovery")
-s, h, b = req("GET", "/.well-known/oauth-protected-resource/inspiration/mcp/me"); prm = jl(b) or {}
+s, h, b = req("GET", "/.well-known/oauth-protected-resource/inspiration/mcp/boards"); prm = jl(b) or {}
 check("PRM (RFC 9728 path-inserted) served", s == 200 and prm.get("resource") == RESOURCE and prm.get("authorization_servers") == [ISSUER], b[:200])
 s, h, b = req("GET", P + "/.well-known/oauth-protected-resource");
 check("PRM (under /inspiration) served", s == 200 and (jl(b) or {}).get("resource") == RESOURCE)
@@ -188,18 +188,18 @@ check("well-known docs have CORS *", hget(h, "access-control-allow-origin") == "
 print("\n-- 401 challenge")
 s, h, b = rpc(MCP_ME, "initialize", {"protocolVersion": "2025-06-18"})
 www = hget(h, "www-authenticate")
-check("/mcp/me without token -> 401", s == 401)
+check("/mcp/boards without token -> 401", s == 401)
 m = re.search(r'resource_metadata="([^"]+)"', www)
 check("401 carries WWW-Authenticate: Bearer resource_metadata=...", www.startswith("Bearer ") and m is not None, www)
 if m:
     s2, _, b2 = req("GET", m.group(1))
     check("resource_metadata URL resolves to PRM", s2 == 200 and (jl(b2) or {}).get("resource") == RESOURCE)
 s, h, b = rpc(MCP_ME, "tools/list", {}, token="mgd_at_notarealtoken")
-check("/mcp/me with bogus token -> 401 error=invalid_token", s == 401 and 'error="invalid_token"' in hget(h, "www-authenticate"))
+check("/mcp/boards with bogus token -> 401 error=invalid_token", s == 401 and 'error="invalid_token"' in hget(h, "www-authenticate"))
 s, h, b = req("OPTIONS", MCP_ME, {"Origin": "https://claude.ai", "Access-Control-Request-Headers": "authorization,content-type"})
 s2, h2, b2 = rpc(MCP_ME + "/", "tools/list", {})
-check("trailing-slash /mcp/me/ also challenges (not 404)", s2 == 401 and "resource_metadata=" in hget(h2, "www-authenticate"))
-check("CORS preflight on /mcp/me allows Authorization + exposes WWW-Authenticate", s == 204 and "authorization" in hget(h, "access-control-allow-headers").lower() and "WWW-Authenticate" in hget(h, "access-control-expose-headers"))
+check("trailing-slash /mcp/boards/ also challenges (not 404)", s2 == 401 and "resource_metadata=" in hget(h2, "www-authenticate"))
+check("CORS preflight on /mcp/boards allows Authorization + exposes WWW-Authenticate", s == 204 and "authorization" in hget(h, "access-control-allow-headers").lower() and "WWW-Authenticate" in hget(h, "access-control-expose-headers"))
 
 # ---------------------------------------------------------------- registration
 print("\n-- dynamic client registration")
@@ -329,7 +329,7 @@ names = [t["name"] for t in (jl(b) or {}).get("result", {}).get("tools", [])]
 check("tools/list = 5 board tools + 6 public tools", names == ["list_my_boards", "get_board", "create_board", "save_to_board", "remove_from_board"] + PUBLIC, names)
 check("tool defs do not leak internal 'scope' field", '"scope"' not in b)
 s, res, t = call(AT, "search_design_inspiration", {"query": "serif"})
-check("public search via /mcp/me includes item_id + madegooddesigns.com", "item_id: aaaaaaaaaaa1" in t and "https://madegooddesigns.com/inspiration" in t)
+check("public search via /mcp/boards includes item_id + madegooddesigns.com", "item_id: aaaaaaaaaaa1" in t and "https://madegooddesigns.com/inspiration" in t)
 s, res, t = call(AT, "create_board", {"name": "Alice Retro Board", "user_id": "someoneelse1"})
 mb = re.search(r"board_id: ([0-9a-f]+)", t); BID = mb.group(1) if mb else None
 check("create_board -> board id", s == 200 and BID and not res.get("isError"), t)
