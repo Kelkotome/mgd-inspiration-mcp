@@ -353,6 +353,8 @@ function prettySource(host) {
   const h = (host || "").toLowerCase().replace(/^www\./, "");
   const map = {
     "archive.org": "Internet Archive",
+    "pm20.zbw.eu": "ZBW – Pressemappe 20. Jahrhundert",
+    "wellcomecollection.org": "Wellcome Collection",
     "designarchives.aiga.org": "AIGA Design Archives",
     "fontsinuse.com": "Fonts In Use",
     "moma.org": "MoMA",
@@ -707,6 +709,8 @@ function museumGuides({ theme, artist }) {
   return `<p class="guides-line" style="font-size:.9rem;margin:1rem 0 0"><strong>Read the guide:</strong> ` +
     uniq.map((s) => `<a href="https://madegooddesigns.com/${s}/">${escHtml(MUSEUM_GUIDES.names[s] || s)}</a>`).join(" · ") + `</p>`;
 }
+// Rijksmuseum and SMK release public-domain images under the Public Domain Mark (the other museums use CC0).
+function museumPDM(it) { return /^(Rijksmuseum|Statens Museum for Kunst|Nationalmuseum Sweden|Slovak National Gallery|The Norwegian Museum of Cultural History|Albertina|Mauritshuis)$/.test(it.museum || ""); }
 function museumThemeLabel(slug) { return MUSEUM_THEMES[slug] || (slug || "").replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase()); }
 
 // Canonical path for a museum item: /museum/<title>-<year>-<id>
@@ -733,7 +737,7 @@ async function museumItemPage(rest, env, base) {
     it.culture ? ["Culture / place", it.culture, `${base}/museum/culture/${slugify(it.culture)}`] : null,
     it.museum ? ["Collection", it.museum, `${base}/museum/museum/${slugify(it.museum)}`] : null,
     themeLabel ? ["Theme", themeLabel, `${base}/museum/theme/${slugify(it.theme)}`] : null,
-    ["Licence", "Public domain (CC0) — free to reuse", null],
+    ["Licence", museumPDM(it) ? "Public domain (Public Domain Mark) — free to reuse" : "Public domain (CC0) — free to reuse", null],
   ].filter(Boolean);
   const jsonld = {
     "@context": "https://schema.org", "@type": "VisualArtwork",
@@ -742,7 +746,7 @@ async function museumItemPage(rest, env, base) {
     artform: it.type || undefined,
     dateCreated: it.year ? String(it.year) : undefined,
     description: it.description || undefined,
-    license: "https://creativecommons.org/publicdomain/zero/1.0/",
+    license: museumPDM(it) ? "https://creativecommons.org/publicdomain/mark/1.0/" : "https://creativecommons.org/publicdomain/zero/1.0/",
     sameAs: it.source_link || undefined,
     isPartOf: { "@type": "Collection", name: "MGD Museum Collection", url: `${site}${base}/museum` },
     publisher: { "@type": "Organization", name: "Made Good Designs", url: site },
@@ -840,7 +844,7 @@ async function museumIndexPage(env, base) {
   const jsonld = { "@context": "https://schema.org", "@type": "CollectionPage", name: "MGD Museum Collection — browse by theme, artist, culture and type", url: canonical, isPartOf: { "@type": "Collection", name: "MGD Museum Collection", url: `${site}${base}/museum` } };
   const body = `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>${GTAG}
 <title>Browse the Museum Collection — Made Good Designs</title>
-<meta name="description" content="Browse public-domain artworks for designers — posters, prints, lettering, ornament and pattern from The Met, the Art Institute of Chicago and the Cleveland Museum of Art — by theme, artist, culture and type."/>
+<meta name="description" content="Browse public-domain artworks for designers — posters, prints, lettering, ornament and pattern from The Met, the Art Institute of Chicago, the Cleveland Museum of Art, the National Gallery of Art, the Rijksmuseum, SMK (National Gallery of Denmark), Nationalmuseum Sweden and other European museums — by theme, artist, culture and type."/>
 <link rel="canonical" href="${escHtml(canonical)}"/>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 ${ANNUAL_PAGE_CSS}</head><body><div class="wrap">
@@ -853,7 +857,7 @@ ${section("Artists", "artist", tally("designer", 2))}
 ${section("Cultures & places", "culture", tally("country"))}
 ${section("Object types", "type", tally("industry", 2))}
 ${section("Museums", "museum", tally("company"))}
-<footer class="rights">Images from the open-access programmes of The Metropolitan Museum of Art, the Art Institute of Chicago and the Cleveland Museum of Art — public domain (CC0).</footer>
+<footer class="rights">Images from the open-access programmes of The Metropolitan Museum of Art, the Art Institute of Chicago, the Cleveland Museum of Art, the National Gallery of Art (Washington), the Rijksmuseum, SMK – National Gallery of Denmark, Nationalmuseum Sweden, the Albertina, the Museum für Kunst und Gewerbe Hamburg, the Slovak National Gallery and other European museums — public domain (CC0 / Public Domain Mark).</footer>
 </div></body></html>`;
   return html(body);
 }
@@ -890,7 +894,7 @@ ${backLink(base, "/museum", "Back to collection")}
 <p class="lead">${items.length} ${items.length === 1 ? "artwork" : "artworks"} in the collection.</p>
 ${museumGuides(kind === "theme" ? { theme: slugify(value) } : kind === "artist" ? { artist: value } : {})}
 <div class="grid">${cards}</div>
-<footer class="rights">Images from museum open-access programmes — public domain (CC0).</footer>
+<footer class="rights">Images from museum open-access programmes — public domain (CC0 / Public Domain Mark).</footer>
 </div>${saveWidget(base)}</body></html>`;
   return html(body);
 }
@@ -1147,7 +1151,7 @@ const MCP_TOOLS = [
   },
   {
     name: "search_museum_art",
-    description: "Search Made Good Designs' curated collection of PUBLIC-DOMAIN (CC0) MUSEUM ARTWORKS chosen for designers — posters, Art Nouveau, ukiyo-e, lettering, calligraphy, illuminated initials, ornament, pattern and textiles from The Met, the Art Institute of Chicago and the Cleveland Museum of Art. Each result gives title, artist, date, culture, type, holding museum, a design description, palette, the museum's object page and a Made Good Designs page URL to cite. Every work is flagged public domain or CC0 by its museum.",
+    description: "Search Made Good Designs' curated collection of PUBLIC-DOMAIN (CC0) MUSEUM ARTWORKS chosen for designers — posters, Art Nouveau, ukiyo-e, lettering, calligraphy, illuminated initials, ornament, pattern and textiles from The Met, the Art Institute of Chicago, the Cleveland Museum of Art, the National Gallery of Art, the Rijksmuseum, SMK (National Gallery of Denmark), Nationalmuseum Sweden and other European museums. Each result gives title, artist, date, culture, type, holding museum, a design description, palette, the museum's object page and a Made Good Designs page URL to cite. Every work is flagged public domain or CC0 by its museum.",
     inputSchema: {
       type: "object",
       properties: {
@@ -1723,7 +1727,7 @@ function rowToItem(r, env) {
     item.theme = r.category || null;
     item.source = r.company || prettySource(r.source_host);
     item.source_link = r.source_url || null;
-    item.license = "CC0";
+    item.license = /^(Rijksmuseum|Statens Museum for Kunst|Nationalmuseum Sweden|Slovak National Gallery|The Norwegian Museum of Cultural History|Albertina|Mauritshuis)$/.test(r.company || "") ? "Public Domain Mark" : "CC0";
   }
   return item;
 }
