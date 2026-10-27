@@ -44,6 +44,9 @@
     "PUBLIC_ORIGIN": "https://madegooddesigns.com"
   },
 
+  // Daily 03:17 UTC: purge MCP call logs older than 12 months (see scheduled() in src/index.js).
+  "triggers": { "crons": ["17 3 * * *"] },
+
   "routes": [
     { "pattern": "madegooddesigns.com/inspiration*", "zone_name": "madegooddesigns.com" },
     // OAuth discovery for the authenticated MCP endpoint (/inspiration/mcp/boards). RFC 8414 /

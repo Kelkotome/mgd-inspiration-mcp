@@ -151,6 +151,12 @@ export default {
       return json({ error: "server_error", message: String(err && err.message || err) }, 500, env, request);
     }
   },
+
+  // Daily cron (wrangler.jsonc "triggers"): MCP call logs are kept 12 months, as the MCP privacy policy states.
+  async scheduled(event, env, ctx) {
+    const cutoff = Date.now() - 365 * 24 * 60 * 60 * 1000;
+    ctx.waitUntil(env.DB.prepare("DELETE FROM mcp_calls WHERE created_at < ?").bind(cutoff).run());
+  },
 };
 
 // ---------------------------------------------------------------------------
