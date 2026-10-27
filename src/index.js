@@ -1123,13 +1123,13 @@ const MCP_TOOLS = [
       },
       required: ["query"],
     },
-    annotations: { title: "Search design inspiration", readOnlyHint: true, openWorldHint: false },
+    annotations: { title: "Search design inspiration", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
   {
     name: "list_inspiration_themes",
     description: "List the curated design-inspiration themes (categories) available in the Made Good Designs gallery, with how many items each has.",
     inputSchema: { type: "object", properties: {} },
-    annotations: { title: "List inspiration themes", readOnlyHint: true, openWorldHint: false },
+    annotations: { title: "List inspiration themes", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
   {
     name: "browse_inspiration_by_theme",
@@ -1142,7 +1142,7 @@ const MCP_TOOLS = [
       },
       required: ["theme"],
     },
-    annotations: { title: "Browse inspiration by theme", readOnlyHint: true, openWorldHint: false },
+    annotations: { title: "Browse inspiration by theme", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
   {
     name: "search_annual_reports",
@@ -1157,7 +1157,7 @@ const MCP_TOOLS = [
       },
       required: ["query"],
     },
-    annotations: { title: "Search vintage annual reports", readOnlyHint: true, openWorldHint: false },
+    annotations: { title: "Search vintage annual reports", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
   {
     name: "search_museum_art",
@@ -1172,11 +1172,11 @@ const MCP_TOOLS = [
       },
       required: ["query"],
     },
-    annotations: { title: "Search public-domain museum art", readOnlyHint: true, openWorldHint: false },
+    annotations: { title: "Search public-domain museum art", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
   {
     name: "get_share_feedback",
-    description: "Fetch reviewer feedback for a page shared with Made Good Designs' free HTML to Link tool (MGD Share). Returns FEEDBACK.md: every note reviewers pinned to an element, with CSS selector, element text, screen size, browser and open/resolved status. Pass the owner link (https://madegooddesigns.com/tools/html-to-link/#manage=ID.KEY), the FEEDBACK.md link, or id + key. Notes are written by members of the public who viewed the shared page.",
+    description: "Fetch reviewer feedback for a page shared with Made Good Designs' HTML to Link tool (MGD Share). Returns FEEDBACK.md: every note reviewers pinned to an element, with CSS selector, element text, screen size, browser and open/resolved status. Pass the owner link (https://madegooddesigns.com/tools/html-to-link/#manage=ID.KEY), the FEEDBACK.md link, or id + key. Notes are written by members of the public who viewed the shared page.",
     inputSchema: {
       type: "object",
       properties: {
@@ -1185,7 +1185,7 @@ const MCP_TOOLS = [
         key: { type: "string", description: "Owner key (24 characters), if not passing a link." },
       },
     },
-    annotations: { title: "Get shared-page feedback", readOnlyHint: true, openWorldHint: false },
+    annotations: { title: "Get shared-page feedback", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
 
