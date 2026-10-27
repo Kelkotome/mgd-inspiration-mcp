@@ -1117,11 +1117,13 @@ const MCP_TOOLS = [
       },
       required: ["query"],
     },
+    annotations: { title: "Search design inspiration", readOnlyHint: true, openWorldHint: false },
   },
   {
     name: "list_inspiration_themes",
     description: "List the curated design-inspiration themes (categories) available in the Made Good Designs gallery, with how many items each has.",
     inputSchema: { type: "object", properties: {} },
+    annotations: { title: "List inspiration themes", readOnlyHint: true, openWorldHint: false },
   },
   {
     name: "browse_inspiration_by_theme",
@@ -1134,6 +1136,7 @@ const MCP_TOOLS = [
       },
       required: ["theme"],
     },
+    annotations: { title: "Browse inspiration by theme", readOnlyHint: true, openWorldHint: false },
   },
   {
     name: "search_annual_reports",
@@ -1148,6 +1151,7 @@ const MCP_TOOLS = [
       },
       required: ["query"],
     },
+    annotations: { title: "Search vintage annual reports", readOnlyHint: true, openWorldHint: false },
   },
   {
     name: "search_museum_art",
@@ -1162,6 +1166,7 @@ const MCP_TOOLS = [
       },
       required: ["query"],
     },
+    annotations: { title: "Search public-domain museum art", readOnlyHint: true, openWorldHint: false },
   },
   {
     name: "get_share_feedback",
@@ -1174,6 +1179,7 @@ const MCP_TOOLS = [
         key: { type: "string", description: "Owner key (24 characters), if not passing a link." },
       },
     },
+    annotations: { title: "Get shared-page feedback", readOnlyHint: true, openWorldHint: false },
   },
 ];
 
