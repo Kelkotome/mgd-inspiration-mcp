@@ -1274,9 +1274,8 @@ async function mcpCallTool(params, env, ip, ua, who) {
     const binds = ["published", "design"];
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.theme) { where += " AND themes LIKE ?"; binds.push(`%"${a.theme}"%`); }
-    if (q) { const like = `%${q}%`; where += " AND (title LIKE ? OR description LIKE ? OR tags LIKE ?)"; binds.push(like, like, like); }
-    const rows = await env.DB.prepare(`SELECT * FROM items WHERE ${where} ORDER BY created_at DESC LIMIT ?`).bind(...binds, limit).all();
-    return mcpItems(rows.results || [], `${(rows.results||[]).length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}`, opts);
+    const r = await mcpSearchRows(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
+    return mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts);
   }
   if (name === "list_inspiration_themes") {
     const rows = await env.DB.prepare(`SELECT themes FROM items WHERE status='published' AND owner_id IS NULL AND collection='design'`).all();
@@ -1298,9 +1297,8 @@ async function mcpCallTool(params, env, ip, ua, who) {
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.year) { const y = parseInt(a.year, 10); if (y) { where += " AND report_year = ?"; binds.push(y); } }
     if (a.industry) { where += " AND industry = ?"; binds.push(a.industry.toString().trim()); }
-    if (q) { const like = `%${q}%`; where += " AND (company LIKE ? OR title LIKE ? OR description LIKE ? OR tags LIKE ?)"; binds.push(like, like, like, like); }
-    const rows = await env.DB.prepare(`SELECT * FROM items WHERE ${where} ORDER BY report_year DESC, created_at DESC LIMIT ?`).bind(...binds, limit).all();
-    return mcpItems(rows.results || [], `${(rows.results||[]).length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}`, opts);
+    const r = await mcpSearchRows(env, where, binds, ["company", "title", "description", "tags"], q, "report_year DESC, created_at DESC", limit);
+    return mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts);
   }
   if (name === "search_museum_art") {
     const q = (a.query || "").toString().trim();
@@ -1309,9 +1307,8 @@ async function mcpCallTool(params, env, ip, ua, who) {
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.theme) { where += " AND category = ?"; binds.push(a.theme.toString().trim().toLowerCase()); }
     if (a.culture) { where += " AND country LIKE ?"; binds.push(`%${a.culture.toString().trim()}%`); }
-    if (q) { const like = `%${q}%`; where += " AND (title LIKE ? OR designer LIKE ? OR description LIKE ? OR tags LIKE ? OR industry LIKE ?)"; binds.push(like, like, like, like, like); }
-    const rows = await env.DB.prepare(`SELECT * FROM items WHERE ${where} ORDER BY featured_rank IS NULL, featured_rank, created_at DESC LIMIT ?`).bind(...binds, limit).all();
-    return mcpItems(rows.results || [], `${(rows.results||[]).length} museum artwork(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}`, opts);
+    const r = await mcpSearchRows(env, where, binds, ["title", "designer", "description", "tags", "industry"], q, "featured_rank IS NULL, featured_rank, created_at DESC", limit);
+    return mcpItems(r.rows, `${r.rows.length} museum artwork(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts);
   }
   if (name === "get_share_feedback") {
     const link = (a.link || "").toString();
@@ -1323,6 +1320,28 @@ async function mcpCallTool(params, env, ip, ua, who) {
     return { content: [{ type: "text", text: await r.text() }] };
   }
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
+}
+
+// MCP text search. 1) the whole query as one phrase (the original behaviour); if nothing matches a multi-word
+// query, 2) items containing every word (in any of the columns), then 3) items containing the most words.
+// Assistants send natural phrases ("swiss poster", "Mucha poster") that rarely appear verbatim.
+const MCP_STOP = new Set(["the","and","for","with","from","that","this","are","some","any","ideas","idea","examples","example","inspiration","design","designs","style","styled","references","reference"]);
+async function mcpSearchRows(env, where, binds, cols, q, order, limit) {
+  const run = (w, wb, ord, ob) => env.DB.prepare(`SELECT * FROM items WHERE ${where}${w} ORDER BY ${ord} LIMIT ?`)
+    .bind(...binds, ...wb, ...ob, limit).all().then((r) => r.results || []);
+  const any = () => "(" + cols.map((c) => `${c} LIKE ?`).join(" OR ") + ")";
+  const likes = (w) => cols.map(() => `%${w}%`);
+  if (!q) return { rows: await run("", [], order, []), note: "" };
+  const phrase = await run(" AND " + any(), likes(q), order, []);
+  if (phrase.length) return { rows: phrase, note: "" };
+  const words = [...new Set(q.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 2 && !MCP_STOP.has(w)))].slice(0, 6);
+  if (!words.length || (words.length === 1 && words[0] === q.toLowerCase())) return { rows: [], note: "" };
+  const hit = words.map(any), wb = words.flatMap(likes);
+  const all = await run(" AND " + hit.join(" AND "), wb, order, []);
+  if (all.length || words.length === 1) return { rows: all, note: all.length ? ` (matching all of: ${words.join(", ")})` : "" };
+  const score = hit.map((h) => `(CASE WHEN ${h} THEN 1 ELSE 0 END)`).join(" + ");
+  const some = await run(" AND (" + hit.join(" OR ") + ")", wb, `(${score}) DESC, ${order}`, wb);
+  return { rows: some, note: some.length ? ` (no item matches every word; closest matches for: ${words.join(", ")})` : "" };
 }
 
 function mcpItems(rows, header, opts) {
