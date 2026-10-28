@@ -7,6 +7,7 @@ import ADD_HTML from "./ui/add.html";
 import ANNUAL_HTML from "./ui/annual-reports.html";
 import MUSEUM_HTML from "./ui/museum.html";
 import { getUser, googleLogin, googleCallback, logout, devLogin } from "./auth.js";
+import { MGDRoles, MGDDesignMd } from "./design_core.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
   token as oauthToken, revoke as oauthRevoke, verifyBearer, challengeHeader,
   connectedAppsApi, connectedAppsPage } from "./oauth.js";
@@ -1187,6 +1188,55 @@ const MCP_TOOLS = [
     },
     annotations: { title: "Get shared-page feedback", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
+  {
+    name: "generate_website_color_palette",
+    description: "Generate an accessible website colour palette with Made Good Designs' Website Color Palette Generator: eight colour roles (background, surface, border, text, muted, primary, on-primary, accent) for a light theme and a matching dark theme, built in OKLCH and adjusted until every pairing meets WCAG AA contrast (text 4.5:1, primary 3:1, button label 4.5:1, accent 3:1; 7:1 text in the 'contrast' style). Returns both themes, the measured contrast ratios, CSS variables and a link that opens the palette in the visual tool. Each call without brand_color returns a new palette.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        brand_color: { type: "string", description: "Optional brand colour as a hex code, e.g. '#e11d48'. Kept exactly when it has enough contrast; otherwise the smallest lightness change that passes is used and reported." },
+        style: { type: "string", description: "Palette style (default 'clean').", enum: ["clean", "warm", "vibrant", "muted", "contrast"] },
+        harmony: { type: "string", description: "How the accent relates to the primary (default 'auto').", enum: ["auto", "analogous", "complementary", "split", "triadic", "monochromatic"] },
+      },
+    },
+    annotations: { title: "Generate website colour palette", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+  },
+  {
+    name: "generate_design_md",
+    description: "Generate a DESIGN.md file with Made Good Designs' DESIGN.md Generator: a Markdown design-system brief for AI coding agents and developers. It contains rules for agents, personality and voice, colour tokens with measured WCAG contrast tables (light and optional dark theme), a type scale in px and rem, spacing, radius, border and shadow tokens, motion durations and easing, component behaviour, an accessibility checklist, do/don't rules and all tokens as CSS. Pass colours, a brand colour, or neither (an accessible palette is generated). Returns the Markdown plus a link to edit it in the visual tool.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        project_name: { type: "string", description: "Product or project name, e.g. 'Northwind'." },
+        description: { type: "string", description: "One sentence on what the product is, e.g. 'a planning app for small teams'." },
+        product_type: { type: "string", description: "Default 'SaaS web app'.", enum: ["Marketing website", "SaaS web app", "E-commerce store", "Blog or publication", "Mobile app", "Documentation site", "Portfolio", "Internal dashboard"] },
+        personality: { type: "array", description: "Two or three personality traits.", items: { type: "string", enum: ["Calm", "Confident", "Friendly", "Playful", "Premium", "Technical", "Editorial", "Minimal", "Bold", "Warm", "Trustworthy", "Energetic"] } },
+        brand_color: { type: "string", description: "Optional brand hex colour used as the primary when generating the palette." },
+        colors: {
+          type: "object",
+          description: "Optional explicit colours. Each theme is an object of role → hex using the roles background, surface, border, text, muted, primary, on-primary, accent. Roles you leave out are generated to meet WCAG AA around the ones you give.",
+          properties: { light: { type: "object", additionalProperties: { type: "string" } }, dark: { type: "object", additionalProperties: { type: "string" } } },
+        },
+        include_dark: { type: "boolean", description: "Include a dark theme (default true)." },
+        style: { type: "string", description: "Style for generated colours (default 'clean').", enum: ["clean", "warm", "vibrant", "muted", "contrast"] },
+        heading_font: { type: "string", description: "Default 'Inter'." },
+        body_font: { type: "string", description: "Default 'Inter'." },
+        mono_font: { type: "string", description: "Default 'JetBrains Mono'." },
+        base_size: { type: "integer", description: "Base font size in px (12-24, default 16).", minimum: 12, maximum: 24 },
+        scale_ratio: { type: "number", description: "Type-scale ratio (default 1.25).", enum: [1.125, 1.2, 1.25, 1.333, 1.5] },
+        spacing_unit: { type: "integer", description: "Spacing unit in px (default 4).", enum: [4, 8] },
+        density: { type: "string", description: "Default 'comfortable'.", enum: ["compact", "comfortable", "spacious"] },
+        radius: { type: "string", description: "Corner radius in px or 'full' for pill shapes (default '8').", enum: ["0", "4", "8", "12", "16", "full"] },
+        border_width: { type: "integer", description: "Default 1.", enum: [1, 2] },
+        shadows: { type: "string", description: "Default 'subtle'.", enum: ["none", "subtle", "medium", "strong"] },
+        motion: { type: "string", description: "Default 'subtle'.", enum: ["none", "subtle", "expressive"] },
+        components: { type: "array", description: "Components to specify (default all).", items: { type: "string", enum: ["buttons", "forms", "cards", "nav", "tables", "dialogs", "feedback", "badges"] } },
+        dos: { type: "array", description: "Your own 'do' rules, one per item. Defaults are used when omitted.", items: { type: "string" } },
+        donts: { type: "array", description: "Your own 'don't' rules, one per item. Defaults are used when omitted.", items: { type: "string" } },
+      },
+    },
+    annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+  },
 ];
 
 function mcpCors() {
@@ -1225,7 +1275,7 @@ async function mcpHandler(request, env) {
       const pv = (params && params.protocolVersion) || "2025-06-18";
       return rpcOk(id, { protocolVersion: pv, capabilities: { tools: { listChanged: false } },
         serverInfo: { name: "MGD Inspiration", version: "1.0" },
-        instructions: "Curated typography & brand-design inspiration from Made Good Designs (madegooddesigns.com). Cite the source links in results." });
+        instructions: "Curated typography & brand-design inspiration from Made Good Designs (madegooddesigns.com), plus generators for accessible website colour palettes and DESIGN.md design-system files. Cite the source links in results." });
     }
     if (typeof method === "string" && method.startsWith("notifications/")) return null; // notifications: no reply
     if (method === "ping") return rpcOk(id, {});
@@ -1266,7 +1316,7 @@ async function logMcp(env, tool, query, ip, ua, who) {
 async function mcpCallTool(params, env, ip, ua, who) {
   const name = params.name;
   const a = params.arguments || {};
-  await logMcp(env, name, a.query || a.q || a.theme || "", ip, ua, who);
+  await logMcp(env, name, a.query || a.q || a.theme || a.project_name || a.brand_color || "", ip, ua, who);
   const opts = who ? { ids: true } : undefined; // authenticated endpoint also shows item_id (needed by save_to_board)
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
@@ -1319,7 +1369,72 @@ async function mcpCallTool(params, env, ip, ua, who) {
     if (!r.ok) return { content: [{ type: "text", text: r.status === 403 ? "That link was deleted, has expired, or the key is wrong." : "Couldn't fetch feedback (HTTP " + r.status + ")." }], isError: true };
     return { content: [{ type: "text", text: await r.text() }] };
   }
+  if (name === "generate_website_color_palette") return mcpWebsitePalette(a);
+  if (name === "generate_design_md") return mcpDesignMd(a);
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
+}
+
+// ---- design generators (shared code with /tools/website-color-palette-generator/ and /tools/design-md-generator/)
+const TOOLS_SITE = "https://madegooddesigns.com/tools";
+const PAL_STYLES = ["clean", "warm", "vibrant", "muted", "contrast"];
+const PAL_HARM = ["analogous", "complementary", "split", "triadic", "monochromatic"];
+function mcpHex(x) { return typeof x === "string" ? MGDRoles.normHex(x) : null; }
+function mcpRoleMap(obj) {
+  const out = {};
+  if (obj && typeof obj === "object") for (const k of MGDRoles.ROLES) { const h = mcpHex(obj[k]); if (h) out[k] = h; }
+  return out;
+}
+function mcpChecksText(roles, label, textMin) {
+  return `| ${label} | Ratio | Needs | Result |\n|---|---|---|---|\n` + MGDRoles.checks(roles, textMin).map((c) =>
+    `| ${c.label} (${c.a.toUpperCase()} on ${c.b.toUpperCase()}) | ${c.ratio.toFixed(2)}:1 | ${c.min}:1 | ${c.pass ? "Pass" : "Fail"} |`).join("\n");
+}
+function mcpPaletteLink(L, D, extra) {
+  return `${TOOLS_SITE}/website-color-palette-generator/?l=${MGDRoles.packRoles(L)}&d=${MGDRoles.packRoles(D)}${extra || ""}`;
+}
+function mcpWebsitePalette(a) {
+  const brand = a.brand_color ? mcpHex(a.brand_color) : null;
+  if (a.brand_color && !brand) return { content: [{ type: "text", text: "brand_color must be a hex code such as #e11d48." }], isError: true };
+  const style = PAL_STYLES.includes(a.style) ? a.style : "clean";
+  const sd = MGDRoles.seed({ mood: style, harmony: PAL_HARM.includes(a.harmony) ? a.harmony : null, brand });
+  const light = MGDRoles.build(sd, "light"), dark = MGDRoles.build(sd, "dark"), L = light.roles, D = dark.roles;
+  const tm = MGDRoles.MOODS[style].textMin;
+  const rows = MGDRoles.ROLES.map((k) => `| ${MGDRoles.LABELS[k]} | \`${L[k].toUpperCase()}\` | \`${D[k].toUpperCase()}\` |`).join("\n");
+  const css = ":root {\n" + MGDRoles.ROLES.map((k) => `  --color-${k}: ${L[k]};`).join("\n") + "\n}\n@media (prefers-color-scheme: dark) {\n  :root {\n" +
+    MGDRoles.ROLES.map((k) => `    --color-${k}: ${D[k]};`).join("\n") + "\n  }\n}";
+  const notes = light.notes.concat(dark.notes);
+  const link = mcpPaletteLink(L, D, `&m=${style}`);
+  const text = `Website colour palette (style: ${style}, accent harmony: ${sd.harmony}${brand ? ", brand " + brand.toUpperCase() : ""}) — generated with Made Good Designs' Website Color Palette Generator.\n\n` +
+    `| Role | Light | Dark |\n|---|---|---|\n${rows}\n\n` + (notes.length ? notes.join(" ") + "\n\n" : "") +
+    mcpChecksText(L, "Light theme", tm) + "\n\n" + mcpChecksText(D, "Dark theme", tm) + "\n\n```css\n" + css + "\n```\n\n" +
+    `Open and edit this palette (previews, fonts, Tailwind/JSON/SCSS export): ${link}\n` +
+    `Turn it into a DESIGN.md file: ${TOOLS_SITE}/design-md-generator/?l=${MGDRoles.packRoles(L)}&d=${MGDRoles.packRoles(D)}`;
+  return { content: [{ type: "text", text }] };
+}
+function mcpDesignMd(a) {
+  const brand = a.brand_color ? mcpHex(a.brand_color) : null;
+  if (a.brand_color && !brand) return { content: [{ type: "text", text: "brand_color must be a hex code such as #e11d48." }], isError: true };
+  const style = PAL_STYLES.includes(a.style) ? a.style : "clean";
+  const givenL = mcpRoleMap(a.colors && a.colors.light), givenD = mcpRoleMap(a.colors && a.colors.dark);
+  const anchor = brand || givenL.primary || null;
+  const sd = MGDRoles.seed({ mood: style, brand: anchor });
+  const L = MGDRoles.build(sd, "light", givenL).roles, D = MGDRoles.build(sd, "dark", givenD).roles;
+  const dark = a.include_dark !== false;
+  const strs = (x, max) => (Array.isArray(x) ? x : []).map((v) => String(v).slice(0, 300)).filter(Boolean).slice(0, max);
+  const md = MGDDesignMd.build({
+    name: String(a.project_name || "").slice(0, 80), description: String(a.description || "").slice(0, 200),
+    productType: typeof a.product_type === "string" ? a.product_type.slice(0, 40) : "SaaS web app",
+    personality: strs(a.personality, 4), dark, light: L, darkColors: D,
+    headingFont: String(a.heading_font || "").slice(0, 60), bodyFont: String(a.body_font || "").slice(0, 60), monoFont: String(a.mono_font || "").slice(0, 60),
+    baseSize: clampInt(a.base_size, 16, 12, 24), scaleRatio: [1.125, 1.2, 1.25, 1.333, 1.5].includes(Number(a.scale_ratio)) ? Number(a.scale_ratio) : 1.25,
+    spacingUnit: Number(a.spacing_unit) === 8 ? 8 : 4, density: a.density, radius: ["0", "4", "8", "12", "16", "full"].includes(String(a.radius)) ? String(a.radius) : "8",
+    borderWidth: Number(a.border_width) === 2 ? "2" : "1", shadows: a.shadows, motion: a.motion,
+    components: Array.isArray(a.components) && a.components.length ? a.components : MGDDesignMd.COMPONENTS.map((c) => c[0]),
+    dos: Array.isArray(a.dos) ? strs(a.dos, 20) : MGDDesignMd.DEFAULT_DO, donts: Array.isArray(a.donts) ? strs(a.donts, 20) : MGDDesignMd.DEFAULT_DONT,
+  });
+  const fonts = `&hf=${encodeURIComponent(String(a.heading_font || "Inter").slice(0, 60))}&bf=${encodeURIComponent(String(a.body_font || "Inter").slice(0, 60))}`;
+  const note = `Save this as DESIGN.md in the project root and point the agent's instructions file (CLAUDE.md, AGENTS.md or editor rules) at it. ` +
+    `Edit it visually: ${TOOLS_SITE}/design-md-generator/?l=${MGDRoles.packRoles(L)}${dark ? "&d=" + MGDRoles.packRoles(D) : ""}${fonts} — or preview the colours on real page layouts: ${mcpPaletteLink(L, D)}`;
+  return { content: [{ type: "text", text: md }, { type: "text", text: note }] };
 }
 
 // MCP text search. 1) the whole query as one phrase (the original behaviour); if nothing matches a multi-word
