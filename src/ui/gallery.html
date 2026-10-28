@@ -114,6 +114,23 @@
   .mgd-board__n{font-weight:600;font-size:.9rem}
   .mgd-board__c{font-size:.75rem;color:var(--muted)}
   .mgd-sub{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+  .mgd-board{position:relative}
+  .mgd-board__badge{position:absolute;top:.5rem;left:.5rem;background:rgba(0,0,0,.65);color:#fff;font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:999px}
+  .mgd-board__share{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.9);color:#111;font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:999px}
+  .mgd-bgroup{grid-column:1/-1;margin:.6rem 0 -.2rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .mgd-bpanel{width:100%;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:.8rem;display:grid;gap:.5rem;margin:.2rem 0 .6rem}
+  .mgd-bpanel input,.mgd-bpanel textarea,.mgd-bpanel select{font:inherit;padding:.45rem .7rem;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);color:inherit;width:100%}
+  .mgd-bpanel .row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+  .mgd-bdesc{width:100%;margin:-.4rem 0 .4rem;color:var(--muted);font-size:.9rem}
+  .mgd-pin{border-top:1px solid var(--border);padding:.45rem .6rem .55rem;font-size:.8rem}
+  .mgd-pin__note{margin:0 0 .35rem;white-space:pre-wrap;line-height:1.4}
+  .mgd-pin__acts{display:flex;flex-wrap:wrap;gap:.3rem}
+  .mgd-pin__acts button{font:inherit;font-size:.72rem;border:1px solid var(--border-strong);background:var(--surface);color:inherit;border-radius:999px;padding:.15rem .55rem;cursor:pointer}
+  .mgd-pin textarea{width:100%;font:inherit;font-size:.8rem;padding:.35rem .5rem;border:1px solid var(--border-strong);border-radius:6px;margin-bottom:.3rem;background:var(--surface);color:inherit}
+  .mgd-intro{max-width:620px;margin:1rem auto 2rem;text-align:center;line-height:1.6}
+  .mgd-intro h2{font-size:1.5rem;margin:.2rem 0 .5rem}
+  .mgd-intro ul{text-align:left;display:inline-block;margin:.4rem 0 1rem}
+  .mgd-pop__g{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:.35rem .5rem .1rem}
   /* newsletter toast */
   .mgd-toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--on-accent,#fff);border-radius:999px;padding:.6rem 1rem;font-size:.85rem;display:none;align-items:center;gap:.7rem;z-index:10002;box-shadow:0 6px 20px rgba(0,0,0,.25)}
   .mgd-toast.is-open{display:flex}
@@ -219,7 +236,8 @@
         + '<a class="mgd-btn" href="'+API+'/auth/logout">Log out</a>';
       $("acct-boards").addEventListener("click", showBoards);
     } else {
-      box.innerHTML = '<a class="mgd-btn mgd-btn--dark" href="'+API+'/auth/google/login">Sign in with Google</a>';
+      box.innerHTML = '<button class="mgd-btn" id="acct-boards">My boards</button><a class="mgd-btn mgd-btn--dark" href="'+API+'/auth/google/login">Sign in with Google</a>';
+      $("acct-boards").addEventListener("click", showBoards);
     }
   }
   function maybeToast(){ setTimeout(function(){ $("insp-toast").classList.add("is-open"); }, 2500); }
@@ -270,20 +288,63 @@
   }
 
   // ---------- boards ----------
+  var GROUPS=["Work","Interests","Personal"];
+  var boardsCache=[], boardFilter="";
+  function jpost(path, method, body){ return api(path,{method:method,headers:{"Content-Type":"application/json"},body:JSON.stringify(body||{})}).then(function(r){return r.json();}); }
+  function groupOptions(){ return '<datalist id="mgd-groups">'+GROUPS.map(function(g){return '<option value="'+g+'"></option>';}).join("")+'</datalist>'; }
+  function boardsIntro(){
+    state.view="boards"; $("insp-chips").style.display="none"; reset(); $("insp-sub").style.display="none"; $("insp-grid").className="";
+    $("insp-more").innerHTML='<div class="mgd-intro"><h2>Your own mood boards</h2><p>Collect references from this library — or from any website — into as many boards as you like.</p>'
+      +'<ul><li>Group boards into <strong>Work</strong>, <strong>Interests</strong> and <strong>Personal</strong> (or your own labels)</li><li>Add a note to every pin so you remember why you saved it</li><li>Share a read-only link with clients and teammates</li><li>Open the same boards from Claude or ChatGPT through our MCP server</li></ul>'
+      +'<p><a class="mgd-btn mgd-btn--dark" href="'+API+'/auth/google/login">Sign in with Google — free</a></p></div>';
+  }
   function showBoards(){
-    if(!state.user) return;
+    if(!state.user){ boardsIntro(); return; }
     state.view="boards"; $("insp-chips").style.display="none"; reset(); $("insp-more").textContent="";
     $("insp-sub").style.display="flex"; $("insp-sub").style.flexWrap="wrap";
     $("insp-sub").innerHTML='<strong style="margin-right:auto">My boards</strong>'
-      +'<form id="nb-form" style="display:flex;gap:.4rem"><input id="nb-name" placeholder="New board name…" style="font:inherit;padding:.45rem .8rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface)" /><button class="mgd-btn mgd-btn--dark" type="submit">＋ New board</button></form>';
-    $("nb-form").addEventListener("submit", function(e){ e.preventDefault(); var n=($("nb-name").value||"").trim(); if(!n) return; api("/api/boards",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:n})}).then(function(r){return r.json();}).then(function(){ showBoards(); }); });
-    $("insp-grid").className=""; // switch off masonry
+      +'<form id="nb-form" style="display:flex;gap:.4rem;flex-wrap:wrap">'+groupOptions()+'<input id="nb-name" placeholder="New board name…" maxlength="80" style="font:inherit;padding:.45rem .8rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface);color:inherit" />'
+      +'<input id="nb-group" list="mgd-groups" placeholder="Group (optional)" maxlength="30" style="font:inherit;width:12rem;padding:.45rem .8rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface);color:inherit" />'
+      +'<button class="mgd-btn mgd-btn--dark" type="submit">＋ New board</button></form>'
+      +'<div id="bg-chips" class="mgd-insp__chips" style="width:100%;margin:.3rem 0 0"></div>';
+    $("nb-form").addEventListener("submit", function(e){ e.preventDefault(); var n=($("nb-name").value||"").trim(); if(!n) return;
+      jpost("/api/boards","POST",{name:n, group:($("nb-group").value||"").trim()}).then(function(d){ if(d.error){ toastMsg(d.message||"Couldn’t create board"); return; } showBoards(); }); });
+    $("insp-grid").className="";
     api("/api/boards").then(function(r){return r.json();}).then(function(d){
-      var g=$("insp-grid"); g.className="mgd-boards";
-      if(!d.boards||!d.boards.length){ $("insp-grid").className=""; $("insp-more").innerHTML="<p style='margin:0;font-size:1rem;line-height:1.6'>No boards yet. Create one above ↑, then <strong>paste any URL</strong> into it to save inspiration from anywhere on the web — or hit <strong>♥ Save</strong> on images in the gallery.</p>"; return; }
-      d.boards.forEach(function(b){
-        var el=document.createElement("div"); el.className="mgd-board";
-        el.innerHTML='<div class="mgd-board__cov" style="'+(b.cover?'background-image:url('+API+b.cover+')':'')+'"></div><div class="mgd-board__m"><div class="mgd-board__n">'+esc(b.name)+'</div><div class="mgd-board__c">'+b.count+' saved</div></div>';
+      boardsCache=d.boards||[]; renderBoardList();
+    });
+  }
+  function renderBoardList(){
+    var g=$("insp-grid"); g.innerHTML=""; g.className="mgd-boards";
+    var present=[]; boardsCache.forEach(function(b){ if(b.group && present.indexOf(b.group)<0) present.push(b.group); });
+    var order=GROUPS.filter(function(x){return present.indexOf(x)>-1;}).concat(present.filter(function(x){return GROUPS.indexOf(x)<0;}).sort());
+    var hasUngrouped=boardsCache.some(function(b){return !b.group;});
+    if(boardFilter && !(boardFilter==="~"?hasUngrouped:present.indexOf(boardFilter)>-1)) boardFilter="";
+    var chipsBox=$("bg-chips"); chipsBox.innerHTML="";
+    if(order.length){
+      var mk=function(val,label){ var c=document.createElement("button"); c.className="mgd-insp__chip"+(boardFilter===val?" is-active":""); c.textContent=label; c.addEventListener("click",function(){ boardFilter=val; renderBoardList(); }); chipsBox.appendChild(c); };
+      mk("","All"); order.forEach(function(x){ mk(x,x); }); if(hasUngrouped) mk("~","No group");
+    }
+    if(!boardsCache.length){
+      g.className="";
+      $("insp-more").innerHTML="<div class='mgd-intro'><h2>Start your first boards</h2><p>Most designers keep separate boards for client work, things they love, and personal projects.</p>"
+        +"<p><button class='mgd-btn mgd-btn--dark' id='b-starter'>Create Work, Interests and Personal boards</button></p>"
+        +"<p style='font-size:.9rem'>Or name your own above. Then hit <strong>♥ Save</strong> on any image, or paste a link from any website into a board.</p></div>";
+      $("b-starter").addEventListener("click", function(){ var btn=this; btn.disabled=true; btn.textContent="Creating…";
+        Promise.all([["Client work","Work"],["Things I love","Interests"],["Personal projects","Personal"]].map(function(x){ return jpost("/api/boards","POST",{name:x[0],group:x[1]}); })).then(function(){ showBoards(); }); });
+      return;
+    }
+    $("insp-more").textContent="";
+    var sections=order.concat(hasUngrouped?["~"]:[]);
+    sections.forEach(function(sec){
+      if(boardFilter && boardFilter!==sec) return;
+      var list=boardsCache.filter(function(b){ return sec==="~"?!b.group:b.group===sec; }); if(!list.length) return;
+      if(order.length){ var h=document.createElement("div"); h.className="mgd-bgroup"; h.textContent=sec==="~"?"No group":sec; g.appendChild(h); }
+      list.forEach(function(b){
+        var el=document.createElement("div"); el.className="mgd-board"; el.setAttribute("data-board",b.id);
+        el.innerHTML='<div class="mgd-board__cov" style="'+(b.cover?'background-image:url('+API+b.cover+')':'')+'"></div>'
+          +(b.share_url?'<span class="mgd-board__share">Shared</span>':'')
+          +'<div class="mgd-board__m"><div class="mgd-board__n">'+esc(b.name)+'</div><div class="mgd-board__c">'+b.count+' saved'+(b.description?' · '+esc(b.description.slice(0,60)):'')+'</div></div>';
         el.addEventListener("click", function(){ openBoard(b); });
         g.appendChild(el);
       });
@@ -294,18 +355,82 @@
     $("insp-sub").style.display="flex"; $("insp-sub").style.flexWrap="wrap";
     $("insp-sub").innerHTML=
       '<button class="mgd-btn" id="b-back">← Boards</button>'
-      +'<strong style="margin-right:auto">'+esc(b.name)+'</strong>'
+      +'<strong style="margin-right:auto">'+esc(b.name)+(b.group?' <span class="mgd-board__c">· '+esc(b.group)+'</span>':'')+'</strong>'
+      +'<button class="mgd-btn" id="b-edit">Edit</button><button class="mgd-btn" id="b-share">'+(b.share_url?'Shared ✓':'Share')+'</button>'
       +'<form id="b-addurl" style="display:flex;gap:.4rem;flex:1 1 300px;max-width:560px" title="Paste a link from any website">'
-      +'<input id="b-url" type="url" placeholder="Paste any image or page URL to add it here…" style="flex:1;font:inherit;padding:.5rem .8rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface)" />'
-      +'<button class="mgd-btn mgd-btn--dark" type="submit" id="b-addbtn">＋ Add from URL</button></form>';
+      +'<input id="b-url" type="url" placeholder="Paste any image or page URL to add it here…" style="flex:1;font:inherit;padding:.5rem .8rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface);color:inherit" />'
+      +'<button class="mgd-btn mgd-btn--dark" type="submit" id="b-addbtn">＋ Add from URL</button></form>'
+      +(b.description?'<p class="mgd-bdesc">'+esc(b.description)+'</p>':'')
+      +'<div id="b-panel" style="width:100%"></div>';
     $("b-back").addEventListener("click", showBoards);
     $("b-addurl").addEventListener("submit", function(e){ e.preventDefault(); addUrlToBoard(b); });
+    $("b-edit").addEventListener("click", function(){ editPanel(b); });
+    $("b-share").addEventListener("click", function(){ sharePanel(b); });
     loadBoardItems(b);
+  }
+  function editPanel(b){
+    var p=$("b-panel"); if(p.getAttribute("data-open")==="edit"){ p.innerHTML=""; p.removeAttribute("data-open"); return; }
+    p.setAttribute("data-open","edit");
+    p.innerHTML='<form class="mgd-bpanel" id="b-editform">'+groupOptions()
+      +'<label>Name<input id="be-name" maxlength="80" value="'+esc(b.name)+'"></label>'
+      +'<label>Group<input id="be-group" list="mgd-groups" maxlength="30" placeholder="Work, Interests, Personal or your own" value="'+esc(b.group||"")+'"></label>'
+      +'<label>Description<textarea id="be-desc" maxlength="300" rows="2" placeholder="What is this board for?">'+esc(b.description||"")+'</textarea></label>'
+      +'<div class="row"><button class="mgd-btn mgd-btn--dark" type="submit">Save</button><button class="mgd-btn" type="button" id="be-cancel">Cancel</button><span style="flex:1"></span><button class="mgd-btn" type="button" id="be-del">Delete board</button></div></form>';
+    $("be-cancel").addEventListener("click", function(){ p.innerHTML=""; p.removeAttribute("data-open"); });
+    $("be-del").addEventListener("click", function(){ if(!confirm("Delete “"+b.name+"”? Saved images stay in the gallery.")) return;
+      api("/api/boards/"+b.id,{method:"DELETE"}).then(function(){ toastMsg("Board deleted"); showBoards(); }); });
+    $("b-editform").addEventListener("submit", function(e){ e.preventDefault();
+      jpost("/api/boards/"+b.id,"PATCH",{name:$("be-name").value, group:$("be-group").value, description:$("be-desc").value}).then(function(d){
+        if(!d.board){ toastMsg("Couldn’t save"); return; } toastMsg("Board updated"); openBoard(d.board); }); });
+  }
+  function sharePanel(b){
+    var p=$("b-panel"); if(p.getAttribute("data-open")==="share"){ p.innerHTML=""; p.removeAttribute("data-open"); return; }
+    p.setAttribute("data-open","share");
+    var draw=function(){
+      p.innerHTML='<div class="mgd-bpanel">'+(b.share_url
+        ? '<div>Anyone with this link can view this board (read-only). It isn’t listed in search engines.</div><div class="row"><input id="bs-url" readonly value="'+esc(b.share_url)+'" style="flex:1 1 260px"><button class="mgd-btn mgd-btn--dark" id="bs-copy">Copy link</button><a class="mgd-btn" href="'+esc(b.share_url)+'" target="_blank" rel="noopener">Open</a><button class="mgd-btn" id="bs-off">Stop sharing</button></div>'
+        : '<div>This board is private. Create a read-only link to share it with clients or teammates — you can turn it off any time.</div><div class="row"><button class="mgd-btn mgd-btn--dark" id="bs-on">Create share link</button></div>')+'</div>';
+      if(b.share_url){
+        $("bs-copy").addEventListener("click", function(){ var t=b.share_url; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,ok); function ok(){ toastMsg("Link copied"); } });
+        $("bs-off").addEventListener("click", function(){ jpost("/api/boards/"+b.id,"PATCH",{shared:false}).then(function(d){ if(d.board){ b=d.board; state.currentBoard=b; $("b-share").textContent="Share"; draw(); toastMsg("Sharing turned off"); } }); });
+      } else {
+        $("bs-on").addEventListener("click", function(){ jpost("/api/boards/"+b.id,"PATCH",{shared:true}).then(function(d){ if(d.board){ b=d.board; state.currentBoard=b; $("b-share").textContent="Shared ✓"; draw(); gaEvent("board_share",{}); } }); });
+      }
+    };
+    draw();
+  }
+  function pinControls(el, item, b){
+    var box=document.createElement("div"); box.className="mgd-pin";
+    var draw=function(){
+      box.innerHTML=(item.note?'<p class="mgd-pin__note">'+esc(item.note)+'</p>':'')
+        +'<div class="mgd-pin__acts"><button type="button" data-a="note">'+(item.note?'✎ Edit note':'✎ Add note')+'</button>'
+        +(b.cover_item_id===item.id?'<button type="button" disabled>★ Cover</button>':'<button type="button" data-a="cover">☆ Set as cover</button>')
+        +'<button type="button" data-a="remove">✕ Remove</button></div>';
+    };
+    draw();
+    box.addEventListener("click", function(e){
+      var a=e.target.getAttribute("data-a"); if(!a) return; e.stopPropagation();
+      if(a==="note"){
+        box.innerHTML='<textarea maxlength="500" rows="3" placeholder="Why did you save this?">'+esc(item.note||"")+'</textarea><div class="mgd-pin__acts"><button type="button" data-a="savenote">Save note</button><button type="button" data-a="cancel">Cancel</button></div>';
+        box.querySelector("textarea").focus();
+      } else if(a==="cancel"){ draw(); }
+      else if(a==="savenote"){
+        var v=box.querySelector("textarea").value;
+        jpost("/api/boards/"+b.id+"/saves/"+encodeURIComponent(item.id),"PATCH",{note:v}).then(function(d){ if(d.ok){ item.note=d.note; draw(); toastMsg("Note saved"); } else toastMsg("Couldn’t save note"); });
+      } else if(a==="cover"){
+        jpost("/api/boards/"+b.id,"PATCH",{cover_item_id:item.id}).then(function(d){ if(d.board){ b.cover_item_id=item.id; state.currentBoard.cover_item_id=item.id; loadBoardItems(b); toastMsg("Cover updated"); } });
+      } else if(a==="remove"){
+        api("/api/boards/"+b.id+"/saves/"+encodeURIComponent(item.id),{method:"DELETE"}).then(function(){ el.remove(); toastMsg("Removed from "+b.name); });
+      }
+    });
+    el.appendChild(box);
   }
   function loadBoardItems(b){
     reset();
     api("/api/boards/"+b.id).then(function(r){return r.json();}).then(function(d){
-      renderAppend(d.items||[]);
+      if(d.board){ b.cover_item_id=d.board.cover_item_id; }
+      var g=$("insp-grid");
+      (d.items||[]).forEach(function(it){ var el=card(it); var sv=el.querySelector(".mgd-card__save"); if(sv) sv.remove(); pinControls(el, it, b); g.appendChild(el); });
       $("insp-more").innerHTML=(d.items&&d.items.length)?"":"This board is empty. <strong>Paste any URL above</strong> to add inspiration from around the web, or hit <strong>♥ Save</strong> on images in the gallery.";
       state.done=true;
     });
@@ -324,7 +449,7 @@
 
   // ---------- save popover ----------
   function openSave(item, x, y){
-    if(!state.user){ if(confirm("Sign in with Google to save to a board?")) location.href=API+"/auth/google/login"; return; }
+    if(!state.user){ if(state.modalItem) closeModal(); boardsIntro(); window.scrollTo(0,0); return; }
     state.saveItem=item;
     var pop=$("insp-pop"); pop.style.left=Math.min(x, window.innerWidth-280)+"px"; pop.style.top=Math.min(y, window.innerHeight-260)+"px";
     $("pop-list").innerHTML='<div class="mgd-board__c">Loading…</div>';
@@ -332,7 +457,10 @@
     api("/api/boards").then(function(r){return r.json();}).then(function(d){
       var list=$("pop-list"); list.innerHTML="";
       if(!d.boards.length) list.innerHTML='<div class="mgd-board__c">No boards yet — create one below.</div>';
-      d.boards.forEach(function(b){ var row=document.createElement("div"); row.className="mgd-pop__b"; row.innerHTML='<span>'+esc(b.name)+'</span><span class="mgd-board__c">'+b.count+'</span>'; row.addEventListener("click",function(){ saveTo(b.id, b.name); }); list.appendChild(row); });
+      var last=null, grouped=d.boards.some(function(b){return b.group;});
+      d.boards.slice().sort(function(x,y){ var gx=x.group||"~", gy=y.group||"~"; return gx<gy?-1:gx>gy?1:0; }).forEach(function(b){
+        if(grouped && (b.group||"No group")!==last){ last=b.group||"No group"; var h=document.createElement("div"); h.className="mgd-pop__g"; h.textContent=last; list.appendChild(h); }
+        var row=document.createElement("div"); row.className="mgd-pop__b"; row.innerHTML='<span>'+esc(b.name)+'</span><span class="mgd-board__c">'+b.count+'</span>'; row.addEventListener("click",function(){ saveTo(b.id, b.name); }); list.appendChild(row); });
     });
   }
   function closeSave(){ $("insp-pop").classList.remove("is-open"); $("insp-overlay").classList.remove("is-open"); }

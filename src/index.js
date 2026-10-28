@@ -71,6 +71,7 @@ export default {
       if (path === "/annual-reports" && method === "GET") return html(injectBase(ANNUAL_HTML, base));
       if (path === "/annual-reports/sitemap.xml" && method === "GET") return annualSitemap(env, base);
       if (path === "/museum" && method === "GET") return html(injectBase(MUSEUM_HTML, base));
+      { const bm = path.match(/^\/b\/([a-z0-9]{10})$/); if (bm && method === "GET") return publicBoardPage(bm[1], env, base); }
       if (path === "/museum/sitemap.xml" && method === "GET") return museumSitemap(env, base);
       if (path === "/museum/index" && method === "GET") return edgeCache(request, ctx, 1800, () => museumIndexPage(env, base));
       { const mm = path.match(/^\/museum\/(artist|museum|type|culture|theme)\/([^/]+)$/);
@@ -137,6 +138,8 @@ export default {
       if (path.match(/^\/api\/boards\/[^/]+\/add-url$/) && method === "POST") return addUrlToBoard(path.split("/")[3], request, env);
       if (path.match(/^\/api\/boards\/[^/]+\/saves$/) && method === "POST") return saveToBoard(path.split("/")[3], request, env);
       if (path.match(/^\/api\/boards\/[^/]+\/saves\/[^/]+$/) && method === "DELETE") { const s = path.split("/"); return unsave(s[3], s[5], request, env); }
+      if (path.match(/^\/api\/boards\/[^/]+\/saves\/[^/]+$/) && method === "PATCH") { const s = path.split("/"); return setPinNote(s[3], s[5], request, env); }
+      if (path.match(/^\/api\/boards\/[^/]+$/) && method === "PATCH") return updateBoard(path.split("/")[3], request, env);
       if (path.match(/^\/api\/boards\/[^/]+$/) && method === "GET") return getBoard(path.split("/")[3], request, env);
       if (path.match(/^\/api\/boards\/[^/]+$/) && method === "DELETE") return deleteBoard(path.split("/")[3], request, env);
 
@@ -937,24 +940,21 @@ async function setNewsletter(request, env) {
 async function listBoards(request, env) {
   const user = await getUser(request, env);
   if (!user) return json({ error: "unauthorized" }, 401, env, request);
-  const rows = await env.DB.prepare(
-    `SELECT b.id,b.name,b.created_at,
-       (SELECT COUNT(*) FROM saves s WHERE s.board_id=b.id) AS count,
-       (SELECT i.image_key FROM saves s JOIN items i ON i.id=s.item_id WHERE s.board_id=b.id ORDER BY s.created_at DESC LIMIT 1) AS cover
-     FROM boards b WHERE b.user_id=? ORDER BY b.created_at DESC`
-  ).bind(user.id).all();
-  const boards = (rows.results || []).map((b) => ({ id: b.id, name: b.name, count: b.count || 0, cover: b.cover ? `/img/${b.cover}` : null, created_at: b.created_at }));
-  return json({ boards }, 200, env, request);
+  const rows = await env.DB.prepare(BOARD_LIST_SQL + " ORDER BY COALESCE(b.updated_at,b.created_at) DESC LIMIT ?").bind(user.id, MAX_BOARDS_PER_USER).all();
+  return json({ boards: (rows.results || []).map(boardOut), groups: BOARD_GROUPS }, 200, env, request);
 }
 
 async function createBoard(request, env) {
   const user = await getUser(request, env);
   if (!user) return json({ error: "unauthorized" }, 401, env, request);
   const body = await request.json().catch(() => ({}));
-  const name = (body.name || "").toString().trim().slice(0, 80) || "Untitled board";
-  const id = genId();
-  await env.DB.prepare("INSERT INTO boards (id,user_id,name,created_at) VALUES (?,?,?,?)").bind(id, user.id, name, Date.now()).run();
-  return json({ ok: true, board: { id, name, count: 0, cover: null } }, 200, env, request);
+  const name = cleanText(body.name, 80) || "Untitled board";
+  const grp = cleanGroup(body.group), description = cleanText(body.description, 300) || null;
+  const n = await env.DB.prepare("SELECT COUNT(*) n FROM boards WHERE user_id=?").bind(user.id).first();
+  if (n && n.n >= MAX_BOARDS_PER_USER) return json({ error: "limit", message: `You can have up to ${MAX_BOARDS_PER_USER} boards.` }, 400, env, request);
+  const id = genId(), now = Date.now();
+  await env.DB.prepare("INSERT INTO boards (id,user_id,name,grp,description,created_at,updated_at) VALUES (?,?,?,?,?,?,?)").bind(id, user.id, name, grp, description, now, now).run();
+  return json({ ok: true, board: { id, name, group: grp, description, count: 0, cover: null, share_url: null } }, 200, env, request);
 }
 
 async function saveToBoard(boardId, request, env) {
@@ -970,6 +970,7 @@ async function saveToBoard(boardId, request, env) {
   try {
     await env.DB.prepare("INSERT INTO saves (id,board_id,item_id,user_id,created_at) VALUES (?,?,?,?,?)").bind(genId(), boardId, itemId, user.id, Date.now()).run();
   } catch (e) { /* UNIQUE(board_id,item_id) — already saved; ignore */ }
+  await env.DB.prepare("UPDATE boards SET updated_at=? WHERE id=? AND user_id=?").bind(Date.now(), boardId, user.id).run();
   return json({ ok: true }, 200, env, request);
 }
 
@@ -1032,6 +1033,7 @@ async function addUrlToBoard(boardId, request, env) {
   try {
     await env.DB.prepare("INSERT INTO saves (id,board_id,item_id,user_id,created_at) VALUES (?,?,?,?,?)").bind(genId(), boardId, id, user.id, now).run();
   } catch (e) {}
+  await env.DB.prepare("UPDATE boards SET updated_at=? WHERE id=? AND user_id=?").bind(now, boardId, user.id).run();
 
   return json({ ok: true, item: rowToItem({ id, title: title || host, description, source_host: host, image_key: key,
     width: meta.width, height: meta.height, tags: JSON.stringify(tags), themes: "[]", palette: "[]", style: null, created_at: now }, env) }, 200, env, request);
@@ -1066,13 +1068,14 @@ async function unsave(boardId, itemId, request, env) {
 
 async function getBoard(boardId, request, env) {
   const user = await getUser(request, env);
-  const board = await env.DB.prepare("SELECT id,user_id,name FROM boards WHERE id=?").bind(boardId).first();
+  const board = await env.DB.prepare("SELECT * FROM boards WHERE id=?").bind(boardId).first();
   if (!board) return json({ error: "not_found" }, 404, env, request);
-  if (!user || user.id !== board.user_id) return json({ error: "unauthorized" }, 401, env, request); // private for now
+  if (!user || user.id !== board.user_id) return json({ error: "unauthorized" }, 401, env, request); // owner only; public view is /b/<share_id>
   const rows = await env.DB.prepare(
-    `SELECT i.* FROM saves s JOIN items i ON i.id=s.item_id WHERE s.board_id=? AND i.status='published' ORDER BY s.created_at DESC`
+    `SELECT i.*, s.note AS pin_note FROM saves s JOIN items i ON i.id=s.item_id WHERE s.board_id=? AND i.status='published' ORDER BY s.created_at DESC`
   ).bind(boardId).all();
-  return json({ board: { id: board.id, name: board.name }, items: (rows.results || []).map((r) => rowToItem(r, env)) }, 200, env, request);
+  const items = (rows.results || []).map((r) => Object.assign(rowToItem(r, env), { note: r.pin_note || "", own: !!(r.owner_id && r.owner_id === user.id) }));
+  return json({ board: boardOut(Object.assign({ count: items.length }, board)), items }, 200, env, request);
 }
 
 async function deleteBoard(boardId, request, env) {
@@ -1081,6 +1084,117 @@ async function deleteBoard(boardId, request, env) {
   await env.DB.prepare("DELETE FROM saves WHERE board_id=? AND user_id=?").bind(boardId, user.id).run();
   await env.DB.prepare("DELETE FROM boards WHERE id=? AND user_id=?").bind(boardId, user.id).run();
   return json({ ok: true }, 200, env, request);
+}
+
+// ---- Boards v2: groups, descriptions, cover, share links, pin notes ----
+const BOARD_GROUPS = ["Work", "Interests", "Personal"];
+const MAX_BOARDS_PER_USER = 200;
+const BOARD_LIST_SQL = `SELECT b.*,
+    (SELECT COUNT(*) FROM saves s WHERE s.board_id=b.id) AS count,
+    COALESCE((SELECT i.image_key FROM items i JOIN saves s2 ON s2.item_id=i.id AND s2.board_id=b.id WHERE i.id=b.cover_item_id),
+             (SELECT i.image_key FROM saves s JOIN items i ON i.id=s.item_id WHERE s.board_id=b.id ORDER BY s.created_at DESC LIMIT 1)) AS cover
+  FROM boards b WHERE b.user_id=?`;
+function cleanText(v, max) { return (v == null ? "" : String(v)).replace(/[\x00-\x09\x0b-\x1f\x7f]/g, " ").replace(/[ \t]+/g, " ").trim().slice(0, max); }
+function cleanGroup(v) { const g = cleanText(v, 30); if (!g) return null; const k = BOARD_GROUPS.find((x) => x.toLowerCase() === g.toLowerCase()); return k || g; }
+function shareUrlFor(id) { return id ? `${MCP_SITE}/b/${id}` : null; }
+function boardOut(b) {
+  return { id: b.id, name: b.name, group: b.grp || null, description: b.description || null, count: b.count || 0,
+    cover: b.cover ? `/img/${b.cover}` : null, cover_item_id: b.cover_item_id || null, share_url: shareUrlFor(b.share_id),
+    created_at: b.created_at, updated_at: b.updated_at || b.created_at };
+}
+function newShareId() {
+  const a = "abcdefghijklmnopqrstuvwxyz0123456789", r = crypto.getRandomValues(new Uint8Array(10));
+  return Array.from(r, (x) => a[x % 36]).join("");
+}
+// Shared by the web API and the MCP update_board tool. Returns the updated board row or null.
+async function applyBoardUpdate(env, uid, boardId, body) {
+  const board = await env.DB.prepare("SELECT * FROM boards WHERE id=? AND user_id=?").bind(boardId, uid).first();
+  if (!board) return null;
+  const sets = [], binds = [];
+  if (body.name !== undefined) { const n = cleanText(body.name, 80); if (n) { sets.push("name=?"); binds.push(n); } }
+  if (body.group !== undefined) { sets.push("grp=?"); binds.push(cleanGroup(body.group)); }
+  if (body.description !== undefined) { sets.push("description=?"); binds.push(cleanText(body.description, 300) || null); }
+  if (body.cover_item_id !== undefined) {
+    const cid = cleanText(body.cover_item_id, 64);
+    const ok = !cid || await env.DB.prepare("SELECT 1 FROM saves WHERE board_id=? AND item_id=?").bind(boardId, cid).first();
+    if (ok) { sets.push("cover_item_id=?"); binds.push(cid || null); }
+  }
+  if (body.shared !== undefined) {
+    if (body.shared && !board.share_id) {
+      for (let i = 0; i < 4; i++) {  // UNIQUE index; retry on the (astronomically unlikely) collision
+        const sid = newShareId();
+        if (!(await env.DB.prepare("SELECT 1 FROM boards WHERE share_id=?").bind(sid).first())) { sets.push("share_id=?"); binds.push(sid); break; }
+      }
+    } else if (!body.shared && board.share_id) { sets.push("share_id=NULL"); }
+  }
+  if (sets.length) {
+    sets.push("updated_at=?"); binds.push(Date.now());
+    await env.DB.prepare(`UPDATE boards SET ${sets.join(",")} WHERE id=? AND user_id=?`).bind(...binds, boardId, uid).run();
+  }
+  return await env.DB.prepare(BOARD_LIST_SQL + " AND b.id=?").bind(uid, boardId).first();
+}
+async function updateBoard(boardId, request, env) {
+  const user = await getUser(request, env);
+  if (!user) return json({ error: "unauthorized" }, 401, env, request);
+  const body = await request.json().catch(() => ({}));
+  const b = await applyBoardUpdate(env, user.id, boardId, body || {});
+  if (!b) return json({ error: "not_found" }, 404, env, request);
+  return json({ ok: true, board: boardOut(b) }, 200, env, request);
+}
+async function setPinNote(boardId, itemId, request, env) {
+  const user = await getUser(request, env);
+  if (!user) return json({ error: "unauthorized" }, 401, env, request);
+  const body = await request.json().catch(() => ({}));
+  const note = cleanText(body.note, 500) || null;
+  const r = await env.DB.prepare("UPDATE saves SET note=? WHERE board_id=? AND item_id=? AND user_id=?").bind(note, boardId, itemId, user.id).run();
+  if (!(r.meta && r.meta.changes > 0)) return json({ error: "not_found" }, 404, env, request);
+  await env.DB.prepare("UPDATE boards SET updated_at=? WHERE id=? AND user_id=?").bind(Date.now(), boardId, user.id).run();
+  return json({ ok: true, note: note || "" }, 200, env, request);
+}
+
+// Public, read-only view of a board the owner chose to share. Unlisted: noindex, and the share id is
+// unguessable. Sources are plain text (no outbound links), matching the gallery's attribution model.
+async function publicBoardPage(shareId, env, base) {
+  const board = await env.DB.prepare("SELECT * FROM boards WHERE share_id=?").bind(shareId).first();
+  const head = (t) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,follow"><title>${escHtml(t)}</title>`;
+  if (!board) return new Response(head("Board not found — Made Good Designs") + `<style>body{font:16px/1.6 system-ui,sans-serif;max-width:640px;margin:4rem auto;padding:0 16px}</style></head><body><h1>This board isn’t shared</h1><p>The owner may have turned off sharing. <a href="${base}/">Browse the design inspiration gallery</a>.</p></body></html>`,
+    { status: 404, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } });
+  const rows = (await env.DB.prepare(
+    `SELECT i.*, s.note AS pin_note FROM saves s JOIN items i ON i.id=s.item_id WHERE s.board_id=? AND i.status='published' ORDER BY s.created_at DESC LIMIT 300`
+  ).bind(board.id).all()).results || [];
+  const owner = await env.DB.prepare("SELECT name FROM users WHERE id=?").bind(board.user_id).first();
+  const first = owner && owner.name ? String(owner.name).split(" ")[0] : "";
+  const cards = rows.map((r) => {
+    const it = rowToItem(r, null), own = !!r.owner_id;
+    const src = own ? hostOf(r.source_url || "") : (it.source || it.designer || it.source_host || "");
+    const ratio = it.width && it.height ? (it.height / it.width * 100).toFixed(2) : "75";
+    const sw = it.palette.slice(0, 5).map((c) => `<i style="background:${escHtml(c)}"></i>`).join("");
+    const link = own ? "" : ` href="${base}/#i/${encodeURIComponent(it.id)}"`;
+    return `<figure class="pin"><a class="img"${link} style="padding-top:${ratio}%"><img loading="lazy" src="${base}${it.image}" alt="${escHtml(it.title)}"></a>` +
+      `<figcaption><b>${escHtml(it.title || "Untitled")}</b>${src ? `<span>${escHtml(src)}</span>` : ""}` +
+      (r.pin_note ? `<p class="note">${escHtml(r.pin_note)}</p>` : "") + (sw ? `<span class="sw">${sw}</span>` : "") + `</figcaption></figure>`;
+  }).join("");
+  const title = `${board.name} — mood board on Made Good Designs`;
+  const page = head(title) + `<meta property="og:title" content="${escHtml(title)}"><meta property="og:description" content="${escHtml(board.description || rows.length + " saved design references")}">` +
+    (rows[0] ? `<meta property="og:image" content="${MCP_SITE}/img/${escHtml(rows[0].image_key)}">` : "") +
+    `<style>
+:root{--bg:#fafafa;--surface:#fff;--text:#171717;--muted:#666;--border:#e5e5e5}
+@media (prefers-color-scheme:dark){:root{--bg:#111;--surface:#1b1b1b;--text:#f2f2f2;--muted:#a3a3a3;--border:#2c2c2c}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 16px 48px}
+.top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.top a{color:var(--text)}h1{font-size:clamp(1.6rem,4vw,2.4rem);margin:0 0 6px;line-height:1.15}
+.meta{color:var(--muted);margin:0 0 20px;max-width:720px}.cta{display:inline-block;background:var(--text);color:var(--bg)!important;text-decoration:none;border-radius:999px;padding:9px 16px;font-weight:600;font-size:.9rem}
+.grid{columns:4 240px;column-gap:14px}.pin{break-inside:avoid;margin:0 0 14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.img{display:block;position:relative;background:#ddd}.img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+figcaption{padding:9px 11px 11px}figcaption b{display:block;font-size:.9rem}figcaption span{color:var(--muted);font-size:.78rem}
+.note{margin:6px 0 0;font-size:.85rem;border-left:3px solid var(--border);padding-left:8px}.sw{display:flex;gap:3px;margin-top:7px}.sw i{width:16px;height:16px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+footer{margin-top:28px;color:var(--muted);font-size:.85rem}footer a{color:var(--text)}
+</style></head><body><div class="wrap"><div class="top"><a href="https://madegooddesigns.com/">Made Good Designs</a><a class="cta" href="${base}/">Make your own boards — free</a></div>` +
+    `<h1>${escHtml(board.name)}</h1><p class="meta">${board.description ? escHtml(board.description) + " · " : ""}${rows.length} saved ${rows.length === 1 ? "reference" : "references"}${first ? " · shared by " + escHtml(first) : ""}${board.grp ? " · " + escHtml(board.grp) : ""}</p>` +
+    (cards ? `<div class="grid">${cards}</div>` : `<p>This board is empty.</p>`) +
+    `<footer>A mood board made with the free <a href="${base}/">Made Good Designs inspiration library</a>. Images remain the property of their creators; sources are shown under each image.</footer></div></body></html>`;
+  return new Response(page, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=60", "X-Robots-Tag": "noindex, follow" } });
 }
 
 async function exportUsers(request, env) {
@@ -1500,14 +1614,14 @@ function mcpItems(rows, header, opts) {
 const MCP_BOARD_TOOLS = [
   {
     name: "list_my_boards",
-    description: "List the signed-in user's Made Good Designs mood boards (id, name, number of saved items, cover image). Use the board id with get_board, save_to_board and remove_from_board.",
+    description: "List the signed-in user's Made Good Designs mood boards, grouped by collection (e.g. Work, Interests, Personal): id, name, description, number of saved items, cover image and public share link if shared. Use the board id with get_board, save_to_board, update_board and remove_from_board.",
     inputSchema: { type: "object", properties: {} },
     annotations: { title: "List my boards", readOnlyHint: true, openWorldHint: false },
     scope: "boards:read",
   },
   {
     name: "get_board",
-    description: "Get one of the signed-in user's mood boards with its saved items: title, description, colour palette, tags, image URL and the Made Good Designs page URL to cite.",
+    description: "Get one of the signed-in user's mood boards with its saved items: title, description, the user's note on each pin, colour palette, tags, image URL and the Made Good Designs page URL to cite.",
     inputSchema: {
       type: "object",
       properties: {
@@ -1521,10 +1635,14 @@ const MCP_BOARD_TOOLS = [
   },
   {
     name: "create_board",
-    description: "Create a new, private mood board for the signed-in user. Returns the new board id.",
+    description: "Create a new, private mood board for the signed-in user, optionally in a group such as Work, Interests or Personal. Returns the new board id.",
     inputSchema: {
       type: "object",
-      properties: { name: { type: "string", description: "Board name (max 80 characters).", maxLength: 80 } },
+      properties: {
+        name: { type: "string", description: "Board name (max 80 characters).", maxLength: 80 },
+        group: { type: "string", description: "Optional group (max 30 characters). Suggested: Work, Interests, Personal — any other label is allowed.", maxLength: 30 },
+        description: { type: "string", description: "Optional short description (max 300 characters).", maxLength: 300 },
+      },
       required: ["name"],
     },
     annotations: { title: "Create board", readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
@@ -1532,16 +1650,34 @@ const MCP_BOARD_TOOLS = [
   },
   {
     name: "save_to_board",
-    description: "Save a Made Good Designs inspiration item (item_id from the search/browse tools) to one of the signed-in user's boards. Saving an item that is already on the board is a no-op.",
+    description: "Save a Made Good Designs inspiration item (item_id from the search/browse tools) to one of the signed-in user's boards, optionally with a note on why it was saved. Saving an item that is already on the board only updates its note (if one is given).",
     inputSchema: {
       type: "object",
       properties: {
         board_id: { type: "string", description: "Board id from list_my_boards or create_board." },
         item_id: { type: "string", description: "Item id (the item_id line in search_design_inspiration / browse_inspiration_by_theme / search_annual_reports results)." },
+        note: { type: "string", description: "Optional note shown with the pin (max 500 characters), e.g. 'colour direction for the Q3 campaign'.", maxLength: 500 },
       },
       required: ["board_id", "item_id"],
     },
     annotations: { title: "Save to board", readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    scope: "boards:write",
+  },
+  {
+    name: "update_board",
+    description: "Update one of the signed-in user's boards: rename it, move it to a group (Work, Interests, Personal or any label), change its description, or turn its public share link on or off. Only the fields you pass are changed. A shared board can be viewed read-only by anyone with the link.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        board_id: { type: "string", description: "Board id from list_my_boards." },
+        name: { type: "string", description: "New name (max 80 characters).", maxLength: 80 },
+        group: { type: "string", description: "Group label (max 30 characters); empty string removes the group.", maxLength: 30 },
+        description: { type: "string", description: "New description (max 300 characters); empty string clears it.", maxLength: 300 },
+        shared: { type: "boolean", description: "true creates (or keeps) a public read-only link; false turns sharing off." },
+      },
+      required: ["board_id"],
+    },
+    annotations: { title: "Update board", readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     scope: "boards:write",
   },
   {
@@ -1560,7 +1696,6 @@ const MCP_BOARD_TOOLS = [
   },
 ];
 const MCP_BOARD_SCOPE = Object.fromEntries(MCP_BOARD_TOOLS.map((t) => [t.name, t.scope]));
-const MAX_BOARDS_PER_USER = 200;
 
 function mcpMeTools(scopes) {
   const board = MCP_BOARD_TOOLS.filter((t) => scopes.has(t.scope)).map(({ scope, ...t }) => t);
@@ -1648,23 +1783,22 @@ async function mcpBoardTool(params, env, auth, ip, ua) {
   const a = params.arguments || {};
   const uid = auth.user_id; // ownership is ALWAYS taken from the token
   await logMcp(env, name, a.name || a.board_id || "", ip, ua, { user_id: uid, client_id: auth.client_id });
-  const ownBoard = (id) => env.DB.prepare("SELECT id,name,created_at FROM boards WHERE id=? AND user_id=?").bind(id, uid).first();
+  const ownBoard = (id) => env.DB.prepare("SELECT * FROM boards WHERE id=? AND user_id=?").bind(id, uid).first();
   const notFound = (id) => mcpText(`No board with id "${id}" was found on your account. Call list_my_boards to see your boards.`, true);
 
   if (name === "list_my_boards") {
-    const rows = (await env.DB.prepare(
-      `SELECT b.id,b.name,b.created_at,
-         (SELECT COUNT(*) FROM saves s WHERE s.board_id=b.id) AS count,
-         (SELECT i.image_key FROM saves s JOIN items i ON i.id=s.item_id WHERE s.board_id=b.id ORDER BY s.created_at DESC LIMIT 1) AS cover
-       FROM boards b WHERE b.user_id=? ORDER BY b.created_at DESC LIMIT ?`
-    ).bind(uid, MAX_BOARDS_PER_USER).all()).results || [];
-    if (!rows.length) return mcpText(`You have no mood boards yet. Create one with create_board. Your boards are also at ${MCP_SITE}/ (Boards tab, signed in).`);
-    const lines = rows.map((b) => [
+    const rows = (await env.DB.prepare(BOARD_LIST_SQL + " ORDER BY COALESCE(b.grp,'~'), COALESCE(b.updated_at,b.created_at) DESC LIMIT ?").bind(uid, MAX_BOARDS_PER_USER).all()).results || [];
+    if (!rows.length) return mcpText(`You have no mood boards yet. Create one with create_board (optionally in a group such as Work, Interests or Personal). Your boards are also at ${MCP_SITE}/ (My boards, signed in).`);
+    const groups = {};
+    rows.forEach((b) => { const g = b.grp || "Ungrouped"; (groups[g] = groups[g] || []).push(b); });
+    const out = Object.keys(groups).map((g) => `## ${g}\n\n` + groups[g].map((b) => [
       `• ${b.name}`, `  board_id: ${b.id}`, `  items: ${b.count || 0}`,
+      b.description ? `  description: ${b.description}` : null,
+      b.share_id ? `  shared link: ${shareUrlFor(b.share_id)}` : `  sharing: private`,
       b.cover ? `  cover: ${MCP_SITE}/img/${b.cover}` : null,
-      `  created: ${new Date(b.created_at).toISOString().slice(0, 10)}`,
-    ].filter(Boolean).join("\n"));
-    return mcpText(`${rows.length} board(s) on your Made Good Designs account — view them at ${MCP_SITE}/ (Boards tab, signed in).\n\n` + lines.join("\n\n"));
+      `  updated: ${new Date(b.updated_at || b.created_at).toISOString().slice(0, 10)}`,
+    ].filter(Boolean).join("\n")).join("\n\n"));
+    return mcpText(`${rows.length} board(s) on your Made Good Designs account — view them at ${MCP_SITE}/ (My boards, signed in).\n\n` + out.join("\n\n"));
   }
 
   if (name === "get_board") {
@@ -1673,11 +1807,13 @@ async function mcpBoardTool(params, env, auth, ip, ua) {
     if (!board) return notFound(bid);
     const limit = clampInt(a.limit, 50, 1, 100);
     const rows = (await env.DB.prepare(
-      `SELECT i.*, s.created_at AS saved_at FROM saves s JOIN items i ON i.id=s.item_id
+      `SELECT i.*, s.created_at AS saved_at, s.note AS pin_note FROM saves s JOIN items i ON i.id=s.item_id
         WHERE s.board_id=? AND s.user_id=? AND i.status='published' ORDER BY s.created_at DESC LIMIT ?`
     ).bind(board.id, uid, limit).all()).results || [];
     const total = (await env.DB.prepare("SELECT COUNT(*) n FROM saves WHERE board_id=? AND user_id=?").bind(board.id, uid).first()) || { n: rows.length };
-    const head = `Board "${board.name}" (board_id: ${board.id}) — ${total.n} item(s)${total.n > rows.length ? `, showing ${rows.length}` : ""}. Source: Made Good Designs — ${MCP_SITE}/ (please cite/link this).`;
+    const head = `Board "${board.name}" (board_id: ${board.id})${board.grp ? " in " + board.grp : ""} — ${total.n} item(s)${total.n > rows.length ? `, showing ${rows.length}` : ""}.` +
+      (board.description ? ` Description: ${board.description}.` : "") + (board.share_id ? ` Shared link: ${shareUrlFor(board.share_id)}.` : " Private.") +
+      ` Source: Made Good Designs — ${MCP_SITE}/ (please cite/link this).`;
     if (!rows.length) return mcpText(head + "\n\nThis board is empty. Find items with search_design_inspiration or search_annual_reports, then save_to_board.");
     const blocks = rows.map((r) => {
       const it = rowToItem(r, null);
@@ -1685,6 +1821,7 @@ async function mcpBoardTool(params, env, auth, ip, ua) {
       return [
         `• ${it.title || it.company || "Untitled"}`,
         `  item_id: ${it.id}`,
+        r.pin_note ? `  your note: ${r.pin_note}` : null,
         it.collection === "annual-report" && it.company ? `  company: ${it.company}${it.report_year ? " (" + it.report_year + ")" : ""}` : null,
         it.designer ? `  designer: ${it.designer}` : null,
         it.description ? `  ${it.description}` : null,
@@ -1704,9 +1841,9 @@ async function mcpBoardTool(params, env, auth, ip, ua) {
     if (!bname) return mcpText("Error: a board name is required.", true);
     const n = await env.DB.prepare("SELECT COUNT(*) n FROM boards WHERE user_id=?").bind(uid).first();
     if (n && n.n >= MAX_BOARDS_PER_USER) return mcpText(`Error: you already have ${n.n} boards (limit ${MAX_BOARDS_PER_USER}).`, true);
-    const id = genId();
-    await env.DB.prepare("INSERT INTO boards (id,user_id,name,created_at) VALUES (?,?,?,?)").bind(id, uid, bname, Date.now()).run();
-    return mcpText(`Created board "${bname}" (board_id: ${id}). Save items to it with save_to_board. View it at ${MCP_SITE}/ (Boards tab, signed in).`);
+    const id = genId(), now = Date.now(), grp = cleanGroup(a.group), desc = cleanText(a.description, 300) || null;
+    await env.DB.prepare("INSERT INTO boards (id,user_id,name,grp,description,created_at,updated_at) VALUES (?,?,?,?,?,?,?)").bind(id, uid, bname, grp, desc, now, now).run();
+    return mcpText(`Created board "${bname}"${grp ? " in " + grp : ""} (board_id: ${id}). Save items to it with save_to_board. View it at ${MCP_SITE}/ (My boards, signed in).`);
   }
 
   if (name === "save_to_board") {
@@ -1717,11 +1854,25 @@ async function mcpBoardTool(params, env, auth, ip, ua) {
     const item = iid && await env.DB.prepare("SELECT * FROM items WHERE id=? AND status='published' AND (owner_id IS NULL OR owner_id=?)").bind(iid, uid).first();
     if (!item) return mcpText(`No inspiration item with id "${iid}". Use the item_id from search_design_inspiration, browse_inspiration_by_theme, search_annual_reports or search_museum_art.`, true);
     let already = false;
+    const note = a.note === undefined ? undefined : (cleanText(a.note, 500) || null);
     try {
-      await env.DB.prepare("INSERT INTO saves (id,board_id,item_id,user_id,created_at) VALUES (?,?,?,?,?)").bind(genId(), board.id, item.id, uid, Date.now()).run();
+      await env.DB.prepare("INSERT INTO saves (id,board_id,item_id,user_id,created_at,note) VALUES (?,?,?,?,?,?)").bind(genId(), board.id, item.id, uid, Date.now(), note || null).run();
     } catch (e) { already = true; /* UNIQUE(board_id,item_id) */ }
+    if (already && note !== undefined) await env.DB.prepare("UPDATE saves SET note=? WHERE board_id=? AND item_id=? AND user_id=?").bind(note, board.id, item.id, uid).run();
+    await env.DB.prepare("UPDATE boards SET updated_at=? WHERE id=? AND user_id=?").bind(Date.now(), board.id, uid).run();
     const it = rowToItem(item, null);
-    return mcpText(`${already ? "Already on" : "Saved to"} board "${board.name}": ${it.title || it.company || it.id} (item_id: ${it.id}). Page: ${mcpItemPage(it)}`);
+    return mcpText(`${already ? (note !== undefined ? "Updated the note on" : "Already on") : "Saved to"} board "${board.name}": ${it.title || it.company || it.id} (item_id: ${it.id})${note ? ` — note: ${note}` : ""}. Page: ${mcpItemPage(it)}`);
+  }
+
+  if (name === "update_board") {
+    const bid = cleanId(a.board_id);
+    const body = {};
+    ["name", "group", "description", "shared"].forEach((k) => { if (a[k] !== undefined) body[k] = a[k]; });
+    if (body.shared !== undefined) body.shared = body.shared === true || body.shared === "true";
+    const b = bid && await applyBoardUpdate(env, uid, bid, body);
+    if (!b) return notFound(bid);
+    return mcpText(`Board "${b.name}" (board_id: ${b.id}) — group: ${b.grp || "none"}; ${b.description ? "description: " + b.description + "; " : ""}` +
+      (b.share_id ? `shared — anyone with this link can view it (read-only): ${shareUrlFor(b.share_id)}` : "private (not shared)."));
   }
 
   if (name === "remove_from_board") {

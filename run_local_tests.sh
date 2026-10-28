@@ -27,6 +27,7 @@ PY
 for f in schema.sql migrate_mcp.sql migrate_subscribers.sql; do $D1 --file=./$f >/dev/null || { echo "schema $f failed"; exit 1; }; done
 $D1 --command "ALTER TABLE items ADD COLUMN hue REAL" >/dev/null   # live column not in schema.sql (schema drift)
 $D1 --file=./migrate_oauth.sql >/dev/null || { echo "migrate_oauth.sql failed"; exit 1; }
+$D1 --file=./migrate_boards_v2.sql >/dev/null || { echo "migrate_boards_v2.sql failed"; exit 1; }
 $D1 --command "INSERT INTO items (id,title,description,source_url,source_host,image_key,tags,themes,palette,status,created_at,collection,company,report_year,designer,industry,owner_id) VALUES
  ('aaaaaaaaaaa1','Retro serif poster','A bold retro serif poster.','https://example.com/p1','example.com','items/aaaaaaaaaaa1.jpg','[\"serif\",\"poster\"]','[\"retro\"]','[\"#112233\",\"#ffcc00\"]','published',1700000000000,'design',NULL,NULL,NULL,NULL,NULL),
  ('aaaaaaaaaaa2','Swiss grid report','Modernist grid cover.','https://archive.org/details/x','archive.org','annual/aaaaaaaaaaa2.jpg','[\"grid\"]','[\"swiss\"]','[\"#ff0000\"]','published',1700000001000,'annual-report','Acme Transit',1972,'Paul Rand','transit',NULL),
@@ -40,12 +41,12 @@ stop_dev() { kill "$PID" 2>/dev/null; wait "$PID" 2>/dev/null; PID=; }
 trap 'stop_dev; rm -f .test_tokens' EXIT
 
 echo "-- recording ORIGINAL worker's public /mcp responses"
-PORT=8798 LOG=dev_orig.log; start_dev -c wrangler.baseline.jsonc --port 8798 --inspector-port 9231 || exit 1
+PORT=8798 LOG=dev_orig.log; start_dev -c wrangler.baseline.jsonc --port 8798 --inspector-port 9241 || exit 1
 python3 test_mcp_oauth.py --base http://localhost:8798 --snapshot-out public_mcp_orig.json || exit 1
 stop_dev
 
 echo "-- testing NEW worker"
-PORT=8797 LOG=dev_new.log; start_dev -c wrangler.test.jsonc --port 8797 --inspector-port 9230 --var PUBLIC_ORIGIN:http://localhost:8797 || exit 1
+PORT=8797 LOG=dev_new.log; start_dev -c wrangler.test.jsonc --port 8797 --inspector-port 9242 --var PUBLIC_ORIGIN:http://localhost:8797 || exit 1
 python3 test_mcp_oauth.py --base http://localhost:8797 --baseline-file public_mcp_orig.json
 RC=$?
 
