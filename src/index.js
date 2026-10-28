@@ -6,6 +6,7 @@ import GALLERY_HTML from "./ui/gallery.html";
 import ADD_HTML from "./ui/add.html";
 import ANNUAL_HTML from "./ui/annual-reports.html";
 import MUSEUM_HTML from "./ui/museum.html";
+import BOARD_CANVAS_JS from "./ui/board-canvas.html"; // plain JS, imported as Text via the *.html rule
 import { getUser, googleLogin, googleCallback, logout, devLogin } from "./auth.js";
 import { MGDRoles, MGDDesignMd } from "./design_core.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
@@ -71,7 +72,9 @@ export default {
       if (path === "/annual-reports" && method === "GET") return html(injectBase(ANNUAL_HTML, base));
       if (path === "/annual-reports/sitemap.xml" && method === "GET") return annualSitemap(env, base);
       if (path === "/museum" && method === "GET") return html(injectBase(MUSEUM_HTML, base));
-      { const bm = path.match(/^\/b\/([a-z0-9]{10})$/); if (bm && method === "GET") return publicBoardPage(bm[1], env, base); }
+      { const bm = path.match(/^\/b\/([a-z0-9]{10})$/); if (bm && method === "GET") return publicBoardPage(bm[1], env, base, url); }
+      if (path === "/assets/board-canvas.js" && method === "GET")
+        return new Response(BOARD_CANVAS_JS, { headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
       if (path === "/museum/sitemap.xml" && method === "GET") return museumSitemap(env, base);
       if (path === "/museum/index" && method === "GET") return edgeCache(request, ctx, 1800, () => museumIndexPage(env, base));
       { const mm = path.match(/^\/museum\/(artist|museum|type|culture|theme)\/([^/]+)$/);
@@ -140,6 +143,7 @@ export default {
       if (path.match(/^\/api\/boards\/[^/]+\/saves\/[^/]+$/) && method === "DELETE") { const s = path.split("/"); return unsave(s[3], s[5], request, env); }
       if (path.match(/^\/api\/boards\/[^/]+\/saves\/[^/]+$/) && method === "PATCH") { const s = path.split("/"); return setPinNote(s[3], s[5], request, env); }
       if (path.match(/^\/api\/boards\/[^/]+$/) && method === "PATCH") return updateBoard(path.split("/")[3], request, env);
+      if (path.match(/^\/api\/boards\/[^/]+\/canvas$/) && method === "PUT") return saveCanvas(path.split("/")[3], request, env);
       if (path.match(/^\/api\/boards\/[^/]+$/) && method === "GET") return getBoard(path.split("/")[3], request, env);
       if (path.match(/^\/api\/boards\/[^/]+$/) && method === "DELETE") return deleteBoard(path.split("/")[3], request, env);
 
@@ -1075,7 +1079,8 @@ async function getBoard(boardId, request, env) {
     `SELECT i.*, s.note AS pin_note FROM saves s JOIN items i ON i.id=s.item_id WHERE s.board_id=? AND i.status='published' ORDER BY s.created_at DESC`
   ).bind(boardId).all();
   const items = (rows.results || []).map((r) => Object.assign(rowToItem(r, env), { note: r.pin_note || "", own: !!(r.owner_id && r.owner_id === user.id) }));
-  return json({ board: boardOut(Object.assign({ count: items.length }, board)), items }, 200, env, request);
+  return json({ board: boardOut(Object.assign({ count: items.length }, board)), items,
+    canvas: parseCanvas(board.canvas), canvas_rev: board.canvas_rev || 0 }, 200, env, request);
 }
 
 async function deleteBoard(boardId, request, env) {
@@ -1154,7 +1159,7 @@ async function setPinNote(boardId, itemId, request, env) {
 
 // Public, read-only view of a board the owner chose to share. Unlisted: noindex, and the share id is
 // unguessable. Sources are plain text (no outbound links), matching the gallery's attribution model.
-async function publicBoardPage(shareId, env, base) {
+async function publicBoardPage(shareId, env, base, url) {
   const board = await env.DB.prepare("SELECT * FROM boards WHERE share_id=?").bind(shareId).first();
   const head = (t) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,follow"><title>${escHtml(t)}</title>`;
   if (!board) return new Response(head("Board not found — Made Good Designs") + `<style>body{font:16px/1.6 system-ui,sans-serif;max-width:640px;margin:4rem auto;padding:0 16px}</style></head><body><h1>This board isn’t shared</h1><p>The owner may have turned off sharing. <a href="${base}/">Browse the design inspiration gallery</a>.</p></body></html>`,
@@ -1174,8 +1179,29 @@ async function publicBoardPage(shareId, env, base) {
       `<figcaption><b>${escHtml(it.title || "Untitled")}</b>${src ? `<span>${escHtml(src)}</span>` : ""}` +
       (r.pin_note ? `<p class="note">${escHtml(r.pin_note)}</p>` : "") + (sw ? `<span class="sw">${sw}</span>` : "") + `</figcaption></figure>`;
   }).join("");
+  // Canvas layout (Release 2): positioned as % of the content bounds so it scales to any screen width.
+  const els = parseCanvas(board.canvas), byId = Object.fromEntries(rows.map((r) => [r.id, r]));
+  const vis = els.filter((e) => e.t !== "pin" || byId[e.item]);
+  const wantGrid = url && url.searchParams.get("view") === "grid";
+  let canvasHtml = "", fonts = [];
+  if (vis.length) {
+    const minX = Math.min(...vis.map((e) => e.x)), minY = Math.min(...vis.map((e) => e.y));
+    const W = Math.max(...vis.map((e) => e.x + e.w)) - minX, H = Math.max(...vis.map((e) => e.y + e.h)) - minY;
+    const pc = (v, d) => (v / d * 100).toFixed(3) + "%";
+    canvasHtml = `<div class="cv" style="padding-top:${(H / W * 100).toFixed(3)}%"><div class="cvi">` + vis.slice().sort((a, b) => a.z - b.z).map((e) => {
+      const pos = `left:${pc(e.x - minX, W)};top:${pc(e.y - minY, H)};width:${pc(e.w, W)};height:${pc(e.h, H)};z-index:${e.z}`;
+      if (e.t === "pin") { const r = byId[e.item], it = rowToItem(r, null); return `<img class="el" style="${pos};object-fit:cover" loading="lazy" src="${base}${it.image}" alt="${escHtml(it.title)}">`; }
+      if (e.t === "note") return `<div class="el note" style="${pos};background:${escHtml(e.color)};color:${MGDRoles.contrast(e.color, "#111111") >= MGDRoles.contrast(e.color, "#ffffff") ? "#111" : "#fff"};font-size:${(14 / W * 100).toFixed(3)}cqw">${escHtml(e.text)}</div>`;
+      if (e.t === "swatch") return `<div class="el sw2" style="${pos};background:${escHtml(e.color)}"><span style="font-size:${(12 / W * 100).toFixed(3)}cqw">${escHtml(e.color.toUpperCase())}</span></div>`;
+      fonts.push(e.font);
+      return `<div class="el type" style="${pos};font-family:'${escHtml(e.font)}',system-ui,sans-serif;font-size:${(e.size / W * 100).toFixed(3)}cqw">${escHtml(e.text)}</div>`;
+    }).join("") + `</div></div>`;
+  }
+  const showCanvas = canvasHtml && !wantGrid;
+  const fontLink = showCanvas && fonts.length ? `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?${[...new Set(fonts)].slice(0, 8).map((f) => "family=" + encodeURIComponent(f).replace(/%20/g, "+")).join("&")}&display=swap">` : "";
+  const toggle = canvasHtml ? `<p class="meta"><a href="${base}/b/${shareId}${showCanvas ? "?view=grid" : ""}">${showCanvas ? "View as a grid" : "View the canvas layout"}</a></p>` : "";
   const title = `${board.name} — mood board on Made Good Designs`;
-  const page = head(title) + `<meta property="og:title" content="${escHtml(title)}"><meta property="og:description" content="${escHtml(board.description || rows.length + " saved design references")}">` +
+  const page = head(title) + fontLink + `<meta property="og:title" content="${escHtml(title)}"><meta property="og:description" content="${escHtml(board.description || rows.length + " saved design references")}">` +
     (rows[0] ? `<meta property="og:image" content="${MCP_SITE}/img/${escHtml(rows[0].image_key)}">` : "") +
     `<style>
 :root{--bg:#fafafa;--surface:#fff;--text:#171717;--muted:#666;--border:#e5e5e5}
@@ -1189,13 +1215,75 @@ async function publicBoardPage(shareId, env, base) {
 .img{display:block;position:relative;background:#ddd}.img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 figcaption{padding:9px 11px 11px}figcaption b{display:block;font-size:.9rem}figcaption span{color:var(--muted);font-size:.78rem}
 .note{margin:6px 0 0;font-size:.85rem;border-left:3px solid var(--border);padding-left:8px}.sw{display:flex;gap:3px;margin-top:7px}.sw i{width:16px;height:16px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
-footer{margin-top:28px;color:var(--muted);font-size:.85rem}footer a{color:var(--text)}
+footer{margin-top:28px;color:var(--muted);font-size:.85rem}
+.cv{position:relative;width:100%;container-type:inline-size;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.cvi{position:absolute;inset:2%}.el{position:absolute;border-radius:6px;overflow:hidden}.note{padding:.6em;white-space:pre-wrap;line-height:1.35;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.sw2{display:flex;align-items:flex-end;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}.sw2 span{background:rgba(255,255,255,.85);color:#111;margin:4%;padding:0 .35em;border-radius:4px;font-family:ui-monospace,monospace}
+.type{line-height:1.1;white-space:pre-wrap;overflow:visible}footer a{color:var(--text)}
 </style></head><body><div class="wrap"><div class="top"><a href="https://madegooddesigns.com/">Made Good Designs</a><a class="cta" href="${base}/">Make your own boards — free</a></div>` +
     `<h1>${escHtml(board.name)}</h1><p class="meta">${board.description ? escHtml(board.description) + " · " : ""}${rows.length} saved ${rows.length === 1 ? "reference" : "references"}${first ? " · shared by " + escHtml(first) : ""}${board.grp ? " · " + escHtml(board.grp) : ""}</p>` +
-    (cards ? `<div class="grid">${cards}</div>` : `<p>This board is empty.</p>`) +
+    toggle + (showCanvas ? canvasHtml : (cards ? `<div class="grid">${cards}</div>` : `<p>This board is empty.</p>`)) +
     `<footer>A mood board made with the free <a href="${base}/">Made Good Designs inspiration library</a>. Images remain the property of their creators; sources are shown under each image.</footer></div></body></html>`;
   return new Response(page, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=60", "X-Robots-Tag": "noindex, follow" } });
 }
+
+// ---- Board canvas (Release 2): free-form layout of pins, notes, swatches and type samples ----
+const CANVAS_TYPES = ["pin", "note", "swatch", "type"];
+const CANVAS_MAX_ELEMENTS = 400, CANVAS_MAX_BYTES = 200000;
+function parseCanvas(s) { try { const a = JSON.parse(s || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+function cnum(v, lo, hi, def) { const n = Number(v); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, Math.round(n))) : def; }
+// Whitelist every field; pins must point at items that are on this board. Returns a clean array.
+function sanitizeCanvas(arr, boardItemIds) {
+  if (!Array.isArray(arr)) return null;
+  const out = [], seen = new Set();
+  for (const e of arr.slice(0, CANVAS_MAX_ELEMENTS)) {
+    if (!e || typeof e !== "object" || !CANVAS_TYPES.includes(e.t)) continue;
+    let id = String(e.id || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 16);
+    if (!id || seen.has(id)) id = genId().slice(0, 12);
+    seen.add(id);
+    const el = { id, t: e.t, x: cnum(e.x, -20000, 20000, 0), y: cnum(e.y, -20000, 20000, 0),
+      w: cnum(e.w, 24, 4000, 220), h: cnum(e.h, 16, 4000, 160), z: cnum(e.z, 0, 100000, 0) };
+    if (e.t === "pin") { const it = String(e.item || "").slice(0, 64); if (!boardItemIds.has(it)) continue; el.item = it; }
+    if (e.t === "note" || e.t === "type") el.text = cleanText(String(e.text == null ? "" : e.text).replace(/\r/g, ""), 1000);
+    if (e.t === "note" || e.t === "swatch") { const c = MGDRoles.normHex(String(e.color || "")); el.color = c || (e.t === "note" ? "#fff6b3" : "#cccccc"); }
+    if (e.t === "type") { el.font = cleanText(e.font, 60).replace(/[^A-Za-z0-9 \-]/g, "") || "Inter"; el.size = cnum(e.size, 8, 240, 48); }
+    out.push(el);
+  }
+  return out;
+}
+async function boardItemIdSet(env, boardId) {
+  const rows = (await env.DB.prepare("SELECT item_id FROM saves WHERE board_id=?").bind(boardId).all()).results || [];
+  return new Set(rows.map((r) => r.item_id));
+}
+// Optimistic concurrency: the client sends the rev it loaded; a mismatch returns 409 with the current canvas.
+async function writeCanvas(env, uid, boardId, elements, rev) {
+  const board = await env.DB.prepare("SELECT id, canvas, canvas_rev FROM boards WHERE id=? AND user_id=?").bind(boardId, uid).first();
+  if (!board) return { status: 404 };
+  const cur = board.canvas_rev || 0;
+  if (rev != null && Number(rev) !== cur) return { status: 409, canvas: parseCanvas(board.canvas), rev: cur };
+  const clean = sanitizeCanvas(elements, await boardItemIdSet(env, boardId));
+  if (!clean) return { status: 400 };
+  const body = JSON.stringify(clean);
+  if (body.length > CANVAS_MAX_BYTES) return { status: 413 };
+  const r = await env.DB.prepare("UPDATE boards SET canvas=?, canvas_rev=?, updated_at=? WHERE id=? AND user_id=? AND COALESCE(canvas_rev,0)=?")
+    .bind(body, cur + 1, Date.now(), boardId, uid, cur).run();
+  if (!(r.meta && r.meta.changes > 0)) { const b2 = await env.DB.prepare("SELECT canvas, canvas_rev FROM boards WHERE id=?").bind(boardId).first(); return { status: 409, canvas: parseCanvas(b2.canvas), rev: b2.canvas_rev || 0 }; }
+  return { status: 200, canvas: clean, rev: cur + 1 };
+}
+async function saveCanvas(boardId, request, env) {
+  const user = await getUser(request, env);
+  if (!user) return json({ error: "unauthorized" }, 401, env, request);
+  const body = await request.json().catch(() => null);
+  if (!body || !Array.isArray(body.canvas)) return json({ error: "bad_request" }, 400, env, request);
+  const r = await writeCanvas(env, user.id, boardId, body.canvas, body.rev);
+  if (r.status === 404) return json({ error: "not_found" }, 404, env, request);
+  if (r.status === 409) return json({ error: "conflict", canvas: r.canvas, rev: r.rev }, 409, env, request);
+  if (r.status === 413) return json({ error: "too_large", message: "This canvas is too big to save — remove some elements." }, 413, env, request);
+  if (r.status !== 200) return json({ error: "bad_request" }, 400, env, request);
+  return json({ ok: true, canvas: r.canvas, rev: r.rev }, 200, env, request);
+}
+// Place new elements below everything already on the canvas (used by MCP add_to_board_canvas).
+function canvasBottom(els) { return els.reduce((m, e) => Math.max(m, (e.y || 0) + (e.h || 0)), 0); }
 
 async function exportUsers(request, env) {
   if (!isAdmin(request, env)) return json({ error: "unauthorized" }, 401, env, request);
@@ -1681,6 +1769,24 @@ const MCP_BOARD_TOOLS = [
     scope: "boards:write",
   },
   {
+    name: "add_to_board_canvas",
+    description: "Add a text note, colour swatches or a type sample to the free-form canvas of one of the signed-in user's boards (the canvas view on madegooddesigns.com, where pins, notes, swatches and type can be arranged like a mood board). New elements are placed below what is already on the canvas. Pins are added with save_to_board.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        board_id: { type: "string", description: "Board id from list_my_boards." },
+        type: { type: "string", description: "What to add.", enum: ["note", "swatches", "type"] },
+        text: { type: "string", description: "For note: the note text. For type: the sample text (max 1000 characters).", maxLength: 1000 },
+        colors: { type: "array", description: "For swatches: hex colours, e.g. ['#0f766e','#f59e0b'] (max 12). For note: optional single background colour as the first item.", items: { type: "string" }, maxItems: 12 },
+        font: { type: "string", description: "For type: a Google Fonts family name, e.g. 'Playfair Display' (default Inter).", maxLength: 60 },
+        size: { type: "integer", description: "For type: font size in px (8-240, default 48).", minimum: 8, maximum: 240 },
+      },
+      required: ["board_id", "type"],
+    },
+    annotations: { title: "Add to board canvas", readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
+    scope: "boards:write",
+  },
+  {
     name: "remove_from_board",
     description: "Remove an item from one of the signed-in user's boards (the item itself stays in the gallery).",
     inputSchema: {
@@ -1814,7 +1920,13 @@ async function mcpBoardTool(params, env, auth, ip, ua) {
     const head = `Board "${board.name}" (board_id: ${board.id})${board.grp ? " in " + board.grp : ""} — ${total.n} item(s)${total.n > rows.length ? `, showing ${rows.length}` : ""}.` +
       (board.description ? ` Description: ${board.description}.` : "") + (board.share_id ? ` Shared link: ${shareUrlFor(board.share_id)}.` : " Private.") +
       ` Source: Made Good Designs — ${MCP_SITE}/ (please cite/link this).`;
-    if (!rows.length) return mcpText(head + "\n\nThis board is empty. Find items with search_design_inspiration or search_annual_reports, then save_to_board.");
+    const cels = parseCanvas(board.canvas);
+    const csum = cels.length ? "\n\nCanvas (free-form layout): " + [
+      ["pin", "pinned image"], ["note", "note"], ["swatch", "swatch"], ["type", "type sample"]].map(([k, l]) => { const n = cels.filter((e) => e.t === k).length; return n ? `${n} ${l}${n > 1 ? "s" : ""}` : null; }).filter(Boolean).join(", ") +
+      cels.filter((e) => e.t === "note").slice(0, 10).map((e) => `\n  note: ${e.text}`).join("") +
+      (cels.some((e) => e.t === "swatch") ? `\n  swatches: ${cels.filter((e) => e.t === "swatch").map((e) => e.color).join(" ")}` : "") +
+      cels.filter((e) => e.t === "type").slice(0, 6).map((e) => `\n  type sample: "${e.text}" in ${e.font} ${e.size}px`).join("") : "";
+    if (!rows.length) return mcpText(head + csum + "\n\nThis board has no pins. Find items with search_design_inspiration or search_annual_reports, then save_to_board.");
     const blocks = rows.map((r) => {
       const it = rowToItem(r, null);
       const own = r.owner_id && r.owner_id === uid; // the user's own "paste a URL" saves
@@ -1833,7 +1945,7 @@ async function mcpBoardTool(params, env, auth, ip, ua) {
         `  image: ${MCP_SITE}${it.image}`,
       ].filter(Boolean).join("\n");
     });
-    return mcpText(head + "\n\n" + blocks.join("\n\n"));
+    return mcpText(head + csum + "\n\n" + blocks.join("\n\n"));
   }
 
   if (name === "create_board") {
@@ -1873,6 +1985,31 @@ async function mcpBoardTool(params, env, auth, ip, ua) {
     if (!b) return notFound(bid);
     return mcpText(`Board "${b.name}" (board_id: ${b.id}) — group: ${b.grp || "none"}; ${b.description ? "description: " + b.description + "; " : ""}` +
       (b.share_id ? `shared — anyone with this link can view it (read-only): ${shareUrlFor(b.share_id)}` : "private (not shared)."));
+  }
+
+  if (name === "add_to_board_canvas") {
+    const bid = cleanId(a.board_id);
+    const board = bid && await ownBoard(bid);
+    if (!board) return notFound(bid);
+    const kind = String(a.type || "");
+    const els = parseCanvas(board.canvas), y0 = els.length ? canvasBottom(els) + 40 : 0;
+    const z = els.reduce((m, e) => Math.max(m, e.z || 0), 0) + 1;
+    const added = [];
+    if (kind === "note") {
+      const text = cleanText(a.text, 1000); if (!text) return mcpText("Error: text is required for a note.", true);
+      added.push({ id: genId().slice(0, 12), t: "note", x: 0, y: y0, w: 260, h: Math.min(400, 70 + Math.ceil(text.length / 30) * 20), z, text, color: (Array.isArray(a.colors) && MGDRoles.normHex(String(a.colors[0] || ""))) || "#fff6b3" });
+    } else if (kind === "swatches") {
+      const cs = (Array.isArray(a.colors) ? a.colors : []).map((c) => MGDRoles.normHex(String(c))).filter(Boolean).slice(0, 12);
+      if (!cs.length) return mcpText("Error: pass one or more hex colours in colors.", true);
+      cs.forEach((c, i) => added.push({ id: genId().slice(0, 12), t: "swatch", x: i * 130, y: y0, w: 120, h: 120, z: z + i, color: c }));
+    } else if (kind === "type") {
+      const text = cleanText(a.text, 1000) || "The quick brown fox";
+      added.push({ id: genId().slice(0, 12), t: "type", x: 0, y: y0, w: 640, h: 140, z, text, font: cleanText(a.font, 60) || "Inter", size: clampInt(a.size, 48, 8, 240) });
+    } else return mcpText("Error: type must be note, swatches or type.", true);
+    const r = await writeCanvas(env, uid, board.id, els.concat(added), board.canvas_rev || 0);
+    if (r.status === 409) return mcpText("The board was being edited at the same moment — please try again.", true);
+    if (r.status !== 200) return mcpText("Error: couldn't update the canvas (it may be too large).", true);
+    return mcpText(`Added ${added.length === 1 ? "a " + (kind === "type" ? "type sample" : kind) : added.length + " swatches"} to the canvas of "${board.name}". Open it at ${MCP_SITE}/ (My boards → ${board.name} → Canvas).`);
   }
 
   if (name === "remove_from_board") {

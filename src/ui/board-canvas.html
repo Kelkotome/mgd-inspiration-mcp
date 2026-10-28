@@ -1,0 +1,337 @@
+/* Made Good Designs — board canvas (Release 2). Plain JS, served at /inspiration/assets/board-canvas.js.
+   A free-form mood-board editor: pins, notes, colour swatches and type samples you can drag, resize,
+   layer, export as PNG/PDF; autosaves to PUT /api/boards/:id/canvas with optimistic concurrency. */
+(function (win) {
+  "use strict";
+  if (win.MGDCanvas) return;
+  var SNAP = 8, PAD = 400;
+  var CSS = ''
+    + '.cvx{--cvb:var(--border,#e5e5e5);--cvs:var(--surface,#fff);--cvt:var(--text,#171717);--cvm:var(--muted,#737373);margin-top:.4rem}'
+    + '.cvx-bar{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:0 0 .5rem}'
+    + '.cvx-bar button,.cvx-bar label,.cvx-bar select{font:inherit;font-size:.8rem;border:1px solid var(--border-strong,#d4d4d4);background:var(--cvs);color:var(--cvt);border-radius:999px;padding:.32rem .7rem;cursor:pointer;display:inline-flex;align-items:center;gap:.3rem}'
+    + '.cvx-bar button:disabled{opacity:.45;cursor:default}.cvx-bar .sep{width:1px;height:1.4rem;background:var(--cvb);margin:0 .15rem}'
+    + '.cvx-bar input[type=color]{width:1.6rem;height:1.3rem;border:0;padding:0;background:none;cursor:pointer}'
+    + '.cvx-bar input[type=text],.cvx-bar input[type=number]{font:inherit;font-size:.8rem;border:1px solid var(--border-strong,#d4d4d4);background:var(--cvs);color:var(--cvt);border-radius:999px;padding:.3rem .6rem;width:9rem}'
+    + '.cvx-bar input[type=number]{width:4.2rem}.cvx-status{margin-left:auto;font-size:.75rem;color:var(--cvm)}'
+    + '.cvx-vp{position:relative;height:72vh;min-height:420px;overflow:auto;border:1px solid var(--cvb);border-radius:12px;background-color:var(--cvs);background-image:radial-gradient(var(--cvb) 1px,transparent 1px);background-size:24px 24px;touch-action:pan-x pan-y}'
+    + '.cvx-sizer{position:relative}.cvx-stage{position:absolute;left:0;top:0;transform-origin:0 0}'
+    + '.cvx-el{position:absolute;box-sizing:border-box;border-radius:6px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}'
+    + '.cvx-el.is-sel{outline:2px solid #2563eb;outline-offset:2px}.cvx-el.is-drag{cursor:grabbing;opacity:.92}'
+    + '.cvx-el img{width:100%;height:100%;object-fit:cover;border-radius:6px;display:block;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.18)}'
+    + '.cvx-note{padding:.7rem .75rem;white-space:pre-wrap;line-height:1.35;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.14);overflow:hidden;word-wrap:break-word}'
+    + '.cvx-type{white-space:pre-wrap;line-height:1.08;overflow:hidden;word-wrap:break-word}'
+    + '.cvx-sw{box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);display:flex;align-items:flex-end}.cvx-sw span{background:rgba(255,255,255,.88);color:#111;font:600 11px/1.4 ui-monospace,Menlo,monospace;margin:6px;padding:0 5px;border-radius:4px}'
+    + '.cvx-el[contenteditable=true]{cursor:text;user-select:text;-webkit-user-select:text;outline:2px dashed #2563eb}'
+    + '.cvx-h{position:absolute;right:-7px;bottom:-7px;width:14px;height:14px;border-radius:50%;background:#2563eb;border:2px solid #fff;cursor:nwse-resize;display:none;touch-action:none}'
+    + '.cvx-el.is-sel .cvx-h{display:block}'
+    + '.cvx-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--cvm);text-align:center;padding:2rem;pointer-events:none}'
+    + '.cvx-help{font-size:.75rem;color:var(--cvm);margin:.4rem 0 0}';
+  var FONTS = ["Inter", "Playfair Display", "Space Grotesk", "Fraunces", "DM Serif Display", "Montserrat", "Poppins", "Archivo Black", "Libre Baskerville", "Sora", "Bebas Neue", "JetBrains Mono"];
+
+  function rid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
+  function snap(v) { return Math.round(v / SNAP) * SNAP; }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function lum(hex) { var c = [1, 3, 5].map(function (i) { var v = parseInt(hex.substr(i, 2), 16) / 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+  function inkOn(hex) { try { return lum(hex) > 0.18 ? "#111111" : "#ffffff"; } catch (e) { return "#111111"; } }
+  var loadedFonts = {};
+  function loadFont(f) {
+    if (!f || loadedFonts[f]) return; loadedFonts[f] = 1;
+    var l = document.createElement("link"); l.rel = "stylesheet";
+    l.href = "https://fonts.googleapis.com/css2?family=" + encodeURIComponent(f).replace(/%20/g, "+") + ":wght@400;700&display=swap";
+    document.head.appendChild(l);
+  }
+
+  function mount(host, o) {
+    if (!document.getElementById("cvx-css")) { var st = document.createElement("style"); st.id = "cvx-css"; st.textContent = CSS; document.head.appendChild(st); }
+    var items = {}; (o.items || []).forEach(function (it) { items[it.id] = it; });
+    var els = (o.canvas || []).filter(function (e) { return e.t !== "pin" || items[e.item]; });
+    var rev = o.rev || 0, zoom = 1, sel = null, editing = null, saveT = null, saving = false, dirty = false, undo = [], destroyed = false;
+
+    host.innerHTML = '<div class="cvx"><div class="cvx-bar">'
+      + '<button type="button" data-a="note">＋ Note</button><button type="button" data-a="swatch">＋ Swatch</button><button type="button" data-a="type">＋ Type</button>'
+      + '<button type="button" data-a="palette" title="Add the main colours of your pins as swatches">Palette from pins</button><button type="button" data-a="tidy" title="Arrange everything in neat rows">Tidy</button>'
+      + '<span class="sep"></span><span class="cvx-selbar" style="display:contents"></span>'
+      + '<span class="sep"></span><button type="button" data-a="undo" title="Undo (Ctrl/⌘+Z)">↶ Undo</button>'
+      + '<button type="button" data-a="zout" title="Zoom out">−</button><button type="button" data-a="fit">Fit</button><button type="button" data-a="zin" title="Zoom in">＋</button>'
+      + '<button type="button" data-a="png">Export PNG</button><button type="button" data-a="pdf">Export PDF</button>'
+      + '<span class="cvx-status" aria-live="polite"></span></div>'
+      + '<div class="cvx-vp" tabindex="0"><div class="cvx-sizer"><div class="cvx-stage"></div></div></div>'
+      + '<p class="cvx-help">Drag to move · drag the blue dot to resize · double-click a note or type sample to edit · Delete removes · Ctrl/⌘+D duplicates · arrow keys nudge. Changes save automatically.</p></div>';
+    var root = host.firstChild, bar = root.querySelector(".cvx-bar"), selbar = root.querySelector(".cvx-selbar"), statusEl = root.querySelector(".cvx-status");
+    var vp = root.querySelector(".cvx-vp"), sizer = root.querySelector(".cvx-sizer"), stage = root.querySelector(".cvx-stage");
+    function status(t) { statusEl.textContent = t; }
+
+    // ---- layout helpers
+    function bounds(list) {
+      list = list || els; if (!list.length) return { x: 0, y: 0, w: 0, h: 0 };
+      var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      list.forEach(function (e) { x0 = Math.min(x0, e.x); y0 = Math.min(y0, e.y); x1 = Math.max(x1, e.x + e.w); y1 = Math.max(y1, e.y + e.h); });
+      return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+    }
+    function bottom() { var b = bounds(); return els.length ? b.y + b.h + 40 : 0; }
+    function topZ() { return els.reduce(function (m, e) { return Math.max(m, e.z || 0); }, 0) + 1; }
+    function pinSize(it, w) { var r = it.width && it.height ? it.height / it.width : 0.75; return { w: w, h: snap(Math.max(60, Math.min(w * 2.2, w * r))) }; }
+    function autoPlace(ids, y0) {  // masonry: 4 columns of 240
+      var cols = [y0, y0, y0, y0], out = [];
+      ids.forEach(function (id) { var c = cols.indexOf(Math.min.apply(null, cols)), s = pinSize(items[id], 240);
+        out.push({ id: rid(), t: "pin", item: id, x: c * 264, y: cols[c], w: s.w, h: s.h, z: 0 }); cols[c] += s.h + 24; });
+      return out;
+    }
+    // Pins saved since the canvas was last arranged are added below.
+    var placed = {}; els.forEach(function (e) { if (e.t === "pin") placed[e.item] = 1; });
+    var missing = (o.items || []).map(function (it) { return it.id; }).filter(function (id) { return !placed[id]; });
+    if (missing.length) { var add = autoPlace(missing, bottom()), z = topZ(); add.forEach(function (e, i) { e.z = z + i; }); els = els.concat(add); if (o.canvas && o.canvas.length) dirty = true; else if (add.length) dirty = true; }
+
+    // ---- rendering
+    function render() {
+      stage.innerHTML = "";
+      els.slice().sort(function (a, b) { return a.z - b.z; }).forEach(function (e) { stage.appendChild(node(e)); });
+      if (!els.length) { var em = document.createElement("div"); em.className = "cvx-empty"; em.textContent = "This canvas is empty. Save images to the board, or add a note, swatch or type sample."; stage.appendChild(em); }
+      resize(); selBar();
+    }
+    function node(e) {
+      var d = document.createElement("div"); d.className = "cvx-el"; d.setAttribute("data-id", e.id);
+      place(d, e);
+      if (e.t === "pin") { var it = items[e.item]; d.innerHTML = '<img alt="' + esc(it.title) + '" src="' + (o.API || "") + it.image + '" draggable="false">'; d.title = it.title || ""; }
+      else if (e.t === "note") { d.className += " cvx-note"; d.style.background = e.color; d.style.color = inkOn(e.color); d.textContent = e.text || ""; }
+      else if (e.t === "swatch") { d.className += " cvx-sw"; d.style.background = e.color; d.innerHTML = "<span>" + esc(e.color.toUpperCase()) + "</span>"; }
+      else if (e.t === "type") { loadFont(e.font); d.className += " cvx-type"; d.style.fontFamily = "'" + e.font + "', system-ui, sans-serif"; d.style.fontSize = e.size + "px"; d.style.color = "var(--text,#171717)"; d.textContent = e.text || ""; }
+      if (sel === e.id) d.className += " is-sel";
+      var h = document.createElement("div"); h.className = "cvx-h"; h.setAttribute("data-h", "1"); d.appendChild(h);
+      return d;
+    }
+    function place(d, e) { d.style.left = e.x + "px"; d.style.top = e.y + "px"; d.style.width = e.w + "px"; d.style.height = e.h + "px"; d.style.zIndex = e.z; }
+    function resize() {
+      var b = bounds(), W = Math.max(b.x + b.w + PAD, vp.clientWidth / zoom), H = Math.max(b.y + b.h + PAD, vp.clientHeight / zoom);
+      stage.style.width = W + "px"; stage.style.height = H + "px"; stage.style.transform = "scale(" + zoom + ")";
+      sizer.style.width = W * zoom + "px"; sizer.style.height = H * zoom + "px";
+    }
+    function find(id) { for (var i = 0; i < els.length; i++) if (els[i].id === id) return els[i]; return null; }
+    function nodeOf(id) { return stage.querySelector('[data-id="' + id + '"]'); }
+
+    // ---- selection toolbar
+    function selBar() {
+      var e = sel && find(sel);
+      if (!e) { selbar.innerHTML = '<span style="font-size:.75rem;color:var(--muted,#737373)">Select an element to edit it</span>'; return; }
+      var h = "";
+      if (e.t === "note" || e.t === "swatch") h += '<label title="Colour"><input type="color" data-f="color" value="' + e.color + '"> Colour</label>';
+      if (e.t === "type") {
+        h += '<input type="text" data-f="font" list="cvx-fonts" value="' + esc(e.font) + '" aria-label="Font (Google Fonts name)"><datalist id="cvx-fonts">' + FONTS.map(function (f) { return '<option value="' + f + '">'; }).join("") + '</datalist>'
+          + '<input type="number" data-f="size" min="8" max="240" value="' + e.size + '" aria-label="Font size">';
+      }
+      if (e.t === "note" || e.t === "type") h += '<button type="button" data-a="edit">Edit text</button>';
+      h += '<button type="button" data-a="front">Bring forward</button><button type="button" data-a="back">Send back</button><button type="button" data-a="dup">Duplicate</button><button type="button" data-a="del">Delete</button>';
+      selbar.innerHTML = h;
+    }
+    selbar.addEventListener("input", function (ev) {
+      var f = ev.target.getAttribute("data-f"), e = sel && find(sel); if (!f || !e) return;
+      if (f === "color") { if (!/^#[0-9a-f]{6}$/i.test(ev.target.value)) return; e.color = ev.target.value.toLowerCase(); }
+      if (f === "font") { var v = ev.target.value.replace(/[^A-Za-z0-9 \-]/g, "").slice(0, 60); if (!v) return; e.font = v; }
+      if (f === "size") { var n = parseInt(ev.target.value, 10); if (!(n >= 8 && n <= 240)) return; e.size = n; }
+      var d = nodeOf(e.id), nd = node(e); d.replaceWith(nd); changed(true);
+    });
+    selbar.addEventListener("focusin", function (ev) { if (ev.target.getAttribute("data-f")) push(); });
+
+    // ---- history + save
+    function snapshot() { return JSON.stringify(els); }
+    function push() { undo.push(snapshot()); if (undo.length > 60) undo.shift(); bar.querySelector('[data-a="undo"]').disabled = false; }
+    bar.querySelector('[data-a="undo"]').disabled = true;
+    function changed(noRender) { dirty = true; if (!noRender) render(); else resize(); status("Unsaved changes…"); clearTimeout(saveT); saveT = setTimeout(save, 700); }
+    function save() {
+      if (destroyed || !dirty) return;
+      if (saving) { clearTimeout(saveT); saveT = setTimeout(save, 400); return; }
+      saving = true; dirty = false; status("Saving…");
+      o.api("/api/boards/" + o.board.id + "/canvas", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ canvas: els, rev: rev }) })
+        .then(function (r) { return r.json().then(function (d) { return { s: r.status, d: d }; }); })
+        .then(function (x) {
+          saving = false;
+          if (x.s === 200) { rev = x.d.rev; status("Saved"); return; }
+          if (x.s === 409) {  // changed elsewhere (another tab or an AI assistant via MCP): take theirs, re-add our new pins
+            rev = x.d.rev; els = (x.d.canvas || []).filter(function (e) { return e.t !== "pin" || items[e.item]; });
+            var have = {}; els.forEach(function (e) { if (e.t === "pin") have[e.item] = 1; });
+            var miss = Object.keys(items).filter(function (id) { return !have[id]; }); if (miss.length) els = els.concat(autoPlace(miss, bottom()));
+            sel = null; render(); status("Updated from another device"); if (o.toast) o.toast("This board was changed elsewhere — showing the latest version"); return;
+          }
+          dirty = true; status(x.d && x.d.message ? x.d.message : "Couldn’t save — retrying"); clearTimeout(saveT); saveT = setTimeout(save, 4000);
+        })
+        .catch(function () { saving = false; dirty = true; status("Offline — will retry"); clearTimeout(saveT); saveT = setTimeout(save, 4000); });
+    }
+
+    // ---- actions
+    function addEl(e) {
+      push(); e.id = rid(); e.z = topZ();
+      for (var k = 0; k < 40 && els.some(function (x) { return x.x === e.x && x.y === e.y; }); k++) { e.x += 24; e.y += 24; }  // cascade, don't stack
+      els.push(e); sel = e.id; changed(); scrollTo(e);
+    }
+    function viewCenter() { return { x: snap((vp.scrollLeft + vp.clientWidth / 2) / zoom - 110), y: snap((vp.scrollTop + vp.clientHeight / 2) / zoom - 80) }; }
+    function scrollTo(e) { var r = nodeOf(e.id); if (r && r.scrollIntoView) r.scrollIntoView({ block: "nearest", inline: "nearest" }); }
+    function paletteFromPins() {
+      var count = {};
+      Object.keys(items).forEach(function (id) { (items[id].palette || []).forEach(function (c, i) { if (/^#[0-9a-f]{6}$/i.test(c)) { c = c.toLowerCase(); count[c] = (count[c] || 0) + (6 - Math.min(i, 5)); } }); });
+      var cs = Object.keys(count).sort(function (a, b) { return count[b] - count[a]; }).slice(0, 8);
+      if (!cs.length) { if (o.toast) o.toast("None of these pins has a colour palette yet"); return; }
+      push(); var y = bottom(), z = topZ();
+      cs.forEach(function (c, i) { els.push({ id: rid(), t: "swatch", x: i * 128, y: y, w: 120, h: 120, z: z + i, color: c }); });
+      changed(); vp.scrollTop = y * zoom;
+    }
+    function tidy() {
+      push();
+      var pins = els.filter(function (e) { return e.t === "pin"; }), rest = els.filter(function (e) { return e.t !== "pin"; });
+      var placedPins = autoPlace(pins.map(function (p) { return p.item; }), 0);
+      placedPins.forEach(function (p, i) { p.id = pins[i].id; p.z = i; });
+      var y = placedPins.length ? bounds(placedPins).h + 48 : 0, x = 0, rowH = 0, maxW = 4 * 264;
+      rest.forEach(function (e) { if (x + e.w > maxW && x > 0) { x = 0; y += rowH + 24; rowH = 0; } e.x = x; e.y = y; x += e.w + 24; rowH = Math.max(rowH, e.h); });
+      els = placedPins.concat(rest); changed(); fit();
+    }
+    function fit() {
+      var b = bounds(); if (!els.length) { zoom = 1; resize(); return; }
+      zoom = Math.max(0.2, Math.min(1.5, (vp.clientWidth - 32) / (b.x + b.w + 16), (vp.clientHeight - 32) / (b.y + b.h + 16)));
+      resize(); vp.scrollLeft = 0; vp.scrollTop = 0;
+    }
+    function setZoom(z) { var cx = (vp.scrollLeft + vp.clientWidth / 2) / zoom, cy = (vp.scrollTop + vp.clientHeight / 2) / zoom; zoom = Math.max(0.2, Math.min(2, z)); resize(); vp.scrollLeft = cx * zoom - vp.clientWidth / 2; vp.scrollTop = cy * zoom - vp.clientHeight / 2; }
+    function del() { var e = sel && find(sel); if (!e) return; push(); els = els.filter(function (x) { return x !== e; }); sel = null; changed(); }
+    function dup() { var e = sel && find(sel); if (!e) return; var c = JSON.parse(JSON.stringify(e)); c.x += 24; c.y += 24; addEl(c); }
+    function startEdit(e) {
+      if (!(e.t === "note" || e.t === "type")) return;
+      var d = nodeOf(e.id); if (!d) return; push(); editing = e.id;
+      var h = d.querySelector(".cvx-h"); if (h) h.remove();
+      d.setAttribute("contenteditable", "true"); d.focus();
+      var r = document.createRange(); r.selectNodeContents(d); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      d.addEventListener("blur", function done() { d.removeEventListener("blur", done); e.text = (d.innerText || "").replace(/\n$/, "").slice(0, 1000); editing = null; d.removeAttribute("contenteditable"); changed(); });
+    }
+    bar.addEventListener("click", function (ev) {
+      var a = ev.target.closest("[data-a]"); if (!a) return; a = a.getAttribute("data-a"); var c = viewCenter();
+      if (a === "note") addEl({ t: "note", x: c.x, y: c.y, w: 240, h: 160, text: "Double-click to write a note", color: "#fff6b3" });
+      else if (a === "swatch") addEl({ t: "swatch", x: c.x, y: c.y, w: 120, h: 120, color: "#2563eb" });
+      else if (a === "type") addEl({ t: "type", x: c.x, y: c.y, w: 560, h: 120, text: "Headline sample", font: "Playfair Display", size: 56 });
+      else if (a === "palette") paletteFromPins();
+      else if (a === "tidy") tidy();
+      else if (a === "undo") { if (!undo.length) return; els = JSON.parse(undo.pop()); sel = null; changed(); if (!undo.length) bar.querySelector('[data-a="undo"]').disabled = true; }
+      else if (a === "zin") setZoom(zoom * 1.25); else if (a === "zout") setZoom(zoom / 1.25); else if (a === "fit") fit();
+      else if (a === "png") exportImage("png"); else if (a === "pdf") exportImage("pdf");
+      else if (a === "del") del(); else if (a === "dup") dup();
+      else if (a === "front" || a === "back") { var e = find(sel); if (!e) return; push(); var zs = els.map(function (x) { return x.z; }); e.z = a === "front" ? Math.max.apply(null, zs) + 1 : Math.min.apply(null, zs) - 1; if (e.z < 0) els.forEach(function (x) { x.z += 1; }); changed(); }
+      else if (a === "edit") { var e2 = find(sel); if (e2) startEdit(e2); }
+    });
+
+    // ---- pointer: select, drag, resize
+    var drag = null, lastTap = null;
+    stage.addEventListener("pointerdown", function (ev) {
+      var d = ev.target.closest(".cvx-el");
+      if (!d) { if (sel) { sel = null; render(); } return; }
+      if (d.getAttribute("contenteditable") === "true") return;
+      var e = find(d.getAttribute("data-id")); if (!e) return;
+      // Double-click / double-tap to edit text (detected here: preventDefault below suppresses native dblclick).
+      var now = Date.now();
+      if (lastTap && lastTap.id === e.id && now - lastTap.t < 450 && !ev.target.getAttribute("data-h") && (e.t === "note" || e.t === "type")) { lastTap = null; ev.preventDefault(); startEdit(e); return; }
+      lastTap = { id: e.id, t: now };
+      if (sel !== e.id) { sel = e.id; stage.querySelectorAll(".is-sel").forEach(function (n) { n.classList.remove("is-sel"); }); d.classList.add("is-sel"); selBar(); }
+      ev.preventDefault(); d.setPointerCapture(ev.pointerId);
+      drag = { e: e, d: d, rs: !!ev.target.getAttribute("data-h"), sx: ev.clientX, sy: ev.clientY, x: e.x, y: e.y, w: e.w, h: e.h, moved: false, pushed: false };
+    });
+    stage.addEventListener("pointermove", function (ev) {
+      if (!drag) return;
+      var dx = (ev.clientX - drag.sx) / zoom, dy = (ev.clientY - drag.sy) / zoom;
+      if (!drag.moved && Math.abs(dx) + Math.abs(dy) < 3) return;
+      if (!drag.pushed) { push(); drag.pushed = true; }
+      drag.moved = true; drag.d.classList.add("is-drag");
+      var e = drag.e;
+      if (drag.rs) {
+        var w = Math.max(40, snap(drag.w + dx)), h;
+        if (e.t === "pin") h = Math.max(30, Math.round(w * drag.h / drag.w)); else h = Math.max(24, snap(drag.h + dy));
+        e.w = w; e.h = h;
+      } else { e.x = Math.max(0, snap(drag.x + dx)); e.y = Math.max(0, snap(drag.y + dy)); }
+      place(drag.d, e);
+    });
+    function endDrag() { if (!drag) return; var m = drag.moved; drag.d.classList.remove("is-drag"); drag = null; if (m) changed(true); }
+    stage.addEventListener("pointerup", endDrag); stage.addEventListener("pointercancel", endDrag);
+    stage.addEventListener("dblclick", function (ev) { var d = ev.target.closest(".cvx-el"); if (d) { var e = find(d.getAttribute("data-id")); if (e) startEdit(e); } });
+
+    // ---- keyboard
+    function onKey(ev) {
+      if (destroyed || !root.isConnected) return;
+      if (editing) { if (ev.key === "Escape") { var d = nodeOf(editing); if (d) d.blur(); } return; }
+      var t = ev.target; if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
+      if (!root.contains(document.activeElement) && document.activeElement !== document.body) return;
+      var mod = ev.metaKey || ev.ctrlKey;
+      if (mod && ev.key.toLowerCase() === "z") { ev.preventDefault(); bar.querySelector('[data-a="undo"]').click(); return; }
+      var e = sel && find(sel); if (!e) return;
+      if (ev.key === "Delete" || ev.key === "Backspace") { ev.preventDefault(); del(); }
+      else if (mod && ev.key.toLowerCase() === "d") { ev.preventDefault(); dup(); }
+      else if (ev.key === "Escape") { sel = null; render(); }
+      else if (ev.key === "Enter") { ev.preventDefault(); startEdit(e); }
+      else if (/^Arrow/.test(ev.key)) {
+        ev.preventDefault(); var st = ev.shiftKey ? 10 : 1; push();
+        if (ev.key === "ArrowLeft") e.x = Math.max(0, e.x - st); if (ev.key === "ArrowRight") e.x += st;
+        if (ev.key === "ArrowUp") e.y = Math.max(0, e.y - st); if (ev.key === "ArrowDown") e.y += st;
+        place(nodeOf(e.id), e); changed(true);
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    function onUnload() { if (dirty) save(); }
+    window.addEventListener("beforeunload", onUnload);
+
+    // ---- export PNG / PDF (drawn on a canvas; pins are same-origin images so the canvas stays exportable)
+    function wrap(ctx, text, maxW) {
+      var out = []; String(text || "").split("\n").forEach(function (para) {
+        var words = para.split(/\s+/), line = "";
+        words.forEach(function (w) { var t = line ? line + " " + w : w; if (ctx.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; });
+        out.push(line);
+      }); return out;
+    }
+    function loadImg(src) { return new Promise(function (res) { var i = new Image(); i.onload = function () { res(i); }; i.onerror = function () { res(null); }; i.src = src; }); }
+    function exportImage(kind) {
+      if (!els.length) { if (o.toast) o.toast("Nothing to export yet"); return; }
+      status("Preparing export…");
+      var b = bounds(), m = 40, scale = Math.min(2, 4096 / (b.w + 2 * m), 4096 / (b.h + 2 * m));
+      var fonts = els.filter(function (e) { return e.t === "type"; }).map(function (e) { return document.fonts ? document.fonts.load("700 " + e.size + "px '" + e.font + "'").catch(function () {}) : null; });
+      var imgs = els.filter(function (e) { return e.t === "pin"; }).map(function (e) { return loadImg((o.API || "") + items[e.item].image).then(function (i) { e._img = i; }); });
+      Promise.all(fonts.concat(imgs)).then(function () {
+        var cv = document.createElement("canvas"); cv.width = Math.round((b.w + 2 * m) * scale); cv.height = Math.round((b.h + 2 * m) * scale);
+        var ctx = cv.getContext("2d"); ctx.scale(scale, scale); ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, b.w + 2 * m, b.h + 2 * m);
+        ctx.translate(m - b.x, m - b.y);
+        els.slice().sort(function (a, c) { return a.z - c.z; }).forEach(function (e) {
+          if (e.t === "pin" && e._img) {
+            var i = e._img, r = Math.max(e.w / i.width, e.h / i.height), sw = e.w / r, sh = e.h / r;
+            ctx.save(); ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(e.x, e.y, e.w, e.h, 6); else ctx.rect(e.x, e.y, e.w, e.h); ctx.clip();
+            ctx.drawImage(i, (i.width - sw) / 2, (i.height - sh) / 2, sw, sh, e.x, e.y, e.w, e.h); ctx.restore();
+          } else if (e.t === "note") {
+            ctx.fillStyle = e.color; ctx.fillRect(e.x, e.y, e.w, e.h); ctx.fillStyle = inkOn(e.color); ctx.font = "14px system-ui, -apple-system, sans-serif"; ctx.textBaseline = "top";
+            wrap(ctx, e.text, e.w - 24).forEach(function (l, k) { if (12 + (k + 1) * 19 < e.h) ctx.fillText(l, e.x + 12, e.y + 12 + k * 19); });
+          } else if (e.t === "swatch") {
+            ctx.fillStyle = e.color; ctx.fillRect(e.x, e.y, e.w, e.h); ctx.fillStyle = "rgba(255,255,255,.88)"; ctx.fillRect(e.x + 6, e.y + e.h - 24, 70, 18);
+            ctx.fillStyle = "#111"; ctx.font = "600 11px ui-monospace, Menlo, monospace"; ctx.textBaseline = "top"; ctx.fillText(e.color.toUpperCase(), e.x + 10, e.y + e.h - 21);
+          } else if (e.t === "type") {
+            ctx.fillStyle = "#171717"; ctx.font = e.size + "px '" + e.font + "', system-ui, sans-serif"; ctx.textBaseline = "top";
+            wrap(ctx, e.text, e.w).forEach(function (l, k) { if ((k + 1) * e.size * 1.08 <= e.h + e.size * 0.2) ctx.fillText(l, e.x, e.y + k * e.size * 1.08); });
+          }
+        });
+        els.forEach(function (e) { delete e._img; });
+        var name = (o.board.name || "board").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-").toLowerCase() || "board";
+        if (kind === "png") { cv.toBlob(function (blob) { download(blob, name + ".png"); status("Exported PNG"); }, "image/png"); return; }
+        loadJsPdf().then(function (J) {
+          var pw = cv.width / scale * 0.75, ph = cv.height / scale * 0.75;
+          var doc = new J({ orientation: pw > ph ? "landscape" : "portrait", unit: "pt", format: [pw, ph] });
+          doc.addImage(cv.toDataURL("image/jpeg", 0.92), "JPEG", 0, 0, pw, ph); doc.save(name + ".pdf"); status("Exported PDF");
+        }).catch(function () { status("PDF export failed — try PNG"); });
+      });
+    }
+    function download(blob, fn) { var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fn; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800); }
+    var jspdfP = null;
+    function loadJsPdf() {
+      if (win.jspdf && win.jspdf.jsPDF) return Promise.resolve(win.jspdf.jsPDF);
+      if (!jspdfP) jspdfP = new Promise(function (res, rej) { var s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"; s.onload = function () { res(win.jspdf.jsPDF); }; s.onerror = rej; document.head.appendChild(s); });
+      return jspdfP;
+    }
+
+    window.addEventListener("resize", resize);
+    render();
+    if (dirty) { status("Arranging…"); clearTimeout(saveT); saveT = setTimeout(save, 300); } else status(els.length ? "Saved" : "");
+    setTimeout(fit, 0);
+    return {
+      destroy: function () { destroyed = true; if (dirty) { destroyed = false; save(); destroyed = true; } document.removeEventListener("keydown", onKey); window.removeEventListener("resize", resize); window.removeEventListener("beforeunload", onUnload); host.innerHTML = ""; },
+      _state: function () { return { els: els, rev: rev, zoom: zoom, sel: sel, dirty: dirty, saving: saving }; }
+    };
+  }
+  win.MGDCanvas = { mount: mount };
+})(window);

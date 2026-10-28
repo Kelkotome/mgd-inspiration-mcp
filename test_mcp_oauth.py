@@ -326,7 +326,7 @@ s, h, b = rpc(MCP_ME, "initialize", {"protocolVersion": "2025-06-18", "capabilit
 check("initialize with token", s == 200 and (jl(b) or {}).get("result", {}).get("protocolVersion") == "2025-06-18")
 s, h, b = rpc(MCP_ME, "tools/list", {}, AT)
 names = [t["name"] for t in (jl(b) or {}).get("result", {}).get("tools", [])]
-check("tools/list = 6 board tools + 8 public tools", names == ["list_my_boards", "get_board", "create_board", "save_to_board", "update_board", "remove_from_board"] + PUBLIC, names)
+check("tools/list = 7 board tools + 8 public tools", names == ["list_my_boards", "get_board", "create_board", "save_to_board", "update_board", "add_to_board_canvas", "remove_from_board"] + PUBLIC, names)
 check("tool defs do not leak internal 'scope' field", '"scope"' not in b)
 s, res, t = call(AT, "search_design_inspiration", {"query": "serif"})
 check("public search via /mcp/boards includes item_id + madegooddesigns.com", "item_id: aaaaaaaaaaa1" in t and "https://madegooddesigns.com/inspiration" in t)
@@ -405,6 +405,55 @@ s, h, b = req("PATCH", P + f"/api/boards/{TID}/saves/notonboard", J, json.dumps(
 check("note on item not on board -> 404", s == 404)
 s, h, b = req("PATCH", P + f"/api/boards/{TID}", {"Content-Type": "application/json"}, json.dumps({"name": "hijack"}))
 check("PATCH board without session -> 401", s == 401)
+
+print("\n-- board canvas (Release 2)")
+BT = full_flow(BOB, CID, REDIR)["access_token"]
+s, h, b = req("GET", P + f"/api/boards/{TID}", {"Cookie": ALICE})
+jb = jl(b) or {}
+check("get board returns empty canvas + rev 0", jb.get("canvas") == [] and jb.get("canvas_rev") == 0)
+CV = [{"id": "pin1", "t": "pin", "item": "aaaaaaaaaaa2", "x": 10.6, "y": 20, "w": 240, "h": 180, "z": 1},
+      {"id": "pin2", "t": "pin", "item": "bbbbbbbbbbb1", "x": 0, "y": 0, "w": 240, "h": 180, "z": 2},          # not on board -> dropped
+      {"id": "n1", "t": "note", "x": 300, "y": 0, "w": 9999, "h": 160, "z": 3, "text": "<b>hi</b> there", "color": "javascript:alert(1)"},
+      {"id": "s1", "t": "swatch", "x": 0, "y": 300, "w": 120, "h": 120, "z": 4, "color": "#0F766E", "onclick": "x"},
+      {"id": "t1", "t": "type", "x": 0, "y": 450, "w": 560, "h": 120, "z": 5, "text": "Headline", "font": "Playfair Display'; x:url(evil)", "size": 999},
+      {"id": "x1", "t": "script", "x": 0, "y": 0, "w": 10, "h": 10, "z": 0}]
+s, h, b = req("PUT", P + f"/api/boards/{TID}/canvas", J, json.dumps({"canvas": CV, "rev": 0}))
+jb = jl(b) or {}; cv = jb.get("canvas") or []
+ids = [e["id"] for e in cv]
+check("PUT canvas -> rev 1, sanitised", s == 200 and jb.get("rev") == 1 and ids == ["pin1", "n1", "s1", "t1"], (s, b[:300]))
+n1 = next(e for e in cv if e["id"] == "n1"); t1 = next(e for e in cv if e["id"] == "t1"); s1 = next(e for e in cv if e["id"] == "s1")
+check("sanitiser: clamps size, default colour for bad note colour, hex lower-cased, unknown keys dropped",
+      n1["w"] == 4000 and n1["color"] == "#fff6b3" and s1["color"] == "#0f766e" and "onclick" not in s1 and cv[0]["x"] == 11, cv)
+check("sanitiser: font stripped to safe characters, size clamped to 240", t1["font"] == "Playfair Display xurlevil" and t1["size"] == 240, t1)
+s, h, b = req("PUT", P + f"/api/boards/{TID}/canvas", J, json.dumps({"canvas": [], "rev": 0}))
+check("stale rev -> 409 with current canvas", s == 409 and (jl(b) or {}).get("rev") == 1 and len((jl(b) or {}).get("canvas") or []) == 4, (s, b[:200]))
+s, h, b = req("PUT", P + f"/api/boards/{TID}/canvas", J, json.dumps({"canvas": [{"t": "note", "x": i, "y": 0, "w": 100, "h": 100, "z": 0, "text": "x" * 1000} for i in range(400)], "rev": 1}))
+check("oversize canvas -> 413", s == 413, (s, b[:120]))
+s, h, b = req("PUT", P + f"/api/boards/{TID}/canvas", {"Cookie": BOB, "Content-Type": "application/json", "Origin": ORIGIN}, json.dumps({"canvas": [], "rev": 1}))
+check("bob cannot write alice's canvas", s == 404)
+s, h, b = req("PUT", P + f"/api/boards/{TID}/canvas", {"Content-Type": "application/json"}, json.dumps({"canvas": [], "rev": 1}))
+check("canvas PUT without session -> 401", s == 401)
+s, res, t = call(AT, "add_to_board_canvas", {"board_id": TID, "type": "swatches", "colors": ["#112233", "nothex", "#FFCC00"]})
+check("MCP add_to_board_canvas swatches (invalid colours skipped)", "Added 2 swatches" in t and not res.get("isError"), t)
+s, res, t = call(AT, "add_to_board_canvas", {"board_id": TID, "type": "note", "text": "Client prefers warmer tones"})
+check("MCP add note", "Added a note" in t, t)
+s, res, t = call(AT, "get_board", {"board_id": TID})
+check("get_board summarises canvas (notes, swatches, type)", "Canvas (free-form layout)" in t and "note: Client prefers warmer tones" in t and "#112233 #ffcc00" in t and 'type sample: "Headline" in Playfair Display' in t, t[:600])
+s, h, b = req("GET", P + f"/api/boards/{TID}", {"Cookie": ALICE})
+jb = jl(b) or {}
+check("MCP write bumped rev and placed new elements below existing", jb.get("canvas_rev") == 3 and min(e["y"] for e in jb["canvas"] if e["t"] == "swatch" and e["color"] == "#112233") >= 570, jb.get("canvas_rev"))
+s, res, t = call(BT, "add_to_board_canvas", {"board_id": TID, "type": "note", "text": "pwned"})
+check("bob cannot add to alice's canvas via MCP", res.get("isError"))
+s, res, t = call(AT, "add_to_board_canvas", {"board_id": TID, "type": "swatches", "colors": []})
+check("swatches with no valid colours -> isError", res.get("isError"))
+SH = (jl(req("GET", P + "/api/boards", {"Cookie": ALICE})[2]) or {})
+tb_share = next(x for x in SH["boards"] if x["id"] == TID)["share_url"].rsplit("/", 1)[1]
+s, h, b = req("GET", P + f"/b/{tb_share}", {})
+check("public page renders canvas layout + type font link + grid toggle", s == 200 and 'class="cv"' in b and "Client prefers warmer tones" in b and "fonts.googleapis.com" in b and "view=grid" in b and "javascript:" not in b and "evil)" not in b, b[:200])
+s, h, b = req("GET", P + f"/b/{tb_share}?view=grid", {})
+check("public ?view=grid shows the grid", s == 200 and 'class="grid"' in b and 'class="cv"' not in b)
+s, h, b = req("GET", P + "/assets/board-canvas.js", {})
+check("canvas editor asset served as JS", s == 200 and "MGDCanvas" in b and "javascript" in h.get("content-type", [""])[0], h.get("content-type"))
 
 print("\n-- ownership isolation (bob vs alice's board)")
 _, _, BOB = dev_login("bob@example.com")

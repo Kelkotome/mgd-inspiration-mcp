@@ -28,6 +28,7 @@ for f in schema.sql migrate_mcp.sql migrate_subscribers.sql; do $D1 --file=./$f 
 $D1 --command "ALTER TABLE items ADD COLUMN hue REAL" >/dev/null   # live column not in schema.sql (schema drift)
 $D1 --file=./migrate_oauth.sql >/dev/null || { echo "migrate_oauth.sql failed"; exit 1; }
 $D1 --file=./migrate_boards_v2.sql >/dev/null || { echo "migrate_boards_v2.sql failed"; exit 1; }
+$D1 --file=./migrate_boards_canvas.sql >/dev/null || { echo "migrate_boards_canvas.sql failed"; exit 1; }
 $D1 --command "INSERT INTO items (id,title,description,source_url,source_host,image_key,tags,themes,palette,status,created_at,collection,company,report_year,designer,industry,owner_id) VALUES
  ('aaaaaaaaaaa1','Retro serif poster','A bold retro serif poster.','https://example.com/p1','example.com','items/aaaaaaaaaaa1.jpg','[\"serif\",\"poster\"]','[\"retro\"]','[\"#112233\",\"#ffcc00\"]','published',1700000000000,'design',NULL,NULL,NULL,NULL,NULL),
  ('aaaaaaaaaaa2','Swiss grid report','Modernist grid cover.','https://archive.org/details/x','archive.org','annual/aaaaaaaaaaa2.jpg','[\"grid\"]','[\"swiss\"]','[\"#ff0000\"]','published',1700000001000,'annual-report','Acme Transit',1972,'Paul Rand','transit',NULL),

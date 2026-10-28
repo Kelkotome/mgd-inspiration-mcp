@@ -269,7 +269,8 @@
   }
 
   // ---------- feed ----------
-  function reset(){ $("insp-grid").innerHTML=""; state.cursor=null; state.done=false; }
+  function reset(){ closeCanvas(); $("insp-grid").innerHTML=""; state.cursor=null; state.done=false; }
+  function closeCanvas(){ if(state.canvas){ try{ state.canvas.destroy(); }catch(_){} state.canvas=null; } var h=$("b-canvas"); if(h) h.remove(); $("insp-grid").style.display=""; }
   function loadFeed(){
     if (state.loading||state.done||state.mode!=="feed"||state.view!=="feed") return;
     state.loading=true; $("insp-more").textContent="Loading…";
@@ -356,6 +357,7 @@
     $("insp-sub").innerHTML=
       '<button class="mgd-btn" id="b-back">← Boards</button>'
       +'<strong style="margin-right:auto">'+esc(b.name)+(b.group?' <span class="mgd-board__c">· '+esc(b.group)+'</span>':'')+'</strong>'
+      +'<span id="b-views" style="display:inline-flex;gap:.25rem"><button class="mgd-btn" data-v="grid">Grid</button><button class="mgd-btn" data-v="canvas">Canvas</button></span>'
       +'<button class="mgd-btn" id="b-edit">Edit</button><button class="mgd-btn" id="b-share">'+(b.share_url?'Shared ✓':'Share')+'</button>'
       +'<form id="b-addurl" style="display:flex;gap:.4rem;flex:1 1 300px;max-width:560px" title="Paste a link from any website">'
       +'<input id="b-url" type="url" placeholder="Paste any image or page URL to add it here…" style="flex:1;font:inherit;padding:.5rem .8rem;border:1px solid var(--border-strong);border-radius:999px;background:var(--surface);color:inherit" />'
@@ -366,6 +368,7 @@
     $("b-addurl").addEventListener("submit", function(e){ e.preventDefault(); addUrlToBoard(b); });
     $("b-edit").addEventListener("click", function(){ editPanel(b); });
     $("b-share").addEventListener("click", function(){ sharePanel(b); });
+    $("b-views").addEventListener("click", function(e){ var v=e.target.getAttribute("data-v"); if(!v) return; try{ localStorage.setItem("mgd_board_view", v); }catch(_){} gaEvent("board_view",{view:v}); loadBoardItems(b); });
     loadBoardItems(b);
   }
   function editPanel(b){
@@ -425,8 +428,27 @@
     });
     el.appendChild(box);
   }
+  function boardView(){ try{ return localStorage.getItem("mgd_board_view")==="canvas"?"canvas":"grid"; }catch(_){ return "grid"; } }
+  var canvasScript=null;
+  function loadCanvasScript(){
+    if(window.MGDCanvas) return Promise.resolve();
+    if(!canvasScript) canvasScript=new Promise(function(res,rej){ var s=document.createElement("script"); s.src=API+"/assets/board-canvas.js?v=1"; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+    return canvasScript;
+  }
   function loadBoardItems(b){
     reset();
+    var v=boardView();
+    var vb=$("b-views"); if(vb) vb.querySelectorAll("button").forEach(function(x){ x.className="mgd-btn"+(x.getAttribute("data-v")===v?" mgd-btn--dark":""); });
+    if(v==="canvas"){
+      $("insp-grid").style.display="none"; $("insp-more").textContent="Loading canvas…";
+      var host=document.createElement("div"); host.id="b-canvas"; $("insp-grid").parentNode.insertBefore(host, $("insp-grid"));
+      Promise.all([loadCanvasScript(), api("/api/boards/"+b.id).then(function(r){return r.json();})]).then(function(x){
+        var d=x[1]; if(state.currentBoard!==b || !document.getElementById("b-canvas")) return;
+        $("insp-more").textContent="";
+        state.canvas=window.MGDCanvas.mount(host,{board:b, items:d.items||[], canvas:d.canvas||[], rev:d.canvas_rev||0, api:api, API:API, toast:toastMsg});
+      }).catch(function(){ $("insp-more").textContent="Couldn’t load the canvas."; });
+      return;
+    }
     api("/api/boards/"+b.id).then(function(r){return r.json();}).then(function(d){
       if(d.board){ b.cover_item_id=d.board.cover_item_id; }
       var g=$("insp-grid");
