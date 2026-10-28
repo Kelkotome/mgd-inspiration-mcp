@@ -7,6 +7,7 @@ import ADD_HTML from "./ui/add.html";
 import ANNUAL_HTML from "./ui/annual-reports.html";
 import MUSEUM_HTML from "./ui/museum.html";
 import BOARD_CANVAS_JS from "./ui/board-canvas.html"; // plain JS, imported as Text via the *.html rule
+import SAVE_HTML from "./ui/save.html";
 import { getUser, googleLogin, googleCallback, logout, devLogin } from "./auth.js";
 import { MGDRoles, MGDDesignMd } from "./design_core.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
@@ -73,6 +74,7 @@ export default {
       if (path === "/annual-reports/sitemap.xml" && method === "GET") return annualSitemap(env, base);
       if (path === "/museum" && method === "GET") return html(injectBase(MUSEUM_HTML, base));
       { const bm = path.match(/^\/b\/([a-z0-9]{10})$/); if (bm && method === "GET") return publicBoardPage(bm[1], env, base, url); }
+      if (path === "/save" && method === "GET") return html(injectBase(SAVE_HTML, base));
       if (path === "/assets/board-canvas.js" && method === "GET")
         return new Response(BOARD_CANVAS_JS, { headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
       if (path === "/museum/sitemap.xml" && method === "GET") return museumSitemap(env, base);
@@ -138,12 +140,13 @@ export default {
       if (path === "/api/me/newsletter" && method === "POST") return setNewsletter(request, env);
       if (path === "/api/boards" && method === "GET") return listBoards(request, env);
       if (path === "/api/boards" && method === "POST") return createBoard(request, env);
-      if (path.match(/^\/api\/boards\/[^/]+\/add-url$/) && method === "POST") return addUrlToBoard(path.split("/")[3], request, env);
+      if (path.match(/^\/api\/boards\/[^/]+\/add-url$/) && method === "POST") return addUrlToBoard(path.split("/")[3], request, env, ctx);
       if (path.match(/^\/api\/boards\/[^/]+\/saves$/) && method === "POST") return saveToBoard(path.split("/")[3], request, env);
       if (path.match(/^\/api\/boards\/[^/]+\/saves\/[^/]+$/) && method === "DELETE") { const s = path.split("/"); return unsave(s[3], s[5], request, env); }
       if (path.match(/^\/api\/boards\/[^/]+\/saves\/[^/]+$/) && method === "PATCH") { const s = path.split("/"); return setPinNote(s[3], s[5], request, env); }
       if (path.match(/^\/api\/boards\/[^/]+$/) && method === "PATCH") return updateBoard(path.split("/")[3], request, env);
       if (path.match(/^\/api\/boards\/[^/]+\/canvas$/) && method === "PUT") return saveCanvas(path.split("/")[3], request, env);
+      if (path.match(/^\/api\/boards\/[^/]+\/design$/) && method === "GET") return boardDesignApi(path.split("/")[3], request, env);
       if (path.match(/^\/api\/boards\/[^/]+$/) && method === "GET") return getBoard(path.split("/")[3], request, env);
       if (path.match(/^\/api\/boards\/[^/]+$/) && method === "DELETE") return deleteBoard(path.split("/")[3], request, env);
 
@@ -982,7 +985,7 @@ const BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/
 // madegooddesigns.com's WAF 502s Mozilla UAs — use a curl UA for our own host, browser UA elsewhere.
 function uaFor(u) { try { return /(^|\.)madegooddesigns\.com$/i.test(new URL(u).hostname) ? "curl/8.4.0" : BROWSER_UA; } catch (e) { return BROWSER_UA; } }
 
-async function addUrlToBoard(boardId, request, env) {
+async function addUrlToBoard(boardId, request, env, ctx) {
   const user = await getUser(request, env);
   if (!user) return json({ error: "unauthorized" }, 401, env, request);
   const board = await env.DB.prepare("SELECT id FROM boards WHERE id=? AND user_id=?").bind(boardId, user.id).first();
@@ -1019,27 +1022,31 @@ async function addUrlToBoard(boardId, request, env) {
   const key = `user/${user.id}/${id}.${ext}`;
   await env.BUCKET.put(key, imgBytes, { httpMetadata: { contentType } });
 
-  let tags = [], description = meta.description || "", title = meta.title || "";
-  try {
-    const enriched = await enrich(bytesToDataUri(imgBytes, contentType), env);
-    if (Array.isArray(enriched.tags)) tags = enriched.tags.slice(0, 12);
-    if (!description) description = enriched.description || "";
-    if (!title) title = enriched.title || "";
-  } catch (e) { /* keep og metadata */ }
-
+  // Save immediately with the page's own metadata; AI tagging runs in the background (the vision
+  // models can take 45s+ each to time out, which used to block the save — and the bookmarklet popup).
+  const tags = [], description = meta.description || "";
   const now = Date.now();
   const host = hostOf(pageUrl);
+  const title = meta.title || host;
   await env.DB.prepare(
     `INSERT INTO items (id,title,description,source_url,source_host,image_key,width,height,tags,themes,palette,style,owner_id,status,created_at)
      VALUES (?,?,?,?,?,?,?,?,?,?,'[]',NULL,?,'published',?)`
-  ).bind(id, title || host, description, pageUrl, host, key, meta.width || null, meta.height || null,
+  ).bind(id, title, description, pageUrl, host, key, meta.width || null, meta.height || null,
          JSON.stringify(tags), "[]", user.id, now).run();
+  const enrichLater = (async () => {
+    try {
+      const en = await enrich(bytesToDataUri(imgBytes, contentType), env);
+      await env.DB.prepare("UPDATE items SET tags=?, description=CASE WHEN COALESCE(description,'')='' THEN ? ELSE description END, title=CASE WHEN title=? THEN COALESCE(?, title) ELSE title END WHERE id=?")
+        .bind(JSON.stringify(Array.isArray(en.tags) ? en.tags.slice(0, 12) : []), en.description || "", host, en.title || null, id).run();
+    } catch (e) { /* keep the page's metadata */ }
+  })();
+  if (ctx && ctx.waitUntil) ctx.waitUntil(enrichLater);
   try {
     await env.DB.prepare("INSERT INTO saves (id,board_id,item_id,user_id,created_at) VALUES (?,?,?,?,?)").bind(genId(), boardId, id, user.id, now).run();
   } catch (e) {}
   await env.DB.prepare("UPDATE boards SET updated_at=? WHERE id=? AND user_id=?").bind(now, boardId, user.id).run();
 
-  return json({ ok: true, item: rowToItem({ id, title: title || host, description, source_host: host, image_key: key,
+  return json({ ok: true, item: rowToItem({ id, title, description, source_host: host, image_key: key,
     width: meta.width, height: meta.height, tags: JSON.stringify(tags), themes: "[]", palette: "[]", style: null, created_at: now }, env) }, 200, env, request);
 }
 
@@ -1284,6 +1291,55 @@ async function saveCanvas(boardId, request, env) {
 }
 // Place new elements below everything already on the canvas (used by MCP add_to_board_canvas).
 function canvasBottom(els) { return els.reduce((m, e) => Math.max(m, (e.y || 0) + (e.h || 0)), 0); }
+
+// ---- Release 3: board → design system (palette roles + DESIGN.md) ----
+// Colours come from the board's canvas swatches (strong signal — the user picked them) and the saved
+// pins' palettes (weighted by palette position). The primary is the most "brand-like" colour: frequent,
+// clearly chromatic and mid-light; the accent hue follows the next distinct hue on the board.
+async function boardDesign(env, uid, boardId) {
+  const board = await env.DB.prepare("SELECT * FROM boards WHERE id=? AND user_id=?").bind(boardId, uid).first();
+  if (!board) return null;
+  const rows = (await env.DB.prepare(`SELECT i.palette FROM saves s JOIN items i ON i.id=s.item_id WHERE s.board_id=? AND i.status='published' LIMIT 300`).bind(boardId).all()).results || [];
+  const w = {};
+  const addC = (hex, wt) => { const h = MGDRoles.normHex(String(hex || "")); if (h) w[h] = (w[h] || 0) + wt; };
+  rows.forEach((r) => safeArr(r.palette).slice(0, 6).forEach((c, i) => addC(c, 6 - i)));
+  const els = parseCanvas(board.canvas);
+  els.filter((e) => e.t === "swatch").forEach((e) => addC(e.color, 12));
+  const colors = Object.keys(w).map((hex) => ({ hex, weight: w[hex], o: MGDRoles.lch(hex) })).sort((a, b) => b.weight - a.weight);
+  const score = (c) => c.weight * Math.min(1, c.o.c / 0.08) * (c.o.l > 0.25 && c.o.l < 0.85 ? 1 : 0.35);
+  const ranked = colors.slice().sort((a, b) => score(b) - score(a));
+  const primary = ranked.length && score(ranked[0]) > 0 ? ranked[0].hex : null;
+  let accentHue = null;
+  if (primary) {
+    const ph = MGDRoles.lch(primary).h;
+    const alt = ranked.find((c) => c.o.c > 0.05 && Math.min(Math.abs(c.o.h - ph), 360 - Math.abs(c.o.h - ph)) > 40);
+    if (alt) accentHue = alt.o.h;
+  }
+  const avgC = colors.length ? colors.slice(0, 8).reduce((m, c) => m + c.o.c, 0) / Math.min(8, colors.length) : 0.1;
+  const mood = !primary ? "clean" : avgC < 0.05 ? "muted" : "clean";
+  const sd = MGDRoles.seed({ mood, brand: primary });
+  if (accentHue != null) { sd.ha = accentHue; sd.harmony = "board"; }
+  const light = MGDRoles.build(sd, "light"), dark = MGDRoles.build(sd, "dark");
+  const types = els.filter((e) => e.t === "type").sort((a, b) => b.size - a.size);
+  const heading = types[0] ? types[0].font : "Inter";
+  const body = types.find((t) => t.font !== heading && t.size <= 24) ? types.find((t) => t.font !== heading && t.size <= 24).font : "Inter";
+  const L = light.roles, D = dark.roles;
+  const q = `l=${MGDRoles.packRoles(L)}&d=${MGDRoles.packRoles(D)}&hf=${encodeURIComponent(heading)}&bf=${encodeURIComponent(body)}`;
+  return {
+    board, colors: colors.slice(0, 12).map((c) => ({ hex: c.hex, weight: c.weight })), primary, mood,
+    fonts: { heading, body }, light: L, dark: D, notes: light.notes.concat(dark.notes),
+    palette_url: `${TOOLS_SITE}/website-color-palette-generator/?${q}`,
+    design_md_url: `${TOOLS_SITE}/design-md-generator/?${q}&project=${encodeURIComponent(board.name)}${board.description ? "&desc=" + encodeURIComponent(board.description) : ""}`,
+  };
+}
+async function boardDesignApi(boardId, request, env) {
+  const user = await getUser(request, env);
+  if (!user) return json({ error: "unauthorized" }, 401, env, request);
+  const d = await boardDesign(env, user.id, boardId);
+  if (!d) return json({ error: "not_found" }, 404, env, request);
+  const { board, ...rest } = d;
+  return json(Object.assign({ ok: true, board: { id: board.id, name: board.name } }, rest), 200, env, request);
+}
 
 async function exportUsers(request, env) {
   if (!isAdmin(request, env)) return json({ error: "unauthorized" }, 401, env, request);
@@ -1787,6 +1843,20 @@ const MCP_BOARD_TOOLS = [
     scope: "boards:write",
   },
   {
+    name: "board_design_system",
+    description: "Turn one of the signed-in user's mood boards into a design system: extracts the board's colours (canvas swatches first, then the saved images' palettes) and fonts (canvas type samples), builds an accessible website palette for light and dark themes (WCAG AA enforced), and can return a full DESIGN.md design brief for AI coding agents. Includes links that open the result in Made Good Designs' palette and DESIGN.md tools.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        board_id: { type: "string", description: "Board id from list_my_boards." },
+        include_design_md: { type: "boolean", description: "Also return the full DESIGN.md (default true)." },
+      },
+      required: ["board_id"],
+    },
+    annotations: { title: "Board to design system", readOnlyHint: true, openWorldHint: false },
+    scope: "boards:read",
+  },
+  {
     name: "remove_from_board",
     description: "Remove an item from one of the signed-in user's boards (the item itself stays in the gallery).",
     inputSchema: {
@@ -2010,6 +2080,25 @@ async function mcpBoardTool(params, env, auth, ip, ua) {
     if (r.status === 409) return mcpText("The board was being edited at the same moment — please try again.", true);
     if (r.status !== 200) return mcpText("Error: couldn't update the canvas (it may be too large).", true);
     return mcpText(`Added ${added.length === 1 ? "a " + (kind === "type" ? "type sample" : kind) : added.length + " swatches"} to the canvas of "${board.name}". Open it at ${MCP_SITE}/ (My boards → ${board.name} → Canvas).`);
+  }
+
+  if (name === "board_design_system") {
+    const bid = cleanId(a.board_id);
+    const d = bid && await boardDesign(env, uid, bid);
+    if (!d) return notFound(bid);
+    if (!d.colors.length) return mcpText(`Board "${d.board.name}" has no colours yet — save some images to it (or add swatches with add_to_board_canvas), then try again.`);
+    const rows = MGDRoles.ROLES.map((k) => `| ${MGDRoles.LABELS[k]} | \`${d.light[k].toUpperCase()}\` | \`${d.dark[k].toUpperCase()}\` |`).join("\n");
+    let text = `Design system from board "${d.board.name}" (board_id: ${d.board.id}).\n\nBoard colours (most used first): ${d.colors.map((c) => c.hex).join(" ")}\n` +
+      `Primary picked from the board: ${d.primary || "none (no strongly coloured references — a neutral palette was used)"}; fonts: ${d.fonts.heading} (headings), ${d.fonts.body} (body).\n\n` +
+      `| Role | Light | Dark |\n|---|---|---|\n${rows}\n\n` + (d.notes.length ? d.notes.join(" ") + "\n\n" : "") +
+      `All text pairs meet WCAG AA. Edit with previews: ${d.palette_url}\nEdit the DESIGN.md: ${d.design_md_url}`;
+    const out = [{ type: "text", text }];
+    if (a.include_design_md !== false) {
+      out.push({ type: "text", text: MGDDesignMd.build({ name: d.board.name, description: d.board.description || "", productType: "Marketing website", personality: [],
+        dark: true, light: d.light, darkColors: d.dark, headingFont: d.fonts.heading, bodyFont: d.fonts.body,
+        components: MGDDesignMd.COMPONENTS.map((c) => c[0]), dos: MGDDesignMd.DEFAULT_DO, donts: MGDDesignMd.DEFAULT_DONT }) });
+    }
+    return { content: out };
   }
 
   if (name === "remove_from_board") {
