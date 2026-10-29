@@ -75,6 +75,13 @@ export default {
       if (path === "/add" && method === "GET") return html(injectBase(ADD_HTML, base));
       if (path === "/annual-reports" && method === "GET") return html(injectBase(ANNUAL_HTML, base));
       if (path === "/annual-reports/sitemap.xml" && method === "GET") return annualSitemap(env, base);
+      // One index of every collection sitemap; WordPress (robots.txt + RankMath) points only here, so new collections need no WP change.
+      if (path === "/sitemap_index.xml" && method === "GET") {
+        const origin = env.PUBLIC_ORIGIN || url.origin, today = new Date().toISOString().slice(0, 10);
+        return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
+          + WORKER_SITEMAPS.map((p) => `<sitemap><loc>${origin}${base}${p}</loc><lastmod>${today}</lastmod></sitemap>`).join("\n") + `\n</sitemapindex>`,
+          { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
+      }
       if (path === "/museum" && method === "GET") return html(injectBase(MUSEUM_HTML, base));
       if (method === "GET" && (path === "/ui" || path.startsWith("/ui/"))) { const r = await uiRoute(path, request, env, ctx, base, UI_H); if (r) return r; }
       { const bm = path.match(/^\/b\/([a-z0-9]{10})$/); if (bm && method === "GET") return publicBoardPage(bm[1], env, base, url); }
@@ -2384,6 +2391,8 @@ function rowToItem(r, env) {
 }
 
 // Helpers handed to ui_screens.js (pages render with the same chrome as the museum pages).
+// Collection sitemaps listed in /sitemap_index.xml (paths under the mount base). Add new collections here.
+const WORKER_SITEMAPS = ["/ui/sitemap.xml", "/museum/sitemap.xml", "/annual-reports/sitemap.xml"];
 const UI_H = { escHtml, GTAG, themeify, saveWidget, backLink, edgeCache, rowToItem };
 
 function safeArr(s) { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } }
