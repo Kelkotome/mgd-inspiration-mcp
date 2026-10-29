@@ -86,4 +86,5 @@ Pilot unchanged (24 screens), but `pricing` is a **section**, not an app screen.
 - Items table, collection='ui', NO migration: category=pattern, country=platform, industry=product category, company=product, style, palette=light roles.
   R2: ui/<id>.webp + ui/<id>/index.html + ui/<id>/DESIGN.md. addItem now accepts description/tags/code_html/design_md + webp.
 - Ingest: `python3 ui-screens/ingest.py` (dedup by source_url …/ui#<slug>); prod deploy must be run by Eugene (classifier blocks wrangler deploy).
-- TODO: list the 2 tools on /design-mcp-server/ (#107901); add /ui/sitemap.xml to sitemap index; more patterns + flows.
+- DONE 30-Oct: tools listed on /design-mcp-server/ (#107901; backup in session scratchpad; Mobbin FAQ now says 'partly', honest about scale); IndexNow pinged 97 URLs (Worker key a7f3…). GSC API token is read-only → add /inspiration/ui/sitemap.xml in GSC by hand.
+- NEXT: more patterns + website sections + flows (taxonomy.json).
