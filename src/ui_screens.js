@@ -171,7 +171,7 @@ async function uiGalleryPage(env, base, h) {
   const body = head(h, { title: "Free UI screens with HTML code & DESIGN.md | MGD", ogTitle: "MGD UI Screens", desc, canonical: `${site}${base}/ui`,
     image: items[0] ? site + base + items[0].image : null,
     jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: "MGD UI Screens", url: `${site}${base}/ui`, description: desc, publisher: MGD_ORG(site), ...licenceLd(site, base) } })
-  + `${h.backLink(base, "", "Back to inspiration")}
+  + `${h.backLink(base, "/", "Back to inspiration")}
 <h1>UI screens</h1>
 <p class="lede">Original app screens and website sections for web and mobile, designed by Made Good Designs. Unlike screenshot libraries, every screen comes with its <b>HTML code</b> and a <b>DESIGN.md</b> with the colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>
 <div class="filters">${chips("platform", "Platform", ["web", "mobile"])}${chips("pattern", "Screens", UI_SCREEN_PATTERNS.filter((p) => have.has(p)))}${chips("pattern", "Sections", UI_SECTION_PATTERNS.filter((p) => have.has(p)))}${chips("style", "Style", UI_STYLES)}</div>
@@ -327,7 +327,7 @@ async function uiTermsPage(env, base, h) {
   const site = siteOf(env), url = `${site}${base}/ui/terms`;
   const desc = "Terms for MGD UI Screens: free to use and adapt in any project, including commercial ones, with no credit needed; credit Made Good Designs with a link only when republishing the screens themselves.";
   const sec = (t, ps) => `<h2>${t}</h2>${ps.map((p) => `<p>${p}</p>`).join("")}`;
-  const body = head(h, { title: "Terms of use — MGD UI Screens", desc, canonical: url,
+  const body = head(h, { title: "Terms of use — MGD UI Screens", desc, canonical: url, image: "https://madegooddesigns.com/wp-content/uploads/2026/10/inspiration-gallery-og.png",
     jsonld: { "@context": "https://schema.org", "@type": "WebPage", name: "MGD UI Screens terms of use", url, description: desc, publisher: MGD_ORG(site) },
     css: `h2{font-size:1.05rem;margin:1.75rem 0 .4rem}.terms p{max-width:70ch;line-height:1.6;margin:0 0 .8rem}.terms code{font-size:.88em}` })
   + `${h.backLink(base, "/ui", "Back to UI screens")}<div class="terms"><h1>Terms of use</h1>
