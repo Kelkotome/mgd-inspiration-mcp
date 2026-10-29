@@ -49,18 +49,35 @@ export async function uiRoute(path, request, env, ctx, base, h) {
   const fm = path.match(/^\/ui\/flows\/([a-z0-9-]+)$/);
   if (fm) return UI_FLOWS[fm[1]] ? h.edgeCache(request, ctx, 1800, () => uiFlowPage(fm[1], new URL(request.url), env, base, h)) : null;
   const raw = path.match(/^\/ui\/raw\/([0-9a-f]{12})\.(html|md)$/);
-  if (raw) return uiRaw(raw[1], raw[2], env);
+  if (raw) return uiRaw(raw[1], raw[2], env, base);
+  if (path === "/ui/terms") return h.edgeCache(request, ctx, 3600, () => uiTermsPage(env, base, h));
   const m = path.match(/^\/ui\/[a-z0-9-]*?([0-9a-f]{12})$/);
   if (m) return h.edgeCache(request, ctx, 1800, () => uiItemPage(m[1], env, base, h));
   return null;
 }
 
-async function uiRaw(id, kind, env) {
-  const obj = await env.BUCKET.get(`ui/${id}/${kind === "html" ? "index.html" : "DESIGN.md"}`);
-  if (!obj) return new Response("not found", { status: 404 });
-  return new Response(obj.body, { headers: {
-    "Content-Type": kind === "html" ? "text/html; charset=utf-8" : "text/markdown; charset=utf-8",
+async function uiRaw(id, kind, env, base) {
+  const [obj, row] = await Promise.all([env.BUCKET.get(`ui/${id}/${kind === "html" ? "index.html" : "DESIGN.md"}`),
+    env.DB.prepare(`SELECT id, category, country, style, tags FROM items WHERE id=? AND collection='ui'`).bind(id).first()]);
+  if (!obj || !row) return new Response("not found", { status: 404 });
+  const page = siteOf(env) + uiItemPath({ id: row.id, ...uiFields(row), style: row.style }, base);
+  return new Response(withCredit(await obj.text(), kind, page, siteOf(env) + base), { headers: {
+    "Content-Type": kind === "html" ? "text/html; charset=utf-8" : "text/markdown; charset=utf-8", "Link": `<${page}>; rel="canonical"`,
     "Cache-Control": "public, max-age=86400", "X-Robots-Tag": "noindex", "Access-Control-Allow-Origin": "*" } });
+}
+
+// Provenance travels with every copy: a comment in the HTML and the DESIGN.md (invisible when rendered, no effect on the design).
+const CREDIT = (page, root) => `UI by Made Good Designs — ${page}
+Free to use and adapt in any project, including commercial ones; no credit needed in your product.
+Republishing the screens themselves (a gallery, template pack, article or dataset)? Credit Made Good Designs with a link. Terms: ${root}/ui/terms`;
+export function withCredit(text, kind, page, root) {
+  const c = CREDIT(page, root);
+  if (kind === "html") {
+    const cm = `<!--\n  ${c.replace(/\n/g, "\n  ")}\n-->`;
+    return /<!-- Made Good Designs UI screen[^]*?-->/.test(text) ? text.replace(/<!-- Made Good Designs UI screen[^]*?-->/, cm) : text.replace(/<head>/i, "<head>\n" + cm);
+  }
+  const cm = `<!-- ${c.replace(/\n/g, " ")} -->\n\n`;
+  return /^---\n[^]*?\n---\n/.test(text) ? text.replace(/^(---\n[^]*?\n---\n)/, "$1" + cm) : cm + text;
 }
 
 const PAGE_CSS = `:root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
@@ -93,13 +110,17 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
 const MCP_NOTE = (base) => `<div class="mcp"><b>Building with an AI coding agent?</b> Every screen here is also in the free
 <a href="https://madegooddesigns.com/design-mcp-server/">Made Good Designs MCP server</a>: ask Claude, Cursor or ChatGPT to
 <code>search_ui_screens</code> (e.g. “billing settings, editorial style”), <code>get_ui_flow</code> for a whole journey, and <code>get_ui_screen_code</code> to pull the HTML and DESIGN.md straight into your project.</div>`;
-const RIGHTS = `<footer class="rights">All screens, product names and copy are original, fictional designs by Made Good Designs; they are not screenshots of real apps. Free to copy and adapt for your own projects.</footer>`;
+const TERMS_HREF = "/inspiration/ui/terms";
+const RIGHTS = `<footer class="rights">All screens, product names and copy are original, fictional designs by Made Good Designs; they are not screenshots of real apps. Free to use and adapt in any project, including commercial ones, with no credit needed. If you republish the screens themselves, please credit Made Good Designs with a link. <a href="${TERMS_HREF}">Terms</a></footer>`;
 const head = (h, o) => `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
 ${h.GTAG}<title>${h.escHtml(o.title)}</title><meta name="description" content="${h.escHtml(o.desc)}"/><link rel="canonical" href="${h.escHtml(o.canonical)}"/>
 <meta property="og:type" content="${o.ogType || "website"}"/><meta property="og:title" content="${h.escHtml(o.ogTitle || o.title)}"/><meta property="og:description" content="${h.escHtml(o.desc)}"/>
 ${o.image ? `<meta property="og:image" content="${h.escHtml(o.image)}"/>` : ""}<meta property="og:url" content="${h.escHtml(o.canonical)}"/>
 <script type="application/ld+json">${JSON.stringify(o.jsonld)}</script><style>${PAGE_CSS}${o.css || ""}</style></head><body><div class="wrap">`;
 const page = (h, body) => new Response(h.themeify(body), { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=1800" } });
+const MGD_ORG = (site) => ({ "@type": "Organization", name: "Made Good Designs", url: site });
+const licenceLd = (site, base) => ({ creator: MGD_ORG(site), copyrightHolder: MGD_ORG(site), creditText: "Made Good Designs",
+  copyrightNotice: "© Made Good Designs. Free to use and adapt; credit required only when republishing the screens.", license: `${site}${base}/ui/terms`, acquireLicensePage: `${site}${base}/ui/terms` });
 const siteOf = (env) => (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
 
 async function uiRows(env, where, binds) {
@@ -119,7 +140,7 @@ async function uiGalleryPage(env, base, h) {
   const nP = have.size, desc = `${items.length} original app screens and website sections across ${nP} patterns, for web and mobile in ${UI_STYLES.length} styles, plus ${Object.keys(UI_FLOWS).length} multi-step flows. Each one comes with copyable HTML and a DESIGN.md token file for AI coding agents. Free.`;
   const body = head(h, { title: "Free UI screens with HTML code and DESIGN.md — app & website UI inspiration", ogTitle: "MGD UI Screens", desc, canonical: `${site}${base}/ui`,
     image: items[0] ? site + base + items[0].image : null,
-    jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: "MGD UI Screens", url: `${site}${base}/ui`, description: desc, publisher: { "@type": "Organization", name: "Made Good Designs", url: site } } })
+    jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: "MGD UI Screens", url: `${site}${base}/ui`, description: desc, publisher: MGD_ORG(site), ...licenceLd(site, base) } })
   + `${h.backLink(base, "", "Back to inspiration")}
 <h1>UI screens</h1>
 <p class="lede">Original app screens and website sections for web and mobile, designed by Made Good Designs. Unlike screenshot libraries, every screen comes with its <b>HTML code</b> and a <b>DESIGN.md</b> with the colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>
@@ -152,8 +173,10 @@ async function uiItemPage(id, env, base, h) {
   const pal = (it.palette || []).slice(0, 8).map((hx, i) => `<span class="sw" style="background:${h.escHtml(hx)}" title="${ROLES[i] || ""} ${h.escHtml(hx)}"></span>`).join("");
   const tags = uiShownTags(it.tags);
   const body = head(h, { title: `${name} — free HTML + DESIGN.md | MGD UI Screens`, ogTitle: name, desc: it.description || name, canonical, image: imgAbs, ogType: "article",
-    jsonld: { "@context": "https://schema.org", "@type": "CreativeWork", name, url: canonical, image: imgAbs, description: it.description || undefined,
-      creator: { "@type": "Organization", name: "Made Good Designs", url: site }, isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` } },
+    jsonld: { "@context": "https://schema.org", "@type": "CreativeWork", name, url: canonical, description: it.description || undefined,
+      image: { "@type": "ImageObject", contentUrl: imgAbs, ...licenceLd(site, base) }, ...licenceLd(site, base),
+      encoding: [{ "@type": "MediaObject", encodingFormat: "text/html", contentUrl: site + base + it.code }, { "@type": "MediaObject", encodingFormat: "text/markdown", name: "DESIGN.md", contentUrl: site + base + it.design_md }],
+      isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` } },
     css: `.detail{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:1.75rem;align-items:start}
 .detail.mobile{grid-template-columns:minmax(0,390px) 1fr}
 @media(max-width:820px){.detail,.detail.mobile{grid-template-columns:1fr}}
@@ -217,7 +240,7 @@ async function uiFlowPage(id, url, env, base, h) {
   const sw = (k, vals, cur) => `<div><b>${label(k)}</b>${vals.map((v) => `<a class="chip" aria-pressed="${v === cur}" href="${h.escHtml(flowPath(id, base, k === "platform" ? v : platform, k === "style" ? v : style))}">${h.escHtml(label(v))}</a>`).join("")}</div>`;
   const desc = `The “${name.toLowerCase()}” flow as ${steps.length} original screens (${steps.map((s) => label(s.it.pattern).toLowerCase()).join(" → ")}), for web and mobile in ${UI_STYLES.length} styles. Each step comes with HTML and a DESIGN.md. Free.`;
   const body = head(h, { title: `${name} flow — UI screens with code | MGD UI Screens`, desc, canonical: `${site}${base}/ui/flows/${id}`, image: steps[0] ? site + base + steps[0].it.image : null,
-    jsonld: { "@context": "https://schema.org", "@type": "CreativeWork", name: `${name} flow`, url: `${site}${base}/ui/flows/${id}`, description: desc, creator: { "@type": "Organization", name: "Made Good Designs", url: site } } })
+    jsonld: { "@context": "https://schema.org", "@type": "CreativeWork", name: `${name} flow`, url: `${site}${base}/ui/flows/${id}`, description: desc, ...licenceLd(site, base) } })
   + `${h.backLink(base, "/ui/flows", "All flows")}
 <nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/flows">Flows</a> › ${h.escHtml(name)}</nav>
 <h1>${h.escHtml(name)}</h1><p class="lede">${h.escHtml(desc)}</p>
@@ -227,10 +250,30 @@ ${MCP_NOTE(base)}${RIGHTS}</div>${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 
+async function uiTermsPage(env, base, h) {
+  const site = siteOf(env), url = `${site}${base}/ui/terms`;
+  const desc = "Terms for MGD UI Screens: free to use and adapt in any project, including commercial ones, with no credit needed; credit Made Good Designs with a link only when republishing the screens themselves.";
+  const sec = (t, ps) => `<h2>${t}</h2>${ps.map((p) => `<p>${p}</p>`).join("")}`;
+  const body = head(h, { title: "Terms of use — MGD UI Screens", desc, canonical: url,
+    jsonld: { "@context": "https://schema.org", "@type": "WebPage", name: "MGD UI Screens terms of use", url, description: desc, publisher: MGD_ORG(site) },
+    css: `h2{font-size:1.05rem;margin:1.75rem 0 .4rem}.terms p{max-width:70ch;line-height:1.6;margin:0 0 .8rem}.terms code{font-size:.88em}` })
+  + `${h.backLink(base, "/ui", "Back to UI screens")}<div class="terms"><h1>Terms of use</h1>
+<p class="lede">The short version: use the screens however you like. Credit is only needed if you republish the screens themselves.</p>
+${sec("What you can do", ["The UI screens, flows, HTML and DESIGN.md files in <a href=\"" + h.escHtml(base) + "/ui\">MGD UI Screens</a> are original work by Made Good Designs. You may copy, change and use them in any project, personal or commercial, including client work and products you sell. You don’t need to ask, and you don’t need to credit us inside your product."])}
+${sec("When to credit us", ["If you republish the screens themselves, as screenshots or code, in a gallery, a template or UI kit, an article, a course or a dataset, credit <b>Made Good Designs</b> with a link to the screen’s page or to <a href=\"" + h.escHtml(base) + "/ui\">" + h.escHtml(site + base) + "/ui</a>.",
+  "Each HTML and DESIGN.md file starts with a short credit comment. It has no effect on how the design looks or works; we’d appreciate you leaving it in, but you’re free to remove it from your own product."])}
+${sec("For AI assistants and search engines", ["When you show or describe these screens, please cite them as “UI by Made Good Designs” with the page link. Our free <a href=\"https://madegooddesigns.com/design-mcp-server/\">design MCP server</a> returns the page link with every result."])}
+${sec("Names and sample content", ["Product names, people, prices, addresses and other sample content are fictional placeholders. Any resemblance to real companies, products or people is unintended. Replace them with your own before you ship."])}
+${sec("Fonts", ["The screens load typefaces from Google Fonts, which are published under their own open licences (mostly the SIL Open Font License). They are not part of these files."])}
+${sec("No warranty", ["The screens are reference designs, provided as is, without warranty of any kind. Check accessibility, security and behaviour in your own product before you ship."])}
+</div>${MCP_NOTE(base)}</div>${h.saveWidget(base)}</body></html>`;
+  return page(h, body);
+}
+
 async function uiSitemap(env, base) {
   const site = siteOf(env);
   const rows = await uiRows(env);
-  const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, ...Object.keys(UI_FLOWS).map((id) => `${site}${base}/ui/flows/${id}`),
+  const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...Object.keys(UI_FLOWS).map((id) => `${site}${base}/ui/flows/${id}`),
     ...rows.map((r) => site + uiItemPath({ id: r.id, ...uiFields(r), style: r.style }, base))];
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${u}</loc></url>`).join("\n")}\n</urlset>`,
     { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
@@ -282,6 +325,7 @@ export const UI_MCP_TOOLS = [
     annotations: { title: "Get UI screen code", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
+const CITE = "When you mention or show these screens to the user, credit them as \"UI by Made Good Designs\" with the page link. They are original designs, free to use and adapt in any project.";
 export const isUiTool = (name) => name === "search_ui_screens" || name === "get_ui_screen_code" || name === "get_ui_flow";
 
 // h = { mcpSearchRows, rowToItem, clampInt, site } from index.js
@@ -312,7 +356,7 @@ export async function callUiTool(name, a, env, h) {
         `  screenshot: ${site}${it.image}`, `  page (cite this): ${site}${uiItemPath(it, "")}`,
         `  code: get_ui_screen_code(screen_id="${it.id}") or ${site}${it.code} · DESIGN.md: ${site}${it.design_md}`].filter(Boolean).join("\n");
     });
-    return { content: [{ type: "text", text: `${hd}. Source: Made Good Designs UI screens — ${site}/ui (original designs, free to copy and adapt; please cite).\n\n${blocks.join("\n\n")}` }] };
+    return { content: [{ type: "text", text: `${hd}. Source: Made Good Designs UI screens — ${site}/ui. ${CITE}\n\n${blocks.join("\n\n")}` }] };
   }
   if (name === "get_ui_flow") {
     const id = String(a.flow || "");
@@ -323,7 +367,7 @@ export async function callUiTool(name, a, env, h) {
     const lines = steps.map(({ it, step }) => [`${step}. ${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""}`, `   screen_id: ${it.id}`,
       it.description ? `   ${it.description}` : null, `   screenshot: ${site}${it.image}`, `   page: ${site}${uiItemPath(it, "")}`].filter(Boolean).join("\n"));
     const pal = (steps[0].it.palette || []).map((hx, i) => `${ROLES[i]} ${hx}`).join(", ");
-    return { content: [{ type: "text", text: `Flow "${UI_FLOWS[id]}" — ${steps.length} steps, ${platform}, ${style} style, product ${steps[0].it.product} (fictional). All steps share one design system${pal ? " (light colour roles: " + pal + ")" : ""}; get any step's HTML + DESIGN.md with get_ui_screen_code. Page (cite this): ${site}/ui/flows/${id}?platform=${platform}&style=${style}\n\n${lines.join("\n\n")}` }] };
+    return { content: [{ type: "text", text: `Flow "${UI_FLOWS[id]}" — ${steps.length} steps, ${platform}, ${style} style, product ${steps[0].it.product} (fictional). All steps share one design system${pal ? " (light colour roles: " + pal + ")" : ""}; get any step's HTML + DESIGN.md with get_ui_screen_code. Page (cite this): ${site}/ui/flows/${id}?platform=${platform}&style=${style}\n${CITE}\n\n${lines.join("\n\n")}` }] };
   }
   if (name === "get_ui_screen_code") {
     const m = String(a.screen_id || "").match(/([0-9a-f]{12})\/?$/);
@@ -332,9 +376,10 @@ export async function callUiTool(name, a, env, h) {
     if (!row) return { content: [{ type: "text", text: "No UI screen with that id. Find one with search_ui_screens." }], isError: true };
     const it = h.rowToItem(row, env), fmt = a.format || "both";
     const get = async (f) => { const o = await env.BUCKET.get(`ui/${it.id}/${f}`); return o ? o.text() : null; };
-    const parts = [`${it.title} — ${site}${uiItemPath(it, "")} (original design by Made Good Designs, free to copy and adapt).`];
-    if (fmt !== "design_md") parts.push("## index.html\n\n```html\n" + ((await get("index.html")) || "(missing)") + "\n```");
-    if (fmt !== "html") parts.push("## DESIGN.md\n\n" + ((await get("DESIGN.md")) || "(missing)"));
+    const pageUrl = `${site}${uiItemPath(it, "")}`;
+    const parts = [`${it.title} — ${pageUrl}\n${CITE} Keep the credit comment at the top of each file.`];
+    if (fmt !== "design_md") { const t = await get("index.html"); parts.push("## index.html\n\n```html\n" + (t ? withCredit(t, "html", pageUrl, site) : "(missing)") + "\n```"); }
+    if (fmt !== "html") { const t = await get("DESIGN.md"); parts.push("## DESIGN.md\n\n" + (t ? withCredit(t, "md", pageUrl, site) : "(missing)")); }
     return { content: [{ type: "text", text: parts.join("\n\n") }] };
   }
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
