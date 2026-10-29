@@ -222,12 +222,14 @@ async function addItem(request, env) {
     const dup = await env.DB.prepare("SELECT id, image_key FROM items WHERE source_url=? AND status='published' LIMIT 1").bind(sourceUrl).first();
     // UI screens are regenerated from code: upsert=1 refreshes the existing row in place (same id, so page URLs stay stable).
     if (dup && collection === "ui" && (form.get("upsert") || "").toString() === "1") {
-      await env.BUCKET.put(dup.image_key, new Uint8Array(await file.arrayBuffer()), { httpMetadata: { contentType: file.type || "image/webp" } });
+      // Images are served immutable for a year, so a changed screen gets a new versioned key (old objects removed).
+      const imgKey = await putUiImages(env, dup.id, file, form.get("image_dark"));
+      const old = dup.image_key; if (old && old !== imgKey) await env.BUCKET.delete([old, old.replace(/\.webp$/, "-dark.webp")]);
       const code = (form.get("code_html") || "").toString(), md = (form.get("design_md") || "").toString();
       if (code) await env.BUCKET.put(`ui/${dup.id}/index.html`, code, { httpMetadata: { contentType: "text/html; charset=utf-8" } });
       if (md) await env.BUCKET.put(`ui/${dup.id}/DESIGN.md`, md, { httpMetadata: { contentType: "text/markdown; charset=utf-8" } });
-      await env.DB.prepare(`UPDATE items SET title=?, description=?, tags=?, themes=?, palette=?, style=?, category=?, company=?, designer=?, industry=?, country=?, width=?, height=?, hue=? WHERE id=?`)
-        .bind(titleIn || null, (form.get("description") || "").toString().trim(), form.get("tags") || "[]", JSON.stringify(themesIn), JSON.stringify(palette), styleIn || null,
+      await env.DB.prepare(`UPDATE items SET image_key=?, title=?, description=?, tags=?, themes=?, palette=?, style=?, category=?, company=?, designer=?, industry=?, country=?, width=?, height=?, hue=? WHERE id=?`)
+        .bind(imgKey, titleIn || null, (form.get("description") || "").toString().trim(), form.get("tags") || "[]", JSON.stringify(themesIn), JSON.stringify(palette), styleIn || null,
           category, company, designer, industry, country, width, height, hueOf(palette), dup.id).run();
       return json({ ok: true, updated: true, item: { id: dup.id } }, 200, env, request);
     }
@@ -236,9 +238,13 @@ async function addItem(request, env) {
 
   const id = genId();
   const ext = (file.type && file.type.includes("png")) ? "png" : (file.type && file.type.includes("webp")) ? "webp" : "jpg";
-  const key = `${collection === "annual-report" ? "annual" : collection === "museum" ? "museum" : collection === "ui" ? "ui" : "items"}/${id}.${ext}`;
   const bytes = new Uint8Array(await file.arrayBuffer());
-  await env.BUCKET.put(key, bytes, { httpMetadata: { contentType: file.type || "image/jpeg" } });
+  let key;
+  if (collection === "ui") key = await putUiImages(env, id, bytes, form.get("image_dark"));
+  else {
+    key = `${collection === "annual-report" ? "annual" : collection === "museum" ? "museum" : "items"}/${id}.${ext}`;
+    await env.BUCKET.put(key, bytes, { httpMetadata: { contentType: file.type || "image/jpeg" } });
+  }
 
   // Enrich (best-effort — never block a save on the model).
   // Fast path: bulk ingests pass skip_enrich=1 to skip the (slow) vision call — the item still
@@ -948,6 +954,14 @@ ${museumGuides(kind === "theme" ? { theme: slugify(value) } : kind === "artist" 
 <footer class="rights">Images from museum open-access programmes — public domain (CC0 / Public Domain Mark).</footer>
 </div>${saveWidget(base)}</body></html>`;
   return html(body);
+}
+
+// UI screen images: ui/<id>-<version>.webp plus an optional ui/<id>-<version>-dark.webp (see uiFields image_dark).
+async function putUiImages(env, id, light, dark) {
+  const key = `ui/${id}-${Date.now().toString(36)}.webp`, meta = { httpMetadata: { contentType: "image/webp" } };
+  await env.BUCKET.put(key, light instanceof Uint8Array ? light : new Uint8Array(await light.arrayBuffer()), meta);
+  if (dark && typeof dark !== "string") await env.BUCKET.put(key.replace(/\.webp$/, "-dark.webp"), new Uint8Array(await dark.arrayBuffer()), meta);
+  return key;
 }
 
 async function serveImage(key, env) {

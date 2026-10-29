@@ -1,0 +1,1682 @@
+{
+ "about-team": {
+  "h1": "About us page design examples",
+  "intro": "An about page tells visitors who is behind a product and why it exists. Our examples pair a mission statement and a founding story with company stats, an eight-person team grid and four values cards, so you can compare how the same content reads in minimal, editorial, brutalist and five other visual styles on desktop and mobile.",
+  "tips": [
+   "Lead with the mission in one plain sentence, then tell the founding story, because visitors want to know why you exist before they meet the team.",
+   "Use matching crops, backgrounds and lighting across the team grid so no portrait looks out of place or more important than the others.",
+   "Make company stats specific and checkable, such as the year founded or countries served, rather than vague superlatives nobody can verify.",
+   "Give each value a short title plus one sentence on how it shapes everyday decisions, so it reads as practice rather than a slogan."
+  ],
+  "faq": [
+   [
+    "What should an about us page include?",
+    "An about page should cover what the company does, why it started, who runs it and what it believes. A mission statement, a short founding story, a few concrete figures, team photos with roles and a set of values give visitors enough to trust you. Finish with a clear next step such as careers or contact."
+   ],
+   [
+    "Should I show every employee on the team page?",
+    "Only while the team is small enough to scan comfortably. A grid of eight to twenty people works well; beyond that, show the leadership team and link to a careers or people page. Keep names, roles and photos consistent, and get permission before publishing anyone's photo."
+   ],
+   [
+    "How long should an about page be?",
+    "Long enough to answer who, what and why, and no longer. Most about pages work as a handful of short sections: mission, story, figures, team and values. Break the text into scannable blocks with clear headings and keep the founding story to two or three short paragraphs."
+   ]
+  ]
+ },
+ "analytics-charts": {
+  "h1": "Analytics report and chart UI examples",
+  "intro": "An analytics report turns raw numbers into charts people can read at a glance and compare over time. Our screens combine a date-range control, a two-series line chart with a legend, a donut, horizontal bar charts and a cohort retention heatmap, giving you a full reporting layout to study across eight visual styles in light and dark modes.",
+  "tips": [
+   "Put the date-range control at the top and reflect the chosen period in every chart title, so readers never wonder which dates they are looking at.",
+   "Label line series directly or keep the legend beside the chart, and pair colour with line style so the series stay distinguishable for colour-blind readers.",
+   "Use horizontal bars for long category names and sort them by value, which makes ranking obvious without forcing readers to tilt their heads.",
+   "Shade a cohort heatmap with a single-hue sequential scale and print the percentage in each cell, so exact values survive alongside the overall pattern."
+  ],
+  "faq": [
+   [
+    "Which chart type should I use for analytics data?",
+    "Match the chart to the question. Use line charts for change over time, bar charts for comparing categories, a heatmap for two-dimensional patterns such as cohort retention, and a donut only for a few parts of a whole. If readers need exact values, add a table or data labels alongside the chart."
+   ],
+   [
+    "How many colours should an analytics chart use?",
+    "As few as the data needs. Two or three distinct hues cover most comparisons, and a single hue graded from light to dark suits ordered values such as retention rates. Check that every colour pair keeps enough contrast in both light and dark themes, and never rely on colour as the only cue."
+   ],
+   [
+    "When is a donut chart a bad choice?",
+    "A donut struggles when there are more than five or six segments, when the values are close together, or when readers need to compare across several periods. People judge length more accurately than angle, so a sorted bar chart is usually clearer. Keep donuts for one simple share, such as traffic by device."
+   ]
+  ]
+ },
+ "billing-plans": {
+  "h1": "Billing settings page design examples",
+  "intro": "A billing settings page lets customers see what they pay for and change it without contacting support. Our examples show a current plan summary, seat usage, a monthly and yearly toggle, side-by-side plan cards and an invoice history, laid out for web and mobile in eight visual styles, each with HTML and a DESIGN.md token file.",
+  "tips": [
+   "Show the next billing date and amount in the plan summary, because that is the first thing most people open billing settings to check.",
+   "Display seat usage as a count against the limit, such as 8 of 10 seats, and warn before the limit is reached rather than after.",
+   "When the yearly toggle is on, show both the monthly equivalent and the total charged today, so the saving is clear and nothing surprises customers later.",
+   "Give every invoice row a date, amount, status and download link, and let users update billing details without leaving the page."
+  ],
+  "faq": [
+   [
+    "What should a billing settings page show?",
+    "It should show the current plan, its price and billing cycle, the next charge date, usage against any limits, the payment method on file and a history of invoices. Add clear actions to change plan, update the card and download receipts, so customers can manage everything without writing to support."
+   ],
+   [
+    "Should the yearly plan be selected by default?",
+    "It can be, as long as the price is unambiguous. If yearly is the default, show the total charged up front next to the monthly equivalent, and make the toggle easy to switch. Defaulting to yearly without stating the full amount tends to cause complaints and refund requests."
+   ],
+   [
+    "How do I show plan upgrades and downgrades clearly?",
+    "Highlight the current plan, then label the others with a direct action such as Upgrade or Downgrade. Before confirming, state when the change takes effect, what features or seats are gained or lost and how proration affects the next invoice. A short confirmation step prevents accidental changes."
+   ]
+  ]
+ },
+ "blog-index": {
+  "h1": "Blog page design examples",
+  "intro": "A blog index helps readers find something worth reading and keeps them browsing. Our examples lead with a featured post on an illustrated cover, then add category filter chips, search and a grid of six posts with authors, dates and read times, so you can see how one listing adapts across eight visual styles on desktop and mobile.",
+  "tips": [
+   "Give the featured post noticeably more space than the grid, and change it regularly so returning readers see that the blog is active.",
+   "Keep category chips to a short, stable set and show which one is active, so filtering feels predictable rather than like a tag cloud.",
+   "Show the date, author and read time on every card, because readers use them to judge whether a post is current and worth the time.",
+   "Keep card images to one aspect ratio and crop consistently, which stops the grid from jumping about when titles run to different lengths."
+  ],
+  "faq": [
+   [
+    "What makes a good blog homepage layout?",
+    "A clear hierarchy: one featured post at the top, a simple way to filter by topic, a search field and a grid or list of recent posts. Each card needs a title, short excerpt or image, date, author and read time. Pagination or a load-more button keeps the page fast as the archive grows."
+   ],
+   [
+    "Should a blog index use a grid or a list?",
+    "Use a grid when posts have strong cover images and short titles, and a list when titles and excerpts carry the weight. Grids look richer but make long titles harder to scan. On mobile, both collapse to a single column, so test how the cards read at that width."
+   ],
+   [
+    "Do blog posts need read times?",
+    "They are not essential, but they help readers decide what to open. An estimate based on word count, usually around 200 to 250 words per minute, is good enough. Round to whole minutes and keep the format consistent across every card and article page."
+   ]
+  ]
+ },
+ "calendar": {
+  "h1": "Calendar app UI design examples",
+  "intro": "A week-view calendar shows how time is committed across days so people can plan around it. Our screens include a week time grid with colour-coded and overlapping events, an all-day row, a mini month for quick navigation and toggles for individual calendars, designed for web and mobile in eight visual styles with light and dark themes.",
+  "tips": [
+   "Place overlapping events side by side with narrower widths rather than stacking them, so every event's start time and title stay readable.",
+   "Draw a current-time line across today's column and scroll the grid to working hours on load, so people land where they are most likely to look.",
+   "Pair each calendar's colour with its name in the toggle list, and keep event text contrast high on every colour you use.",
+   "Keep all-day events in a separate row above the grid, because placing them in the time slots implies a start time they do not have."
+  ],
+  "faq": [
+   [
+    "How do calendar apps show overlapping events?",
+    "Most split the time slot into columns, so overlapping events sit side by side at reduced width, sometimes with a slight offset so the later one appears in front. Each event still starts and ends at its correct position. When too many overlap, a compact summary that opens a list keeps the grid readable."
+   ],
+   [
+    "Should a calendar default to day, week or month view?",
+    "Week view suits most work calendars because it balances detail with context. Day view suits busy schedules on small screens, and month view suits planning ahead. Remember the last view each person chose, and on mobile consider a day or three-day view as the default."
+   ],
+   [
+    "How should calendar colours be chosen?",
+    "Give each calendar a distinct hue, keep the set limited to around eight to twelve options, and check that event text meets contrast requirements on every one. Let people change colours themselves. In dark mode, reduce saturation slightly so blocks do not glare against the background."
+   ]
+  ]
+ },
+ "cancel-subscription": {
+  "h1": "Cancel subscription page design examples",
+  "intro": "A cancellation flow lets customers leave cleanly while giving them a fair chance to stay. Our examples explain what changes after cancelling, ask an optional reason survey, present a 50% discount or pause offer and give Keep and Cancel buttons equal weight, so you can study an honest, non-manipulative flow across eight visual styles.",
+  "tips": [
+   "State exactly what happens after cancelling, including the date access ends and what happens to data, before asking anything else.",
+   "Make the reason survey optional and short, with a single-choice list and an optional text box, so leaving never depends on answering it.",
+   "Offer one relevant alternative, such as a pause or a discount, and tailor it to the chosen reason rather than stacking several offers.",
+   "Give the cancel and keep buttons equal visual weight and plain labels; avoid guilt-tripping copy, which is widely seen as a dark pattern."
+  ],
+  "faq": [
+   [
+    "How do you design an ethical cancellation flow?",
+    "Make cancelling as easy as signing up. Explain what changes and when, keep any survey optional, show at most one retention offer, and label buttons plainly with equal weight. Confirm the cancellation on screen and by email. Avoid hidden links, confusing double negatives and guilt-tripping copy."
+   ],
+   [
+    "Are retention offers allowed when someone cancels?",
+    "Generally yes, as long as they do not obstruct cancelling. A single, clearly worded offer such as a discount or pause is common. Rules on subscription cancellation differ by country and are tightening in several places, so check the requirements where your customers live."
+   ],
+   [
+    "Should cancellation take effect immediately?",
+    "Usually access continues until the end of the paid period, and the page should say so with an exact date. If you offer immediate cancellation with a refund, state that clearly instead. Either way, confirm the outcome and keep a way to resubscribe easily."
+   ]
+  ]
+ },
+ "cart": {
+  "h1": "Shopping cart page design examples",
+  "intro": "The shopping cart is where buyers review what they have chosen and decide whether to continue to checkout. Our examples include line items with quantity steppers, a free-delivery progress bar, a promo code field, an order summary and a prominent checkout button, laid out for web and mobile across eight visual styles from minimal to retro.",
+  "tips": [
+   "Show a thumbnail, name, selected options and line price for every item, so buyers can confirm they picked the right size or colour.",
+   "Update totals instantly when quantities change, and offer an undo after removing an item instead of a confirmation dialog.",
+   "Tuck the promo code field behind a small link, because a large empty code box sends buyers off searching for discounts elsewhere.",
+   "Show the free-delivery threshold as a progress bar with the exact amount remaining, which gives a clear reason to add one more item."
+  ],
+  "faq": [
+   [
+    "What should a shopping cart page include?",
+    "Each item with image, name, options, quantity control and price; an order summary with subtotal, estimated delivery, tax where relevant and total; a promo code option; and a clear checkout button. Add delivery thresholds and returns information nearby so buyers do not need to leave the cart to check."
+   ],
+   [
+    "Should the cart be a page or a slide-out drawer?",
+    "Both work. A drawer keeps shoppers browsing and suits quick additions, while a full cart page gives room for delivery estimates, offers and longer item lists. Many shops use a drawer for confirmation with a link to the full cart before checkout."
+   ],
+   [
+    "How do you reduce cart abandonment through design?",
+    "Show the full cost, including delivery, as early as possible, keep checkout one obvious click away, allow guest checkout, and show accepted payment methods. Unexpected costs at the end are a commonly cited reason people abandon carts, so avoid surprises between the cart and payment."
+   ]
+  ]
+ },
+ "chat-ai-assistant": {
+  "h1": "AI chat assistant UI design examples",
+  "intro": "An AI chat interface lets people ask questions in plain language and follow the answers back to their sources. Our screens show a conversation history sidebar, user and assistant messages with cited sources, a typing indicator and a composer, designed for web and mobile in eight visual styles, each with light and dark versions plus HTML and design tokens.",
+  "tips": [
+   "Show citations as numbered chips that open the source, so people can check claims without leaving the conversation.",
+   "Let users stop a response mid-stream and regenerate it, and keep the composer usable while an answer is still arriving.",
+   "Visually separate user and assistant messages by alignment or background, but keep long assistant answers full width for comfortable reading.",
+   "Name conversations automatically in the history sidebar and let people rename, search and delete them, because old chats are otherwise impossible to find."
+  ],
+  "faq": [
+   [
+    "What makes a good AI chat interface?",
+    "Clear separation between user and assistant turns, readable long-form answers with proper formatting, visible sources, controls to stop, retry, copy and give feedback, and a composer that supports multi-line input. A searchable history of past conversations makes the tool useful beyond a single session."
+   ],
+   [
+    "How should an AI assistant show its sources?",
+    "Place small numbered markers next to the claims they support and list the sources below or beside the answer with titles and links. Make citations easy to open and inspect. Clear sourcing helps people judge reliability, which matters because AI answers can be wrong."
+   ],
+   [
+    "Should AI responses stream in word by word?",
+    "Streaming is usually better, because people can start reading immediately rather than waiting for a complete answer. Pair it with a stop button and avoid auto-scrolling once the reader has scrolled up. Show a brief indicator before the first words arrive so the interface never looks frozen."
+   ]
+  ]
+ },
+ "checkout": {
+  "h1": "Checkout page design examples",
+  "intro": "Checkout is where a purchase is either completed or abandoned, so every field must earn its place. Our examples start with express pay buttons, then contact and shipping address forms, delivery options and card payment fields, with an order summary sidebar that stays visible, shown on web and mobile across eight visual styles in light and dark.",
+  "tips": [
+   "Put express payment buttons at the top so returning buyers can skip the forms entirely, with the standard form clearly continuing below.",
+   "Use correct autocomplete attributes and input types on every field, so browsers and password managers can fill addresses and cards accurately.",
+   "Show delivery options with price and an estimated arrival date, not just a carrier name, because buyers choose on cost and timing.",
+   "Keep the order summary visible beside the form on desktop and collapsible at the top on mobile, so totals never feel hidden."
+  ],
+  "faq": [
+   [
+    "Should checkout be one page or multiple steps?",
+    "Either can work well. A single page shows everything at once and suits short forms, while a multi-step flow keeps each screen focused and suits complex orders. What matters more is a short form, clear progress, guest checkout and no surprise costs at the final step."
+   ],
+   [
+    "How many fields should a checkout form have?",
+    "As few as you need to fulfil the order. Combine first and last name where possible, use address lookup, hide the second address line behind a link and make the billing address default to the shipping address. Every optional field you remove reduces effort for every buyer."
+   ],
+   [
+    "Where should promo codes go in checkout?",
+    "Place them near the order summary as a collapsed link such as Add discount code. A large open field invites buyers without a code to leave and search for one. Apply the code inline and show the updated total immediately, with a clear error if it fails."
+   ]
+  ]
+ },
+ "comparison-table": {
+  "h1": "Pricing comparison table examples",
+  "intro": "A plan comparison table helps buyers see what each tier includes and pick one with confidence. Our examples set three plans as columns with prices and calls to action, highlight the middle plan, and group feature rows with checkmarks and numeric limits, laid out for desktop and mobile across eight visual styles with light and dark versions.",
+  "tips": [
+   "Group feature rows under short headings such as Collaboration or Security, so buyers can jump to what matters instead of reading every line.",
+   "Write limits as real numbers, such as 10 projects, rather than ticks, because a tick on a capped feature implies it is unlimited.",
+   "Keep plan names, prices and buttons in a sticky header row, so they stay in view while people scroll through long feature lists.",
+   "On mobile, let users switch between plans with tabs or a selector instead of squeezing three columns into a narrow screen."
+  ],
+  "faq": [
+   [
+    "How do you design a pricing comparison table?",
+    "Put plans in columns and features in rows, with prices and buttons at the top of each column. Group related features, use clear marks for included and excluded items, show limits as numbers and highlight the plan most customers should choose. Keep the header sticky so context is never lost."
+   ],
+   [
+    "Should one plan be highlighted?",
+    "Usually yes. Highlighting the plan that suits most customers, often the middle tier, gives undecided buyers a sensible default. Use a label such as Most popular only if it is true. The highlight should come from a border, background or badge rather than shrinking the other plans."
+   ],
+   [
+    "How do comparison tables work on mobile?",
+    "Three or more columns rarely fit a phone screen. Common approaches are a plan switcher that shows one column at a time, stacked plan cards with expandable feature lists, or a horizontally scrolling table with the feature column pinned. Test that prices and buttons stay visible."
+   ]
+  ]
+ },
+ "contact-form": {
+  "h1": "Contact form design examples",
+  "intro": "A contact sales form turns interest into a conversation, so it should be quick to fill in and clear about what happens next. Our examples include name, work email, company, a team-size select and a message field, alongside separate routes to sales, support and a status page, designed in eight visual styles for web and mobile.",
+  "tips": [
+   "Ask only for what the sales team will actually use on the first call; every extra required field lowers the number of people who finish.",
+   "Give every field a visible label above it rather than placeholder-only text, which disappears as people type and fails many accessibility checks.",
+   "Route existing customers to support and outages to the status page beside the form, so sales enquiries stay sales enquiries.",
+   "After submitting, say who will reply and roughly when, and show the message on the same page rather than a vague thank-you screen."
+  ],
+  "faq": [
+   [
+    "How many fields should a contact form have?",
+    "Keep it to what you need to respond well, typically name, email, company and a message, plus one qualifying question such as team size. Each additional field adds effort. Mark optional fields clearly, or better, remove them and gather that information during the follow-up conversation."
+   ],
+   [
+    "Should a contact form ask for a phone number?",
+    "Only if you will genuinely call, and preferably make it optional. Many people are reluctant to share a phone number with a company they have not spoken to yet, and a required phone field can deter enquiries. Email is enough to start the conversation."
+   ],
+   [
+    "What should happen after someone submits a contact form?",
+    "Show a clear confirmation on the page that repeats the email address used, says who will reply and gives an expected response time. Send a confirmation email too. Offer useful next steps, such as documentation or booking a call, while they wait."
+   ]
+  ]
+ },
+ "cta-banner": {
+  "h1": "Call to action section examples",
+  "intro": "An end-of-page call to action catches readers who have scrolled through everything and are ready to act. Our examples show a dark banner with a headline, a supporting subhead, an email field, a primary button and short reassurance points, so you can compare one conversion section across eight visual styles, on desktop and mobile, light and dark.",
+  "tips": [
+   "Write the button label as the outcome, such as Start free trial, rather than a generic Submit or Learn more.",
+   "Place reassurance points like no card required or cancel anytime directly under the button, where hesitation happens.",
+   "Contrast the banner with the sections around it so it reads as a deliberate final stop rather than more page content.",
+   "Keep the email field and button on one line on desktop and stack them on mobile, with the button at full width."
+  ],
+  "faq": [
+   [
+    "Where should a call to action go on a landing page?",
+    "Place a primary call to action in the hero, repeat it after key sections that build the case, and finish with a dedicated banner at the end. Readers decide at different points, so each major scroll stop should offer the same clear next step without introducing competing actions."
+   ],
+   [
+    "What makes call to action copy effective?",
+    "It names a specific, low-effort action and the benefit of taking it. Use verbs and outcomes, such as Get your free report, and address the main objection nearby, for example no card required. Keep it short and consistent with the promise made in the headline."
+   ],
+   [
+    "Should a CTA banner include a form?",
+    "An inline email field works well when the next step is a sign-up or trial that needs only an email address, since it removes a page load. For anything needing more detail, use a button that leads to a dedicated form. Never ask for more than the banner can comfortably hold."
+   ]
+  ]
+ },
+ "dashboard": {
+  "h1": "Dashboard design examples",
+  "intro": "A dashboard gives people a quick read on how things are going before they dig into detail. Our screens combine KPI cards, a revenue area chart, a weekly bar chart and a recent-customers table in a finance context, laid out for web and mobile across eight visual styles, each with light and dark themes, HTML code and design tokens.",
+  "tips": [
+   "Show each KPI with its change against a stated comparison period, because a number without context tells people nothing about whether it is good.",
+   "Put the most important metric in the top-left position on desktop and first on mobile, since that is where scanning usually begins.",
+   "Use one accent colour for the primary series and muted greys for comparisons, so the eye goes to the data that matters.",
+   "Link every card and chart through to a detailed view, so the dashboard acts as a starting point rather than a dead end."
+  ],
+  "faq": [
+   [
+    "What should a dashboard show?",
+    "Only the few metrics that tell people whether things are on track and what needs attention, typically four to six headline KPIs, one or two trend charts and a short list of recent items. Everything else belongs in detailed reports. A dashboard should be readable in under a minute."
+   ],
+   [
+    "How do you lay out a dashboard?",
+    "Put headline numbers in a row of cards at the top, trend charts in the middle and detail such as tables below. Align everything to a grid, keep card heights consistent and group related metrics. On mobile, stack sections in the same order of importance."
+   ],
+   [
+    "Should dashboards use dark mode?",
+    "Offer it rather than force it. Dark themes suit people who monitor screens for long periods or in dim rooms, but chart colours need adjusting so they keep contrast without glaring. Design both themes from the same tokens so the hierarchy stays identical."
+   ]
+  ]
+ },
+ "data-table": {
+  "h1": "Data table UI design examples",
+  "intro": "A data table lets people search, sort and act on many records at once. Our screens show a subscriptions table with search, filters, sortable columns, row checkboxes, status badges, a bulk-action bar and pagination, designed for web and mobile in eight visual styles, each provided with HTML code and a DESIGN.md token file for light and dark.",
+  "tips": [
+   "Right-align numbers and use tabular figures, so amounts line up by digit and can be compared down a column at a glance.",
+   "Show the sort direction on the active column header and keep the header row sticky while the table body scrolls.",
+   "Reveal a bulk-action bar only when rows are selected, and state how many are selected, including an option to select across all pages.",
+   "Pair status badge colours with text labels, because colour alone cannot be read by everyone and loses meaning in greyscale or print."
+  ],
+  "faq": [
+   [
+    "How do you design a data table for a web app?",
+    "Start with the columns people actually compare, align text left and numbers right, keep row heights consistent and make headers sortable. Add search, filters and pagination for large sets, plus checkboxes and a bulk-action bar for batch work. Keep the header row visible while scrolling."
+   ],
+   [
+    "How should data tables work on mobile?",
+    "Show only the key columns and move the rest into an expandable row or detail view, or convert rows into stacked cards. Horizontal scrolling with a pinned first column also works for comparison-heavy tables. Keep search and filters easy to reach at the top."
+   ],
+   [
+    "Pagination or infinite scroll for data tables?",
+    "Pagination generally suits data tables better, because people can return to a known position, share a page and see the total count. Infinite scroll suits casual browsing feeds. Whichever you choose, let users change rows per page and show how many results match the current filters."
+   ]
+  ]
+ },
+ "detail-view": {
+  "h1": "Task detail page design examples",
+  "intro": "A detail view gathers everything about a single item so people can understand it and act without switching screens. Our task detail examples include the title, status, description, attachments, a subtask checklist, a comment thread and a properties sidebar, shown for web and mobile across eight visual styles with light and dark versions and code.",
+  "tips": [
+   "Make the title and status editable in place, so quick changes do not require opening a separate edit mode.",
+   "Keep properties such as assignee, due date and priority in a consistent sidebar, collapsing to a section below the title on mobile.",
+   "Show subtask progress as a count, such as 3 of 5, alongside the checklist so progress is clear before reading every item.",
+   "Order comments oldest first with the composer at the bottom, and record status changes in the thread so the item's history reads naturally."
+  ],
+  "faq": [
+   [
+    "What should a task detail view include?",
+    "The title, current status, assignee, due date and priority, a description, any attachments and subtasks, and an activity or comment thread. Actions such as complete, assign and share should be easy to reach. Everything needed to decide what to do next should be visible without leaving the view."
+   ],
+   [
+    "Should a detail view open as a page, a modal or a side panel?",
+    "A side panel keeps the list visible and suits quick triage, a full page suits rich items with long discussions, and a modal suits short focused edits. Many products use a panel that can expand to a full page, with its own URL so the item can be shared."
+   ],
+   [
+    "How do you organise a lot of information in a detail view?",
+    "Separate content from metadata: put the description, subtasks and discussion in the main column and properties in a sidebar. Use clear section headings, collapse rarely used sections and keep the primary actions in a fixed position near the title."
+   ]
+  ]
+ },
+ "editor-toolbar": {
+  "h1": "Text editor toolbar UI examples",
+  "intro": "A document editor needs formatting controls that stay out of the way until they are needed. Our screens show a formatting toolbar above a document with headings, a checklist and a quote, plus live collaborator cursors and a margin comment, giving you a collaborative writing interface to study across eight visual styles for web and mobile.",
+  "tips": [
+   "Group toolbar buttons by purpose, such as text style, lists and insert, with dividers between groups, and move rarely used actions into an overflow menu.",
+   "Show the active state of every formatting button for the current selection, so people can see at a glance what is already applied.",
+   "Give each toolbar icon a tooltip with its name and keyboard shortcut, because frequent writers learn the shortcuts and rarely reach for the mouse.",
+   "Label collaborator cursors with names in distinct colours and fade the label after a few seconds so it does not cover the text."
+  ],
+  "faq": [
+   [
+    "Should a text editor use a fixed or floating toolbar?",
+    "A fixed toolbar is easier to discover and suits long documents and new users. A floating toolbar that appears on text selection keeps the page clean and suits experienced writers. Many editors combine a minimal fixed bar with a contextual one on selection and slash commands."
+   ],
+   [
+    "Which formatting options belong in an editor toolbar?",
+    "Start with headings, bold, italic, links, bulleted and numbered lists, checklists, quotes and image insertion. Add tables, code and alignment only if your users need them. Keep the visible set small and move the rest into a menu or slash command list."
+   ],
+   [
+    "How do you show real-time collaboration in an editor?",
+    "Show each collaborator's cursor and selection in a distinct colour with their name, list who is present as avatars near the top and anchor comments to highlighted text in the margin. Keep these cues subtle so they inform without distracting from writing."
+   ]
+  ]
+ },
+ "empty-state": {
+  "h1": "Empty state design examples",
+  "intro": "An empty state appears when there is nothing to show yet, whether after clearing every task or before adding the first one. Our inbox zero examples pair an illustration with a friendly message, a primary New task button and a secondary action, so you can see how a quiet moment is handled across eight visual styles, light and dark.",
+  "tips": [
+   "Say why the screen is empty and what will appear here, so people know the page works and is not broken.",
+   "Offer one clear primary action that fills the space, such as creating the first item, and keep any secondary action visibly quieter.",
+   "Distinguish first-use, cleared and no-results states, because each needs different copy and a different action.",
+   "Keep illustrations small enough that the message and button stay above the fold on mobile."
+  ],
+  "faq": [
+   [
+    "What is an empty state in UI design?",
+    "An empty state is what a screen shows when it has no content to display, such as a new account with no projects, a cleared inbox or a search with no results. A good one explains the situation and offers the next step, rather than leaving a blank area."
+   ],
+   [
+    "What should empty state copy say?",
+    "State plainly what is missing and why, then tell people what they can do about it. For a first use, explain the value of adding something. For cleared lists, a short acknowledgement is enough. For no results, suggest changing the search or filters."
+   ],
+   [
+    "Do empty states need illustrations?",
+    "No. Illustrations add warmth and help the state feel intentional, but a clear message and action matter more. If you use one, keep it simple, consistent with your visual style and decorative, with empty alt text so screen readers skip it."
+   ]
+  ]
+ },
+ "error-404": {
+  "h1": "404 page design examples",
+  "intro": "A 404 page appears when a link is broken or a page has moved, and its job is to get people back on track quickly. Our examples keep the app shell visible around a not-found illustration, with a search field, helpful destination links and an option to report the broken link, designed in eight visual styles for web and mobile.",
+  "tips": [
+   "Keep the normal navigation and header on the 404 page, so people can carry on from where they are instead of starting over.",
+   "Write a plain headline such as Page not found and avoid technical jargon or blaming the visitor for the error.",
+   "Offer search and a few likely destinations, such as the home page, help centre and recent items, rather than a single back link.",
+   "Make sure the page returns a real 404 status code so search engines drop the missing URL instead of indexing the error page."
+  ],
+  "faq": [
+   [
+    "What should a 404 page include?",
+    "A clear statement that the page cannot be found, the site's usual navigation, a search field and links to the most useful destinations. A way to report the broken link helps you fix it. Humour is fine if it suits the brand, as long as the way forward stays obvious."
+   ],
+   [
+    "Does a custom 404 page help SEO?",
+    "A custom 404 page does not improve rankings directly, but it keeps visitors on the site instead of leaving. What matters for search engines is that missing pages return a proper 404 or 410 status, and that moved content is redirected with a 301 to its new address."
+   ],
+   [
+    "Should a 404 redirect to the home page automatically?",
+    "No. Automatic redirects confuse people, because they land somewhere unexpected without knowing their link was broken, and search engines may treat them as soft 404s. Show the 404 page with helpful links instead, and add specific 301 redirects for pages that have genuinely moved."
+   ]
+  ]
+ },
+ "faq": {
+  "h1": "FAQ section design examples",
+  "intro": "An FAQ section answers the questions that would otherwise stop someone from signing up or buying. Our examples show a section heading, six questions in an accordion with the first one expanded, and a contact card for anything not covered, laid out for desktop and mobile across eight visual styles, each with HTML and a design token file.",
+  "tips": [
+   "Write each question the way customers actually phrase it, taken from support tickets and sales calls, rather than questions you wish they asked.",
+   "Make the whole question row the click target and show a clear plus or chevron that changes state when the answer is open.",
+   "Answer directly in the first sentence, then add detail, so people scanning the accordion get what they need quickly.",
+   "Use proper button elements with aria-expanded on accordion triggers, so keyboard and screen reader users can open answers."
+  ],
+  "faq": [
+   [
+    "How many questions should an FAQ section have?",
+    "Enough to cover the real objections, usually between five and ten on a landing page. If you have more, group them under headings or link to a full help centre. A long list of minor questions buries the important ones and makes the section harder to scan."
+   ],
+   [
+    "Should FAQ answers be in an accordion?",
+    "Accordions keep long FAQ sections compact and let people scan questions quickly, which suits landing pages. For short lists or pages where every answer matters, showing everything open can be better, since nothing is hidden and the page can be searched with the browser's find tool."
+   ],
+   [
+    "Should the first FAQ item be open?",
+    "Opening the first item is a useful cue that the rows expand, and it lets you surface the most important answer. Keep the rest closed so the list stays scannable. Let several items stay open at once, so people can compare answers without losing their place."
+   ]
+  ]
+ },
+ "feature-grid": {
+  "h1": "Features section design examples",
+  "intro": "A feature grid summarises what a product does in a form people can scan in seconds. Our examples open with a section heading and intro copy, followed by six features, each with an icon, a short title and a one-line description, so you can compare the same section across eight visual styles on desktop and mobile, light and dark.",
+  "tips": [
+   "Title each feature with the benefit people get, not the internal feature name, so the grid makes sense to someone new.",
+   "Draw icons from one set with a consistent stroke and size, because mixed icon styles make a grid look assembled rather than designed.",
+   "Keep descriptions to a similar length so the cards align, and trim anything that runs past two or three lines.",
+   "Use three columns on desktop, two on tablets and one on phones, keeping the reading order the same at every width."
+  ],
+  "faq": [
+   [
+    "How many features should a feature grid show?",
+    "Three, four or six usually work best because they divide evenly into tidy rows. Six is a good maximum for a summary section; beyond that, readers stop taking anything in. Put the most important features first and link to a full features page for the rest."
+   ],
+   [
+    "Should feature grids use icons or images?",
+    "Icons suit short summaries because they are quick to scan and keep the grid compact. Screenshots or illustrations suit fewer, larger features where showing the product helps. Whichever you choose, keep the style consistent across every item and make sure the text works without them."
+   ],
+   [
+    "What should feature descriptions say?",
+    "One or two sentences explaining what the feature does for the user, ideally with a concrete detail such as a time saved or task removed. Avoid jargon and vague adjectives. The title carries the benefit and the description proves it."
+   ]
+  ]
+ },
+ "feed": {
+  "h1": "Social media feed UI design examples",
+  "intro": "A photo feed is the main browsing surface of a social app, built to keep new content flowing. Our screens show stories along the top, photo posts with author, location, likes and comments, and side modules for suggested photographers and trending places, designed for web and mobile in eight visual styles with light and dark versions.",
+  "tips": [
+   "Keep the post header compact, with avatar, name and location on one line, so the photo gets as much of the screen as possible.",
+   "Put like, comment, share and save actions directly under the image in a fixed order, so they become muscle memory.",
+   "Mark which stories have been viewed with a changed ring style, so people can tell at a glance what is new.",
+   "Reserve image space with the correct aspect ratio before photos load, so the feed does not jump as people scroll."
+  ],
+  "faq": [
+   [
+    "What are the key elements of a social feed?",
+    "A post header with author and context, the media itself, an action row for liking, commenting, sharing and saving, a like count and a preview of comments. Around the feed sit stories or highlights, navigation and discovery modules such as suggested accounts."
+   ],
+   [
+    "How do you make an image feed fast?",
+    "Serve images sized for the device in modern formats, lazy-load anything below the fold, reserve space with fixed aspect ratios and show a low-detail placeholder or dominant colour while each photo loads. Preload the next few posts so scrolling stays smooth."
+   ],
+   [
+    "Should a feed use infinite scroll?",
+    "Infinite scroll suits casual feeds where people browse without a goal, but it makes the footer unreachable and position hard to recover. Restore scroll position when people return from a post, and consider a clear end point, such as a caught-up message, once they have seen new content."
+   ]
+  ]
+ },
+ "file-manager": {
+  "h1": "File manager UI design examples",
+  "intro": "A file manager helps people store, find and organise documents across folders. Our screens include a folder tree, folder cards, a file list with type icons, owners, dates and sizes, a storage usage meter and an upload in progress, designed for web and mobile across eight visual styles, each with HTML code and light and dark design tokens.",
+  "tips": [
+   "Offer both grid and list views and remember the choice per folder, since people browse images visually but scan documents by name and date.",
+   "Show the folder path as breadcrumbs above the list, so people always know where they are and can jump back up a level.",
+   "Display upload progress per file with a cancel option, and keep uploads running if the person navigates to another folder.",
+   "Support drag and drop for moving and uploading files, but always provide a menu or button alternative for keyboard and touch users."
+  ],
+  "faq": [
+   [
+    "What should a file manager interface include?",
+    "Navigation through folders, a view of the current folder's contents with names, types, owners, dates and sizes, search, sorting, upload and new-folder actions, and per-item actions such as share, rename, move and delete. A storage indicator helps people know when space is running low."
+   ],
+   [
+    "Grid view or list view for files?",
+    "Use a grid when thumbnails help recognition, such as for photos and designs, and a list when people need to compare names, dates and sizes. Offering both with a toggle is standard. List view is usually the better default for document-heavy work."
+   ],
+   [
+    "How should file uploads be shown?",
+    "Show each file's name, progress and status in a small panel that stays visible while people keep working. Allow cancelling and retrying, report errors such as oversized files clearly, and highlight the new files in the list once they finish uploading."
+   ]
+  ]
+ },
+ "footer": {
+  "h1": "Website footer design examples",
+  "intro": "A site footer is where visitors go for anything the header does not cover, from careers to legal pages. Our examples include a logo with a one-line description, four link columns, a newsletter signup, social icons, a legal row and a system status pill, shown on desktop and mobile across eight visual styles in light and dark themes.",
+  "tips": [
+   "Group footer links into a few labelled columns, such as Product, Company, Resources and Legal, so people can find what they want quickly.",
+   "Collapse link columns into accordions on mobile, or keep them short enough to list, so the footer does not become an endless scroll.",
+   "Keep the newsletter signup to a single email field and button, with one line saying what subscribers will receive and how often.",
+   "Put copyright, privacy, terms and cookie settings in a slim bottom row, separated from the main navigation links."
+  ],
+  "faq": [
+   [
+    "What should a website footer include?",
+    "Typically the logo and a short description, grouped navigation links, contact details, social profiles, a newsletter signup if you send one, and a legal row with copyright, privacy policy, terms and cookie settings. Include only links people genuinely look for at the bottom of a page."
+   ],
+   [
+    "How many links should a footer have?",
+    "Enough to cover the pages people look for at the end of a page, usually four or five columns of up to six or seven links each. A footer stuffed with dozens of links is hard to scan and looks cluttered. Put rarely needed pages on a sitemap instead."
+   ],
+   [
+    "Should a footer include a newsletter signup?",
+    "If you publish a newsletter, the footer is a natural, low-pressure place for it, because it appears on every page without interrupting reading. Keep it to an email field, a clear button and a line about what people will get. Confirm the signup inline."
+   ]
+  ]
+ },
+ "forgot-password": {
+  "h1": "Forgot password page design examples",
+  "intro": "A forgot password screen gets locked-out users back into their account with as little friction as possible. Our examples include an icon, a short explanation, a work-email field, a send-reset-link button, a note for single sign-on users and a link back to login, shown for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Prefill the email field with whatever was typed on the login screen, so people do not have to enter it twice.",
+   "Show the same confirmation whether or not the account exists, so the form cannot be used to discover registered email addresses.",
+   "Tell single sign-on users to reset through their identity provider, because a reset email will never arrive for those accounts.",
+   "After sending, name the address used, suggest checking spam and offer a resend option after a short delay."
+  ],
+  "faq": [
+   [
+    "How should a forgot password flow work?",
+    "The user enters their email, receives a single-use link that expires after a short period, sets a new password on a dedicated page and is then signed in or returned to login. Confirm each step on screen, and notify the account by email once the password changes."
+   ],
+   [
+    "Should a reset form say if an email is not registered?",
+    "Usually not. Saying an address has no account lets anyone check who uses your service. The standard approach is a neutral message such as If an account exists for this address, we have sent a reset link. Balance this against usability for your product."
+   ],
+   [
+    "How long should a password reset link stay valid?",
+    "Keep it short and single use. Many services use somewhere between 15 minutes and a few hours. Invalidate the link once it is used or a newer one is requested, and show a clear message with a way to request a fresh link if it has expired."
+   ]
+  ]
+ },
+ "hero": {
+  "h1": "Hero section design examples",
+  "intro": "A hero section is the first screen of a landing page, and it must say what the product does and why it matters within seconds. Our examples combine a site header, a headline and subhead, two calls to action, a social-proof line and an illustrated uptime dashboard with an alert toast, across eight visual styles on desktop and mobile.",
+  "tips": [
+   "Write the headline about the outcome for the customer, and use the subhead to explain plainly what the product is and who it is for.",
+   "Make one call to action clearly primary and the second a quieter outline or text link, so visitors are not asked to choose between equals.",
+   "Show the product itself, or a faithful illustration of it, rather than abstract shapes, so visitors understand what they would actually use.",
+   "Check the hero on a small phone and make sure the headline and primary button sit above the fold."
+  ],
+  "faq": [
+   [
+    "What should a hero section include?",
+    "A clear headline, a supporting subhead, a primary call to action, usually a secondary option, and a visual that shows the product or its result. A short social-proof line, such as a customer count or rating, can sit beneath the buttons if it is true."
+   ],
+   [
+    "How long should a hero headline be?",
+    "Short enough to read in a glance, usually under ten words. It should state the main benefit in plain language. Put the detail in a subhead of one or two sentences rather than stretching the headline, and avoid clever wordplay that hides what the product does."
+   ],
+   [
+    "Should the hero use an image, illustration or video?",
+    "Use whatever shows the product most clearly. A screenshot or illustrated interface suits software, photography suits physical products and a short muted loop can demonstrate motion. Avoid heavy autoplaying video that slows loading, and always keep text legible over the visual."
+   ]
+  ]
+ },
+ "home": {
+  "h1": "App home screen design examples",
+  "intro": "An app home screen should answer what to do today the moment it opens. Our health and fitness examples show a personal greeting, activity rings, a next-workout card, a streak tracker, a habit checklist and a weekly active-minutes chart, designed for mobile and web across eight visual styles, each with HTML and light and dark design tokens.",
+  "tips": [
+   "Put today's single most useful action, such as the next workout, near the top with one clear button to start it.",
+   "Show progress against a goal, such as 30 of 45 minutes, rather than raw totals, so people know how close they are.",
+   "Celebrate streaks without punishing breaks, for example by allowing rest days, so one missed day does not make people give up.",
+   "Let people tick habits off directly on the home screen without opening a separate page, keeping daily check-ins to a single tap."
+  ],
+  "faq": [
+   [
+    "What should an app home screen show?",
+    "Whatever people open the app to do most often, followed by a summary of their progress. For a fitness app, that means today's activity, the next planned workout and habits to complete. Keep it personal and current, and link out to detail rather than cramming everything in."
+   ],
+   [
+    "How do you design activity rings or progress charts?",
+    "Use one ring or bar per goal with a distinct colour, show the current value and target in text beside it, and keep the scale consistent from day to day. Make sure progress is readable without colour by including numbers, and test rings for contrast in dark mode."
+   ],
+   [
+    "Should a home screen be personalised?",
+    "Yes, where it helps people act. A greeting, today's plan and progress based on their own goals make the screen useful immediately. Avoid personalisation that feels intrusive or unexplained, and give people control over which modules appear and in what order."
+   ]
+  ]
+ },
+ "image-viewer": {
+  "h1": "Image lightbox design examples",
+  "intro": "An image viewer, or lightbox, puts a single photo front and centre while keeping navigation and details close at hand. Our examples show a full-bleed dark viewer with previous and next controls, a filmstrip, EXIF details, location, like, save and share actions and comments, designed for web and mobile across eight visual styles.",
+  "tips": [
+   "Use a dark backdrop behind photos so colours read accurately and the interface recedes, whatever the app's normal theme.",
+   "Support arrow keys, Escape to close and swipe gestures on touch screens, and return focus to the thumbnail that opened the viewer.",
+   "Let people hide the controls with a tap or click, so they can see the full image without buttons sitting on top.",
+   "Preload the next and previous images so stepping through a set feels instant rather than waiting on each photo."
+  ],
+  "faq": [
+   [
+    "What is a lightbox in web design?",
+    "A lightbox is an overlay that shows an image, or a set of images, at large size on top of the current page, usually against a darkened background. It lets people view detail without leaving the page, then close the overlay and return to where they were."
+   ],
+   [
+    "How do you make an image lightbox accessible?",
+    "Treat it as a modal dialog: move focus into it when it opens, trap focus inside, close on Escape and return focus to the trigger. Give every control a label, provide meaningful alt text for each image and make sure navigation buttons are reachable by keyboard."
+   ],
+   [
+    "Should a photo viewer show EXIF data?",
+    "For photography-focused products, camera, lens and settings information is valued by enthusiasts and helps credit the work. Keep it in a collapsible panel rather than on the image. Strip location data by default unless the photographer chooses to share it."
+   ]
+  ]
+ },
+ "invoice": {
+  "h1": "Invoice design examples",
+  "intro": "An invoice has to be accurate, easy to check and simple to file. Our examples show a paid invoice with sender and billing details, line items, tax, a total, a paid stamp and a download-PDF action, laid out for screen on web and mobile in eight visual styles, each with HTML code and light and dark design token files.",
+  "tips": [
+   "Put the invoice number, issue date and due date together near the top, because those are what both sides quote when discussing payment.",
+   "Right-align quantities, unit prices and totals in line items so figures line up and can be checked quickly down each column.",
+   "Show subtotal, tax and total as separate rows, stating the tax rate used, so the arithmetic can be verified at a glance.",
+   "Make the payment status unmistakable with a clear label such as Paid and the date received, not colour alone."
+  ],
+  "faq": [
+   [
+    "What information should an invoice include?",
+    "At minimum, a unique invoice number, issue and due dates, the seller's and buyer's names and addresses, a description of each item with quantity and price, the subtotal, any tax and the total due, plus payment instructions. Legal requirements vary by country, so check local rules for tax details."
+   ],
+   [
+    "How do you design an invoice that is easy to read?",
+    "Use a clear hierarchy: who it is from and to, the key dates and number, then a line-item table and totals. Stick to one or two typefaces, align numbers to the right, leave generous white space and keep the total due the most prominent figure."
+   ],
+   [
+    "Should an online invoice also be available as a PDF?",
+    "Yes. Many people need to forward invoices to accountants or store them for records, so offer a PDF download that matches the on-screen version. Make sure the PDF prints cleanly on A4 and US Letter, with no clipped columns or dark backgrounds."
+   ]
+  ]
+ },
+ "kanban-board": {
+  "h1": "Kanban board UI design examples",
+  "intro": "A kanban board shows work moving through stages, so a team can see at a glance what is in progress and what is stuck. Our screens show four status columns of task cards with labels, due date chips, comment and subtask counts and assignee avatars, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Show the card count in each column header, and optionally a work-in-progress limit, so bottlenecks are visible without counting.",
+   "Keep cards brief, with title, labels, due date and assignee only, and open full details in a side panel.",
+   "Highlight overdue due dates with both colour and an icon or wording, so urgency is clear to everyone.",
+   "Provide a move-to menu on each card alongside drag and drop, so keyboard and touch users can change a card's status easily."
+  ],
+  "faq": [
+   [
+    "How many columns should a kanban board have?",
+    "Most teams work well with three to five columns, such as To do, In progress, In review and Done. Each column should represent a real stage in the workflow. Too many columns make the board wide and hard to scan; merge stages that do not need separate tracking."
+   ],
+   [
+    "What should a kanban card show?",
+    "The task title, the person assigned, a due date if there is one, a few labels and small indicators for comments, attachments or subtasks. Anything more belongs in the detail view. Cards should be scannable from a distance and consistent in layout."
+   ],
+   [
+    "How do kanban boards work on mobile?",
+    "Columns rarely fit side by side on a phone, so most apps show one column at a time with swipeable tabs or a horizontal scroll that snaps to each column. Replace drag and drop with a status menu or long-press action, which is easier on small screens."
+   ]
+  ]
+ },
+ "list-view": {
+  "h1": "To-do list app UI design examples",
+  "intro": "A task list is where people decide what to work on next, so it must be easy to scan and quick to update. Our My tasks screens group tasks by due date with checkboxes, tags, priority, due dates and assignee avatars, plus a filter and sort bar, designed for web and mobile across eight visual styles in light and dark.",
+  "tips": [
+   "Group tasks under clear headings such as Overdue, Today and Upcoming, so the most urgent work sits at the top without manual sorting.",
+   "Make checkboxes large enough to tap easily and give a short animation or strike-through on completion before the task moves away.",
+   "Show active filters as removable chips above the list, so people understand why some tasks are missing.",
+   "Allow adding a task inline at the top or bottom of each group, without opening a dialog for every quick entry."
+  ],
+  "faq": [
+   [
+    "How do you design a to-do list interface?",
+    "Keep each row scannable: checkbox, title, then a few metadata items such as due date, priority and assignee. Group by date or project, make adding and completing tasks fast, and give people sorting and filtering. Hide less-used details in a task view rather than crowding the row."
+   ],
+   [
+    "How should task priority be shown?",
+    "Use a small, consistent marker such as a coloured flag or label with text, and limit the scale to three or four levels. Avoid colouring whole rows, which makes the list noisy. Let people sort or filter by priority so important work rises to the top."
+   ],
+   [
+    "Should completed tasks disappear from the list?",
+    "Usually they move out of view after a brief moment, so the list reflects what is left, with an undo option in case of mistakes. Keep a way to show completed tasks for reference, such as a collapsed section or a filter."
+   ]
+  ]
+ },
+ "loading-skeleton": {
+  "h1": "Skeleton loading screen examples",
+  "intro": "A skeleton screen shows the shape of content while it loads, so a page feels responsive rather than blank. Our examples render the task list and stat cards as shimmering placeholders while the real app shell, page title and actions stay visible, giving you a loading state to study across eight visual styles for web and mobile, light and dark.",
+  "tips": [
+   "Match placeholder shapes to the real layout, including line lengths and avatar sizes, so the page does not shift when content arrives.",
+   "Keep navigation, titles and known actions fully rendered, and use skeletons only for the parts still waiting on data.",
+   "Use a slow, subtle shimmer and turn it off for people who have enabled reduced motion in their system settings.",
+   "Announce loading to screen readers with an aria-busy state or a hidden status message, because skeletons are invisible to them."
+  ],
+  "faq": [
+   [
+    "Skeleton screen or spinner: which is better?",
+    "Skeleton screens suit content areas with a predictable layout, such as lists, cards and profiles, because they show what is coming and reduce layout shift. Spinners suit short, indeterminate actions like saving or submitting. For very fast loads, showing nothing for a moment avoids a distracting flash."
+   ],
+   [
+    "How long should a skeleton screen show?",
+    "Only as long as the data takes to arrive. If loading routinely takes several seconds, add a progress message or load content in parts so people see something real sooner. If a request fails, replace the skeleton with a clear error and retry option."
+   ],
+   [
+    "Should skeleton screens animate?",
+    "A gentle shimmer or pulse signals that something is happening and is common practice. Keep it slow and low in contrast so it does not distract, and respect the prefers-reduced-motion setting by showing static placeholders for people who have asked for less motion."
+   ]
+  ]
+ },
+ "login": {
+  "h1": "Login page design examples",
+  "intro": "A login page has one job: get returning users into their account quickly and securely. Our examples combine Google sign-in, email and password fields, a keep-me-signed-in checkbox and a testimonial panel, designed for web and mobile across eight visual styles, from minimal to brutalist, each with HTML code and light and dark design tokens.",
+  "tips": [
+   "Put social sign-in above the email form when most of your users have that account, with a clear divider before the password route.",
+   "Add a show-password toggle so people can check what they typed, instead of forcing them to retype a long password.",
+   "Show errors inline next to the relevant field and keep the entered email, so a typo does not clear the whole form.",
+   "Use autocomplete values for username and current password, which lets password managers fill both fields correctly."
+  ],
+  "faq": [
+   [
+    "What makes a good login page?",
+    "Few fields, clear labels, a visible way to reveal the password, support for password managers, single sign-on options if your users have them and an obvious forgotten-password link. Errors should be specific without revealing whether an account exists, and the page should load quickly with no distractions."
+   ],
+   [
+    "Should login and sign-up be on the same page?",
+    "They are usually separate pages, linked to each other, because they ask for different information and serve different people. A single email-first screen that detects whether the account exists also works well, as long as it is clear to people which path they are on."
+   ],
+   [
+    "Should a login form say which field is wrong?",
+    "For security, many services show a general message such as Incorrect email or password rather than confirming which part failed. Still keep the email entered, place the message near the form and offer a password reset link so people can recover quickly."
+   ]
+  ]
+ },
+ "logo-cloud": {
+  "h1": "Logo cloud section examples",
+  "intro": "A logo cloud signals that other organisations already trust a product, placed where visitors are deciding whether to read on. Our examples use a trusted-by line above a ruled grid of eight fictional company wordmarks set in type, with a link to customer stories, shown across eight visual styles on desktop and mobile in light and dark.",
+  "tips": [
+   "Show logos in a single neutral colour at matching optical sizes, so no customer appears more important than another by accident.",
+   "Use only customers who have agreed to be named, and link to stories or case studies so the claim can be explored.",
+   "Keep the grid to one or two rows; six to ten recognisable names say more than a dense wall of tiny marks.",
+   "Give each logo meaningful alt text with the company name, so the social proof is available to screen reader users too."
+  ],
+  "faq": [
+   [
+    "Where should a logo cloud go on a landing page?",
+    "Usually directly below the hero, where it reassures visitors as they decide whether to keep reading. It can also sit near pricing or a sign-up form. One logo strip per page is generally enough; repeating it dilutes the effect."
+   ],
+   [
+    "Should customer logos be in colour or greyscale?",
+    "Greyscale or a single tone is the common choice, because a row of different brand colours looks busy and competes with your own calls to action. Some designs reveal colour on hover. Whichever you choose, make sure each logo stays legible in both light and dark themes."
+   ],
+   [
+    "Do I need permission to show customer logos?",
+    "In most cases yes. Customer contracts often restrict use of a client's name or logo for marketing, and trademark rules may apply. Get written permission, and use each logo as supplied without altering it beyond agreed colour treatments."
+   ]
+  ]
+ },
+ "navigation-header": {
+  "h1": "Mega menu navigation design examples",
+  "intro": "A navigation header with a mega menu lets visitors see a whole product range in one panel instead of hunting through dropdowns. Our examples show a site header with an open Product menu of icon links and a featured card, plus sign-in and a start-free button, laid out for desktop and mobile across eight visual styles in light and dark.",
+  "tips": [
+   "Open the mega menu on click rather than hover alone, or add a short hover delay, so it does not flicker open as the cursor passes.",
+   "Organise menu links into labelled groups with a short description under each, so people can tell similar items apart.",
+   "Keep the primary call to action visible in the header at all times, including on mobile, rather than burying it inside the menu.",
+   "On mobile, turn the mega menu into a full-screen drill-down or accordion list rather than shrinking the desktop panel."
+  ],
+  "faq": [
+   [
+    "When should a site use a mega menu?",
+    "When a top-level section has more options than a simple dropdown can show clearly, such as a product range with several distinct tools or a large catalogue. If a section has only a handful of links, a standard dropdown or a direct link is simpler and faster to use."
+   ],
+   [
+    "How do you make a mega menu accessible?",
+    "Use buttons with aria-expanded to open each panel, make every link reachable by keyboard in a logical order, close the panel with Escape and return focus to its trigger. Avoid opening on hover alone, and make sure the panel does not cover content people are trying to read."
+   ],
+   [
+    "What should a navigation header include?",
+    "A logo linking home, the main sections, a search option if the site is large, a sign-in link for existing users and one primary call to action. Keep the number of top-level items small, usually five to seven, and use the same header across the site."
+   ]
+  ]
+ },
+ "notifications-center": {
+  "h1": "Notification center UI design examples",
+  "intro": "A notification centre collects updates in one place so people can catch up without hunting through the app. Our screens include filter tabs, notifications grouped under Today and Earlier with unread dots and type icons, a mark-all-read action and delivery settings, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Write each notification so it makes sense on its own, naming who did what to which item, and link straight to that item.",
+   "Mark unread items with both a dot and stronger text weight, and clear them when opened rather than when merely scrolled past.",
+   "Group repeated activity on the same item, such as several comments, into one entry with a count to reduce noise.",
+   "Link to delivery settings from the notification centre itself, so people can turn down noisy categories at the moment they feel overwhelmed."
+  ],
+  "faq": [
+   [
+    "What should a notification centre include?",
+    "A chronological list of notifications grouped by time, clear unread indicators, filters by type such as mentions or assignments, a mark-all-read action and a link to notification settings. Each item should show who, what and when, and open the relevant item directly."
+   ],
+   [
+    "How do you design notification settings?",
+    "Group settings by category and channel, so people can choose, for example, mentions by email and push but comments in-app only. Offer sensible defaults, a pause or quiet hours option and a clear way to unsubscribe from everything without losing account emails."
+   ],
+   [
+    "Should notifications be grouped?",
+    "Yes, when several events relate to the same item or happen in a short burst. Grouping them, for example three new comments on one task, keeps the list readable and reduces repeated alerts. Let people expand a group to see each individual event."
+   ]
+  ]
+ },
+ "onboarding-step": {
+  "h1": "Onboarding screen design examples",
+  "intro": "An onboarding step collects a few answers early so the product can tailor what a new user sees first. Our examples show the second of four steps: a progress indicator, selectable use-case cards, team-size chips and Back and Continue buttons, drawn for web and mobile in eight visual styles with light and dark versions.",
+  "tips": [
+   "Tell people how many steps remain, such as 2 of 4, so the questions feel finite and worth finishing.",
+   "Ask only questions whose answers change what the product shows next; anything purely for marketing belongs later or nowhere.",
+   "Use large tappable cards or chips for choices instead of dropdowns, so options are visible and comparable at a glance.",
+   "Keep the Back button available and preserve earlier answers, so people can correct a choice without starting the flow again."
+  ],
+  "faq": [
+   [
+    "How many steps should an onboarding flow have?",
+    "Use as few steps as the personalisation genuinely needs, often three to five short screens. Each step should earn its place by changing the experience that follows. If a question does not alter defaults, templates or recommendations, cut it or ask it later in context."
+   ],
+   [
+    "Should onboarding steps be skippable?",
+    "Yes, in most products a skip option is kind and reduces drop-off from people who already know what they want. Apply sensible defaults when someone skips, and let them return to the questions from settings or a checklist later so nothing is lost."
+   ],
+   [
+    "Where should the progress indicator go on an onboarding step?",
+    "Place it at the top, above the question, so people see their position before they read. A short segmented bar or a step count works well. Avoid numbered labels for every step on mobile, as they crowd the header and add little."
+   ]
+  ]
+ },
+ "order-confirmation": {
+  "h1": "Order confirmation page examples",
+  "intro": "An order confirmation page reassures customers that their purchase went through and tells them what happens next. Our examples include a thank-you message with the order number, a delivery timeline, the ordered items, shipping and billing addresses and a Track order button, shown on web and mobile in eight visual styles, light and dark.",
+  "tips": [
+   "Put the order number near the top in selectable text, because customers copy it into emails and support chats.",
+   "Show an estimated delivery date or window rather than only a dispatch status, since timing is the first thing people want to know.",
+   "Repeat the delivery address clearly so customers can spot a mistake while there is still time to change it.",
+   "Keep one obvious next action such as tracking the order, and leave cross-selling as a quiet secondary block below it."
+  ],
+  "faq": [
+   [
+    "What should an order confirmation page include?",
+    "It should include the order number, a summary of items and total paid, the delivery address, the expected delivery date and a way to track or manage the order. A note that a confirmation email has been sent, and to which address, also reduces anxious support contacts."
+   ],
+   [
+    "Is it worth adding product recommendations to the confirmation page?",
+    "It can work if the recommendations sit below the essential order details and do not compete with them. The page's first job is reassurance. Relevant add-ons, such as accessories for the item just bought, tend to feel more helpful than a generic product carousel."
+   ],
+   [
+    "Should the confirmation page let customers edit their order?",
+    "Offering an edit or cancel option for a short window is helpful if your fulfilment process can support it. Make the time limit clear, and link to the full order details rather than squeezing editing controls onto the confirmation screen itself."
+   ]
+  ]
+ },
+ "paywall-upgrade": {
+  "h1": "Paywall and upgrade screen examples",
+  "intro": "An upgrade prompt appears when someone reaches a plan limit and needs to decide whether to pay for more. Our examples show a project-limit paywall with a usage meter, Team plan benefits, a yearly-billing toggle, a price breakdown and Upgrade and Maybe later actions, across web and mobile in eight visual styles with light and dark themes.",
+  "tips": [
+   "Explain which limit was reached and why the prompt appeared, so the upgrade feels connected to what the person was doing.",
+   "List the two or three benefits that solve the current problem first, rather than the full feature comparison table.",
+   "When offering yearly billing, show the per-month equivalent and the total charged today, so the saving is honest and easy to check.",
+   "Give a clear, respectful way to dismiss the prompt; disguising the decline option erodes trust and can breach consumer protection rules."
+  ],
+  "faq": [
+   [
+    "When is the best moment to show an upgrade prompt?",
+    "Show it when a person hits a real limit or tries a paid feature, because the value is obvious at that moment. Interrupting people at random, or on first launch before they have used the product, tends to feel pushy and is easy to dismiss without reading."
+   ],
+   [
+    "Should a paywall show the price straight away?",
+    "Yes, showing the price on the prompt itself builds trust and saves a click. Hiding the cost behind another screen makes people suspicious. Include the billing period, any tax note and whether the price is per user so the figure is not misleading."
+   ],
+   [
+    "How should the decline button be worded?",
+    "Use neutral, plain wording such as Maybe later or Not now. Avoid guilt-tripping labels that mock the person for declining, because they damage goodwill and are increasingly treated as a dark pattern by regulators and app store reviewers."
+   ]
+  ]
+ },
+ "permissions-request": {
+  "h1": "Permission request screen examples",
+  "intro": "A permission request screen explains why an app wants access before the operating system shows its own prompt. Our examples focus on notifications: a short explanation of why alerts help, a preview of example notifications and the system allow or block dialog, designed for web and mobile in eight visual styles with light and dark versions.",
+  "tips": [
+   "Show your explanation screen before triggering the system prompt, because a refused system prompt is hard to ask for again.",
+   "Preview real example notifications so people can judge the value and frequency for themselves instead of trusting a vague promise.",
+   "Ask at the moment the permission becomes useful, such as after someone follows a project, not during the first seconds of launch.",
+   "If someone declines, let the feature keep working where possible and offer a settings shortcut for turning permissions on later."
+  ],
+  "faq": [
+   [
+    "What is a permission priming screen?",
+    "It is an in-app screen shown before the system permission dialog that explains what access is for and what the person gains. Because operating systems limit how often an app can show the native prompt, priming helps people make an informed choice the first time."
+   ],
+   [
+    "When should an app ask for notification permission?",
+    "Ask when notifications clearly serve something the person has just done, such as booking, following or starting a task. Context makes the benefit obvious. Asking immediately on first launch, before any value is shown, gives people little reason to say yes."
+   ],
+   [
+    "What should happen if a user denies a permission?",
+    "The app should continue to work and explain, where relevant, what is unavailable without the permission. Offer a gentle path to the device settings later, at a moment when the feature is needed, rather than repeatedly nagging with modal prompts."
+   ]
+  ]
+ },
+ "pricing": {
+  "h1": "Pricing section examples",
+  "intro": "A pricing section helps visitors compare plans and choose one without contacting sales. Our examples include a header, a headline and three plan tiers with a highlighted most-popular plan and feature checklists, designed for web and mobile in eight visual styles from minimal to retro, each in light and dark.",
+  "tips": [
+   "Limit the main comparison to three or four tiers, and name each plan by who it is for rather than by abstract metals.",
+   "Highlight one recommended plan with a label and contrast, but keep the other tiers equally readable so the comparison stays fair.",
+   "Align feature lists across tiers so the same rows sit at the same height, making differences easy to scan sideways.",
+   "State the billing basis next to every price, such as per user per month, billed yearly, to prevent surprise at checkout."
+  ],
+  "faq": [
+   [
+    "How many pricing tiers should a pricing section show?",
+    "Three tiers is a common, workable choice because it gives a clear entry, a recommended middle and a premium option. Add an enterprise or contact-sales card if needed, but too many visible tiers slows decisions and makes the differences harder to understand."
+   ],
+   [
+    "Should a pricing section include a monthly and yearly toggle?",
+    "Include a toggle if you offer both billing periods, and make the default and the saving explicit. Show how each price is calculated, for example the monthly equivalent of a yearly plan, so visitors can compare honestly without doing sums."
+   ],
+   [
+    "Where should the pricing FAQ go?",
+    "Place it directly below the plan cards, where hesitating visitors look next. Cover billing, cancellation, trials, refunds and what happens at plan limits. Short, direct answers to these questions remove the doubts that stop people from choosing a plan."
+   ]
+  ]
+ },
+ "product-detail": {
+  "h1": "Product page design examples",
+  "intro": "A product detail page gives shoppers everything they need to decide and add an item to their basket. Our examples feature an image gallery with thumbnails, price and rating, colour swatches, a quantity stepper, an Add to cart button, delivery information and a details accordion, shown on web and mobile in eight styles, light and dark.",
+  "tips": [
+   "Keep the price, key options and Add to cart button visible together, and make the button sticky on mobile as people scroll.",
+   "Show the colour name alongside each swatch and update the gallery when a swatch is chosen, so shoppers see what they are buying.",
+   "Put delivery cost and timing near the buy button; unexpected shipping charges are a common reason people abandon a purchase.",
+   "Use an accordion for long specifications and care details, keeping the first panel open so key information is not hidden."
+  ],
+  "faq": [
+   [
+    "What should be above the fold on a product page?",
+    "The product image, name, price, main options such as size or colour, and the Add to cart button should all be visible without scrolling on desktop. On mobile, prioritise the image and price, then keep the buy button reachable with a sticky bar."
+   ],
+   [
+    "How many product images should a product page have?",
+    "Enough to answer the questions a shopper would settle by handling the item: front, back, detail, scale and the product in use. Thumbnails or a swipeable gallery help people jump between them, and zoom matters most for textures and small details."
+   ],
+   [
+    "Should reviews appear on the product detail page?",
+    "Yes, show an average rating and count near the title, with the full reviews further down the page. A tap on the rating should scroll to the reviews. Letting shoppers filter or sort reviews helps them find opinions relevant to their own needs."
+   ]
+  ]
+ },
+ "profile": {
+  "h1": "User profile page examples",
+  "intro": "A member profile page tells teammates who someone is and how to reach them. Our examples show an avatar, role, local time and contact details, the teams the member belongs to, editable profile fields and recent activity, designed for web and mobile across eight visual styles with light and dark variants.",
+  "tips": [
+   "Show the member's local time and working hours near their name, which helps distributed teams avoid messaging at awkward hours.",
+   "Separate what others see from what only the owner can edit, and make editable fields clearly look editable.",
+   "Generate a readable initials avatar as the default so profiles without photos still look intentional and are easy to tell apart.",
+   "Keep recent activity short and linkable, showing a few items with a link to the full history instead of an endless feed."
+  ],
+  "faq": [
+   [
+    "What information should a team member profile show?",
+    "Show the name, photo or initials, role, team, contact options, local time and current status. These answer the questions colleagues usually have before reaching out. Optional details such as pronouns or a short bio are useful when the person chooses to add them."
+   ],
+   [
+    "Should users edit their profile inline or on a separate page?",
+    "Inline editing suits short fields such as name, title and status because changes are quick and visible in place. Use a separate settings page or modal for sensitive or grouped details like email, password and notification preferences, where confirmation steps make sense."
+   ],
+   [
+    "How do you design a profile that respects privacy?",
+    "Let people control which details are visible and to whom, and default to sharing less. Make visibility clear next to each field rather than burying it in settings. Avoid showing personal contact information to the whole organisation unless the person has opted in."
+   ]
+  ]
+ },
+ "search-results": {
+  "h1": "Search results page examples",
+  "intro": "A search results page helps people find the right item quickly when results come from many content types. Our examples show mixed task, document, file and people results for one query, with highlighted matches and filters for type, owner and date, laid out for web and mobile in eight visual styles, light and dark.",
+  "tips": [
+   "Highlight the matched words in each result so people can judge relevance without opening anything.",
+   "Label each result with its type and location, such as a task in a named project, when different content types appear together.",
+   "Keep the query in the search box and show active filters as removable chips, so refining a search never means retyping it.",
+   "Design a helpful empty state that suggests spelling fixes, broader filters or related items instead of a bare no-results message."
+  ],
+  "faq": [
+   [
+    "How should search results be grouped when there are different content types?",
+    "Either group them under type headings or show a single ranked list with clear type labels and a type filter. Grouping suits small result sets with distinct uses, while a ranked list works better when relevance matters more than type."
+   ],
+   [
+    "Which filters should a search results page include?",
+    "Start with filters that match how people remember things: content type, owner or author, date and location such as project or folder. Show the most used filters openly and tuck rarer ones behind a More button so the page stays easy to scan."
+   ],
+   [
+    "Should search show results as the user types?",
+    "Instant suggestions are helpful for jumping to known items, and a full results page is better for exploring. Many products use both: a quick dropdown while typing and a dedicated page when the person presses Enter. Debounce requests so the interface stays responsive."
+   ]
+  ]
+ },
+ "settings": {
+  "h1": "Settings page design examples",
+  "intro": "A settings page lets admins manage how a workspace is named, accessed and run. Our examples include a settings sub-navigation, fields for workspace name, URL, language and time zone, permission toggles and a danger zone, designed for web and mobile in eight visual styles, each with light and dark themes.",
+  "tips": [
+   "Group settings into a handful of clearly named sections with a persistent sub-navigation, so people can find options by scanning.",
+   "Decide on one saving model per page: either save each toggle instantly with feedback, or use a single Save button, never a mix.",
+   "Write a one-line description under each toggle explaining what changes when it is on, especially for permission settings.",
+   "Place destructive actions in a visually separated danger zone at the bottom and require typed confirmation for irreversible ones."
+  ],
+  "faq": [
+   [
+    "Should settings save automatically or with a Save button?",
+    "Toggles and simple choices can save instantly with a brief confirmation, which feels responsive. Forms with several related text fields usually need an explicit Save button so people can review changes together. Whichever you choose, apply it consistently and warn before leaving with unsaved edits."
+   ],
+   [
+    "How should a settings page be organised?",
+    "Organise by the user's goals rather than your internal architecture, using sections such as General, Members, Notifications, Security and Billing. Keep the most frequently changed settings near the top. A search box helps once a product has dozens of options."
+   ],
+   [
+    "What belongs in a danger zone?",
+    "Actions that are destructive or hard to undo, such as deleting a workspace, transferring ownership or resetting data. Separate them visually, explain the consequences plainly and ask for confirmation, often by typing the workspace name, before the action runs."
+   ]
+  ]
+ },
+ "sign-up": {
+  "h1": "Sign up page design examples",
+  "intro": "A sign-up page turns interested visitors into account holders with as little friction as possible. Our examples show Google and SSO buttons, name, work email and password fields with a strength meter, a terms checkbox and a link to log in, designed for web and mobile in eight visual styles, light and dark.",
+  "tips": [
+   "Ask only for what is needed to create the account; job title, company size and phone number can wait until onboarding.",
+   "Show password rules before the person types, and update a strength meter live rather than rejecting the password after submit.",
+   "Label the work email field clearly if personal addresses are not accepted, so people do not fail validation unexpectedly.",
+   "Keep a visible link to log in for returning users who land on the sign-up page by mistake."
+  ],
+  "faq": [
+   [
+    "How many fields should a sign-up form have?",
+    "As few as you can manage, often just email and password, or a single social sign-in button. Every extra field gives people another reason to stop. Collect additional profile details after the account exists, when the person already has a reason to continue."
+   ],
+   [
+    "Should the sign-up form have a confirm password field?",
+    "Usually not. A show-password toggle lets people check what they typed and removes the need for a second field. If you are concerned about typos, rely on email-based password reset as the safety net rather than adding friction for everyone."
+   ],
+   [
+    "Is a terms and conditions checkbox required?",
+    "Requirements depend on your jurisdiction and what you are asking people to agree to, so check with legal advice. Often a line stating that creating an account means agreeing to the terms is used, while separate consent such as marketing emails needs its own unticked checkbox."
+   ]
+  ]
+ },
+ "stats-band": {
+  "h1": "Stats section examples",
+  "intro": "A stats band backs up a landing page's claims with a few large, memorable figures. Our examples show a heading with a short supporting line and four large figures with labels covering checks run, alert time, regions and teams, laid out for web and mobile in eight visual styles with light and dark versions.",
+  "tips": [
+   "Pick three or four figures that support the page's main promise, rather than every number you can find.",
+   "Give each figure a short label that says exactly what is counted, so the number cannot be misread or overstated.",
+   "Round large numbers sensibly and use consistent units and suffixes so the row reads as a set.",
+   "Use only figures you can stand behind, and note the time period or source in small text where it matters."
+  ],
+  "faq": [
+   [
+    "What numbers work best in a stats section?",
+    "Figures that prove the main benefit of the product work best, such as speed, scale, reliability or customer count. A number only persuades if the reader understands what it measures, so pair each one with a clear label and keep the set focused."
+   ],
+   [
+    "Should stats count up with an animation?",
+    "A brief count-up can draw the eye, but it is optional. Keep it short, run it once when the band scrolls into view and respect reduced-motion preferences. The final figures must be present in the HTML so search engines and screen readers get the real numbers."
+   ],
+   [
+    "How many stats should a stats band contain?",
+    "Three or four is a comfortable number for one row on desktop, and it reflows neatly into a two-by-two grid on mobile. More than that dilutes attention, and readers tend to remember only one or two of the figures anyway."
+   ]
+  ]
+ },
+ "success-confirmation": {
+  "h1": "Success screen design examples",
+  "intro": "A success screen confirms that an action worked and shows the sensible next step. Our examples cover four workspace moments: a password reset confirmed with a sign-in button, a plan upgrade listing what is now available plus a receipt, a cancelled subscription showing access until the period ends and kept data, and a sent invite with resend, copy link and invite-more options.",
+  "tips": [
+   "Say specifically what succeeded, such as the invite sent to a named address, rather than a generic Success heading.",
+   "After a password reset, send people straight to sign in, ideally with their email already filled in.",
+   "On a cancellation confirmation, state the exact date access ends, what happens to their data and how to reactivate.",
+   "After an upgrade, show the features now available and a link to the receipt, so the payment feels worth it immediately."
+  ],
+  "faq": [
+   [
+    "When should you use a full success screen instead of a toast?",
+    "Use a full screen when the action is significant or ends a flow, such as resetting a password, upgrading a plan or cancelling a subscription. Use a toast or inline message for routine actions like saving, where people want to carry on without interruption."
+   ],
+   [
+    "What should a subscription cancelled screen include?",
+    "It should confirm the cancellation, give the date paid access ends, explain what happens to the account's data and offer a clear way to reactivate. Keep the tone neutral and avoid guilt-laden copy, since people who leave on good terms are more likely to return."
+   ],
+   [
+    "What should happen after an invite is sent?",
+    "Confirm who was invited and with which role, then offer useful follow-ups: resend the email, copy an invite link to share another way and invite more people. Let the person close the confirmation and return to the members list without extra steps."
+   ]
+  ]
+ },
+ "team-members": {
+  "h1": "Team members page examples",
+  "intro": "A team members page lets admins see who has access, what role they hold and invite new people. Our examples show a members table with roles, statuses and last-active times, seat usage and an open invite modal with email chips and a role picker, designed for web and mobile in eight visual styles, light and dark.",
+  "tips": [
+   "Show seat usage next to the invite button so admins know the billing impact before they add anyone.",
+   "Let admins paste several email addresses at once and turn each into a chip, flagging invalid addresses individually.",
+   "Distinguish pending invites from active members with a status label and offer resend or revoke actions on those rows.",
+   "Default new invites to the least privileged sensible role, and describe each role briefly inside the picker."
+  ],
+  "faq": [
+   [
+    "What columns should a team members table include?",
+    "Name and email, role, status such as active or invited, and last active time cover most admin needs. Add team or group membership if your product uses them. Keep row actions such as change role or remove in a menu to avoid clutter."
+   ],
+   [
+    "How should an invite flow handle multiple people?",
+    "Accept a list of emails in one field, convert each into a removable chip and apply a role to the batch with the option to adjust individually. Validate addresses as they are added, and confirm how many invites were sent once the modal closes."
+   ],
+   [
+    "How should removing a team member work?",
+    "Ask for confirmation that names the person and explains what happens to their content and access. Offer to reassign their work where relevant. Removal should take effect immediately for security, while their past activity remains attributed to them in history."
+   ]
+  ]
+ },
+ "testimonials": {
+  "h1": "Testimonials section examples",
+  "intro": "A testimonials section uses customer voices to make a product's claims believable. Our examples feature a dark featured quote card with a result metric plus two customer quotes with star ratings, names, roles and initials avatars, designed for web and mobile in eight visual styles, each in light and dark themes.",
+  "tips": [
+   "Choose quotes that describe a specific outcome or before-and-after change, not general praise that could apply to any product.",
+   "Attribute every quote with a name and role, since anonymous testimonials read as invented and carry little weight.",
+   "Feature one strong quote larger than the rest to give the section a focal point instead of a uniform grid.",
+   "Edit quotes for length only, never for meaning, and keep each one short enough to read in a few seconds."
+  ],
+  "faq": [
+   [
+    "How many testimonials should a landing page show?",
+    "Three to six quotes is usually enough for a section, with one featured more prominently. Quality matters more than quantity. If you have many, a carousel or a link to a full customer stories page keeps the section focused without hiding the evidence."
+   ],
+   [
+    "Are testimonial carousels a good idea?",
+    "They save space, but visitors often see only the first slide, and auto-rotation can be hard to read and inaccessible. A static grid of a few strong quotes is usually more effective. If you use a carousel, give it manual controls and pause on hover and focus."
+   ],
+   [
+    "Do testimonials need photos?",
+    "Photos can add credibility, but only with permission and real customers. An initials avatar with a full name and role is a solid alternative and avoids the stock-photo look that makes readers doubt a quote. Never use stock images to represent a quoted person."
+   ]
+  ]
+ },
+ "two-factor": {
+  "h1": "Two-factor authentication screen examples",
+  "intro": "A two-factor verification screen asks for a second proof of identity after the password. Our examples show a six-digit code input with three digits entered, a resend countdown, a trust-this-device checkbox and a backup-code link, designed for web and mobile in eight visual styles with light and dark versions.",
+  "tips": [
+   "Support pasting the full code and set the autocomplete attribute to one-time-code so phones can autofill it from a text message.",
+   "Show where the code was sent with a partly masked number or address, so people know which device to check.",
+   "Disable the resend link behind a visible countdown, then enable it, to stop repeated requests without leaving people guessing.",
+   "Always offer a recovery route such as backup codes, because losing the second factor should not lock someone out permanently."
+  ],
+  "faq": [
+   [
+    "Should a 2FA code input use separate boxes for each digit?",
+    "Separate boxes look clear, but they must behave like a single field: accept paste, move focus automatically, support backspace across boxes and work with autofill. A single well-styled input with wide letter spacing is simpler to build accessibly and works just as well."
+   ],
+   [
+    "What does trust this device mean on a 2FA screen?",
+    "It lets the person skip the second factor on that browser or device for a set period, usually by storing a secure token. Say how long the trust lasts, and let people review and revoke trusted devices from their security settings."
+   ],
+   [
+    "Should two-factor screens submit automatically when the code is complete?",
+    "Auto-submitting once all digits are entered saves a step and works well for most people. Keep a visible Verify button as well for clarity and assistive technology, and show errors inline next to the input without clearing the code entirely."
+   ]
+  ]
+ },
+ "welcome": {
+  "h1": "Welcome screen design examples",
+  "intro": "A welcome screen greets new users after sign-up and guides them to their first meaningful action. Our examples show a personal greeting, three getting-started choices, a five-step setup checklist with progress and a primary call to action, designed for web and mobile in eight visual styles with light and dark themes.",
+  "tips": [
+   "Greet people by name and get to the point in one line; the screen's job is to start them doing something.",
+   "Offer a small number of starting paths, such as a template, an import or a blank start, matched to common goals.",
+   "Pre-tick checklist items the person has already completed, like creating an account, so progress starts above zero.",
+   "Make the checklist dismissible and reachable later, because some users prefer to explore before following guided steps."
+  ],
+  "faq": [
+   [
+    "What should a welcome screen after sign-up include?",
+    "A short greeting, a clear first action and a way to choose between a few starting points. A setup checklist helps if the product needs several steps before it is useful. Avoid long tours on this screen; let people begin and offer help in context."
+   ],
+   [
+    "Do setup checklists help new users?",
+    "They often help because they make the path to value visible and give people a sense of progress. Keep the list short, order items by importance, and make each item link straight to the place where the task is completed."
+   ],
+   [
+    "Should a welcome screen use a product tour?",
+    "Brief, optional tours can help with unfamiliar interfaces, but many people skip them. Contextual hints that appear when a feature is first used tend to be more effective than a long tour shown immediately. Always provide an obvious way to skip."
+   ]
+  ]
+ },
+ "chat-list": {
+  "h1": "Chat list UI examples",
+  "intro": "A chat list helps people see which conversations need attention and jump into them. Our examples show channels and direct messages with unread counts, presence indicators, message previews and search, designed for a fictional team chat product on web and mobile in eight visual styles, each with light and dark themes.",
+  "tips": [
+   "Make unread conversations stand out with bold names and a count, and keep muted conversations visibly quieter.",
+   "Show presence with both colour and shape or a label, so status is readable for people with colour vision deficiency.",
+   "Truncate previews to a single line and include the sender's name in group conversations so context is clear.",
+   "Keep search pinned at the top of the list and let it match people, channels and message content."
+  ],
+  "faq": [
+   [
+    "Should channels and direct messages be in one list or separate sections?",
+    "Separate collapsible sections work well for team chat because people think about channels and private conversations differently. A single list sorted by recent activity suits personal messaging. Whichever you choose, let people pin or star important conversations to the top."
+   ],
+   [
+    "How should unread messages be indicated in a chat list?",
+    "Use bold text for unread conversations and a numeric badge for direct messages or mentions. Plain channel activity can use a subtler dot to avoid badge fatigue. Clear the indicator as soon as the conversation is opened and read."
+   ],
+   [
+    "What information belongs in each chat list row?",
+    "The conversation name, an avatar or icon, a one-line preview of the latest message, its time and the unread state. Presence suits direct messages. Avoid adding more metadata, as the list must be scannable at a glance on a small screen."
+   ]
+  ]
+ },
+ "chat-thread": {
+  "h1": "Chat interface design examples",
+  "intro": "A chat thread is where team conversations happen, so it must stay readable as messages pile up. Our examples show a conversation with emoji reactions, a reply thread, a file attachment, a typing indicator and a message composer, designed for web and mobile in eight visual styles with light and dark versions.",
+  "tips": [
+   "Group consecutive messages from the same sender under one name and avatar to reduce visual noise.",
+   "Insert date separators and a clear new-messages divider so people can find where they left off.",
+   "Keep the composer fixed at the bottom and grow it with multi-line text up to a sensible maximum height.",
+   "Show file attachments as cards with name, type and size, so people know what they are opening before they click."
+  ],
+  "faq": [
+   [
+    "Should chat messages use bubbles or a flat list?",
+    "Bubbles suit one-to-one personal messaging, where alignment shows who said what. Flat, left-aligned lists with names suit team chat, where many people take part and messages can be long or contain code and files. Choose based on group size and content."
+   ],
+   [
+    "How should threaded replies appear in a chat conversation?",
+    "Show a compact reply summary under the original message, with participant avatars and a reply count, and open the full thread in a side panel or separate view. This keeps the main conversation readable while side discussions continue."
+   ],
+   [
+    "Where should timestamps go in a chat thread?",
+    "Show a time next to the first message of each group, and reveal exact times on hover or long press for the rest. Use date separators between days. This gives enough context without repeating a timestamp on every line."
+   ]
+  ]
+ },
+ "video-call": {
+  "h1": "Video call UI examples",
+  "intro": "A video call screen has to keep people, controls and side information in balance during a live conversation. Our examples show participant tiles, an active-speaker highlight, mute, camera, share and leave controls and a side panel, designed for web and mobile in eight visual styles, each in light and dark themes.",
+  "tips": [
+   "Highlight the active speaker with a clear border or larger tile so people can follow who is talking.",
+   "Keep mute and camera buttons in fixed positions and show their state with both icon and label or tooltip.",
+   "Make Leave visually distinct from the other controls, often red and set apart, so it is not pressed by accident.",
+   "Show muted status on each participant tile, which saves people from speaking to someone who cannot hear them."
+  ],
+  "faq": [
+   [
+    "How should video call controls be arranged?",
+    "Place them in a single bar at the bottom of the screen, with microphone and camera first, then sharing and secondary tools, and Leave at the end. Keep the order stable so people build muscle memory. On mobile, hide less-used tools in a More menu."
+   ],
+   [
+    "Should video call controls auto-hide?",
+    "Auto-hiding gives more room to video, but controls must reappear instantly on mouse movement, tap or keyboard focus. Keep the mute state visible even when the bar is hidden, as it is the status people check most often during a call."
+   ],
+   [
+    "How do you lay out many participants in a video call?",
+    "Use a grid that adapts to the number of people and switch to a speaker view for presentations or larger meetings. Paginate or scroll beyond a sensible number of tiles, and let people pin a specific participant to keep them visible."
+   ]
+  ]
+ },
+ "map-view": {
+  "h1": "Map view UI examples",
+  "intro": "A map view lets people explore places spatially and compare them in a list. Our examples show an illustrated map with photo-spot pins and clusters, filters, a selected-place card and a results list on web or a bottom sheet on mobile, designed in eight visual styles with light and dark themes.",
+  "tips": [
+   "Cluster nearby pins with a count when zoomed out, and expand clusters on tap so the map never becomes unreadable.",
+   "Keep the map and list in sync: selecting a pin should highlight its list item and the reverse.",
+   "On mobile, use a draggable bottom sheet with peek, half and full heights so people can balance map and results.",
+   "Offer a Search this area button after panning instead of reloading results automatically on every small map movement."
+  ],
+  "faq": [
+   [
+    "Should a map screen show a list as well as the map?",
+    "Usually yes, because lists are easier for comparing details and more accessible to screen reader users. On desktop, a side-by-side layout works well. On mobile, a bottom sheet or a map and list toggle lets people switch without losing their place."
+   ],
+   [
+    "How should map pins be designed?",
+    "Pins should be distinct from the map background, show category through shape or icon as well as colour, and have a clear selected state. Keep them small enough not to obscure the map, and make the tap target larger than the visible pin."
+   ],
+   [
+    "What happens when someone taps a map pin?",
+    "Show a compact preview card with the name, a photo, key details and a primary action, without leaving the map. Tapping the card opens the full place page. Centre the map on the pin if the card would otherwise cover it."
+   ]
+  ]
+ },
+ "video-player": {
+  "h1": "Video player UI examples",
+  "intro": "A video player page has to play content well and help viewers decide what to watch next. Our examples show a player with chapters and controls, a creator row, likes and an up-next list, designed for web and mobile across eight visual styles from minimal to retro, each with light and dark themes.",
+  "tips": [
+   "Mark chapters on the progress bar and show the chapter title on hover so viewers can skip to the part they want.",
+   "Make every player control reachable by keyboard and give each one an accessible name, not just an icon.",
+   "Put captions within one tap of the main controls, since many people watch with sound off.",
+   "Show duration and creator on each up-next item so viewers can judge it without leaving the current video."
+  ],
+  "faq": [
+   [
+    "Which controls does a video player need?",
+    "Play and pause, a seek bar, current time and duration, volume, captions, settings for quality and speed, and full screen are the core set. Picture-in-picture and chapters are useful additions. Group the essentials and move the rest into a settings menu."
+   ],
+   [
+    "Should a video autoplay the next item?",
+    "Autoplaying the next video is common, but it should be easy to turn off and show a short countdown with a cancel option first. Autoplay with sound on page load is generally poorly received and blocked by most browsers."
+   ],
+   [
+    "How do video chapters help viewers?",
+    "Chapters break a long video into labelled sections, so viewers can scan the structure and jump straight to what they need. Show them as markers on the progress bar and as a list below or beside the player with timestamps."
+   ]
+  ]
+ },
+ "create-post": {
+  "h1": "Create post UI examples",
+  "intro": "A create post screen guides people from picking photos to publishing them with the right details. Our examples show selected photos, a caption with hashtags, location and people tags, visibility settings and upload progress, designed for web and mobile in eight visual styles, each with light and dark versions.",
+  "tips": [
+   "Start uploading photos in the background while people write the caption, so publishing feels quick at the end.",
+   "Show who will see the post right next to the Share button, because visibility mistakes are hard to undo.",
+   "Let people reorder and remove selected photos with obvious handles and a remove control on each thumbnail.",
+   "Save drafts automatically so a closed app or lost connection does not throw away a caption someone spent time on."
+  ],
+  "faq": [
+   [
+    "What should a create post screen include?",
+    "A preview of the selected media, a caption field, optional tags for location and people, visibility or audience settings and a clear publish action. Upload progress and draft saving reduce anxiety, while advanced options can sit behind a More settings link."
+   ],
+   [
+    "Should visibility settings default to public?",
+    "Choose the default that matches what people expect from your product, and always show it clearly before publishing. For personal or sensitive content, a more private default is safer. Remembering the last choice is convenient but must be visible to avoid surprises."
+   ],
+   [
+    "How should hashtag and people suggestions work?",
+    "Show suggestions in a dropdown as the person types the trigger character, matching on the text so far. Insert the chosen tag cleanly and let people keep typing. Limit the list to a few relevant items so it does not cover the caption."
+   ]
+  ]
+ },
+ "class-schedule": {
+  "h1": "Class schedule UI examples",
+  "intro": "A class schedule screen helps people find a session that fits their week and book it. Our examples show a week day-picker, filters and a timetable of classes with spots left, waitlist status and book buttons, designed for a fictional studio on web and mobile in eight visual styles with light and dark themes.",
+  "tips": [
+   "Show the spots remaining on each class and switch the button to Join waitlist when the class is full.",
+   "Let people filter by class type, instructor and time of day, and remember their filters between visits.",
+   "Mark classes the person has already booked directly in the timetable so they can avoid double booking.",
+   "Make the selected day obvious in the day-picker and scroll the list to the next upcoming class for today."
+  ],
+  "faq": [
+   [
+    "How should a class timetable be laid out on mobile?",
+    "A horizontal day-picker at the top with a vertical list of classes below works best on narrow screens. Each row shows time, class name, instructor, length and availability. Calendar grids that show the whole week tend to be too cramped on phones."
+   ],
+   [
+    "How should a waitlist be shown on a schedule?",
+    "Replace the Book button with Join waitlist when a class is full and show the waitlist position after joining. Explain how promotion from the waitlist works, for example whether people are booked automatically and notified, so there are no surprises."
+   ],
+   [
+    "What details should each class row include?",
+    "Start time, duration, class name, instructor, level and spots remaining are the key details. Add location or room if the studio has several. Keep descriptions on the class detail screen so the timetable stays quick to scan."
+   ]
+  ]
+ },
+ "booking-details": {
+  "h1": "Booking page design examples",
+  "intro": "A booking details screen confirms what someone is reserving before they commit. Our examples show a class summary, a spot picker, credits used, optional add-ons, the cancellation policy and a confirm button, designed for a fictional fitness studio on web and mobile in eight visual styles, each in light and dark themes.",
+  "tips": [
+   "Summarise the class, time, location and instructor at the top so people can confirm they chose the right session.",
+   "Show the total cost or credits used, including add-ons, right beside the confirm button before it is pressed.",
+   "State the cancellation window in plain words, such as free cancellation up to a set time before class, near the confirm action.",
+   "In a spot picker, show taken, available and selected spots with distinct shapes or labels, not colour alone."
+  ],
+  "faq": [
+   [
+    "What should a booking confirmation step show before payment?",
+    "It should show what is being booked, when and where, the full price or credits, any add-ons, the cancellation terms and a clear confirm action. Seeing everything together lets people catch mistakes before they commit, which reduces cancellations and support requests."
+   ],
+   [
+    "Where should the cancellation policy appear?",
+    "Put a short summary close to the confirm button, with a link to the full policy. People are more willing to book when they know they can cancel, and showing the terms upfront prevents disputes about late cancellation fees later."
+   ],
+   [
+    "Should add-ons be pre-selected on a booking screen?",
+    "No. Pre-selecting paid extras is widely seen as a dark pattern and may conflict with consumer law in some regions. Present add-ons as clear, unticked options with their price, and update the total as they are chosen."
+   ]
+  ]
+ },
+ "booking-confirmed": {
+  "h1": "Booking confirmation screen examples",
+  "intro": "A booking confirmed screen reassures people their place is secured and prepares them for the day. Our examples show the class details, add to calendar, directions, what to bring and reminder settings, designed for a fictional studio on web and mobile across eight visual styles with light and dark versions.",
+  "tips": [
+   "Offer add to calendar for the main calendar apps or as a downloadable file, so the booking lands where people plan their day.",
+   "Include practical preparation details such as arrival time, what to bring and where to go on arrival.",
+   "Show how and when to cancel or reschedule, with a direct link, rather than leaving people to search for it.",
+   "Let people choose reminder timing on this screen, while the booking is fresh in their mind."
+  ],
+  "faq": [
+   [
+    "What should a booking confirmation screen include?",
+    "Confirm the class, date, time, place and instructor, then add practical help: add to calendar, directions, what to bring and how to cancel. A booking reference and a note that an email confirmation is on its way also help people feel certain."
+   ],
+   [
+    "Is an add to calendar button worth including?",
+    "Yes, it is one of the most useful actions after booking, because it puts the session in the place people already plan their time. Offer the common calendar services and a standard calendar file that works with most apps."
+   ],
+   [
+    "How should booking reminders work?",
+    "Send a reminder at a sensible interval before the session, such as the day before and an hour before, and let people adjust or turn them off. Include the time, location and a cancel link so the reminder is useful on its own."
+   ]
+  ]
+ },
+ "api-keys": {
+  "h1": "API keys page design examples",
+  "intro": "An API keys page lets developers create, review and revoke credentials safely. Our examples show keys with scopes and last-used times, a one-time key reveal, a create key action and usage limits, designed for a fictional workspace product on web and mobile in eight visual styles with light and dark themes.",
+  "tips": [
+   "Show the full secret only once at creation with a copy button, and warn clearly that it cannot be viewed again.",
+   "Let people name each key and see its scopes, so they know which integration will break if it is revoked.",
+   "Display last-used times so unused keys are easy to spot and remove.",
+   "Mask stored keys to a short recognisable prefix or suffix, enough to match them against configuration files."
+  ],
+  "faq": [
+   [
+    "Why are API keys only shown once?",
+    "Showing a secret once means the service can store only a hashed version, so a database leak does not expose usable keys. It also encourages people to put the key straight into a secrets manager. If it is lost, they create a new one."
+   ],
+   [
+    "What should an API keys table include?",
+    "Key name, a masked identifier, scopes or permissions, creation date, last used time and who created it. Row actions should include revoke and, where supported, rotate. Expiry dates are worth showing if keys can expire."
+   ],
+   [
+    "How should key revocation be designed?",
+    "Ask for confirmation that names the key and states that applications using it will stop working immediately. Revocation should take effect at once. Supporting several active keys lets teams rotate credentials by creating a new key before revoking the old one."
+   ]
+  ]
+ },
+ "audit-log": {
+  "h1": "Audit log UI examples",
+  "intro": "An audit log lets admins trace who did what, to which resource and when. Our examples show a filterable event table with actor, action, target, IP address and time, plus an event detail panel, designed for a fictional workspace product on web and mobile in eight visual styles with light and dark themes.",
+  "tips": [
+   "Write actions in plain past-tense phrases, such as removed member, rather than raw internal event codes.",
+   "Show times in the viewer's time zone with the zone labelled, and reveal the exact timestamp on hover or in the detail panel.",
+   "Let admins filter by actor, action type, target and date range, and keep those filters in the URL for sharing.",
+   "Offer export in a standard format so logs can be kept or analysed outside the product."
+  ],
+  "faq": [
+   [
+    "What fields should an audit log show?",
+    "Each event should record who acted, what they did, what it affected, when it happened and from where, such as an IP address or device. A detail view can show before and after values and any request metadata investigators need."
+   ],
+   [
+    "Should audit log entries be editable or deletable?",
+    "No. Audit logs should be append-only so they remain trustworthy as a record. Admins can filter, search and export entries, and older events may be archived under a stated retention policy, but individual entries should not be altered from the interface."
+   ],
+   [
+    "How should an audit log handle large volumes of events?",
+    "Use server-side filtering and pagination or infinite loading rather than loading everything at once. Encourage narrowing by date range and event type, and provide export for deeper analysis. Keep the table columns compact so many rows fit on screen."
+   ]
+  ]
+ },
+ "roles-permissions": {
+  "h1": "Roles and permissions UI examples",
+  "intro": "A roles and permissions screen lets admins decide who can do what in a workspace. Our examples show a list of roles with member counts and a permission matrix for the selected role, designed for a fictional workspace product on web and mobile in eight visual styles, each with light and dark versions.",
+  "tips": [
+   "Group permissions by area, such as projects, billing and members, so the matrix reads as sections rather than one long list.",
+   "Describe each permission in terms of what a person can do, not internal object names.",
+   "Lock built-in roles like Owner from editing and explain why, while allowing custom roles to be duplicated and adjusted.",
+   "Show how many members a change will affect before saving edits to an existing role."
+  ],
+  "faq": [
+   [
+    "How should a permission matrix be laid out?",
+    "Put permissions in rows grouped by area, with either one role at a time or roles as columns. Viewing one selected role keeps the screen manageable on smaller displays. Use clear checkboxes or toggles and explain any permission that implies another."
+   ],
+   [
+    "Should products offer custom roles?",
+    "Simple built-in roles such as Owner, Admin, Member and Guest cover many teams. Custom roles suit larger organisations with specific access needs. If you offer them, let admins start by duplicating an existing role rather than building from an empty set."
+   ],
+   [
+    "How do you prevent admins from locking themselves out?",
+    "Prevent removal of the last owner or administrator, and block edits that would strip the current user of permission to manage roles without confirmation. Show a clear warning explaining the consequence, and log every role change in the audit log."
+   ]
+  ]
+ },
+ "integrations": {
+  "h1": "Integrations settings page examples",
+  "intro": "An integrations settings page shows which tools are connected and lets admins add or configure others. Our examples show connected and available integrations with connect buttons and a settings panel, designed for a fictional workspace product on web and mobile in eight visual styles, each with light and dark themes.",
+  "tips": [
+   "Separate connected integrations from available ones, and show each connection's status, owner and last sync time.",
+   "Explain what data an integration can read or change before the person starts the connection flow.",
+   "Surface broken connections prominently with a reconnect action, because expired authorisation often fails silently.",
+   "Open integration settings in a side panel so people keep their place in the list."
+  ],
+  "faq": [
+   [
+    "What should an integrations settings page include?",
+    "A list of connected integrations with status and quick actions, a browsable catalogue of available ones with categories and search, and a settings view for each connection. Clear errors and reconnect prompts matter as much as the connect button itself."
+   ],
+   [
+    "How should the connect flow for an integration work?",
+    "Explain the permissions requested, send the person through the provider's authorisation screen, then return them to a settings panel to choose options such as which channels or projects to sync. Confirm success and show what will happen next."
+   ],
+   [
+    "How do you show an integration that has stopped working?",
+    "Mark it with a clear warning state, explain the cause in plain language, such as expired access, and offer a single reconnect action. Notify the person who set it up, since they often hold the required account access."
+   ]
+  ]
+ },
+ "bento-features": {
+  "h1": "Bento grid examples",
+  "intro": "A bento feature grid presents several product features at once in tiles of different sizes. Our examples show mixed-size feature tiles, each with a short heading, a line of copy and a small product visual, designed for web and mobile in eight visual styles from minimal to brutalist, each with light and dark themes.",
+  "tips": [
+   "Give the largest tile to the most important feature, since tile size signals priority to the reader.",
+   "Keep each tile to one idea, with a short heading and one line of copy, so the grid stays scannable.",
+   "Use a consistent gap and corner radius across tiles so mixed sizes still read as one designed system.",
+   "Plan the mobile order deliberately, stacking tiles by importance rather than by their desktop grid position."
+  ],
+  "faq": [
+   [
+    "What is a bento grid in web design?",
+    "A bento grid is a layout of rectangular tiles in varied sizes arranged into a tidy grid, named after the compartments of a Japanese bento box. It is often used on landing pages to show several features at once while giving some more emphasis than others."
+   ],
+   [
+    "How do you make a bento grid responsive?",
+    "Build it with CSS Grid using spans for larger tiles, then reduce the column count at smaller widths. On phones, tiles usually stack into one or two columns. Check the reading order and keep visuals legible, simplifying them where tiles become narrow."
+   ],
+   [
+    "How many tiles should a bento section have?",
+    "Somewhere between four and eight tiles is common. Fewer can look sparse, and more becomes hard to absorb. One or two large tiles plus several smaller ones creates a clear hierarchy without the grid feeling like a cluttered dashboard."
+   ]
+  ]
+ },
+ "how-it-works": {
+  "h1": "How it works section examples",
+  "intro": "A how it works section explains the path from signing up to getting results in a few clear steps. Our examples show numbered steps with small visuals and connectors between them, designed for landing pages on web and mobile in eight visual styles, from editorial to playful, each with light and dark themes.",
+  "tips": [
+   "Keep it to three or four steps, each starting with a verb, so the process looks short and doable.",
+   "Number the steps visibly; connectors help, but the order should be clear without them.",
+   "Make the first step something the reader can do right now, and place the call to action straight after the last step.",
+   "Switch horizontal connectors to a vertical line on mobile so the flow still reads top to bottom."
+  ],
+  "faq": [
+   [
+    "How many steps should a how it works section have?",
+    "Three is a common choice because it suggests simplicity, and four works if the process genuinely needs it. If your real process has many more steps, group them into stages rather than listing every action, and keep details for a help page."
+   ],
+   [
+    "Should each step have an illustration?",
+    "Small visuals help readers grasp each step quickly, especially simplified product snippets that show what they will actually see. Keep the style consistent across steps and make sure the text alone explains the step for people who cannot see the images."
+   ],
+   [
+    "Where should a how it works section go on a landing page?",
+    "It usually works best after the main value proposition and before pricing or detailed features. At that point visitors understand what the product offers and want to know how hard it is to start, so the steps answer the next natural question."
+   ]
+  ]
+ },
+ "integrations-grid": {
+  "h1": "Integrations section examples",
+  "intro": "An integrations grid shows prospects that a product works with the tools they already use. Our examples show integration tiles for fictional tools with category filters and a request-an-integration link, designed for marketing pages on web and mobile in eight visual styles, each with light and dark themes.",
+  "tips": [
+   "Lead with the integrations your audience asks about most, and use category filters once the list grows beyond one screen.",
+   "Give each tile a name and a short line on what the integration does, not just a logo.",
+   "Keep logo tiles a consistent size with even padding so differently shaped marks look balanced.",
+   "End the grid with a request link so missing tools become feedback instead of a reason to leave."
+  ],
+  "faq": [
+   [
+    "Should an integrations section use logos only?",
+    "Logos are quick to recognise, but adding the tool name and a short description improves clarity and accessibility. Each tile should also link to a page explaining what the integration does and how to set it up, which helps both visitors and search."
+   ],
+   [
+    "How should a long list of integrations be organised?",
+    "Group them into categories such as communication, storage and analytics, and offer search or filter chips. Show a curated selection first, with a link or button to view all. This keeps the section short while proving breadth."
+   ],
+   [
+    "Is it worth adding a request an integration link?",
+    "Yes. It gives visitors who do not see their tool a constructive next step and gives your team useful demand signals. Keep the form short, asking for the tool name and an optional email for updates when it becomes available."
+   ]
+  ]
+ },
+ "changelog": {
+  "h1": "Changelog page design examples",
+  "intro": "A changelog shows customers that a product is actively improving and explains what changed. Our examples show a release-notes timeline with entries tagged New, Improved and Fixed, and a subscribe option, designed for web and mobile in eight visual styles from minimal to retro, each with light and dark themes.",
+  "tips": [
+   "Tag each entry as New, Improved or Fixed so readers can scan for the kind of change they care about.",
+   "Write entries around what users can now do, not internal ticket titles or code changes.",
+   "Date every release and give each entry its own anchor link so support teams can point customers to it.",
+   "Add a small image or clip for significant features, keeping minor fixes as short text lines."
+  ],
+  "faq": [
+   [
+    "What should a good changelog entry include?",
+    "A date, a clear title, a tag such as New, Improved or Fixed, and one or two sentences explaining what changed and why it matters to the user. Larger features benefit from a screenshot and a link to documentation explaining how to use them."
+   ],
+   [
+    "How often should a changelog be updated?",
+    "Update it whenever users would notice a change, whether that is weekly or monthly. Consistency matters more than frequency. Grouping small fixes into a regular digest keeps the page useful without filling it with trivial entries."
+   ],
+   [
+    "Should a changelog let people subscribe?",
+    "Yes, an email, RSS or in-app subscribe option keeps interested customers informed without them checking back. Make the frequency clear and include an easy unsubscribe link. Many products also show a small badge in the app when there are unread updates."
+   ]
+  ]
+ },
+ "careers": {
+  "h1": "Careers page design examples",
+  "intro": "A careers section helps candidates understand what working at a company is like and find a suitable role. Our examples show a culture blurb, perks, a department filter and a job list, designed for fictional companies on web and mobile in eight visual styles, each with light and dark themes.",
+  "tips": [
+   "Show the job list early with filters for department and location, since many visitors arrive looking for a specific role.",
+   "List location, working pattern and contract type on every job row so candidates can rule roles in or out quickly.",
+   "Describe perks concretely, such as a set number of leave days, rather than vague claims about culture.",
+   "Offer a useful empty state when a department has no openings, such as a sign-up for future roles."
+  ],
+  "faq": [
+   [
+    "What should a careers page include?",
+    "A short description of the company and how it works, concrete benefits, a filterable list of open roles with location and type, and a clear application route. Salary ranges, where you can share them, and an outline of the hiring process help candidates decide."
+   ],
+   [
+    "Should salary ranges be shown on job listings?",
+    "Showing ranges is increasingly expected, and some jurisdictions now require it in job adverts. It saves time for candidates and recruiters alike. Check the rules for each location you hire in, and present ranges clearly alongside the role title."
+   ],
+   [
+    "How should open roles be organised?",
+    "Group or filter roles by department and location, and sort by most recent or by team. Each row should show the title, team, location and working pattern, linking to a full description. Keep the list on the main page rather than behind an external link if possible."
+   ]
+  ]
+ },
+ "security-trust": {
+  "h1": "Security page design examples",
+  "intro": "A security and trust section reassures buyers that their data will be handled responsibly. Our examples show compliance badges, a summary of security practices, an uptime snippet and a trust-centre link, designed for fictional products on web and mobile in eight visual styles, each with light and dark themes.",
+  "tips": [
+   "Show only certifications and audits the company actually holds, and say what each one covers.",
+   "Describe practices concretely, such as encryption at rest and in transit and single sign-on support, in plain terms buyers can check.",
+   "Link to a trust centre or status page with fuller detail rather than cramming policies into the section.",
+   "Give security reviewers a direct contact or document request route, since they often need more than marketing copy."
+  ],
+  "faq": [
+   [
+    "What should a security section on a website include?",
+    "Relevant certifications or audits, the main technical controls such as encryption and access management, data location and privacy commitments, uptime or status information and a link to deeper documentation. A contact route for security questions and vulnerability reports is also valuable."
+   ],
+   [
+    "What is a trust centre?",
+    "A trust centre is a dedicated page or site collecting a company's security, privacy and compliance information, such as policies, certifications, subprocessors and status. It helps buyers' security teams complete reviews without lengthy back-and-forth emails."
+   ],
+   [
+    "Is it acceptable to show compliance badges before certification is complete?",
+    "No. Displaying a badge implies the certification has been achieved, so showing it early is misleading. If an audit is underway, say so in plain text, for example that an assessment is in progress, and update the badge once the report is issued."
+   ]
+  ]
+ }
+}

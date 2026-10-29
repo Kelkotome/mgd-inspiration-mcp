@@ -26,7 +26,8 @@ lib.setCore(DM);
 // ---- Pattern registry from tpl/*.js ------------------------------------------------------------
 const PATTERNS = {};
 for (const f of fs.readdirSync(path.join(ROOT, "tpl")).filter((f) => f.endsWith(".js")).sort()) {
-  const mod = require(path.join(ROOT, "tpl", f));
+  let mod;
+  try { mod = require(path.join(ROOT, "tpl", f)); } catch (e) { console.error(`skipping tpl/${f}: ${e.message}`); process.exitCode = 1; continue; } // one broken module shouldn't block the rest
   for (const [k, d] of Object.entries(mod)) {
     if (PATTERNS[k]) throw new Error(`pattern ${k} defined twice (${f})`);
     if (!FAMILIES[d.family]) throw new Error(`pattern ${k}: unknown family ${d.family}`);
@@ -63,7 +64,7 @@ function buildOne(pattern, platform, styleName, variant) {
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=${st.fonts}&display=swap" rel="stylesheet">
 <!-- Made Good Designs UI screen — original reference design, free to copy. Tokens: see DESIGN.md -->
-<style>${baseCss(light, st)}${st.css || ""}</style></head><body>${body}</body></html>`;
+<style>${baseCss(light, st, dark)}${st.css || ""}</style></head><body>${body}</body></html>`;
   const dir = path.join(OUT, slug);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, "index.html"), html);

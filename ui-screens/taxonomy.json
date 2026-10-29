@@ -1,5 +1,5 @@
 {
- "_note": "MGD UI screens taxonomy v2 (30-Oct-2026). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style.",
+ "_note": "MGD UI screens taxonomy v3 (30-Oct-2026). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style.",
  "types": [
   "screen",
   "section",
@@ -64,6 +64,27 @@
   "monetize": [
    "paywall-upgrade",
    "cancel-subscription"
+  ],
+  "messaging": [
+   "chat-list",
+   "chat-thread",
+   "video-call"
+  ],
+  "media": [
+   "map-view",
+   "video-player",
+   "create-post"
+  ],
+  "booking": [
+   "class-schedule",
+   "booking-details",
+   "booking-confirmed"
+  ],
+  "admin": [
+   "api-keys",
+   "audit-log",
+   "roles-permissions",
+   "integrations"
   ]
  },
  "section_patterns": [
@@ -80,7 +101,13 @@
   "blog-index",
   "contact-form",
   "stats-band",
-  "comparison-table"
+  "comparison-table",
+  "bento-features",
+  "how-it-works",
+  "integrations-grid",
+  "changelog",
+  "careers",
+  "security-trust"
  ],
  "elements": [
   "sidebar-nav",
@@ -187,6 +214,44 @@
    "name": "Browse and open a photo",
    "steps": [
     "feed",
+    "image-viewer"
+   ]
+  },
+  "book-a-class": {
+   "name": "Book a class",
+   "steps": [
+    "class-schedule",
+    "booking-details",
+    "booking-confirmed"
+   ]
+  },
+  "message-and-call": {
+   "name": "Message a teammate and start a call",
+   "steps": [
+    "chat-list",
+    "chat-thread",
+    "video-call"
+   ]
+  },
+  "review-access": {
+   "name": "Review team access",
+   "steps": [
+    "team-members",
+    "roles-permissions",
+    "audit-log"
+   ]
+  },
+  "post-a-photo": {
+   "name": "Post a photo",
+   "steps": [
+    "feed",
+    "create-post"
+   ]
+  },
+  "explore-a-place": {
+   "name": "Explore a place on the map",
+   "steps": [
+    "map-view",
     "image-viewer"
    ]
   }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Upload generated UI screens (out/<slug>/) to the inspiration Worker as collection 'ui'.
 Usage: python3 ingest.py [--base http://127.0.0.1:8787] [--only GLOB] [--dry]
-Admin token: ../.admin_token. Dedup: source_url = https://madegooddesigns.com/inspiration/ui#<slug> (the Worker skips duplicates)."""
+Admin token: ../.admin_token. Dedup: source_url = https://madegooddesigns.com/inspiration/ui#<slug>; upsert=1 refreshes an existing screen in place (same id). Sends screen-dark.png as image_dark when present."""
 import argparse, fnmatch, io, json, os, sys, urllib.request, uuid
 from PIL import Image
 
@@ -44,13 +44,15 @@ def fields_for(slug, flow_tags):
     roles = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"]
     tags = [m["pattern"], m["platform"], m["category"]] + [e for e in elements if e not in (m["pattern"], m["platform"])]
     tags += ([f"variant:{m['variant']}"] if m.get("variant") else []) + flow_tags.get(slug, [])
-    im = Image.open(os.path.join(d, "screen.png")).convert("RGB")
-    buf = io.BytesIO(); im.save(buf, "WEBP", quality=84, method=6)
+    def webp(fn):
+        p = os.path.join(d, fn)
+        if not os.path.isfile(p): return None
+        buf = io.BytesIO(); Image.open(p).convert("RGB").save(buf, "WEBP", quality=84, method=6); return buf.getvalue()
     return {"collection": "ui", "skip_enrich": "1", "upsert": "1", "title": title, "description": desc, "style": m["style"],
             "themes": json.dumps([m["style"]]), "tags": json.dumps(tags), "palette": json.dumps([m["tokens"]["light"][r] for r in roles]),
             "category": m["pattern"], "country": m["platform"], "industry": m["category"], "company": m["product"], "designer": "Made Good Designs",
             "source_url": f"https://madegooddesigns.com/inspiration/ui#{slug}", "width": str(m["viewport"]["w"]), "height": str(m["viewport"]["h"]),
-            "code_html": open(os.path.join(d, "index.html")).read(), "design_md": open(os.path.join(d, "DESIGN.md")).read()}, buf.getvalue()
+            "code_html": open(os.path.join(d, "index.html")).read(), "design_md": open(os.path.join(d, "DESIGN.md")).read()}, webp("screen.png"), webp("screen-dark.png")
 
 def main():
     ap = argparse.ArgumentParser()
@@ -68,11 +70,13 @@ def main():
             t = f"flow:{f['id']}:{n}"
             if t not in flow_tags.setdefault(sl, []): flow_tags[sl].append(t)
     def one(slug):
-        fields, img = fields_for(slug, flow_tags)
+        fields, img, dark = fields_for(slug, flow_tags)
         if a.dry: return slug, "dry", f"{len(img)//1024}KB {fields['title']}"
         for attempt in range(3):
             try:
-                r = post(a.base, token, fields, {"image": (slug + ".webp", img, "image/webp")})
+                files = {"image": (slug + ".webp", img, "image/webp")}
+                if dark: files["image_dark"] = (slug + "-dark.webp", dark, "image/webp")
+                r = post(a.base, token, fields, files)
                 return slug, ("updated" if r.get("updated") else "added" if r.get("ok") else "dup" if r.get("duplicate") else "FAIL"), r.get("item", {}).get("id") or r
             except Exception as e:
                 err = e

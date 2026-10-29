@@ -1,6 +1,10 @@
 /* MGD UI screens — shared library: styles, product families, icons, base CSS and reusable parts.
    Template modules in tpl/ build screens from these; gen.js renders them. */
 // ---- Styles: token presets on top of the colour engine ------------------------------------
+// Corporate dark theme: every selector scoped to the dark root so nothing leaks into light mode.
+const darkSide = (open, r, close) => `${open}${r} .side{background:color-mix(in oklab,var(--primary) 18%,var(--bg))!important;color:var(--text)}` +
+  `${r} .side .nav,${r} .side .muted,${r} .side .grp{color:var(--muted)}${r} .side .nav.on{background:color-mix(in oklab,var(--primary) 22%,transparent);color:var(--text)}` +
+  `${r} .side .logo b{background:var(--primary)}${close}`;
 const STYLES = {
   minimal: { mood: "clean", hue: 255, harmony: "analogous", hf: "Inter", bf: "Inter", hw: 600, ls: "-0.02em", radius: "8", shadows: "subtle",
     personality: ["Minimal", "Calm", "Technical"], fonts: "Inter:wght@400;500;600;700", hscale: 1 },
@@ -17,7 +21,9 @@ const STYLES = {
     css: ".btn{border-radius:999px;font-weight:700}.card{border-width:0;box-shadow:var(--shadow)}.badge{font-weight:700}" },
   corporate: { mood: "clean", hue: 230, harmony: "analogous", hf: "IBM Plex Sans", bf: "IBM Plex Sans", hw: 600, ls: "-0.01em", radius: "4", shadows: "subtle",
     personality: ["Trustworthy", "Technical", "Calm"], fonts: "IBM+Plex+Sans:wght@400;500;600", hscale: 1,
-    css: ".side{background:color-mix(in oklab,var(--primary) 88%,black)!important;color:var(--on-primary)}.side .nav,.side .muted,.side .grp{color:color-mix(in oklab,var(--on-primary) 70%,transparent)}.side .nav.on{background:color-mix(in oklab,var(--on-primary) 14%,transparent);color:var(--on-primary)}.side .logo b{background:var(--on-primary)}" },
+    css: ".side{background:color-mix(in oklab,var(--primary) 88%,black)!important;color:var(--on-primary)}.side .nav,.side .muted,.side .grp{color:color-mix(in oklab,var(--on-primary) 70%,transparent)}.side .nav.on{background:color-mix(in oklab,var(--on-primary) 14%,transparent);color:var(--on-primary)}.side .logo b{background:var(--on-primary)}" +
+      /* dark theme: a deep brand tint instead of a bright brand-colour sidebar */
+      `${darkSide('@media (prefers-color-scheme:dark){', ':root:not([data-theme="light"])', "}")}${darkSide("", ':root[data-theme="dark"]', "")}` },
   retro: { mood: "warm", hue: 20, harmony: "triadic", hf: "Fraunces", bf: "DM Sans", hw: 700, ls: "-0.02em", radius: "10", shadows: "none",
     personality: ["Warm", "Playful", "Bold"], fonts: "Fraunces:opsz,wght@9..144,600;9..144,700&family=DM+Sans:wght@400;500;700", hscale: 1.1,
     css: ".card,.btn,.input{border:2px solid var(--text)!important}.card{box-shadow:4px 4px 0 var(--primary)!important}.btn.primary{box-shadow:3px 3px 0 var(--text)}h1,.h{font-variation-settings:'SOFT' 100,'WONK' 1}" },
@@ -105,12 +111,16 @@ let DM = null;
 const setCore = (dm) => { DM = dm; };
 
 // ---- Shared CSS ---------------------------------------------------------------------------
-function baseCss(t, st) {
+// Colour tokens for one theme (light or dark); the rest of the CSS only reads the variables.
+// --ink/--on-ink: an always-dark surface (photo viewers, video stages): the text colour in light, the background in dark.
+const colorVars = (t, dark) => `--ink:${dark ? t.background : t.text};--on-ink:${dark ? t.text : t.background};--bg:${t.background};--surface:${t.surface};--border:${t.border};--text:${t.text};--muted:${t.muted};--primary:${t.primary};--on-primary:${t["on-primary"]};--accent:${t.accent};`;
+function baseCss(t, st, dk) {
   const r = parseInt(st.radius, 10), sh = DM.SHADOWS[st.shadows];
-  return `:root{--bg:${t.background};--surface:${t.surface};--border:${t.border};--text:${t.text};--muted:${t.muted};--primary:${t.primary};--on-primary:${t["on-primary"]};--accent:${t.accent};
+  const dark = dk ? `@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){${colorVars(dk, true)}color-scheme:dark}}:root[data-theme="dark"]{${colorVars(dk, true)}color-scheme:dark}\n` : "";
+  return `:root{--ink:${t.text};--on-ink:${t.background};--bg:${t.background};--surface:${t.surface};--border:${t.border};--text:${t.text};--muted:${t.muted};--primary:${t.primary};--on-primary:${t["on-primary"]};--accent:${t.accent};
 --radius-sm:${Math.round(r / 2)}px;--radius:${r}px;--radius-lg:${r * 2}px;--shadow-sm:${sh[0]};--shadow:${sh[1]};--shadow-lg:${sh[2]};
 --font-h:"${st.hf}",Georgia,serif;--font-b:"${st.bf}",system-ui,sans-serif;--hw:${st.hw};--ls:${st.ls}}
-*{box-sizing:border-box;margin:0;padding:0}
+${dark}*{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:var(--bg);color:var(--text);font:14px/1.5 var(--font-b);-webkit-font-smoothing:antialiased}
 .num{font-family:var(--font-b);font-weight:600;letter-spacing:-0.025em;line-height:1.15;font-variant-numeric:tabular-nums}

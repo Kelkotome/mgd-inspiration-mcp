@@ -2,15 +2,20 @@
 // Field mapping on the shared items table (no migration): category = pattern, country = platform,
 // industry = product category, company = fictional product, style = visual style, palette = light-theme roles.
 // Tags also carry "flow:<flow>:<step>" (flow membership) and "variant:<v>"; those are hidden from display.
-// R2: screenshot at ui/<id>.webp, code at ui/<id>/index.html, tokens at ui/<id>/DESIGN.md.
+// R2: screenshot at ui/<id>-<v>.webp (+ -dark.webp twin), code at ui/<id>/index.html, tokens at ui/<id>/DESIGN.md.
+
+import UI_COPY from "./ui_pattern_copy.json"; // per-pattern landing-page copy: { h1, intro, tips[], faq[[q,a]] }
 
 export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts", "login", "sign-up", "forgot-password", "two-factor",
   "welcome", "onboarding-step", "permissions-request", "home", "feed", "list-view", "detail-view", "kanban-board", "calendar",
-  "file-manager", "search-results", "editor-toolbar", "chat-ai-assistant", "image-viewer", "product-detail", "cart", "checkout",
-  "order-confirmation", "settings", "profile", "notifications-center", "team-members", "billing-plans", "invoice", "paywall-upgrade",
+  "file-manager", "search-results", "editor-toolbar", "chat-ai-assistant", "chat-list", "chat-thread", "video-call", "image-viewer",
+  "map-view", "video-player", "create-post", "class-schedule", "booking-details", "booking-confirmed", "product-detail", "cart", "checkout",
+  "order-confirmation", "settings", "profile", "notifications-center", "team-members", "roles-permissions", "audit-log", "api-keys",
+  "integrations", "billing-plans", "invoice", "paywall-upgrade",
   "cancel-subscription", "empty-state", "error-404", "loading-skeleton", "success-confirmation"];
-export const UI_SECTION_PATTERNS = ["hero", "navigation-header", "feature-grid", "logo-cloud", "stats-band", "testimonials", "pricing",
-  "comparison-table", "faq", "cta-banner", "about-team", "blog-index", "contact-form", "footer"];
+export const UI_SECTION_PATTERNS = ["hero", "navigation-header", "feature-grid", "bento-features", "how-it-works", "logo-cloud", "stats-band",
+  "testimonials", "pricing", "comparison-table", "integrations-grid", "security-trust", "faq", "cta-banner", "about-team", "careers",
+  "blog-index", "changelog", "contact-form", "footer"];
 export const UI_PATTERNS = [...UI_SCREEN_PATTERNS, ...UI_SECTION_PATTERNS];
 export const UI_STYLES = ["minimal", "editorial", "brutalist", "luxury", "playful", "corporate", "retro", "monochrome"];
 // Mirrors ui-screens/taxonomy.json "flows" (the ingester tags each step's screens with flow:<id>:<n>).
@@ -18,10 +23,11 @@ export const UI_FLOWS = {
   "sign-up": "Sign up and onboarding", "login-2fa": "Log in with two-factor", "password-reset": "Reset a password",
   "checkout": "Buy a product", "upgrade-plan": "Upgrade a plan", "cancel-subscription": "Cancel a subscription",
   "invite-teammate": "Invite a teammate", "first-run": "First run to first project", "search-to-detail": "Search and open a result",
-  "browse-photos": "Browse and open a photo",
+  "browse-photos": "Browse and open a photo", "book-a-class": "Book a class", "message-and-call": "Message a teammate and start a call",
+  "review-access": "Review team access", "post-a-photo": "Post a photo", "explore-a-place": "Explore a place on the map",
 };
 const ROLES = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"];
-const LABELS = { "chat-ai-assistant": "AI chat assistant", "saas": "SaaS", "ai": "AI", "error-404": "404 error", "faq": "FAQ", "cta-banner": "CTA banner",
+const LABELS = { "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys", "security-trust": "Security and trust", "how-it-works": "How it works", "saas": "SaaS", "ai": "AI", "error-404": "404 error", "faq": "FAQ", "cta-banner": "CTA banner",
   "two-factor": "Two-factor code", "kanban-board": "Kanban board", "data-table": "Data table" };
 const label = (s) => LABELS[s] || (s || "").replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const order = (p) => { const i = UI_PATTERNS.indexOf(p); return i < 0 ? 999 : i; };
@@ -32,13 +38,26 @@ export function uiFields(r) {
   const flows = tags.filter((t) => /^flow:[a-z0-9-]+:\d+$/.test(t)).map((t) => { const [, id, n] = t.split(":"); return { id, step: +n }; });
   const v = tags.find((t) => t.startsWith("variant:"));
   return { pattern: r.category || null, platform: r.country || null, product: r.company || null, app_category: r.industry || null,
-    variant: v ? v.slice(8) : null, flows, code: `/ui/raw/${r.id}.html`, design_md: `/ui/raw/${r.id}.md` };
+    variant: v ? v.slice(8) : null, flows, code: `/ui/raw/${r.id}.html`, design_md: `/ui/raw/${r.id}.md`,
+    // Versioned keys (ui/<id>-<v>.webp) are always uploaded with a dark twin; older unversioned keys have none.
+    image_dark: /^ui\/[0-9a-f]{12}-[a-z0-9]+\.webp$/.test(r.image_key || "") ? `/img/${r.image_key.replace(/\.webp$/, "-dark.webp")}` : null };
 }
 export const uiShownTags = (tags) => (tags || []).filter((t) => !/^(flow|variant):/.test(t));
 export function uiItemPath(it, base) {
   return `${base}/ui/${[it.pattern, it.variant, it.platform, it.style].filter(Boolean).join("-")}-${it.id}`;
 }
 const flowPath = (id, base, platform, style) => `${base}/ui/flows/${id}${platform || style ? `?platform=${platform || "web"}&style=${style || "minimal"}` : ""}`;
+
+// Light/dark switch: swaps every screenshot that has a dark twin (data-dark). Remembers the choice per visitor.
+const THEME_SWITCH = `<span class="tsw" role="group" aria-label="Screenshot theme"><b>Theme</b><button class="chip" data-ui-theme="light" aria-pressed="true">Light</button><button class="chip" data-ui-theme="dark" aria-pressed="false">Dark</button></span>`;
+const THEME_JS = `<script>(function(){function set(t){document.querySelectorAll("img[data-dark]").forEach(function(i){if(!i.dataset.light)i.dataset.light=i.getAttribute("src");i.src=t==="dark"?i.dataset.dark:i.dataset.light});
+document.querySelectorAll("[data-ui-theme]").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.uiTheme===t))});try{localStorage.setItem("mgd-ui-shot",t)}catch(e){}}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-ui-theme]");if(b)set(b.dataset.uiTheme)});
+var t="light";try{t=localStorage.getItem("mgd-ui-shot")||"light"}catch(e){}if(t==="dark")set("dark")})();</script>`;
+// Crawlable links to every pattern page (gallery, pattern pages, flows index).
+const patternIndex = (base, h, have) => `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">Browse by pattern</h2>
+<p class="lede" style="margin:0 0 .4rem">App screens</p><div class="pidx">${UI_SCREEN_PATTERNS.filter((p) => !have || have.has(p)).map((p) => `<a href="${h.escHtml(base)}/ui/${p}">${h.escHtml(label(p))}</a>`).join("<br>")}</div>
+<p class="lede" style="margin:1rem 0 .4rem">Website sections</p><div class="pidx">${UI_SECTION_PATTERNS.filter((p) => !have || have.has(p)).map((p) => `<a href="${h.escHtml(base)}/ui/${p}">${h.escHtml(label(p))}</a>`).join("<br>")}</div>`;
 
 // ---- Pages -----------------------------------------------------------------------------------
 // h = helpers from index.js: { escHtml, GTAG, themeify, saveWidget, backLink, edgeCache, rowToItem }
@@ -48,6 +67,8 @@ export async function uiRoute(path, request, env, ctx, base, h) {
   if (path === "/ui/flows") return h.edgeCache(request, ctx, 1800, () => uiFlowsIndex(env, base, h));
   const fm = path.match(/^\/ui\/flows\/([a-z0-9-]+)$/);
   if (fm) return UI_FLOWS[fm[1]] ? h.edgeCache(request, ctx, 1800, () => uiFlowPage(fm[1], new URL(request.url), env, base, h)) : null;
+  const pm = path.match(/^\/ui\/([a-z0-9-]+)$/);
+  if (pm && UI_PATTERNS.includes(pm[1])) return h.edgeCache(request, ctx, 1800, () => uiPatternPage(pm[1], env, base, h));
   const raw = path.match(/^\/ui\/raw\/([0-9a-f]{12})\.(html|md)$/);
   if (raw) return uiRaw(raw[1], raw[2], env, base);
   if (path === "/ui/terms") return h.edgeCache(request, ctx, 3600, () => uiTermsPage(env, base, h));
@@ -105,6 +126,10 @@ h1{font-size:1.6rem;margin:.1rem 0 .5rem;letter-spacing:-.01em}
 .steps .step img{width:100%;border:1px solid var(--border);border-radius:10px;display:block;background:var(--surface)}
 .steps .step div{font-size:.82rem;margin-top:.4rem}.steps .step b{display:inline-block;min-width:1.4rem;color:var(--muted)}
 .steps .arr{flex:none;align-self:center;color:var(--muted);font-size:1.4rem}
+.tsw{display:inline-flex;gap:.3rem;align-items:center;font-size:.75rem;color:var(--muted)}.tsw b{font-weight:600;margin-right:.2rem}
+.pidx{columns:4 200px;font-size:.88rem;line-height:1.9;margin:.25rem 0 0}.pidx a{text-decoration:none}.pidx a:hover{text-decoration:underline}
+.tips{max-width:75ch;line-height:1.6;padding-left:1.2rem}.tips li{margin:.35rem 0}
+.faq{max-width:75ch}.faq h3{font-size:1rem;margin:1.2rem 0 .3rem}.faq p{margin:0;line-height:1.6}
 footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;line-height:1.5;max-width:75ch}`;
 
 const MCP_NOTE = (base) => `<div class="mcp"><b>Building with an AI coding agent?</b> Every screen here is also in the free
@@ -129,7 +154,7 @@ async function uiRows(env, where, binds) {
   return rows.sort((a, b) => order(a.category) - order(b.category) || (a.country === b.country ? 0 : a.country === "web" ? -1 : 1) || si(a.style) - si(b.style) || String(a.title).localeCompare(String(b.title)));
 }
 const card = (it, base, h, metaHtml) => `<a class="card ${h.escHtml(it.platform)}" href="${h.escHtml(uiItemPath(it, base))}" data-platform="${h.escHtml(it.platform)}" data-pattern="${h.escHtml(it.pattern)}" data-style="${h.escHtml(it.style)}">
-<div class="th"><img loading="lazy" src="${h.escHtml(base + it.image)}" alt="${h.escHtml(it.title)}"/></div><div class="meta">${metaHtml}</div></a>`;
+<div class="th"><img loading="lazy" src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(it.title)}"/></div><div class="meta">${metaHtml}</div></a>`;
 
 async function uiGalleryPage(env, base, h) {
   const items = (await uiRows(env)).map((r) => h.rowToItem(r, env));
@@ -145,8 +170,8 @@ async function uiGalleryPage(env, base, h) {
 <h1>UI screens</h1>
 <p class="lede">Original app screens and website sections for web and mobile, designed by Made Good Designs. Unlike screenshot libraries, every screen comes with its <b>HTML code</b> and a <b>DESIGN.md</b> with the colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>
 <div class="filters">${chips("platform", "Platform", ["web", "mobile"])}${chips("pattern", "Screens", UI_SCREEN_PATTERNS.filter((p) => have.has(p)))}${chips("pattern", "Sections", UI_SECTION_PATTERNS.filter((p) => have.has(p)))}${chips("style", "Style", UI_STYLES)}</div>
-<p class="lede" id="count" style="margin:-.5rem 0 1rem">${items.length} screens</p>
-<div class="grid" id="grid">${cards}</div><p style="text-align:center;margin:1.5rem 0"><button class="btn" id="more" hidden>Show more</button></p>${MCP_NOTE(base)}${RIGHTS}
+<p class="lede" id="count" style="margin:-.5rem 0 .5rem">${items.length} screens</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>
+<div class="grid" id="grid">${cards}</div><p style="text-align:center;margin:1.5rem 0"><button class="btn" id="more" hidden>Show more</button></p>${patternIndex(base, h, have)}${MCP_NOTE(base)}${RIGHTS}
 </div><script>
 (function(){var PAGE=48,shown=PAGE,f={platform:"",pattern:"",style:""},cards=[].slice.call(document.querySelectorAll("#grid .card")),cnt=document.getElementById("count"),more=document.getElementById("more");
 try{var q=new URLSearchParams(location.search);for(var k in f)if(q.get(k))f[k]=q.get(k)}catch(e){}
@@ -155,7 +180,7 @@ cnt.textContent=n+" screen"+(n===1?"":"s");more.hidden=n<=shown;document.querySe
 more.addEventListener("click",function(){shown+=PAGE*2;apply()});
 document.querySelector(".filters").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;f[b.dataset.f]=b.dataset.v;shown=PAGE;apply();
 try{var q=new URLSearchParams();for(var k in f)if(f[k])q.set(k,f[k]);history.replaceState(null,"",location.pathname+(q.toString()?"?"+q:""))}catch(e){}});apply()})();
-</script>${h.saveWidget(base)}</body></html>`;
+</script>${THEME_JS}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 
@@ -167,7 +192,7 @@ async function uiItemPage(id, env, base, h) {
   const isSection = UI_SECTION_PATTERNS.includes(it.pattern);
   const name = `${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""} ${isSection ? "section" : "screen"} — ${it.platform}, ${it.style} style`;
   const related = (await uiRows(env, " AND category=? AND id<>? AND (country=? OR style=?)", [it.pattern, it.id, it.platform, it.style])).map((r) => h.rowToItem(r, env)).slice(0, 12);
-  const facts = [["Pattern", label(it.pattern), `${base}/ui?pattern=${it.pattern}`], ["Platform", label(it.platform), `${base}/ui?platform=${it.platform}`],
+  const facts = [["Pattern", label(it.pattern), `${base}/ui/${it.pattern}`], ["Platform", label(it.platform), `${base}/ui?platform=${it.platform}`],
     ["Style", label(it.style), `${base}/ui?style=${it.style}`], ["Product (fictional)", it.product, null], ["Category", label(it.app_category), null]];
   const flows = (it.flows || []).filter((f) => UI_FLOWS[f.id]);
   const pal = (it.palette || []).slice(0, 8).map((hx, i) => `<span class="sw" style="background:${h.escHtml(hx)}" title="${ROLES[i] || ""} ${h.escHtml(hx)}"></span>`).join("");
@@ -189,9 +214,9 @@ dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:.3rem 1rem;margi
 .flows{font-size:.9rem;margin:0 0 1rem}.flows a{font-weight:600}
 h2{font-size:1.05rem;margin:2.25rem 0 .75rem}` })
   + `${h.backLink(base, "/ui", "Back to UI screens")}
-<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui?pattern=${h.escHtml(it.pattern)}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
+<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/${h.escHtml(it.pattern)}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
 <div class="detail ${h.escHtml(it.platform)}">
-  <div style="position:relative"><button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button><img class="shot" src="${h.escHtml(base + it.image)}" alt="${h.escHtml(name)}"/></div>
+  <div style="position:relative"><button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button><img class="shot" src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>
   <div><h1>${h.escHtml(name)}</h1>${it.description ? `<p class="desc">${h.escHtml(it.description)}</p>` : ""}
     <div class="acts"><a class="btn dark" href="${h.escHtml(base + it.code)}" target="_blank" rel="noopener">Open live HTML ↗</a>
       <button class="btn" data-copy="${h.escHtml(base + it.code)}">Copy HTML</button><button class="btn" data-copy="${h.escHtml(base + it.design_md)}">Copy DESIGN.md</button>
@@ -205,7 +230,46 @@ ${related.length ? `<h2>More ${h.escHtml(label(it.pattern).toLowerCase())} ${isS
 ${MCP_NOTE(base)}${RIGHTS}
 </div><script>document.addEventListener("click",function(e){var b=e.target.closest("[data-copy]");if(!b)return;var t=b.textContent;
 fetch(b.dataset.copy).then(function(r){return r.text()}).then(function(s){return navigator.clipboard.writeText(s)}).then(function(){b.textContent="Copied ✓";setTimeout(function(){b.textContent=t},1600)},function(){b.textContent="Copy failed";setTimeout(function(){b.textContent=t},1600)})});</script>
-${h.saveWidget(base)}</body></html>`;
+${THEME_JS}${h.saveWidget(base)}</body></html>`;
+  return page(h, body);
+}
+
+// ---- Pattern landing pages (/ui/<pattern>) ------------------------------------------------------
+async function uiPatternPage(pattern, env, base, h) {
+  const items = (await uiRows(env, " AND category=?", [pattern])).map((r) => h.rowToItem(r, env));
+  if (!items.length) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
+  const site = siteOf(env), url = `${site}${base}/ui/${pattern}`, isSection = UI_SECTION_PATTERNS.includes(pattern);
+  const c = UI_COPY[pattern] || {}, lab = label(pattern), kind = isSection ? "section" : "screen";
+  const h1 = c.h1 || `${lab} ${isSection ? "section" : "UI"} examples`;
+  const nStyles = new Set(items.map((x) => x.style)).size, plats = [...new Set(items.map((x) => x.platform))];
+  const desc = `${items.length} free ${lab.toLowerCase()} ${kind} examples for ${plats.join(" and ")} in ${nStyles} styles, each with copyable HTML and a DESIGN.md (light and dark tokens). Original designs by Made Good Designs.`;
+  const flows = Object.entries(UI_FLOWS).filter(([id]) => items.some((it) => (it.flows || []).some((f) => f.id === id)));
+  const faq = (c.faq || []).filter((x) => Array.isArray(x) && x[0] && x[1]);
+  const jsonld = [{ "@context": "https://schema.org", "@type": "CollectionPage", name: `${h1} with code`, url, description: c.intro || desc,
+    isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` }, publisher: MGD_ORG(site), ...licenceLd(site, base),
+    mainEntity: { "@type": "ItemList", numberOfItems: items.length, itemListElement: items.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: site + uiItemPath(it, base) })) } }];
+  if (faq.length) jsonld.push({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) });
+  const chips = (k, lab2, vals) => `<div><b>${lab2}</b><button class="chip" data-f="${k}" data-v="" aria-pressed="true">All</button>${vals.map((v) => `<button class="chip" data-f="${k}" data-v="${h.escHtml(v)}" aria-pressed="false">${h.escHtml(label(v))}</button>`).join("")}</div>`;
+  const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.platform))}</b>${it.variant ? " · " + h.escHtml(label(it.variant)) : ""} <span>· ${h.escHtml(it.style)}</span>`)).join("");
+  const body = head(h, { title: `${h1} with HTML code (web & mobile) — free | MGD UI Screens`, ogTitle: `${h1} with code`, desc, canonical: url,
+    image: site + base + items[0].image, jsonld })
+  + `${h.backLink(base, "/ui", "All UI screens")}
+<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(lab)}</nav>
+<h1>${h.escHtml(h1)}</h1>
+<p class="lede">${h.escHtml(c.intro || desc)} Every example is an original design that comes with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, in light and dark. Free to use and adapt.</p>
+<div class="filters">${plats.length > 1 ? chips("platform", "Platform", plats) : ""}${chips("style", "Style", UI_STYLES.filter((x) => items.some((it) => it.style === x)))}<div>${THEME_SWITCH}</div></div>
+<p class="lede" id="count" style="margin:-.5rem 0 1rem">${items.length} examples</p>
+<div class="grid" id="grid">${cards}</div>
+${flows.length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">See it in a flow</h2><p class="lede" style="margin:0">${flows.map(([id, n]) => `<a href="${h.escHtml(flowPath(id, base))}"><b>${h.escHtml(n)}</b></a>`).join(" · ")}</p>` : ""}
+${(c.tips || []).length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">${h.escHtml(lab)} design tips</h2><ul class="tips">${c.tips.map((t) => `<li>${h.escHtml(t)}</li>`).join("")}</ul>` : ""}
+${faq.length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .25rem">Questions</h2><div class="faq">${faq.map(([q, a]) => `<h3>${h.escHtml(q)}</h3><p>${h.escHtml(a)}</p>`).join("")}</div>` : ""}
+${patternIndex(base, h)}${MCP_NOTE(base)}${RIGHTS}
+</div><script>
+(function(){var f={platform:"",style:""},cards=[].slice.call(document.querySelectorAll("#grid .card")),cnt=document.getElementById("count");
+function apply(){var n=0;cards.forEach(function(c){var ok=true;for(var k in f)if(f[k]&&c.dataset[k]!==f[k])ok=false;if(ok)n++;c.style.display=ok?"":"none"});
+cnt.textContent=n+" example"+(n===1?"":"s");document.querySelectorAll(".chip[data-f]").forEach(function(b){b.setAttribute("aria-pressed",String(f[b.dataset.f]===b.dataset.v))})}
+document.querySelector(".filters").addEventListener("click",function(e){var b=e.target.closest(".chip[data-f]");if(!b)return;f[b.dataset.f]=b.dataset.v;apply()})})();
+</script>${THEME_JS}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 
@@ -215,7 +279,7 @@ async function flowSteps(env, h, id, platform, style) {
   return rows.map((r) => h.rowToItem(r, env)).map((it) => ({ it, step: ((it.flows || []).find((f) => f.id === id) || {}).step || 0 }))
     .sort((a, b) => a.step - b.step);
 }
-const stepsHtml = (steps, base, h, platform) => `<div class="steps ${h.escHtml(platform)}">${steps.map(({ it, step }, i) => `${i ? '<span class="arr" aria-hidden="true">→</span>' : ""}<a class="step" href="${h.escHtml(uiItemPath(it, base))}"><img loading="lazy" src="${h.escHtml(base + it.image)}" alt="Step ${step}: ${h.escHtml(label(it.pattern))}"/><div><b>${step}</b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</div></a>`).join("")}</div>`;
+const stepsHtml = (steps, base, h, platform) => `<div class="steps ${h.escHtml(platform)}">${steps.map(({ it, step }, i) => `${i ? '<span class="arr" aria-hidden="true">→</span>' : ""}<a class="step" href="${h.escHtml(uiItemPath(it, base))}"><img loading="lazy" src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="Step ${step}: ${h.escHtml(label(it.pattern))}"/><div><b>${step}</b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</div></a>`).join("")}</div>`;
 
 async function uiFlowsIndex(env, base, h) {
   const site = siteOf(env);
@@ -227,7 +291,7 @@ async function uiFlowsIndex(env, base, h) {
   const desc = `${Object.keys(UI_FLOWS).length} multi-step UI flows (sign-up, two-factor login, password reset, checkout, upgrade, cancel subscription, invite a teammate and more), each for web and mobile in ${UI_STYLES.length} styles, with HTML and DESIGN.md for every step. Free.`;
   const body = head(h, { title: "Free UI flows — sign-up, checkout, cancel subscription and more, with code | MGD UI Screens", desc, canonical: `${site}${base}/ui/flows`,
     jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: "MGD UI Flows", url: `${site}${base}/ui/flows`, description: desc, publisher: { "@type": "Organization", name: "Made Good Designs", url: site } } })
-  + `${h.backLink(base, "/ui", "Back to UI screens")}<h1>UI flows</h1><p class="lede">${h.escHtml(desc)} Shown here in the minimal style on web; open a flow to switch platform and style.</p>${blocks.join("")}${MCP_NOTE(base)}${RIGHTS}</div>${h.saveWidget(base)}</body></html>`;
+  + `${h.backLink(base, "/ui", "Back to UI screens")}<h1>UI flows</h1><p class="lede">${h.escHtml(desc)} Shown here in the minimal style on web; open a flow to switch platform and style.</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>${blocks.join("")}${patternIndex(base, h)}${MCP_NOTE(base)}${RIGHTS}</div>${THEME_JS}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 
@@ -244,9 +308,9 @@ async function uiFlowPage(id, url, env, base, h) {
   + `${h.backLink(base, "/ui/flows", "All flows")}
 <nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/flows">Flows</a> › ${h.escHtml(name)}</nav>
 <h1>${h.escHtml(name)}</h1><p class="lede">${h.escHtml(desc)}</p>
-<div class="filters">${sw("platform", ["web", "mobile"], platform)}${sw("style", UI_STYLES, style)}</div>
+<div class="filters">${sw("platform", ["web", "mobile"], platform)}${sw("style", UI_STYLES, style)}<div>${THEME_SWITCH}</div></div>
 ${steps.length ? stepsHtml(steps, base, h, platform) : `<p class="lede">This flow isn't available in that combination yet.</p>`}
-${MCP_NOTE(base)}${RIGHTS}</div>${h.saveWidget(base)}</body></html>`;
+${MCP_NOTE(base)}${RIGHTS}</div>${THEME_JS}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 
@@ -273,7 +337,7 @@ ${sec("No warranty", ["The screens are reference designs, provided as is, withou
 async function uiSitemap(env, base) {
   const site = siteOf(env);
   const rows = await uiRows(env);
-  const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...Object.keys(UI_FLOWS).map((id) => `${site}${base}/ui/flows/${id}`),
+  const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...UI_PATTERNS.map((p) => `${site}${base}/ui/${p}`), ...Object.keys(UI_FLOWS).map((id) => `${site}${base}/ui/flows/${id}`),
     ...rows.map((r) => site + uiItemPath({ id: r.id, ...uiFields(r), style: r.style }, base))];
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${u}</loc></url>`).join("\n")}\n</urlset>`,
     { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
@@ -353,7 +417,7 @@ export async function callUiTool(name, a, env, h) {
       return [`• ${it.title}`, `  screen_id: ${it.id}`, `  pattern: ${it.pattern}${it.variant ? " (" + it.variant + ")" : ""} · platform: ${it.platform} · style: ${it.style}${it.app_category ? " · category: " + it.app_category : ""}`,
         it.description ? `  ${it.description}` : null, roles ? `  colour roles (light): ${roles}` : null,
         uiShownTags(it.tags).length ? `  elements: ${uiShownTags(it.tags).join(", ")}` : null, fl ? `  flows: ${fl} (get_ui_flow)` : null,
-        `  screenshot: ${site}${it.image}`, `  page (cite this): ${site}${uiItemPath(it, "")}`,
+        `  screenshot: ${site}${it.image}${it.image_dark ? ` · dark: ${site}${it.image_dark}` : ""}`, `  page (cite this): ${site}${uiItemPath(it, "")} · more ${it.pattern} examples: ${site}/ui/${it.pattern}`,
         `  code: get_ui_screen_code(screen_id="${it.id}") or ${site}${it.code} · DESIGN.md: ${site}${it.design_md}`].filter(Boolean).join("\n");
     });
     return { content: [{ type: "text", text: `${hd}. Source: Made Good Designs UI screens — ${site}/ui. ${CITE}\n\n${blocks.join("\n\n")}` }] };
