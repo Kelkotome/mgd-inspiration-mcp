@@ -167,8 +167,11 @@ export default {
 
   // Daily cron (wrangler.jsonc "triggers"): MCP call logs are kept 12 months, as the MCP privacy policy states.
   async scheduled(event, env, ctx) {
-    const cutoff = Date.now() - 365 * 24 * 60 * 60 * 1000;
+    const DAY = 24 * 60 * 60 * 1000, cutoff = Date.now() - 365 * DAY;
     ctx.waitUntil(env.DB.prepare("DELETE FROM mcp_calls WHERE created_at < ?").bind(cutoff).run());
+    // privacy: keep raw IPs for 90 days only (abuse checks + excluding our own tests), then blank them
+    ctx.waitUntil(env.DB.prepare("UPDATE mcp_calls SET ip='' WHERE created_at < ? AND ip != ''").bind(Date.now() - 90 * DAY).run().catch(() => {}));
+    ctx.waitUntil(env.DB.prepare("DELETE FROM mcp_events WHERE created_at < ?").bind(cutoff).run().catch(() => {}));
   },
 };
 
@@ -1505,12 +1508,13 @@ function mcpCors() {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     "Access-Control-Allow-Headers": "content-type,mcp-session-id,mcp-protocol-version,authorization,accept",
+    "Access-Control-Expose-Headers": "Mcp-Session-Id",
   };
 }
-function mcpJson(obj, status) {
+function mcpJson(obj, status, extra) {
   return new Response(obj == null ? "" : JSON.stringify(obj), {
     status: status || (obj == null ? 202 : 200),
-    headers: { "Content-Type": "application/json", "Cache-Control": "no-store", ...mcpCors() },
+    headers: { "Content-Type": "application/json", "Cache-Control": "no-store", ...mcpCors(), ...(extra || {}) },
   });
 }
 const rpcOk = (id, result) => ({ jsonrpc: "2.0", id, result });
@@ -1548,12 +1552,14 @@ async function mcpHandler(request, env) {
     return rpcErr(id, -32601, "Method not found: " + method);
   };
 
+  const ctx = mcpCtx(request, "public"), hdrs = {};
+  const run = (m) => mcpTracked(env, ctx, m, handle, hdrs);
   if (Array.isArray(body)) {
-    const out = (await Promise.all(body.map(handle))).filter(Boolean);
-    return out.length ? mcpJson(out) : mcpJson(null);
+    const out = (await Promise.all(body.map(run))).filter(Boolean);
+    return out.length ? mcpJson(out, 0, hdrs) : mcpJson(null, 0, hdrs);
   }
-  const res = await handle(body);
-  return res ? mcpJson(res) : mcpJson(null);
+  const res = await run(body);
+  return res ? mcpJson(res, 0, hdrs) : mcpJson(null, 0, hdrs);
 }
 
 // Best-effort MCP usage log (never blocks/breaks a tool call).
@@ -1572,6 +1578,73 @@ async function logMcp(env, tool, query, ip, ua, who) {
       .bind(genId(), (tool || "").toString().slice(0, 60), (query || "").toString().slice(0, 200),
             (ip || "").toString().slice(0, 60), (ua || "").toString().slice(0, 200), Date.now()).run();
   } catch (_) { /* logging must never affect the response */ }
+}
+
+// MCP analytics: connections, sessions and outcomes (migrate_mcp_events.sql). Best-effort — never affects a response.
+const MCP_BOT_UA = /^(curl\/|undici|python-|Go-http-client|node-fetch|axios|okhttp|aiohttp|httpx|Wget|Java\/)|mcp-probe|MCPYP|evyAI|scanner/i;
+function mcpCtx(request, endpoint) {
+  return { endpoint, ip: request.headers.get("CF-Connecting-IP") || "", ua: request.headers.get("User-Agent") || "",
+    country: (request.cf && request.cf.country) || "", sid: request.headers.get("mcp-session-id") || "" };
+}
+async function mcpVisitor(env, ip, ua) {
+  const d = new TextEncoder().encode((env.MCP_HASH_SALT || "mgd-mcp-v1") + "|" + ip + "|" + ua);
+  const h = new Uint8Array(await crypto.subtle.digest("SHA-256", d));
+  return Array.from(h.slice(0, 12), (b) => b.toString(16).padStart(2, "0")).join("");
+}
+async function mcpEvent(env, c, e) {
+  try {
+    const cut = (x, n) => (x == null ? null : String(x).slice(0, n));
+    await env.DB.prepare("INSERT INTO mcp_events (id,created_at,endpoint,kind,session_id,client_name,client_version,protocol,visitor,ua,country,tool,ok,zero,ms,bot) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+      .bind(genId(), Date.now(), c.endpoint, e.kind, cut(e.sid || c.sid || null, 64), cut(e.client_name, 80), cut(e.client_version, 40), cut(e.protocol, 20),
+        await mcpVisitor(env, c.ip, c.ua), cut(c.ua, 200), cut(c.country, 4), cut(e.tool, 60),
+        e.ok == null ? null : e.ok ? 1 : 0, e.zero == null ? null : e.zero ? 1 : 0, e.ms == null ? null : e.ms, MCP_BOT_UA.test(c.ua) ? 1 : 0).run();
+  } catch (_) { /* table missing or D1 hiccup — analytics must never break MCP */ }
+}
+function mcpZero(result) {
+  const t = (result && result.content && result.content[0] && result.content[0].text) || "";
+  return /^0 [^\n]*result|No matches —/.test(t);
+}
+function mcpClientTag(ua) {
+  return /^Claude-User/i.test(ua) ? "claude-ai" : /^claude-code/i.test(ua) ? "claude-code" : /^Cursor/i.test(ua) ? "cursor" : /^codex/i.test(ua) ? "codex" :
+    /openai-mcp|ChatGPT/i.test(ua) ? "chatgpt" : /vscode|copilot/i.test(ua) ? "vscode" : "";
+}
+// Tag our own page links in tool answers so GA4 shows the visits MCP sends (utm_source=mcp, medium=referral, campaign=tool).
+function mcpUtm(result, tool, ua) {
+  if (!result || !Array.isArray(result.content)) return result;
+  const client = mcpClientTag(ua);
+  const tag = "utm_source=mcp&utm_medium=referral&utm_campaign=" + encodeURIComponent(tool || "mcp") + (client ? "&utm_content=" + client : "");
+  result.content.forEach((c) => {
+    if (!c || c.type !== "text" || typeof c.text !== "string") return;
+    c.text = c.text.replace(/https:\/\/madegooddesigns\.com\/[^\s)\]>"'`<]*/g, (u) => {
+      if (/[?&]utm_/.test(u)) return u;
+      const trail = (u.match(/[.,;:!]+$/) || [""])[0];
+      let core = u.slice(0, u.length - trail.length);
+      const h = core.indexOf("#"), hash = h >= 0 ? core.slice(h) : "";
+      if (h >= 0) core = core.slice(0, h);
+      if (/\/(img|wp-content|assets)\//.test(core) || /\.(png|jpe?g|webp|gif|svg|json|txt|xml|woff2?|css|js|ico|pdf)$/i.test(core)) return u;
+      return core + (core.includes("?") ? "&" : "?") + tag + hash + trail;
+    });
+  });
+  return result;
+}
+// One JSON-RPC message → response, with analytics. `inner(msg)` is the endpoint's own handler.
+async function mcpTracked(env, c, msg, inner, hdrs) {
+  const method = msg && msg.method;
+  if (method === "initialize") {
+    const sid = crypto.randomUUID();
+    hdrs["Mcp-Session-Id"] = sid;
+    const ci = (msg.params && msg.params.clientInfo) || {};
+    await mcpEvent(env, c, { kind: "initialize", sid, client_name: ci.name, client_version: ci.version, protocol: msg.params && msg.params.protocolVersion });
+    return inner(msg);
+  }
+  if (method === "tools/list") { await mcpEvent(env, c, { kind: "tools_list" }); return inner(msg); }
+  if (method !== "tools/call") return inner(msg);
+  const t0 = Date.now(), tool = (msg.params && msg.params.name) || "";
+  const res = await inner(msg);
+  const r = res && res.result;
+  await mcpEvent(env, c, { kind: "call", tool, ok: !!r && !r.isError, zero: r ? mcpZero(r) : null, ms: Date.now() - t0 });
+  if (r) mcpUtm(r, tool, c.ua);
+  return res;
 }
 
 async function mcpCallTool(params, env, ip, ua, who) {
@@ -1943,12 +2016,14 @@ async function mcpMeHandler(request, env, ctx, url, base) {
     return rpcErr(id, -32601, "Method not found: " + method);
   };
 
+  const mctx = mcpCtx(request, "boards"), hdrs = {};
+  const run = (m) => mcpTracked(env, mctx, m, handle, hdrs);
   if (Array.isArray(body)) {
-    const out = (await Promise.all(body.map(handle))).filter(Boolean);
-    return out.length ? mcpMeResponse(out) : mcpMeResponse(null);
+    const out = (await Promise.all(body.map(run))).filter(Boolean);
+    return out.length ? mcpMeResponse(out, 0, hdrs) : mcpMeResponse(null, 0, hdrs);
   }
-  const res = await handle(body);
-  return res ? mcpMeResponse(res) : mcpMeResponse(null);
+  const res = await run(body);
+  return res ? mcpMeResponse(res, 0, hdrs) : mcpMeResponse(null, 0, hdrs);
 }
 
 // Page URL to cite for an item: annual reports have permalinks; gallery items deep-link via #i/<id>.
