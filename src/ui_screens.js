@@ -123,7 +123,7 @@ h1{font-size:1.6rem;margin:.1rem 0 .5rem;letter-spacing:-.01em}
 .mcp code{font-size:.85em;background:var(--bg);padding:.05rem .3rem;border-radius:4px}
 .steps{display:flex;gap:.75rem;align-items:flex-start;overflow-x:auto;padding:.25rem 0 1rem}
 .steps .step{flex:none;display:block;text-decoration:none;width:min(560px,80vw)}.steps.mobile .step{width:240px}
-.steps .step img{width:100%;border:1px solid var(--border);border-radius:10px;display:block;background:var(--surface)}
+.steps .step img{width:100%;height:auto;border:1px solid var(--border);border-radius:10px;display:block;background:var(--surface)}
 .steps .step div{font-size:.82rem;margin-top:.4rem}.steps .step b{display:inline-block;min-width:1.4rem;color:var(--muted)}
 .steps .arr{flex:none;align-self:center;color:var(--muted);font-size:1.4rem}
 .tsw{display:inline-flex;gap:.3rem;align-items:center;font-size:.75rem;color:var(--muted)}.tsw b{font-weight:600;margin-right:.2rem}
@@ -137,9 +137,13 @@ const MCP_NOTE = (base) => `<div class="mcp"><b>Building with an AI coding agent
 <code>search_ui_screens</code> (e.g. “billing settings, editorial style”), <code>get_ui_flow</code> for a whole journey, and <code>get_ui_screen_code</code> to pull the HTML and DESIGN.md straight into your project.</div>`;
 const TERMS_HREF = "/inspiration/ui/terms";
 const RIGHTS = `<footer class="rights">All screens, product names and copy are original, fictional designs by Made Good Designs; they are not screenshots of real apps. Free to use and adapt in any project, including commercial ones, with no credit needed. If you republish the screens themselves, please credit Made Good Designs with a link. <a href="${TERMS_HREF}">Terms</a></footer>`;
+// SEO lengths: titles ≤ 60 chars (first candidate that fits), meta descriptions ≤ 155 at a word boundary.
+const lcWords = (s) => s.split(" ").map((w) => (/^[A-Z0-9]{2,}$/.test(w) ? w : w.toLowerCase())).join(" "); // keep API, FAQ, CTA, 404
+const fitTitle = (...c) => c.find((t) => t.length <= 60) || c[c.length - 1];
+const clip = (s, n = 155) => { s = String(s || "").replace(/\s+/g, " ").trim(); if (s.length <= n) return s; const t = s.slice(0, n - 1); return t.slice(0, t.lastIndexOf(" ")).replace(/[,;:.\-–—]$/, "") + "…"; };
 const head = (h, o) => `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-${h.GTAG}<title>${h.escHtml(o.title)}</title><meta name="description" content="${h.escHtml(o.desc)}"/><link rel="canonical" href="${h.escHtml(o.canonical)}"/>
-<meta property="og:type" content="${o.ogType || "website"}"/><meta property="og:title" content="${h.escHtml(o.ogTitle || o.title)}"/><meta property="og:description" content="${h.escHtml(o.desc)}"/>
+${h.GTAG}<title>${h.escHtml(o.title)}</title><meta name="description" content="${h.escHtml(clip(o.desc))}"/><link rel="canonical" href="${h.escHtml(o.canonical)}"/>
+<meta property="og:type" content="${o.ogType || "website"}"/><meta property="og:title" content="${h.escHtml(o.ogTitle || o.title)}"/><meta property="og:description" content="${h.escHtml(clip(o.desc, 200))}"/>
 ${o.image ? `<meta property="og:image" content="${h.escHtml(o.image)}"/>` : ""}<meta property="og:url" content="${h.escHtml(o.canonical)}"/>
 <script type="application/ld+json">${JSON.stringify(o.jsonld)}</script><style>${PAGE_CSS}${o.css || ""}</style></head><body><div class="wrap">`;
 const page = (h, body) => new Response(h.themeify(body), { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=1800" } });
@@ -153,8 +157,9 @@ async function uiRows(env, where, binds) {
   const si = (s) => UI_STYLES.indexOf(s);
   return rows.sort((a, b) => order(a.category) - order(b.category) || (a.country === b.country ? 0 : a.country === "web" ? -1 : 1) || si(a.style) - si(b.style) || String(a.title).localeCompare(String(b.title)));
 }
+const dims = (it) => (it.width && it.height ? ` width="${+it.width}" height="${+it.height}"` : "");
 const card = (it, base, h, metaHtml) => `<a class="card ${h.escHtml(it.platform)}" href="${h.escHtml(uiItemPath(it, base))}" data-platform="${h.escHtml(it.platform)}" data-pattern="${h.escHtml(it.pattern)}" data-style="${h.escHtml(it.style)}">
-<div class="th"><img loading="lazy" src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(it.title)}"/></div><div class="meta">${metaHtml}</div></a>`;
+<div class="th"><img loading="lazy"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(it.title)}"/></div><div class="meta">${metaHtml}</div></a>`;
 
 async function uiGalleryPage(env, base, h) {
   const items = (await uiRows(env)).map((r) => h.rowToItem(r, env));
@@ -163,7 +168,7 @@ async function uiGalleryPage(env, base, h) {
   const chips = (k, lab, vals) => `<div><b>${lab}</b>${k === "pattern" && lab !== "Screens" ? "" : `<button class="chip" data-f="${k}" data-v="" aria-pressed="true">All</button>`}${vals.map((v) => `<button class="chip" data-f="${k}" data-v="${h.escHtml(v)}" aria-pressed="false">${h.escHtml(label(v))}</button>`).join("")}</div>`;
   const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</b> · ${h.escHtml(it.platform)} <span>· ${h.escHtml(it.style)}</span>`)).join("");
   const nP = have.size, desc = `${items.length} original app screens and website sections across ${nP} patterns, for web and mobile in ${UI_STYLES.length} styles, plus ${Object.keys(UI_FLOWS).length} multi-step flows. Each one comes with copyable HTML and a DESIGN.md token file for AI coding agents. Free.`;
-  const body = head(h, { title: "Free UI screens with HTML code and DESIGN.md — app & website UI inspiration", ogTitle: "MGD UI Screens", desc, canonical: `${site}${base}/ui`,
+  const body = head(h, { title: "Free UI screens with HTML code & DESIGN.md | MGD", ogTitle: "MGD UI Screens", desc, canonical: `${site}${base}/ui`,
     image: items[0] ? site + base + items[0].image : null,
     jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: "MGD UI Screens", url: `${site}${base}/ui`, description: desc, publisher: MGD_ORG(site), ...licenceLd(site, base) } })
   + `${h.backLink(base, "", "Back to inspiration")}
@@ -197,7 +202,10 @@ async function uiItemPage(id, env, base, h) {
   const flows = (it.flows || []).filter((f) => UI_FLOWS[f.id]);
   const pal = (it.palette || []).slice(0, 8).map((hx, i) => `<span class="sw" style="background:${h.escHtml(hx)}" title="${ROLES[i] || ""} ${h.escHtml(hx)}"></span>`).join("");
   const tags = uiShownTags(it.tags);
-  const body = head(h, { title: `${name} — free HTML + DESIGN.md | MGD UI Screens`, ogTitle: name, desc: it.description || name, canonical, image: imgAbs, ogType: "article",
+  const short = `${it.variant ? label(it.variant) : label(it.pattern)} ${isSection ? "section" : "screen"} (${it.platform}, ${it.style})`; // variant name leads (keeps titles ≤ 60)
+  const shows = ((it.description || "").match(/Shows ([^.]+)\./) || [])[1];
+  const metaDesc = `Free ${lcWords(short).replace(/ \(/, " for " + (isSection ? "websites" : "apps") + " (")} with copyable HTML and a DESIGN.md of light and dark tokens.${shows ? " Shows " + shows + "." : ""}`;
+  const body = head(h, { title: fitTitle(`${short} – HTML & DESIGN.md | MGD`, `${short} – HTML & DESIGN.md`, `${short} | MGD`, short), ogTitle: name, desc: metaDesc, canonical, image: imgAbs, ogType: "article",
     jsonld: { "@context": "https://schema.org", "@type": "CreativeWork", name, url: canonical, description: it.description || undefined,
       image: { "@type": "ImageObject", contentUrl: imgAbs, ...licenceLd(site, base) }, ...licenceLd(site, base),
       encoding: [{ "@type": "MediaObject", encodingFormat: "text/html", contentUrl: site + base + it.code }, { "@type": "MediaObject", encodingFormat: "text/markdown", name: "DESIGN.md", contentUrl: site + base + it.design_md }],
@@ -216,11 +224,11 @@ h2{font-size:1.05rem;margin:2.25rem 0 .75rem}` })
   + `${h.backLink(base, "/ui", "Back to UI screens")}
 <nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/${h.escHtml(it.pattern)}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
 <div class="detail ${h.escHtml(it.platform)}">
-  <div style="position:relative"><button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button><img class="shot" src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>
+  <div style="position:relative"><button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button><img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>
   <div><h1>${h.escHtml(name)}</h1>${it.description ? `<p class="desc">${h.escHtml(it.description)}</p>` : ""}
-    <div class="acts"><a class="btn dark" href="${h.escHtml(base + it.code)}" target="_blank" rel="noopener">Open live HTML ↗</a>
+    <div class="acts"><a class="btn dark" href="${h.escHtml(base + it.code)}" target="_blank" rel="noopener nofollow">Open live HTML ↗</a>
       <button class="btn" data-copy="${h.escHtml(base + it.code)}">Copy HTML</button><button class="btn" data-copy="${h.escHtml(base + it.design_md)}">Copy DESIGN.md</button>
-      <a class="btn" href="${h.escHtml(base + it.design_md)}" download="DESIGN.md">Download DESIGN.md</a></div>
+      <a class="btn" href="${h.escHtml(base + it.design_md)}" download="DESIGN.md" rel="nofollow">Download DESIGN.md</a></div>
     ${flows.length ? `<p class="flows">Part of ${flows.map((f) => `<a href="${h.escHtml(flowPath(f.id, base, it.platform, it.style))}">${h.escHtml(UI_FLOWS[f.id])}</a> (step ${f.step})`).join(", ")}</p>` : ""}
     <dl class="facts">${facts.filter((f) => f[1]).map(([k, v, href]) => `<dt>${h.escHtml(k)}</dt><dd>${href ? `<a href="${h.escHtml(href)}">${h.escHtml(v)}</a>` : h.escHtml(v)}</dd>`).join("")}</dl>
     ${pal ? `<div class="pal" aria-label="Colour roles: background, surface, border, text, muted, primary, on-primary, accent">${pal}</div>` : ""}
@@ -242,7 +250,7 @@ async function uiPatternPage(pattern, env, base, h) {
   const c = UI_COPY[pattern] || {}, lab = label(pattern), kind = isSection ? "section" : "screen";
   const h1 = c.h1 || `${lab} ${isSection ? "section" : "UI"} examples`;
   const nStyles = new Set(items.map((x) => x.style)).size, plats = [...new Set(items.map((x) => x.platform))];
-  const desc = `${items.length} free ${lab.toLowerCase()} ${kind} examples for ${plats.join(" and ")} in ${nStyles} styles, each with copyable HTML and a DESIGN.md (light and dark tokens). Original designs by Made Good Designs.`;
+  const desc = `${items.length} free ${lab.toLowerCase()} ${kind} examples for ${plats.join(" and ")} in ${nStyles} styles, each with HTML code and a DESIGN.md (light and dark). Original designs.`;
   const flows = Object.entries(UI_FLOWS).filter(([id]) => items.some((it) => (it.flows || []).some((f) => f.id === id)));
   const faq = (c.faq || []).filter((x) => Array.isArray(x) && x[0] && x[1]);
   const jsonld = [{ "@context": "https://schema.org", "@type": "CollectionPage", name: `${h1} with code`, url, description: c.intro || desc,
@@ -251,7 +259,7 @@ async function uiPatternPage(pattern, env, base, h) {
   if (faq.length) jsonld.push({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) });
   const chips = (k, lab2, vals) => `<div><b>${lab2}</b><button class="chip" data-f="${k}" data-v="" aria-pressed="true">All</button>${vals.map((v) => `<button class="chip" data-f="${k}" data-v="${h.escHtml(v)}" aria-pressed="false">${h.escHtml(label(v))}</button>`).join("")}</div>`;
   const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.platform))}</b>${it.variant ? " · " + h.escHtml(label(it.variant)) : ""} <span>· ${h.escHtml(it.style)}</span>`)).join("");
-  const body = head(h, { title: `${h1} with HTML code (web & mobile) — free | MGD UI Screens`, ogTitle: `${h1} with code`, desc, canonical: url,
+  const body = head(h, { title: fitTitle(`${h1} with code | MGD`, `${h1} with code`, h1), ogTitle: `${h1} with code`, desc, canonical: url,
     image: site + base + items[0].image, jsonld })
   + `${h.backLink(base, "/ui", "All UI screens")}
 <nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(lab)}</nav>
@@ -279,17 +287,18 @@ async function flowSteps(env, h, id, platform, style) {
   return rows.map((r) => h.rowToItem(r, env)).map((it) => ({ it, step: ((it.flows || []).find((f) => f.id === id) || {}).step || 0 }))
     .sort((a, b) => a.step - b.step);
 }
-const stepsHtml = (steps, base, h, platform) => `<div class="steps ${h.escHtml(platform)}">${steps.map(({ it, step }, i) => `${i ? '<span class="arr" aria-hidden="true">→</span>' : ""}<a class="step" href="${h.escHtml(uiItemPath(it, base))}"><img loading="lazy" src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="Step ${step}: ${h.escHtml(label(it.pattern))}"/><div><b>${step}</b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</div></a>`).join("")}</div>`;
+const stepsHtml = (steps, base, h, platform) => `<div class="steps ${h.escHtml(platform)}">${steps.map(({ it, step }, i) => `${i ? '<span class="arr" aria-hidden="true">→</span>' : ""}<a class="step" href="${h.escHtml(uiItemPath(it, base))}"><img loading="lazy"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="Step ${step}: ${h.escHtml(label(it.pattern))}"/><div><b>${step}</b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</div></a>`).join("")}</div>`;
 
 async function uiFlowsIndex(env, base, h) {
   const site = siteOf(env);
-  const blocks = [];
+  const blocks = []; let ogImg = null;
   for (const [id, name] of Object.entries(UI_FLOWS)) {
     const steps = await flowSteps(env, h, id, "web", "minimal");
+    if (steps.length && !ogImg) ogImg = site + base + steps[0].it.image;
     if (steps.length) blocks.push(`<h2 style="font-size:1.1rem;margin:2rem 0 .5rem"><a href="${h.escHtml(flowPath(id, base))}">${h.escHtml(name)}</a> <span class="muted" style="font-weight:400;font-size:.85rem;color:var(--muted)">· ${steps.length} steps</span></h2>${stepsHtml(steps, base, h, "web")}`);
   }
   const desc = `${Object.keys(UI_FLOWS).length} multi-step UI flows (sign-up, two-factor login, password reset, checkout, upgrade, cancel subscription, invite a teammate and more), each for web and mobile in ${UI_STYLES.length} styles, with HTML and DESIGN.md for every step. Free.`;
-  const body = head(h, { title: "Free UI flows — sign-up, checkout, cancel subscription and more, with code | MGD UI Screens", desc, canonical: `${site}${base}/ui/flows`,
+  const body = head(h, { title: "Free UI flows with code: sign-up, checkout & more | MGD", desc, canonical: `${site}${base}/ui/flows`, image: ogImg,
     jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: "MGD UI Flows", url: `${site}${base}/ui/flows`, description: desc, publisher: { "@type": "Organization", name: "Made Good Designs", url: site } } })
   + `${h.backLink(base, "/ui", "Back to UI screens")}<h1>UI flows</h1><p class="lede">${h.escHtml(desc)} Shown here in the minimal style on web; open a flow to switch platform and style.</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>${blocks.join("")}${patternIndex(base, h)}${MCP_NOTE(base)}${RIGHTS}</div>${THEME_JS}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
@@ -303,7 +312,7 @@ async function uiFlowPage(id, url, env, base, h) {
   const name = UI_FLOWS[id];
   const sw = (k, vals, cur) => `<div><b>${label(k)}</b>${vals.map((v) => `<a class="chip" aria-pressed="${v === cur}" href="${h.escHtml(flowPath(id, base, k === "platform" ? v : platform, k === "style" ? v : style))}">${h.escHtml(label(v))}</a>`).join("")}</div>`;
   const desc = `The “${name.toLowerCase()}” flow as ${steps.length} original screens (${steps.map((s) => label(s.it.pattern).toLowerCase()).join(" → ")}), for web and mobile in ${UI_STYLES.length} styles. Each step comes with HTML and a DESIGN.md. Free.`;
-  const body = head(h, { title: `${name} flow — UI screens with code | MGD UI Screens`, desc, canonical: `${site}${base}/ui/flows/${id}`, image: steps[0] ? site + base + steps[0].it.image : null,
+  const body = head(h, { title: fitTitle(`${name} flow: UI screens with code | MGD`, `${name} flow with code | MGD`, `${name} UI flow with code`, `${name} UI flow`), desc, canonical: `${site}${base}/ui/flows/${id}`, image: steps[0] ? site + base + steps[0].it.image : null,
     jsonld: { "@context": "https://schema.org", "@type": "CreativeWork", name: `${name} flow`, url: `${site}${base}/ui/flows/${id}`, description: desc, ...licenceLd(site, base) } })
   + `${h.backLink(base, "/ui/flows", "All flows")}
 <nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/flows">Flows</a> › ${h.escHtml(name)}</nav>
