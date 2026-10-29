@@ -212,7 +212,18 @@ async function addItem(request, env) {
 
   // Dedup guard: never add the same source twice (checked before any R2/AI cost).
   if (sourceUrl) {
-    const dup = await env.DB.prepare("SELECT id FROM items WHERE source_url=? AND status='published' LIMIT 1").bind(sourceUrl).first();
+    const dup = await env.DB.prepare("SELECT id, image_key FROM items WHERE source_url=? AND status='published' LIMIT 1").bind(sourceUrl).first();
+    // UI screens are regenerated from code: upsert=1 refreshes the existing row in place (same id, so page URLs stay stable).
+    if (dup && collection === "ui" && (form.get("upsert") || "").toString() === "1") {
+      await env.BUCKET.put(dup.image_key, new Uint8Array(await file.arrayBuffer()), { httpMetadata: { contentType: file.type || "image/webp" } });
+      const code = (form.get("code_html") || "").toString(), md = (form.get("design_md") || "").toString();
+      if (code) await env.BUCKET.put(`ui/${dup.id}/index.html`, code, { httpMetadata: { contentType: "text/html; charset=utf-8" } });
+      if (md) await env.BUCKET.put(`ui/${dup.id}/DESIGN.md`, md, { httpMetadata: { contentType: "text/markdown; charset=utf-8" } });
+      await env.DB.prepare(`UPDATE items SET title=?, description=?, tags=?, themes=?, palette=?, style=?, category=?, company=?, designer=?, industry=?, country=?, width=?, height=?, hue=? WHERE id=?`)
+        .bind(titleIn || null, (form.get("description") || "").toString().trim(), form.get("tags") || "[]", JSON.stringify(themesIn), JSON.stringify(palette), styleIn || null,
+          category, company, designer, industry, country, width, height, hueOf(palette), dup.id).run();
+      return json({ ok: true, updated: true, item: { id: dup.id } }, 200, env, request);
+    }
     if (dup) return json({ ok: false, duplicate: true, error: "duplicate_source" }, 200, env, request);
   }
 

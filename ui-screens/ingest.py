@@ -8,21 +8,6 @@ from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "out")
 
-# What each pattern shows (elements double as search tags).
-PATTERN = {
-    "dashboard": ("Analytics dashboard", "KPI cards, a revenue area chart, a weekly bar chart and a recent-customers table",
-                  ["sidebar-nav", "top-nav", "search-bar", "card", "chart", "table", "badge", "avatar", "kpi"]),
-    "billing-plans": ("Billing and plans settings", "the current plan summary, seat usage, a monthly/yearly toggle, plan cards and invoices",
-                      ["sidebar-nav", "breadcrumbs", "plan-cards", "billing-toggle", "table", "badge", "progress", "settings"]),
-    "login": ("Login / sign-in", "Google sign-in, email and password fields, a keep-me-signed-in checkbox and a testimonial panel",
-              ["form", "input", "button", "checkbox", "social-login", "testimonial", "auth"]),
-    "chat-ai-assistant": ("AI chat assistant", "a conversation history sidebar, user and assistant messages with cited sources, a typing indicator and a composer",
-                          ["chat-bubbles", "sidebar-nav", "composer", "attachments", "typing-indicator", "badge", "ai"]),
-    "empty-state": ("Empty state (inbox zero)", "an illustration, a friendly message, a primary 'New task' action and a secondary action",
-                    ["empty-illustration", "sidebar-nav", "tabs", "search-bar", "button", "inbox"]),
-    "pricing": ("Pricing section", "a header, a headline, three plan tiers with a highlighted most-popular plan and feature checklists",
-                ["navigation-header", "plan-cards", "badge", "button", "checklist", "marketing", "landing-page"]),
-}
 STYLE = {
     "minimal": "Minimal style: cool neutrals, Inter, 8px corners and soft shadows.",
     "editorial": "Editorial style: warm paper tones, Instrument Serif headlines with Inter body text and tabular figures, square corners.",
@@ -47,47 +32,59 @@ def post(base, token, fields, files):
     with urllib.request.urlopen(req, timeout=120) as r:
         return json.loads(r.read())
 
+def fields_for(slug, flow_tags):
+    d = os.path.join(OUT, slug)
+    m = json.load(open(os.path.join(d, "meta.json")))
+    name, shows, elements = m["name"], m["shows"], m["elements"]
+    kind = "section" if m["type"] == "section" else "screen"
+    plat = ("website" if m["platform"] == "web" else "mobile website") if kind == "section" else ("web app" if m["platform"] == "web" else "mobile app")
+    title = f"{name} — {m['platform']}, {m['style']} ({m['product']})"
+    desc = (f"{name} {kind} for a {plat}, designed for {m['product']}, a fictional {m['category']} product. "
+            f"Shows {shows}. {STYLE[m['style']]} Comes with the full HTML and a DESIGN.md with light and dark colour tokens.")
+    roles = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"]
+    tags = [m["pattern"], m["platform"], m["category"]] + [e for e in elements if e not in (m["pattern"], m["platform"])]
+    tags += ([f"variant:{m['variant']}"] if m.get("variant") else []) + flow_tags.get(slug, [])
+    im = Image.open(os.path.join(d, "screen.png")).convert("RGB")
+    buf = io.BytesIO(); im.save(buf, "WEBP", quality=84, method=6)
+    return {"collection": "ui", "skip_enrich": "1", "upsert": "1", "title": title, "description": desc, "style": m["style"],
+            "themes": json.dumps([m["style"]]), "tags": json.dumps(tags), "palette": json.dumps([m["tokens"]["light"][r] for r in roles]),
+            "category": m["pattern"], "country": m["platform"], "industry": m["category"], "company": m["product"], "designer": "Made Good Designs",
+            "source_url": f"https://madegooddesigns.com/inspiration/ui#{slug}", "width": str(m["viewport"]["w"]), "height": str(m["viewport"]["h"]),
+            "code_html": open(os.path.join(d, "index.html")).read(), "design_md": open(os.path.join(d, "DESIGN.md")).read()}, buf.getvalue()
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", default="https://madegooddesigns.com/inspiration")
     ap.add_argument("--only", default="*")
+    ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--dry", action="store_true")
     a = ap.parse_args()
     token = open(os.path.join(HERE, "..", ".admin_token")).read().strip()
-    slugs = sorted(d for d in os.listdir(OUT) if os.path.isfile(os.path.join(OUT, d, "meta.json")) and fnmatch.fnmatch(d, a.only))
-    ok = dup = fail = 0
-    for slug in slugs:
-        d = os.path.join(OUT, slug)
-        m = json.load(open(os.path.join(d, "meta.json")))
-        name, shows, elements = PATTERN[m["pattern"]]
-        plat = "web app" if m["platform"] == "web" else "mobile app"
-        if m["type"] == "section":
-            plat = "website" if m["platform"] == "web" else "mobile website"
-        title = f"{name} — {m['platform']}, {m['style']} ({m['product']})"
-        desc = (f"{name} {'section' if m['type'] == 'section' else 'screen'} for a {plat}, designed for {m['product']}, a fictional {m['category']} product. "
-                f"Shows {shows}. {STYLE[m['style']]} Comes with the full HTML and a DESIGN.md with light and dark colour tokens.")
-        roles = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"]
-        palette = [m["tokens"]["light"][r] for r in roles]
-        im = Image.open(os.path.join(d, "screen.png")).convert("RGB")
-        buf = io.BytesIO(); im.save(buf, "WEBP", quality=84, method=6)
-        fields = {"collection": "ui", "skip_enrich": "1", "title": title, "description": desc, "style": m["style"],
-                  "themes": json.dumps([m["style"]]), "tags": json.dumps([m["pattern"], m["platform"], m["category"]] + elements),
-                  "palette": json.dumps(palette), "category": m["pattern"], "country": m["platform"], "industry": m["category"],
-                  "company": m["product"], "designer": "Made Good Designs",
-                  "source_url": f"https://madegooddesigns.com/inspiration/ui#{slug}",
-                  "width": str(m["viewport"]["w"]), "height": str(m["viewport"]["h"]),
-                  "code_html": open(os.path.join(d, "index.html")).read(), "design_md": open(os.path.join(d, "DESIGN.md")).read()}
-        if a.dry:
-            print(slug, len(buf.getvalue()) // 1024, "KB", title); continue
-        try:
-            r = post(a.base, token, fields, {"image": (slug + ".webp", buf.getvalue(), "image/webp")})
-            if r.get("duplicate"): dup += 1; print("dup ", slug)
-            elif r.get("ok"): ok += 1; print("ok  ", slug, r["item"]["id"])
-            else: fail += 1; print("FAIL", slug, r)
-        except Exception as e:
-            fail += 1; print("FAIL", slug, e)
-    print(f"done: {ok} added, {dup} duplicates, {fail} failed")
-    sys.exit(1 if fail else 0)
+    slugs = sorted(d for d in os.listdir(OUT) if os.path.isfile(os.path.join(OUT, d, "meta.json")) and os.path.isfile(os.path.join(OUT, d, "screen.png")) and fnmatch.fnmatch(d, a.only))
+    flow_tags = {}
+    fp = os.path.join(OUT, "flows.json")
+    for f in (json.load(open(fp)) if os.path.isfile(fp) else []):
+        for n, sl in enumerate(f["steps"], 1):
+            t = f"flow:{f['id']}:{n}"
+            if t not in flow_tags.setdefault(sl, []): flow_tags[sl].append(t)
+    def one(slug):
+        fields, img = fields_for(slug, flow_tags)
+        if a.dry: return slug, "dry", f"{len(img)//1024}KB {fields['title']}"
+        for attempt in range(3):
+            try:
+                r = post(a.base, token, fields, {"image": (slug + ".webp", img, "image/webp")})
+                return slug, ("updated" if r.get("updated") else "added" if r.get("ok") else "dup" if r.get("duplicate") else "FAIL"), r.get("item", {}).get("id") or r
+            except Exception as e:
+                err = e
+        return slug, "FAIL", err
+    from concurrent.futures import ThreadPoolExecutor
+    counts = {}
+    with ThreadPoolExecutor(max_workers=a.workers) as ex:
+        for slug, st, info in ex.map(one, slugs):
+            counts[st] = counts.get(st, 0) + 1
+            if st in ("FAIL", "dry") or len(slugs) <= 40: print(st, slug, info)
+    print("done:", counts)
+    sys.exit(1 if counts.get("FAIL") else 0)
 
 if __name__ == "__main__":
     main()
