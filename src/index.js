@@ -10,6 +10,8 @@ import BOARD_CANVAS_JS from "./ui/board-canvas.html"; // plain JS, imported as T
 import SAVE_HTML from "./ui/save.html";
 import { getUser, googleLogin, googleCallback, logout, devLogin } from "./auth.js";
 import { MGDRoles, MGDDesignMd } from "./design_core.js";
+import { TOOL_DEFS as MCP_TOOLS_43, isToolsTool, callToolsTool } from "./mcp_tools.js";
+import { TOOL_DEFS as MCP_TOOLS_44, isTools44Tool, callTools44Tool } from "./mcp_tools44.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
   token as oauthToken, revoke as oauthRevoke, verifyBearer, challengeHeader,
   connectedAppsApi, connectedAppsPage } from "./oauth.js";
@@ -1496,6 +1498,7 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 
 function mcpCors() {
   return {
@@ -1574,7 +1577,7 @@ async function logMcp(env, tool, query, ip, ua, who) {
 async function mcpCallTool(params, env, ip, ua, who) {
   const name = params.name;
   const a = params.arguments || {};
-  await logMcp(env, name, a.query || a.q || a.theme || a.project_name || a.brand_color || "", ip, ua, who);
+  await logMcp(env, name, a.query || a.q || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || "", ip, ua, who);
   const opts = who ? { ids: true } : undefined; // authenticated endpoint also shows item_id (needed by save_to_board)
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
@@ -1629,6 +1632,8 @@ async function mcpCallTool(params, env, ip, ua, who) {
   }
   if (name === "generate_website_color_palette") return mcpWebsitePalette(a);
   if (name === "generate_design_md") return mcpDesignMd(a);
+  if (isToolsTool(name)) return callToolsTool(name, a);
+  if (isTools44Tool(name)) return callTools44Tool(name, a);
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
 }
 
