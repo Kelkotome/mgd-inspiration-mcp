@@ -122,7 +122,7 @@ const LABELS = (big) => [
   mapLabel(big ? 9 : 15, 26, "Vestfjorden", { it: 1, c: mix("var(--primary)", 60, "var(--text)"), fs: big ? 13 : 11, ls: ".12em" }),
   mapLabel(76, 26, "Reinvatnet", { it: 1, c: mix("var(--primary)", 55, "var(--text)"), fs: big ? 11 : 10 }),
   mapLabel(60, 66, "HAVNØY", { up: 1, c: "var(--text)", fs: big ? 13 : 11, ls: ".18em", w: 700 }),
-  mapLabel(60, 18, "Tindheia", { fs: big ? 11 : 10 }),
+  mapLabel(big ? 60 : 50, big ? 18 : 13, "Tindheia", { fs: big ? 11 : 10 }), // mobile: clear of the viewpoint pin
   mapLabel(88, 53, "Kvalnes Park", { fs: big ? 11 : 10 }),
   ...(big ? [mapLabel(83, 36, "E10", { fs: 10, w: 700 }), mapLabel(10, 49, "Skarvholmen", { fs: 10 })] : []),
 ];

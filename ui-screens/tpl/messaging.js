@@ -210,7 +210,7 @@ ${[["PDF", "harbor-launch-plan-v6.pdf", "Teodora · 4:08 PM"], ["FIG", "Harbor b
 </aside></div>`);
 
 TPL["chat-thread/mobile"] = (p, st) => phone(`<div class="mtop" style="border-bottom:1px solid var(--border);gap:10px;padding-bottom:10px">${ic("back", 22)}<span class="ms-ch" style="width:32px;height:32px">${I("hash", 17)}</span><div style="flex:1;min-width:0"><div style="font-weight:700">harbor-launch</div><div class="muted" style="font-size:12px">12 members · 5 online</div></div>${I("headset", 21)}<span style="width:6px"></span>${ic("more", 21)}</div>
-<div class="mbody" style="padding:12px 16px 8px;gap:13px;justify-content:flex-end;font-size:14px">
+<div class="mbody" style="padding:12px 16px 8px;gap:11px;justify-content:flex-end;font-size:14px">
 <div class="ms-div">Yesterday</div>
 ${msgRow("JW", "5:40 PM", `Release notes draft for Harbor 2.4 is up. Anything missing from Files permissions?`, "", 32)}
 <div class="ms-div">Today</div>
