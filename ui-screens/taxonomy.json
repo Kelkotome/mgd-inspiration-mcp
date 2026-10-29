@@ -1,0 +1,38 @@
+{
+  "_note": "MGD UI screens taxonomy v1 (30-Oct-2026). Original MGD names; structure informed by Mobbin's MCP (3 search types: app screens, website sections, flows). Mobbin returns NO pattern/element tags per screen — MGD returns full structured tags + code + DESIGN.md.",
+  "types": ["screen", "section", "flow"],
+  "platforms": ["web", "mobile"],
+  "screen_patterns": {
+    "auth":        ["login", "sign-up", "forgot-password", "two-factor"],
+    "onboarding":  ["welcome", "onboarding-step", "permissions-request"],
+    "home":        ["dashboard", "feed", "home"],
+    "data":        ["data-table", "analytics-charts", "detail-view", "list-view", "kanban-board", "calendar"],
+    "commerce":    ["product-detail", "cart", "checkout", "order-confirmation", "invoice"],
+    "account":     ["settings", "billing-plans", "profile", "notifications-center", "team-members"],
+    "tools":       ["editor-toolbar", "chat-ai-assistant", "image-viewer", "file-manager", "search-results"],
+    "states":      ["empty-state", "error-404", "loading-skeleton", "success-confirmation"],
+    "monetize":    ["paywall-upgrade", "cancel-subscription"]
+  },
+  "section_patterns": ["hero", "feature-grid", "pricing", "testimonials", "logo-cloud", "faq", "cta-banner", "footer", "navigation-header", "about-team", "blog-index", "contact-form", "stats-band", "comparison-table"],
+  "elements": ["sidebar-nav", "top-nav", "tab-bar", "breadcrumbs", "table", "chart", "card", "modal", "drawer", "toast", "form", "date-picker", "search-bar", "dropdown", "tabs", "toggle", "avatar", "badge", "progress", "stepper", "pagination", "empty-illustration", "plan-cards", "billing-toggle", "chat-bubbles", "toolbar"],
+  "flows": {
+    "sign-up":             ["sign-up", "onboarding-step", "welcome", "dashboard"],
+    "login-2fa":           ["login", "two-factor", "dashboard"],
+    "password-reset":      ["login", "forgot-password", "success-confirmation"],
+    "checkout":            ["product-detail", "cart", "checkout", "order-confirmation"],
+    "upgrade-plan":        ["billing-plans", "paywall-upgrade", "checkout", "success-confirmation"],
+    "cancel-subscription": ["billing-plans", "cancel-subscription", "success-confirmation"],
+    "invite-teammate":     ["team-members", "settings", "success-confirmation"],
+    "first-run-empty":     ["welcome", "empty-state", "dashboard"],
+    "ai-chat":             ["chat-ai-assistant", "loading-skeleton", "chat-ai-assistant"],
+    "search-to-detail":    ["search-results", "detail-view"]
+  },
+  "categories": ["saas", "finance", "ai", "productivity", "commerce", "health", "travel", "media", "education", "developer"],
+  "styles": ["minimal", "editorial", "brutalist", "luxury", "playful", "corporate", "retro", "monochrome"],
+  "pilot": {
+    "patterns": ["dashboard", "billing-plans", "login", "chat-ai-assistant", "empty-state", "pricing"],
+    "platforms": ["web", "mobile"],
+    "styles": ["minimal", "editorial"],
+    "count": 24
+  }
+}

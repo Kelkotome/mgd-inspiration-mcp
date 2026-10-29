@@ -12,6 +12,7 @@ import { getUser, googleLogin, googleCallback, logout, devLogin } from "./auth.j
 import { MGDRoles, MGDDesignMd } from "./design_core.js";
 import { TOOL_DEFS as MCP_TOOLS_43, isToolsTool, callToolsTool } from "./mcp_tools.js";
 import { TOOL_DEFS as MCP_TOOLS_44, isTools44Tool, callTools44Tool } from "./mcp_tools44.js";
+import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields } from "./ui_screens.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
   token as oauthToken, revoke as oauthRevoke, verifyBearer, challengeHeader,
   connectedAppsApi, connectedAppsPage } from "./oauth.js";
@@ -69,12 +70,13 @@ export default {
     try {
       // ---- Pages (inject the mount base so the front-end builds correct URLs) ----
       // Trailing-slash variants of collection pages → canonical (articles and people link both ways)
-      if (method === "GET" && /^\/(museum|annual-reports)(\/.*)?\/$/.test(path)) return Response.redirect(new URL(base + path.replace(/\/+$/, ""), request.url).toString(), 301);
+      if (method === "GET" && /^\/(museum|annual-reports|ui)(\/.*)?\/$/.test(path)) return Response.redirect(new URL(base + path.replace(/\/+$/, ""), request.url).toString(), 301);
       if (path === "/" && method === "GET") return html(injectBase(GALLERY_HTML, base));
       if (path === "/add" && method === "GET") return html(injectBase(ADD_HTML, base));
       if (path === "/annual-reports" && method === "GET") return html(injectBase(ANNUAL_HTML, base));
       if (path === "/annual-reports/sitemap.xml" && method === "GET") return annualSitemap(env, base);
       if (path === "/museum" && method === "GET") return html(injectBase(MUSEUM_HTML, base));
+      if (method === "GET" && (path === "/ui" || path.startsWith("/ui/"))) { const r = await uiRoute(path, request, env, ctx, base, UI_H); if (r) return r; }
       { const bm = path.match(/^\/b\/([a-z0-9]{10})$/); if (bm && method === "GET") return publicBoardPage(bm[1], env, base, url); }
       if (path === "/save" && method === "GET") return html(injectBase(SAVE_HTML, base));
       if (path === "/assets/board-canvas.js" && method === "GET")
@@ -202,6 +204,9 @@ async function addItem(request, env) {
   const industry = (form.get("industry") || "").toString().trim() || null;
   const country = (form.get("country") || "").toString().trim() || null;
   const category = (form.get("category") || "").toString().trim().toLowerCase() || null; // discipline tab (spans collections)
+  const descIn = (form.get("description") || "").toString().trim(); // curated description (used when enrichment is skipped)
+  let tagsIn = [];
+  try { tagsIn = JSON.parse(form.get("tags") || "[]"); } catch (_) {}
 
   if (!file || typeof file === "string") return json({ error: "no_image" }, 400, env, request);
 
@@ -212,8 +217,8 @@ async function addItem(request, env) {
   }
 
   const id = genId();
-  const ext = (file.type && file.type.includes("png")) ? "png" : "jpg";
-  const key = `${collection === "annual-report" ? "annual" : collection === "museum" ? "museum" : "items"}/${id}.${ext}`;
+  const ext = (file.type && file.type.includes("png")) ? "png" : (file.type && file.type.includes("webp")) ? "webp" : "jpg";
+  const key = `${collection === "annual-report" ? "annual" : collection === "museum" ? "museum" : collection === "ui" ? "ui" : "items"}/${id}.${ext}`;
   const bytes = new Uint8Array(await file.arrayBuffer());
   await env.BUCKET.put(key, bytes, { httpMetadata: { contentType: file.type || "image/jpeg" } });
 
@@ -221,7 +226,13 @@ async function addItem(request, env) {
   // Fast path: bulk ingests pass skip_enrich=1 to skip the (slow) vision call — the item still
   // carries curated company/year/country/designer/industry + a palette backfilled separately.
   const skipEnrich = (form.get("skip_enrich") || "").toString() === "1";
-  let ai = { description: "", tags: [], style: styleIn || null, title: titleIn || null, themes: themesIn };
+  let ai = { description: descIn, tags: Array.isArray(tagsIn) ? tagsIn.slice(0, 16) : [], style: styleIn || null, title: titleIn || null, themes: themesIn };
+  // UI screens carry their code: the HTML page and its DESIGN.md (served at /ui/raw/<id>.html|.md)
+  if (collection === "ui") {
+    const code = (form.get("code_html") || "").toString(), md = (form.get("design_md") || "").toString();
+    if (code) await env.BUCKET.put(`ui/${id}/index.html`, code, { httpMetadata: { contentType: "text/html; charset=utf-8" } });
+    if (md) await env.BUCKET.put(`ui/${id}/DESIGN.md`, md, { httpMetadata: { contentType: "text/markdown; charset=utf-8" } });
+  }
   try {
     if (skipEnrich) throw { message: "skipped" };
     const enriched = await enrich(probeB64 ? String(probeB64) : bytesToDataUri(bytes, file.type), env, collection);
@@ -337,7 +348,7 @@ async function search(url, env, request) {
   const limit = clampInt(url.searchParams.get("limit"), 40, 1, 60);
   const collection = (url.searchParams.get("collection") || "design").trim();
   if (!q) return json({ items: [] }, 200, env, request);
-  const like = `%${q}%`;
+  const like = `%${q.slice(0, 40)}%`; // D1 rejects LIKE patterns over ~50 bytes
   const rows = await env.DB.prepare(
     `SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection = ? AND (title LIKE ? OR description LIKE ? OR tags LIKE ? OR company LIKE ?)
      ORDER BY created_at DESC LIMIT ?`
@@ -1501,7 +1512,7 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
-MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...UI_MCP_TOOLS); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 
 function mcpCors() {
   return {
@@ -1523,6 +1534,10 @@ const rpcErr = (id, code, message) => ({ jsonrpc: "2.0", id, error: { code, mess
 async function mcpHandler(request, env) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: mcpCors() });
   if (request.method === "GET") {
+    // MCP clients GET with Accept: text/event-stream to open a server→client stream. We don't offer one, and the spec
+    // says to answer 405; a 200 here made at least one client reconnect in a tight loop (~2.5M GETs/day, 29-Oct-2026).
+    if ((request.headers.get("Accept") || "").includes("text/event-stream"))
+      return new Response("SSE stream not supported; POST JSON-RPC messages", { status: 405, headers: { "Allow": "POST, OPTIONS", ...mcpCors() } });
     return mcpJson({ name: "MGD Inspiration", version: "1.0", transport: "streamable-http", endpoint: `${MCP_SITE}/mcp` });
   }
   if (request.method !== "POST") return new Response("method not allowed", { status: 405, headers: mcpCors() });
@@ -1581,7 +1596,8 @@ async function logMcp(env, tool, query, ip, ua, who) {
 }
 
 // MCP analytics: connections, sessions and outcomes (migrate_mcp_events.sql). Best-effort — never affects a response.
-const MCP_BOT_UA = /^(curl\/|undici|python-|Go-http-client|node-fetch|axios|okhttp|aiohttp|httpx|Wget|Java\/)|mcp-probe|MCPYP|evyAI|scanner/i;
+// Includes uptime monitors / directory checkers (AMP-Server calls the same 3 tools daily) so they don't count as users.
+const MCP_BOT_UA = /^(curl\/|undici|python-|Go-http-client|node-fetch|axios|okhttp|aiohttp|httpx|Wget|Java\/|node$|mgd-selftest)|mcp-probe|MCPYP|evyAI|scanner|AMP-Server|amp-mcp-tester|Inspection/i;
 function mcpCtx(request, endpoint) {
   return { endpoint, ip: request.headers.get("CF-Connecting-IP") || "", ua: request.headers.get("User-Agent") || "",
     country: (request.cf && request.cf.country) || "", sid: request.headers.get("mcp-session-id") || "" };
@@ -1650,7 +1666,7 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
 async function mcpCallTool(params, env, ip, ua, who) {
   const name = params.name;
   const a = params.arguments || {};
-  await logMcp(env, name, a.query || a.q || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || "", ip, ua, who);
+  await logMcp(env, name, a.query || a.q || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || "", ip, ua, who);
   const opts = who ? { ids: true } : undefined; // authenticated endpoint also shows item_id (needed by save_to_board)
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
@@ -1681,7 +1697,7 @@ async function mcpCallTool(params, env, ip, ua, who) {
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.year) { const y = parseInt(a.year, 10); if (y) { where += " AND report_year = ?"; binds.push(y); } }
     if (a.industry) { where += " AND industry = ?"; binds.push(a.industry.toString().trim()); }
-    const r = await mcpSearchRows(env, where, binds, ["company", "title", "description", "tags"], q, "report_year DESC, created_at DESC", limit);
+    const r = await mcpSearchRows(env, where, binds, ["company", "title", "description", "tags", "industry"], q, "report_year DESC, created_at DESC", limit);
     return mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts);
   }
   if (name === "search_museum_art") {
@@ -1707,6 +1723,7 @@ async function mcpCallTool(params, env, ip, ua, who) {
   if (name === "generate_design_md") return mcpDesignMd(a);
   if (isToolsTool(name)) return callToolsTool(name, a);
   if (isTools44Tool(name)) return callTools44Tool(name, a);
+  if (isUiTool(name)) return callUiTool(name, a, env, { mcpSearchRows, rowToItem, clampInt, site: MCP_SITE });
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
 }
 
@@ -1783,16 +1800,34 @@ async function mcpSearchRows(env, where, binds, cols, q, order, limit) {
   const any = () => "(" + cols.map((c) => `${c} LIKE ?`).join(" OR ") + ")";
   const likes = (w) => cols.map(() => `%${w}%`);
   if (!q) return { rows: await run("", [], order, []), note: "" };
-  const phrase = await run(" AND " + any(), likes(q), order, []);
-  if (phrase.length) return { rows: phrase, note: "" };
-  const words = [...new Set(q.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 2 && !MCP_STOP.has(w)))].slice(0, 6);
+  // D1 caps LIKE patterns at ~50 bytes ("LIKE or GLOB pattern too complex"), so long queries skip the whole-phrase pass.
+  const phrase = q.length <= 40 ? await run(" AND " + any(), likes(q), order, []) : [];
+  if (phrase.length >= limit) return { rows: phrase, note: "" };
+  // Fewer exact-phrase hits than asked for: top up with word matches (e.g. "greek typography" had 1 phrase hit
+  // but many items tagged "greek" + "typography").
+  const r = await mcpWordRows(env, where, binds, cols, q, order, limit, run, any, likes);
+  if (!phrase.length) return r;
+  const seen = new Set(phrase.map((x) => x.id));
+  return { rows: phrase.concat(r.rows.filter((x) => !seen.has(x.id))).slice(0, limit), note: "" };
+}
+async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, likes) {
+  const words = [...new Set(q.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 2 && !MCP_STOP.has(w)).map((w) => w.slice(0, 40)))].slice(0, 6);
   if (!words.length || (words.length === 1 && words[0] === q.toLowerCase())) return { rows: [], note: "" };
   const hit = words.map(any), wb = words.flatMap(likes);
   const all = await run(" AND " + hit.join(" AND "), wb, order, []);
   if (all.length || words.length === 1) return { rows: all, note: all.length ? ` (matching all of: ${words.join(", ")})` : "" };
-  const score = hit.map((h) => `(CASE WHEN ${h} THEN 1 ELSE 0 END)`).join(" + ");
-  const some = await run(" AND (" + hit.join(" OR ") + ")", wb, `(${score}) DESC, ${order}`, wb);
-  return { rows: some, note: some.length ? ` (no item matches every word; closest matches for: ${words.join(", ")})` : "" };
+  // Rank partial matches by how rare each word is (IDF), so common words like "brand" or "identity" don't decide the result.
+  const cnt = await env.DB.prepare(`SELECT COUNT(*) n, ${hit.map((h, i) => `SUM(CASE WHEN ${h} THEN 1 ELSE 0 END) d${i}`).join(", ")} FROM items WHERE ${where}`)
+    .bind(...wb, ...binds).first(); // SELECT-list placeholders come before the WHERE ones
+  const N = Math.max(1, cnt.n), df = words.map((_, i) => cnt["d" + i] || 0);
+  const idf = df.map((d) => (d ? Math.log(N / d) : 0));
+  const use = words.map((_, i) => i).filter((i) => df[i]);
+  if (!use.length) return { rows: [], note: "" };
+  const w = (i) => Math.max(1, Math.round(idf[i] * 10));
+  const score = use.map((i) => `(CASE WHEN ${hit[i]} THEN ${w(i)} ELSE 0 END)`).join(" + ");
+  const ub = use.flatMap((i) => likes(words[i]));
+  const some = await run(" AND (" + use.map((i) => hit[i]).join(" OR ") + ")", ub, `(${score}) DESC, ${order}`, ub);
+  return { rows: some, note: some.length ? ` (no item matches every word; closest matches for: ${use.map((i) => words[i]).join(", ")})` : "" };
 }
 
 function mcpItems(rows, header, opts) {
@@ -2332,8 +2367,13 @@ function rowToItem(r, env) {
     item.source_link = r.source_url || null;
     item.license = /^(Rijksmuseum|Statens Museum for Kunst|Nationalmuseum Sweden|Slovak National Gallery|The Norwegian Museum of Cultural History|Albertina|Mauritshuis)$/.test(r.company || "") ? "Public Domain Mark" : "CC0";
   }
+  // UI screens: original MGD designs with code + DESIGN.md (see ui_screens.js for the field mapping)
+  if (collection === "ui") Object.assign(item, uiFields(r));
   return item;
 }
+
+// Helpers handed to ui_screens.js (pages render with the same chrome as the museum pages).
+const UI_H = { escHtml, GTAG, themeify, saveWidget, backLink, edgeCache, rowToItem };
 
 function safeArr(s) { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } }
 
