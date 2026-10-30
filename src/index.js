@@ -14,6 +14,8 @@ import { boardRolesFromWeights } from "./board_design.js";
 import { TOOL_DEFS as MCP_TOOLS_43, isToolsTool, callToolsTool } from "./mcp_tools.js";
 import { TOOL_DEFS as MCP_TOOLS_44, isTools44Tool, callTools44Tool } from "./mcp_tools44.js";
 import { TOOL_DEFS as MCP_TOOLS_45, isTools45Tool, callTools45Tool } from "./mcp_tools45.js";
+import { TOOL_DEFS as MCP_TOOLS_48, isTools48Tool, callTools48Tool, NEXT48, OUTPUT_SCHEMAS48 } from "./mcp_tools48.js";
+import { MGDMoodboard } from "./tools_core48.js";
 import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields } from "./ui_screens.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
   token as oauthToken, revoke as oauthRevoke, verifyBearer, challengeHeader,
@@ -1533,7 +1535,7 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
-MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 
 // ---- Routing guide (sent on initialize; clients load it into the model's context) — 31-Oct-2026
 const MCP_INSTRUCTIONS = "Made Good Designs (madegooddesigns.com): free design references and design-system generators. Which tool to use:\n" +
@@ -1542,6 +1544,8 @@ const MCP_INSTRUCTIONS = "Made Good Designs (madegooddesigns.com): free design r
   "- Historical art and public-domain imagery (posters, Art Nouveau, ukiyo-e, ornament, lettering, maps, textiles): search_museum_art. Corporate design history: search_annual_reports.\n" +
   "- Setting up a design system: generate_website_color_palette (accessible light + dark roles), then generate_design_md with those colours (spec-conformant DESIGN.md; lint/export with npx @google/design.md).\n" +
   "- Logos: generate_logo_concepts, then generate_color_combinations or generate_website_color_palette.\n" +
+  "- One step from references: design_md_from_references. shadcn/Tailwind: generate_shadcn_theme, generate_color_scale, generate_type_scale, export_design_tokens (DTCG). Verify: check_contrast, lint_design_md; formats: convert_color.\n" +
+  "- Icons with real import names: search_icons. Viewports: get_screen_sizes. Brand: generate_slogans, make_brand_board.\n" +
   "The other tools are utilities (charts, diagrams, timelines, barcodes, puzzles, text). Searches run in parallel fine. Cite the madegooddesigns.com page links in answers.";
 
 // Every description leads with when to use the tool (selection quality). Applied here so the tool modules stay unchanged.
@@ -1599,6 +1603,7 @@ const MCP_OUTPUT_SCHEMAS = {
     tokens: { type: "object", description: "The YAML front-matter token tree (DESIGN.md spec, version alpha)." },
     spec: { type: "string" }, edit_url: { type: "string" }, contrast_failures: { type: "integer" } }, required: ["design_md", "tokens"] },
 };
+Object.assign(MCP_OUTPUT_SCHEMAS, OUTPUT_SCHEMAS48);
 const MCP_TOOLS_STRUCTURED = MCP_TOOLS.map((t) => MCP_OUTPUT_SCHEMAS[t.name] ? { ...t, outputSchema: MCP_OUTPUT_SCHEMAS[t.name] } : t);
 function mcpShape(r, structured) {
   if (r && r.structuredContent && (!structured || r.isError)) { const { structuredContent, ...rest } = r; return rest; }
@@ -1618,6 +1623,7 @@ const MCP_NEXT = {
   generate_logo_concepts: "Next step: generate_color_combinations or generate_website_color_palette(brand_color=…) for the brand colours.",
   generate_color_combinations: "Next step: generate_website_color_palette(brand_color=<one of these hex codes>) gives a full light + dark website scheme.",
 };
+Object.assign(MCP_NEXT, NEXT48);
 function mcpAddNext(name, r) {
   const hint = MCP_NEXT[name];
   if (!hint || !r || r.isError || mcpZero(r) || !Array.isArray(r.content) || /^0 /.test((r.content[0] && r.content[0].text) || "")) return r;
@@ -1909,8 +1915,57 @@ async function mcpCallToolInner(name, a, env, opts) {
   if (isToolsTool(name)) return callToolsTool(name, a);
   if (isTools44Tool(name)) return callTools44Tool(name, a);
   if (isTools45Tool(name)) return callTools45Tool(name, a);
+  if (name === "design_md_from_references") return mcpDesignFromRefs(a, env);
+  if (isTools48Tool(name)) return callTools48Tool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, site: MCP_SITE });
   if (isUiTool(name)) return callUiTool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, clampInt, site: MCP_SITE });
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
+}
+
+// ---- batch 48: references → design system (31-Oct-2026). Same pooling + role maths as the Boards "design" API and the
+// /tools/moodboard-maker/ hand-off (MGDMoodboard.designFromColors, deterministic), then the spec-conformant DESIGN.md.
+const REF_FONTS = [ // tag → [heading, body] Google Fonts (OFL) suggestions; first match wins
+  [/art-?deco|deco/, ["Poiret One", "Josefin Sans"]], [/art-?nouveau|nouveau|ornament/, ["Cormorant Garamond", "Source Serif 4"]],
+  [/swiss|grid|modernis|bauhaus|helvetica|sans/, ["Inter Tight", "Inter"]], [/brutalis|mono|code|terminal/, ["Space Grotesk", "IBM Plex Mono"]],
+  [/editorial|magazine|serif|classic|book/, ["Playfair Display", "Source Serif 4"]], [/retro|vintage|70s|groovy/, ["Fraunces", "DM Sans"]],
+  [/playful|kids|hand-?drawn|fun|cartoon/, ["Baloo 2", "Nunito"]], [/luxury|elegant|fashion|premium/, ["Bodoni Moda", "Jost"]],
+  [/japan|ukiyo|woodblock/, ["Shippori Mincho", "Noto Sans JP"]], [/tech|futur|sci-?fi|cyber/, ["Space Grotesk", "Inter"]],
+];
+async function mcpDesignFromRefs(a, env) {
+  const fail = (t) => ({ content: [{ type: "text", text: t }], isError: true });
+  const ids = [...new Set((Array.isArray(a.references) ? a.references : typeof a.references === "string" ? a.references.split(/[\s,]+/) : [])
+    .map((x) => String(x).trim().replace(/[?#].*$/, "")).map((x) => (String(x).match(/([0-9a-f]{12})(?:\.(?:jpg|png|webp))?\/?$/i) || String(x).match(/^([0-9a-f]{12})$/i) || [])[1]).filter(Boolean).map((x) => x.toLowerCase()))].slice(0, 24);
+  const q = String(a.query || "").trim().slice(0, 120);
+  if (!ids.length && !q) return fail("Pass references (item IDs, or the image/page URLs returned by search_design_inspiration, search_museum_art, search_annual_reports or search_ui_screens) or a query.");
+  let rows = [], note = "";
+  try {
+    if (ids.length) rows = (await mcpRetry(() => env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND id IN (${ids.map(() => "?").join(",")})`).bind(...ids).all())).results || [];
+    else {
+      const coll = ["design", "museum", "annual-report", "ui"].includes(a.collection) ? a.collection : "design";
+      const r = await mcpSearchRowsRetry(env, "status=? AND owner_id IS NULL AND collection=?", ["published", coll], ["title", "description", "tags", "themes", "designer"], q, "featured_rank IS NULL, featured_rank, created_at DESC", clampInt(a.limit, 8, 3, 12));
+      rows = r.rows; note = r.note || "";
+    }
+  } catch (e) { return fail(MCP_BUSY(e)); }
+  const items = rows.map((r) => rowToItem(r, null)).filter((it) => it.palette && it.palette.length);
+  if (!items.length) return fail(`No references with colour palettes found${q ? ` for "${q}"` : ""}. Try a broader query, another collection (design, museum, annual-report, ui), or pass item URLs from a search tool.`);
+  let heading = String(a.heading_font || "").slice(0, 60), body = String(a.body_font || "").slice(0, 60), fontWhy = "you chose them";
+  if (!heading || !body) {
+    const words = items.flatMap((it) => [...(it.tags || []), ...(it.themes || []), it.style || ""]).join(" ").toLowerCase();
+    const hit = REF_FONTS.find(([re]) => re.test(words));
+    heading = heading || (hit ? hit[1][0] : "Inter"); body = body || (hit ? hit[1][1] : "Inter");
+    fontWhy = hit ? "suggested from the references' tags (Google Fonts, OFL)" : "a neutral default (Google Fonts, OFL)";
+  }
+  const d = MGDMoodboard.designFromColors({ palettes: items.map((it) => it.palette.slice(0, 6)), swatches: (Array.isArray(a.must_include_colors) ? a.must_include_colors : []).map((h) => MGDRoles.normHex(String(h))).filter(Boolean).slice(0, 6),
+    fonts: [heading, body], project: String(a.project_name || "").slice(0, 80), description: String(a.description || "").slice(0, 200) }, MGDRoles);
+  const md = mcpDesignMd({ project_name: a.project_name || "Untitled project", description: a.description || `A design system drawn from ${items.length} Made Good Designs references.`,
+    personality: a.personality, product_type: a.product_type, colors: { light: d.light, dark: d.dark }, heading_font: heading, body_font: body });
+  if (md.isError) return md;
+  const refs = items.map((it) => `- ${it.title || it.company || "Untitled"}${it.designer ? " — " + it.designer : it.artist ? " — " + it.artist : ""} (${it.collection === "museum" ? "public domain / CC0" : it.source_host || it.collection}) · palette ${it.palette.slice(0, 5).join(" ")} · ${MCP_SITE}${it.image}`).join("\n");
+  const head = `Design system from ${items.length} reference(s)${q ? ` matching "${q}"${note}` : ""} (Made Good Designs library — cite ${MCP_SITE}/):\n${refs}\n\n` +
+    `Pooled palette: ${d.palette.join(" ")}. Primary ${d.primary || "(none — neutral palette)"}${d.accentHue != null ? `, accent hue ${Math.round(d.accentHue)}°` : ""}, mood ${d.mood}. Fonts: ${heading} / ${body} — ${fontWhy}.\n` +
+    `Light and dark roles were built so every text pair passes WCAG AA. Edit: ${d.palette_url} · shadcn/ui theme: ${d.shadcn_url} · moodboard: ${TOOLS_SITE}/moodboard-maker/`;
+  return { content: [{ type: "text", text: head }, ...md.content],
+    structuredContent: { ...(md.structuredContent || {}), references: items.map((it) => ({ id: it.id, title: it.title, collection: it.collection, palette: it.palette, image: MCP_SITE + it.image })),
+      palette: d.palette, primary: d.primary, light: d.light, dark: d.dark, fonts: { heading, body }, palette_url: d.palette_url, shadcn_url: d.shadcn_url } };
 }
 
 // ---- design generators (shared code with /tools/website-color-palette-generator/ and /tools/design-md-generator/)
