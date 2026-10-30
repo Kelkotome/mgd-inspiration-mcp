@@ -469,7 +469,7 @@ s, h, b = req("GET", P + f"/api/boards/{TID}/design", {})
 check("design API without session -> 401", s == 401)
 s, res, t = call(AT, "board_design_system", {"board_id": TID})
 c = res.get("content") or []
-check("MCP board_design_system returns palette + full DESIGN.md", len(c) == 2 and "Primary picked from the board: #0f766e" in c[0]["text"] and c[1]["text"].startswith("# DESIGN.md — Trips") and "**Fail**" not in c[1]["text"], c[0]["text"][:200] if c else t)
+check("MCP board_design_system returns palette + full DESIGN.md", len(c) == 2 and "Primary picked from the board: #0f766e" in c[0]["text"] and c[1]["text"].startswith("---\nversion: alpha\nname: \"Trips\"") and "\n# DESIGN.md — Trips\n" in c[1]["text"] and "**Fail**" not in c[1]["text"], c[0]["text"][:200] if c else t)
 s, res, t = call(AT, "board_design_system", {"board_id": TID, "include_design_md": False})
 check("include_design_md:false -> palette only", len(res.get("content") or []) == 1)
 s, res, t = call(AT, "create_board", {"name": "Empty one"}); EID = re.search(r"board_id: ([0-9a-f]+)", t).group(1)

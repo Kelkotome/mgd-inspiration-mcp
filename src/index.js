@@ -345,10 +345,10 @@ async function feed(url, env, request) {
   const items = (rows.results || []).map((r) => rowToItem(r, env));
   if (useOffset) {
     const nextOffset = items.length === limit ? offset + limit : null;
-    return json({ items, nextOffset }, 200, env, request);
+    return noEdgeIfEmpty(json({ items, nextOffset }, 200, env, request), items);
   }
   const nextCursor = items.length === limit ? items[items.length - 1].created_at : null;
-  return json({ items, nextCursor }, 200, env, request);
+  return noEdgeIfEmpty(json({ items, nextCursor }, 200, env, request), items);
 }
 
 // Distinct discipline categories (+counts) within a collection, for the tab bar.
@@ -373,12 +373,13 @@ async function search(url, env, request) {
   const limit = clampInt(url.searchParams.get("limit"), 40, 1, 60);
   const collection = (url.searchParams.get("collection") || "design").trim();
   if (!q) return json({ items: [] }, 200, env, request);
-  const like = `%${q.slice(0, 40)}%`; // D1 rejects LIKE patterns over ~50 bytes
+  const like = `%${cutBytes(q, 40)}%`; // D1 rejects LIKE patterns over ~50 bytes
   const rows = await env.DB.prepare(
     `SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection = ? AND (title LIKE ? OR description LIKE ? OR tags LIKE ? OR company LIKE ?)
      ORDER BY created_at DESC LIMIT ?`
   ).bind(collection, like, like, like, like, limit).all();
-  return json({ items: (rows.results || []).map((r) => rowToItem(r, env)) }, 200, env, request);
+  const items = (rows.results || []).map((r) => rowToItem(r, env));
+  return noEdgeIfEmpty(json({ items }, 200, env, request), items);
 }
 
 async function getItem(id, env, request) {
@@ -1454,11 +1455,11 @@ const MCP_TOOLS = [
   },
   {
     name: "search_annual_reports",
-    description: "Search Made Good Designs' curated archive of VINTAGE CORPORATE ANNUAL REPORT cover designs (the 1950s–80s golden age of corporate design — Paul Rand, Chermayeff & Geismar, transit/utility authorities, etc.). Each result gives the company, year, designer/agency, industry, a design description, and a Made Good Designs page URL to cite. Use for questions about annual-report design history, corporate identity, and mid-century graphic design.",
+    description: "Search Made Good Designs' curated archive of about 7,500 VINTAGE CORPORATE ANNUAL REPORT covers, mostly Canadian, American and German, from the 1850s to the 1990s (most from the 1940s–80s golden age of corporate design: railways, banks, utilities, transit authorities; designers such as Paul Rand and Herbert Bayer). Each result gives the company, year, designer/agency where known, industry, a design description, and a Made Good Designs page URL to cite.",
     inputSchema: {
       type: "object",
       properties: {
-        query: { type: "string", description: "Free-text search over company, title, description and tags, e.g. 'transit authority', 'modernist grid', 'Paul Rand'." },
+        query: { type: "string", description: "Free-text search over company, designer, title, description and tags, e.g. 'transit authority', 'modernist grid', 'Paul Rand'." },
         year: { type: "integer", description: "Optional exact report/fiscal year filter, e.g. 1972." },
         industry: { type: "string", description: "Optional industry/sector filter, e.g. 'transit', 'oil', 'retail'." },
         limit: { type: "integer", description: "Max results (1-20, default 8).", minimum: 1, maximum: 20 },
@@ -1474,7 +1475,7 @@ const MCP_TOOLS = [
       type: "object",
       properties: {
         query: { type: "string", description: "Free-text search over title, artist, description and tags, e.g. 'Mucha poster', 'woodblock wave', 'illuminated initial'." },
-        theme: { type: "string", description: "Optional theme slug, e.g. 'art-nouveau', 'ukiyo-e', 'bauhaus', 'lettering', 'pattern'." },
+        theme: { type: "string", description: "Optional museum theme slug, e.g. 'posters', 'art-nouveau', 'ukiyo-e', 'art-deco', 'vienna-secession', 'lettering', 'calligraphy', 'ornament', 'pattern', 'textiles', 'maps', 'botanical', 'type-specimens'. An unknown theme is ignored (searched as text instead)." },
         culture: { type: "string", description: "Optional culture/place, e.g. 'Japan', 'France'." },
         limit: { type: "integer", description: "Max results (1-20, default 8).", minimum: 1, maximum: 20 },
       },
@@ -1510,7 +1511,7 @@ const MCP_TOOLS = [
   },
   {
     name: "generate_design_md",
-    description: "Generate a DESIGN.md file with Made Good Designs' DESIGN.md Generator: a Markdown design-system brief for AI coding agents and developers. It contains rules for agents, personality and voice, colour tokens with measured WCAG contrast tables (light and optional dark theme), a type scale in px and rem, spacing, radius, border and shadow tokens, motion durations and easing, component behaviour, an accessibility checklist, do/don't rules and all tokens as CSS. Pass colours, a brand colour, or neither (an accessible palette is generated). Returns the Markdown plus a link to edit it in the visual tool.",
+    description: "Generate a DESIGN.md file with Made Good Designs' DESIGN.md Generator, in the open DESIGN.md format (google-labs-code/design.md, version alpha): YAML front matter with colour (light + dark-*), typography, rounded, spacing and component tokens, then the spec's sections in order (Overview with rules for AI agents and voice, Colors with measured WCAG contrast tables, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts) plus Motion, Accessibility and all tokens as CSS. It passes `npx @google/design.md lint`, and `npx @google/design.md export --format css-tailwind|dtcg` reads its tokens. Pass colours (e.g. the light/dark roles from generate_website_color_palette), a brand colour, or neither (an accessible palette is generated). Returns the Markdown plus a link to edit it in the visual tool.",
     inputSchema: {
       type: "object",
       properties: {
@@ -1547,6 +1548,148 @@ const MCP_TOOLS = [
 ];
 MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 
+// ---- Routing guide (sent on initialize; clients load it into the model's context) — 31-Oct-2026
+const MCP_INSTRUCTIONS = "Made Good Designs (madegooddesigns.com): free design references and design-system generators. Which tool to use:\n" +
+  "- Building an app screen, web page or landing-page section: search_ui_screens, then get_ui_screen_code for its HTML + DESIGN.md; a multi-step journey (sign-up, checkout, password reset…): get_ui_flow.\n" +
+  "- Typography, branding, logo, poster or editorial references: search_design_inspiration (or browse_inspiration_by_theme for a style such as swiss, retro, brutalist).\n" +
+  "- Historical art and public-domain imagery (posters, Art Nouveau, ukiyo-e, ornament, lettering, maps, textiles): search_museum_art. Corporate design history: search_annual_reports.\n" +
+  "- Setting up a design system: generate_website_color_palette (accessible light + dark roles), then generate_design_md with those colours (spec-conformant DESIGN.md; lint/export with npx @google/design.md).\n" +
+  "- Logos: generate_logo_concepts, then generate_color_combinations or generate_website_color_palette.\n" +
+  "The other tools are utilities (charts, diagrams, timelines, barcodes, puzzles, text). Searches run in parallel fine. Cite the madegooddesigns.com page links in answers.";
+
+// Every description leads with when to use the tool (selection quality). Applied here so the tool modules stay unchanged.
+const MCP_USE_WHEN = {
+  search_design_inspiration: "Use when you need real typography, branding, logo, lettering, poster or editorial design references (with colour palettes) to inform a look, a brand or a moodboard.",
+  list_inspiration_themes: "Use when you want to see which curated style themes exist, with item counts, before browsing or filtering design inspiration.",
+  browse_inspiration_by_theme: "Use when the user names a style (retro, swiss, brutalist, art-deco…) and wants a set of examples rather than a keyword search.",
+  search_annual_reports: "Use when the question is about corporate design history, annual-report covers, mid-century corporate identity, or a company's or designer's report design.",
+  search_museum_art: "Use when you need historical art or public-domain imagery as a reference or asset: posters, Art Nouveau, ukiyo-e, ornament, lettering, calligraphy, maps, textiles, pattern.",
+  get_share_feedback: "Use when the user gives an MGD Share (HTML to Link) owner link and wants the reviewer notes left on their shared page.",
+  generate_website_color_palette: "Use when a website or app needs a colour scheme: an accessible light + dark palette (8 roles) from a brand colour or from scratch, ready for CSS or generate_design_md.",
+  generate_design_md: "Use when setting up a design system for a project or giving a coding agent design rules to follow.",
+  style_text_unicode: "Use when the user wants bold, italic, cursive or other fancy text to paste into a bio, username or post.",
+  count_characters: "Use when the user needs an exact character, word or reading-time count, or a check against a platform limit.",
+  diff_text: "Use when comparing two versions of a text and you need the exact changes or a patch.",
+  generate_color_combinations: "Use when the user wants named 2–3-colour combinations (brand, poster, logo) with contrast, rather than a full website palette.",
+  generate_upc_barcode: "Use when the user needs a product barcode (UPC, EAN or ISBN) as an image.",
+  text_to_diagram: "Use when turning a process or an outline into a flowchart or mind-map image.",
+  generate_logo_concepts: "Use when the user wants logo ideas for a brand name.",
+  passport_photo_size: "Use when the user asks for a country's passport or visa photo size.",
+  make_word_search: "Use when the user wants a printable word search puzzle.",
+  make_crossword: "Use when the user wants a crossword built from their own answers and clues.",
+  make_bingo_cards: "Use when the user wants printable bingo cards.",
+  generate_usernames: "Use when the user wants username ideas that fit a platform's rules.",
+  schedule_gantt_chart: "Use when planning a project timeline with task dependencies or drawing a Gantt chart.",
+  get_public_holidays: "Use when the user needs a year's public holidays for the US, UK, Canada or Australia.",
+  make_weekly_schedule: "Use when turning class or shift times into a weekly timetable.",
+  text_to_timeline: "Use when drawing a timeline from dated events.",
+  make_org_chart: "Use when drawing an organisation chart from a list of people and managers.",
+  make_venn_diagram: "Use when comparing 2–4 lists to find what they share, or drawing a Venn diagram.",
+  make_pie_chart: "Use when the user wants a pie or donut chart from values.",
+  generate_data_matrix: "Use when the user needs a Data Matrix code (including GS1) as an image.",
+  make_color_swatches: "Use when turning a list of colours into a swatch sheet or palette files.",
+  make_graph: "Use when drawing a line, bar, area or scatter chart from CSV data.",
+  convert_subtitles: "Use when converting, re-timing or re-wrapping SRT/WebVTT subtitles or transcripts.",
+  image_size_calculator: "Use when working out image dimensions for a resize, a print size or a social-media preset.",
+  convert_text_case: "Use when changing text case or converting to camelCase, snake_case, slugs and similar.",
+  search_ui_screens: "Use when building or designing an app screen, web page or landing-page section and you want an original reference with starter HTML and a DESIGN.md.",
+  get_ui_flow: "Use when building a multi-step journey (sign-up, checkout, password reset, onboarding…) and you want every step in one design system.",
+  get_ui_screen_code: "Use after search_ui_screens or get_ui_flow, when you want a screen's HTML/CSS and DESIGN.md to start coding from.",
+};
+for (const t of MCP_TOOLS) if (MCP_USE_WHEN[t.name] && !t.description.startsWith("Use when"))
+  t.description = MCP_USE_WHEN[t.name] + " " + t.description.replace(/\s*Use (when|for) [^.]*\.$/, "");
+
+// structuredContent schemas (MCP 2025-06-18) for the generators agents chain from. Text content is unchanged.
+const HEXMAP = { type: "object", additionalProperties: { type: "string" } };
+const MCP_OUTPUT_SCHEMAS = {
+  generate_website_color_palette: { type: "object", properties: {
+    style: { type: "string" }, harmony: { type: "string" }, brand_color: { type: ["string", "null"] },
+    light: HEXMAP, dark: HEXMAP, notes: { type: "array", items: { type: "string" } },
+    contrast: { type: "array", items: { type: "object", properties: { theme: { type: "string" }, pair: { type: "string" }, ratio: { type: "number" }, min: { type: "number" }, pass: { type: "boolean" } } } },
+    palette_url: { type: "string" }, design_md_url: { type: "string" } }, required: ["light", "dark", "contrast"] },
+  generate_design_md: { type: "object", properties: {
+    design_md: { type: "string", description: "The DESIGN.md file (same as the first text block)." },
+    tokens: { type: "object", description: "The YAML front-matter token tree (DESIGN.md spec, version alpha)." },
+    spec: { type: "string" }, edit_url: { type: "string" }, contrast_failures: { type: "integer" } }, required: ["design_md", "tokens"] },
+};
+const MCP_TOOLS_STRUCTURED = MCP_TOOLS.map((t) => MCP_OUTPUT_SCHEMAS[t.name] ? { ...t, outputSchema: MCP_OUTPUT_SCHEMAS[t.name] } : t);
+function mcpShape(r, structured) {
+  if (r && r.structuredContent && (!structured || r.isError)) { const { structuredContent, ...rest } = r; return rest; }
+  return r;
+}
+
+// One-line "next step" hints appended to successful, non-empty results.
+const MCP_NEXT = {
+  search_design_inspiration: "Next step: to turn a reference into a design system, call generate_website_color_palette with brand_color set to a palette hex above, then generate_design_md.",
+  browse_inspiration_by_theme: "Next step: to turn a reference into a design system, call generate_website_color_palette with brand_color set to a palette hex above, then generate_design_md.",
+  search_museum_art: "Next step: search_design_inspiration finds modern design in a similar style; generate_website_color_palette(brand_color=<a palette hex above>) builds an accessible scheme from a work.",
+  search_annual_reports: "Next step: search_museum_art or search_design_inspiration for related references; generate_website_color_palette(brand_color=<a palette hex above>) for a scheme.",
+  search_ui_screens: "Next step: get_ui_screen_code(screen_id=…) returns the HTML and DESIGN.md; get_ui_flow returns a whole multi-step journey.",
+  get_ui_flow: "Next step: get_ui_screen_code(screen_id=…) returns any step's HTML and DESIGN.md.",
+  get_ui_screen_code: "Next step: to re-theme it for a brand, call generate_design_md with brand_color (or colors) and use that DESIGN.md instead.",
+  generate_design_md: "Next step: search_ui_screens finds starter screens that ship with DESIGN.md files in this format.",
+  generate_logo_concepts: "Next step: generate_color_combinations or generate_website_color_palette(brand_color=…) for the brand colours.",
+  generate_color_combinations: "Next step: generate_website_color_palette(brand_color=<one of these hex codes>) gives a full light + dark website scheme.",
+};
+function mcpAddNext(name, r) {
+  const hint = MCP_NEXT[name];
+  if (!hint || !r || r.isError || mcpZero(r) || !Array.isArray(r.content) || /^0 /.test((r.content[0] && r.content[0].text) || "")) return r;
+  const last = [...r.content].reverse().find((c) => c && c.type === "text");
+  if (last && !last.text.includes("Next step:")) last.text += "\n\n" + hint;
+  return r;
+}
+
+// MCP prompts (Claude Code shows them as slash commands). Each is a short, tool-routed recipe.
+const MCP_PROMPTS = [
+  { name: "design-system-from-references", title: "Design system from references",
+    description: "Find design references for a product, pick colours from them and produce an accessible palette and a spec-conformant DESIGN.md.",
+    arguments: [{ name: "product", description: "What you're building, e.g. 'a booking app for yoga studios'.", required: true },
+      { name: "style", description: "Optional style words, e.g. 'warm editorial, art nouveau'.", required: false }],
+    text: (a) => `Set up a design system for ${a.product}${a.style ? ` in this style: ${a.style}` : ""}, using the Made Good Designs tools.\n` +
+      `1. Call search_design_inspiration${a.style ? " and search_museum_art" : ""} with 2–3 short queries${a.style ? ` drawn from "${a.style}"` : ""}. Show me the best 4–6 references with their page links.\n` +
+      `2. Pick one brand colour from their palettes and explain why in one sentence.\n` +
+      `3. Call generate_website_color_palette with that brand_color.\n` +
+      `4. Call generate_design_md with project_name, a one-line description, 2–3 personality traits, the light and dark colours from step 3 and fonts that suit the references.\n` +
+      `5. Save the result as DESIGN.md in the project root and add "Follow DESIGN.md for all UI work" to CLAUDE.md or AGENTS.md.` },
+  { name: "brand-kit", title: "Brand kit",
+    description: "Logo concepts, brand colours, a website palette and a DESIGN.md for a new brand name.",
+    arguments: [{ name: "brand_name", description: "The brand name.", required: true },
+      { name: "industry", description: "Optional industry or what the brand does.", required: false }],
+    text: (a) => `Make a starter brand kit for "${a.brand_name}"${a.industry ? ` (${a.industry})` : ""} with the Made Good Designs tools.\n` +
+      `1. Call generate_logo_concepts for the name and show the 3 strongest concepts.\n` +
+      `2. Call generate_color_combinations for brand colours that fit${a.industry ? " the industry" : ""}; pick one combination.\n` +
+      `3. Call generate_website_color_palette with brand_color set to its main colour.\n` +
+      `4. Call generate_design_md with project_name "${a.brand_name}", those light/dark colours and fonts that match the chosen logo.\n` +
+      `5. Summarise the kit: logo, colours (hex), fonts, and the DESIGN.md.` },
+  { name: "build-screen-from-reference", title: "Build a screen from a reference",
+    description: "Find an original UI screen that matches what you're building and start from its HTML and DESIGN.md.",
+    arguments: [{ name: "screen", description: "The screen or section, e.g. 'billing settings with plan cards'.", required: true },
+      { name: "style", description: "Optional style: minimal, editorial, brutalist, luxury, playful, corporate, retro or monochrome.", required: false }],
+    text: (a) => `I'm building: ${a.screen}.\n` +
+      `1. Call search_ui_screens with query "${a.screen}"${a.style ? ` and style "${a.style}"` : ""}; show the 3 closest screens with screenshots and page links.\n` +
+      `2. Call get_ui_screen_code for the best match.\n` +
+      `3. Rebuild it in this project's framework, keeping the DESIGN.md tokens (save DESIGN.md in the project root if there isn't one), and credit "UI by Made Good Designs" in a code comment.` },
+];
+function mcpPromptGet(p) {
+  const pr = MCP_PROMPTS.find((x) => x.name === p.name);
+  if (!pr) return { error: "Unknown prompt: " + p.name + ". Available: " + MCP_PROMPTS.map((x) => x.name).join(", ") };
+  const a = {}, args = p.arguments || {};
+  for (const d of pr.arguments) {
+    const v = String(args[d.name] == null ? "" : args[d.name]).trim().slice(0, 200);
+    if (d.required && !v) return { error: `Missing required argument: ${d.name}` };
+    a[d.name] = v;
+  }
+  return { description: pr.description, messages: [{ role: "user", content: { type: "text", text: pr.text(a) } }] };
+}
+
+// Q6 (31-Oct): a D1 error/timeout must never read as "0 results". Retry once, then the caller returns isError.
+async function mcpRetry(fn) {
+  try { return await fn(); }
+  catch (e) { await new Promise((r) => setTimeout(r, 120)); return fn(); }
+}
+async function mcpSearchRowsRetry(...args) { return mcpRetry(() => mcpSearchRows(...args)); }
+const MCP_BUSY = (e) => `The search failed (database error: ${String((e && e.message) || e).slice(0, 120)}) — this is NOT a 'no results' answer. Retry the call, or shorten the query.`;
+
 function mcpCors() {
   return {
     "Access-Control-Allow-Origin": "*",
@@ -1580,21 +1723,24 @@ async function mcpHandler(request, env) {
 
   const ip = request.headers.get("CF-Connecting-IP") || "";
   const ua = request.headers.get("User-Agent") || "";
+  // structuredContent/outputSchema (MCP 2025-06-18+) only for clients that send that protocol version header; older clients see the old shapes.
+  const structured = (request.headers.get("MCP-Protocol-Version") || "") >= "2025-06-18";
 
   const handle = async (msg) => {
     if (!msg || typeof msg !== "object") return null;
     const { id, method, params } = msg;
     if (method === "initialize") {
       const pv = (params && params.protocolVersion) || "2025-06-18";
-      return rpcOk(id, { protocolVersion: pv, capabilities: { tools: { listChanged: false } },
-        serverInfo: { name: "MGD Inspiration", version: "1.0" },
-        instructions: "Curated typography & brand-design inspiration from Made Good Designs (madegooddesigns.com), plus generators for accessible website colour palettes and DESIGN.md design-system files. Cite the source links in results." });
+      return rpcOk(id, { protocolVersion: pv, capabilities: { tools: { listChanged: false }, prompts: { listChanged: false } },
+        serverInfo: { name: "MGD Inspiration", version: "1.1" }, instructions: MCP_INSTRUCTIONS });
     }
     if (typeof method === "string" && method.startsWith("notifications/")) return null; // notifications: no reply
     if (method === "ping") return rpcOk(id, {});
-    if (method === "tools/list") return rpcOk(id, { tools: MCP_TOOLS });
+    if (method === "tools/list") return rpcOk(id, { tools: structured ? MCP_TOOLS_STRUCTURED : MCP_TOOLS });
+    if (method === "prompts/list") return rpcOk(id, { prompts: MCP_PROMPTS.map(({ text, ...p }) => p) });
+    if (method === "prompts/get") { const p = mcpPromptGet(params || {}); return p.error ? rpcErr(id, -32602, p.error) : rpcOk(id, p); }
     if (method === "tools/call") {
-      try { return rpcOk(id, await mcpCallTool(params || {}, env, ip, ua)); }
+      try { return rpcOk(id, mcpShape(await mcpCallTool(params || {}, env, ip, ua), structured)); }
       catch (e) { return rpcOk(id, { content: [{ type: "text", text: "Error: " + (e && e.message || e) }], isError: true }); }
     }
     return rpcErr(id, -32601, "Method not found: " + method);
@@ -1687,6 +1833,7 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
     return inner(msg);
   }
   if (method === "tools/list") { await mcpEvent(env, c, { kind: "tools_list" }); return inner(msg); }
+  if (method === "prompts/get") { await mcpEvent(env, c, { kind: "prompt", tool: String((msg.params && msg.params.name) || "").slice(0, 60) }); return inner(msg); }
   if (method !== "tools/call") return inner(msg);
   const t0 = Date.now(), tool = (msg.params && msg.params.name) || "";
   const res = await inner(msg);
@@ -1701,17 +1848,30 @@ async function mcpCallTool(params, env, ip, ua, who) {
   const a = params.arguments || {};
   await logMcp(env, name, a.query || a.q || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || (typeof a.colors === "string" ? a.colors.slice(0, 80) : Array.isArray(a.colors) ? a.colors.slice(0, 6).join(" ") : "") || a.preset || "", ip, ua, who);
   const opts = who ? { ids: true } : undefined; // authenticated endpoint also shows item_id (needed by save_to_board)
+  try { return mcpAddNext(name, await mcpCallToolInner(name, a, env, opts)); }
+  catch (e) {
+    if (MCP_D1_TOOLS.has(name)) return { content: [{ type: "text", text: MCP_BUSY(e) }], isError: true };
+    throw e;
+  }
+}
+const MCP_D1_TOOLS = new Set(["search_design_inspiration", "list_inspiration_themes", "browse_inspiration_by_theme", "search_annual_reports", "search_museum_art", "search_ui_screens", "get_ui_flow", "get_ui_screen_code"]);
+const MCP_SIBLING = {
+  design: "Nothing in the design-inspiration gallery; try search_museum_art (historical art and posters) or search_ui_screens (app and website screens).",
+  "annual-report": "Nothing in the annual-report archive; try search_design_inspiration or search_museum_art.",
+  museum: "Nothing in the museum collection (public-domain works, mostly before the 1930s); for modern movements such as Bauhaus or Swiss style try search_design_inspiration or search_annual_reports.",
+};
+async function mcpCallToolInner(name, a, env, opts) {
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
     const limit = clampInt(a.limit, 8, 1, 20);
     const binds = ["published", "design"];
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.theme) { where += " AND themes LIKE ?"; binds.push(`%"${a.theme}"%`); }
-    const r = await mcpSearchRows(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
-    return mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts);
+    const r = await mcpSearchRowsRetry(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
+    return mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design);
   }
   if (name === "list_inspiration_themes") {
-    const rows = await env.DB.prepare(`SELECT themes FROM items WHERE status='published' AND owner_id IS NULL AND collection='design'`).all();
+    const rows = await mcpRetry(() => env.DB.prepare(`SELECT themes FROM items WHERE status='published' AND owner_id IS NULL AND collection='design'`).all());
     const counts = {};
     (rows.results || []).forEach((r) => safeArr(r.themes).forEach((t) => { counts[t] = (counts[t] || 0) + 1; }));
     const lines = MCP_THEMES.map((t) => `- ${t}: ${counts[t] || 0} items  (${MCP_SITE}/?theme=${t})`);
@@ -1720,8 +1880,8 @@ async function mcpCallTool(params, env, ip, ua, who) {
   if (name === "browse_inspiration_by_theme") {
     const theme = (a.theme || "").toString().trim();
     const limit = clampInt(a.limit, 10, 1, 20);
-    const rows = await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='design' AND themes LIKE ? ORDER BY created_at DESC LIMIT ?`).bind(`%"${theme}"%`, limit).all();
-    return mcpItems(rows.results || [], `${(rows.results||[]).length} item(s) in theme "${theme}"`, opts);
+    const rows = await mcpRetry(() => env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='design' AND themes LIKE ? ORDER BY created_at DESC LIMIT ?`).bind(`%"${theme}"%`, limit).all());
+    return mcpItems(rows.results || [], `${(rows.results||[]).length} item(s) in theme "${theme}"`, opts, "Try list_inspiration_themes for the themes that have items, or search_design_inspiration with a keyword.");
   }
   if (name === "search_annual_reports") {
     const q = (a.query || "").toString().trim();
@@ -1730,18 +1890,23 @@ async function mcpCallTool(params, env, ip, ua, who) {
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.year) { const y = parseInt(a.year, 10); if (y) { where += " AND report_year = ?"; binds.push(y); } }
     if (a.industry) { where += " AND industry = ?"; binds.push(a.industry.toString().trim()); }
-    const r = await mcpSearchRows(env, where, binds, ["company", "title", "description", "tags", "industry"], q, "report_year DESC, created_at DESC", limit);
-    return mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts);
+    const r = await mcpSearchRowsRetry(env, where, binds, ["company", "designer", "title", "description", "tags", "industry"], q, "report_year DESC, created_at DESC", limit);
+    return mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts, MCP_SIBLING["annual-report"]);
   }
   if (name === "search_museum_art") {
-    const q = (a.query || "").toString().trim();
+    let q = (a.query || "").toString().trim();
     const limit = clampInt(a.limit, 8, 1, 20);
     const binds = ["published", "museum"];
-    let where = "status=? AND owner_id IS NULL AND collection=?";
-    if (a.theme) { where += " AND category = ?"; binds.push(a.theme.toString().trim().toLowerCase()); }
+    let where = "status=? AND owner_id IS NULL AND collection=?", themeNote = "";
+    let theme = a.theme ? a.theme.toString().trim().toLowerCase().replace(/[\s_]+/g, "-") : "";
+    // Unknown theme (e.g. 'bauhaus', which has no museum works): don't filter everything away — search it as text instead.
+    if (theme && !(await mcpRetry(() => env.DB.prepare("SELECT 1 FROM items WHERE collection='museum' AND status='published' AND category=? LIMIT 1").bind(theme).first()))) {
+      themeNote = ` ('${theme}' is not a museum theme, so it was searched as text)`; q = (q + " " + theme.replace(/-/g, " ")).trim(); theme = "";
+    }
+    if (theme) { where += " AND category = ?"; binds.push(theme); }
     if (a.culture) { where += " AND country LIKE ?"; binds.push(`%${a.culture.toString().trim()}%`); }
-    const r = await mcpSearchRows(env, where, binds, ["title", "designer", "description", "tags", "industry"], q, "featured_rank IS NULL, featured_rank, created_at DESC", limit);
-    return mcpItems(r.rows, `${r.rows.length} museum artwork(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts);
+    const r = await mcpSearchRowsRetry(env, where, binds, ["title", "designer", "description", "tags", "industry"], q, "featured_rank IS NULL, featured_rank, created_at DESC", limit);
+    return mcpItems(r.rows, `${r.rows.length} museum artwork(s) for "${q}"${theme ? " in theme "+theme : ""}${r.note}${themeNote}`, opts, MCP_SIBLING.museum);
   }
   if (name === "get_share_feedback") {
     const link = (a.link || "").toString();
@@ -1757,7 +1922,7 @@ async function mcpCallTool(params, env, ip, ua, who) {
   if (isToolsTool(name)) return callToolsTool(name, a);
   if (isTools44Tool(name)) return callTools44Tool(name, a);
   if (isTools45Tool(name)) return callTools45Tool(name, a);
-  if (isUiTool(name)) return callUiTool(name, a, env, { mcpSearchRows, rowToItem, clampInt, site: MCP_SITE });
+  if (isUiTool(name)) return callUiTool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, clampInt, site: MCP_SITE });
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
 }
 
@@ -1794,8 +1959,11 @@ function mcpWebsitePalette(a) {
     `| Role | Light | Dark |\n|---|---|---|\n${rows}\n\n` + (notes.length ? notes.join(" ") + "\n\n" : "") +
     mcpChecksText(L, "Light theme", tm) + "\n\n" + mcpChecksText(D, "Dark theme", tm) + "\n\n```css\n" + css + "\n```\n\n" +
     `Open and edit this palette (previews, fonts, Tailwind/JSON/SCSS export): ${link}\n` +
-    `Turn it into a DESIGN.md file: ${TOOLS_SITE}/design-md-generator/?l=${MGDRoles.packRoles(L)}&d=${MGDRoles.packRoles(D)}`;
-  return { content: [{ type: "text", text }] };
+    `Turn it into a DESIGN.md file: ${TOOLS_SITE}/design-md-generator/?l=${MGDRoles.packRoles(L)}&d=${MGDRoles.packRoles(D)}\n\n` +
+    `Next step: call generate_design_md with colors=${JSON.stringify({ light: L, dark: D })} to get a DESIGN.md with these exact colours.`;
+  const contrast = [["light", L], ["dark", D]].flatMap(([th, r]) => MGDRoles.checks(r, tm).map((c) => ({ theme: th, pair: c.label, ratio: Math.round(c.ratio * 100) / 100, min: c.min, pass: c.pass })));
+  return { content: [{ type: "text", text }], structuredContent: { style, harmony: sd.harmony, brand_color: brand, light: L, dark: D, notes, contrast, palette_url: link,
+    design_md_url: `${TOOLS_SITE}/design-md-generator/?l=${MGDRoles.packRoles(L)}&d=${MGDRoles.packRoles(D)}` } };
 }
 function mcpDesignMd(a) {
   const brand = a.brand_color ? mcpHex(a.brand_color) : null;
@@ -1807,7 +1975,7 @@ function mcpDesignMd(a) {
   const L = MGDRoles.build(sd, "light", givenL).roles, D = MGDRoles.build(sd, "dark", givenD).roles;
   const dark = a.include_dark !== false;
   const strs = (x, max) => (Array.isArray(x) ? x : []).map((v) => String(v).slice(0, 300)).filter(Boolean).slice(0, max);
-  const md = MGDDesignMd.build({
+  const dmIn = {
     name: String(a.project_name || "").slice(0, 80), description: String(a.description || "").slice(0, 200),
     productType: typeof a.product_type === "string" ? a.product_type.slice(0, 40) : "SaaS web app",
     personality: strs(a.personality, 4), dark, light: L, darkColors: D,
@@ -1817,17 +1985,25 @@ function mcpDesignMd(a) {
     borderWidth: Number(a.border_width) === 2 ? "2" : "1", shadows: a.shadows, motion: a.motion,
     components: Array.isArray(a.components) && a.components.length ? a.components : MGDDesignMd.COMPONENTS.map((c) => c[0]),
     dos: Array.isArray(a.dos) ? strs(a.dos, 20) : MGDDesignMd.DEFAULT_DO, donts: Array.isArray(a.donts) ? strs(a.donts, 20) : MGDDesignMd.DEFAULT_DONT,
-  });
+  };
+  const md = MGDDesignMd.build(dmIn);
   const fonts = `&hf=${encodeURIComponent(String(a.heading_font || "Inter").slice(0, 60))}&bf=${encodeURIComponent(String(a.body_font || "Inter").slice(0, 60))}`;
+  const edit = `${TOOLS_SITE}/design-md-generator/?l=${MGDRoles.packRoles(L)}${dark ? "&d=" + MGDRoles.packRoles(D) : ""}${fonts}`;
   const note = `Save this as DESIGN.md in the project root and point the agent's instructions file (CLAUDE.md, AGENTS.md or editor rules) at it. ` +
-    `Edit it visually: ${TOOLS_SITE}/design-md-generator/?l=${MGDRoles.packRoles(L)}${dark ? "&d=" + MGDRoles.packRoles(D) : ""}${fonts} — or preview the colours on real page layouts: ${mcpPaletteLink(L, D)}`;
-  return { content: [{ type: "text", text: md }, { type: "text", text: note }] };
+    `It follows the open DESIGN.md format (version alpha): check it with \`npx @google/design.md lint DESIGN.md\`, or export the tokens with \`npx @google/design.md export --format css-tailwind DESIGN.md\` (or \`--format dtcg\`). ` +
+    `Edit it visually: ${edit} — or preview the colours on real page layouts: ${mcpPaletteLink(L, D)}`;
+  const fails = MGDRoles.checks(L).filter((c) => !c.pass).length + (dark ? MGDRoles.checks(D).filter((c) => !c.pass).length : 0);
+  return { content: [{ type: "text", text: md }, { type: "text", text: note }],
+    structuredContent: { design_md: md, tokens: MGDDesignMd.tokens(dmIn), spec: "DESIGN.md alpha (github.com/google-labs-code/design.md)", edit_url: edit, contrast_failures: fails } };
 }
 
 // MCP text search. 1) the whole query as one phrase (the original behaviour); if nothing matches a multi-word
 // query, 2) items containing every word (in any of the columns), then 3) items containing the most words.
 // Assistants send natural phrases ("swiss poster", "Mucha poster") that rarely appear verbatim.
 const MCP_STOP = new Set(["the","and","for","with","from","that","this","are","some","any","ideas","idea","examples","example","inspiration","design","designs","style","styled","references","reference"]);
+// D1's LIKE limit is ~50 BYTES, so CJK/accented text must be capped by UTF-8 length, not characters (31-Oct-2026).
+function utf8Len(s) { return new TextEncoder().encode(s).length; }
+function cutBytes(s, n) { let a = Array.from(s); while (a.length && utf8Len(a.join("")) > n) a.pop(); return a.join(""); }
 async function mcpSearchRows(env, where, binds, cols, q, order, limit) {
   const run = (w, wb, ord, ob) => env.DB.prepare(`SELECT * FROM items WHERE ${where}${w} ORDER BY ${ord} LIMIT ?`)
     .bind(...binds, ...wb, ...ob, limit).all().then((r) => r.results || []);
@@ -1835,7 +2011,7 @@ async function mcpSearchRows(env, where, binds, cols, q, order, limit) {
   const likes = (w) => cols.map(() => `%${w}%`);
   if (!q) return { rows: await run("", [], order, []), note: "" };
   // D1 caps LIKE patterns at ~50 bytes ("LIKE or GLOB pattern too complex"), so long queries skip the whole-phrase pass.
-  const phrase = q.length <= 40 ? await run(" AND " + any(), likes(q), order, []) : [];
+  const phrase = utf8Len(q) <= 40 ? await run(" AND " + any(), likes(q), order, []) : [];
   if (phrase.length >= limit) return { rows: phrase, note: "" };
   // Fewer exact-phrase hits than asked for: top up with word matches (e.g. "greek typography" had 1 phrase hit
   // but many items tagged "greek" + "typography").
@@ -1845,7 +2021,7 @@ async function mcpSearchRows(env, where, binds, cols, q, order, limit) {
   return { rows: phrase.concat(r.rows.filter((x) => !seen.has(x.id))).slice(0, limit), note: "" };
 }
 async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, likes) {
-  const words = [...new Set(q.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 2 && !MCP_STOP.has(w)).map((w) => w.slice(0, 40)))].slice(0, 6);
+  const words = [...new Set(q.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 2 && !MCP_STOP.has(w)).map((w) => cutBytes(w, 40)))].slice(0, 6);
   if (!words.length || (words.length === 1 && words[0] === q.toLowerCase())) return { rows: [], note: "" };
   const hit = words.map(any), wb = words.flatMap(likes);
   const all = await run(" AND " + hit.join(" AND "), wb, order, []);
@@ -1864,8 +2040,8 @@ async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, l
   return { rows: some, note: some.length ? ` (no item matches every word; closest matches for: ${use.map((i) => words[i]).join(", ")})` : "" };
 }
 
-function mcpItems(rows, header, opts) {
-  if (!rows.length) return { content: [{ type: "text", text: header + ". No matches — try a broader query or a different theme. Browse all at " + MCP_SITE + "/" }] };
+function mcpItems(rows, header, opts, sibling) {
+  if (!rows.length) return { content: [{ type: "text", text: header + ". No matches — try a broader query or a different theme." + (sibling ? " " + sibling : "") + " Browse all at " + MCP_SITE + "/" }] };
   const blocks = rows.map((r) => {
     const it = rowToItem(r, null);
     const isReport = it.collection === "annual-report";
@@ -2079,7 +2255,7 @@ async function mcpMeHandler(request, env, ctx, url, base) {
           if (!auth.scopes.has(need)) return rpcOk(id, { content: [{ type: "text", text: `Error: this tool needs the ${need} scope. Reconnect the app and allow it.` }], isError: true });
           return rpcOk(id, await mcpBoardTool(p, env, auth, ip, ua));
         }
-        return rpcOk(id, await mcpCallTool(p, env, ip, ua, who));
+        return rpcOk(id, mcpShape(await mcpCallTool(p, env, ip, ua, who), false));
       } catch (e) { return rpcOk(id, { content: [{ type: "text", text: "Error: " + (e && e.message || e) }], isError: true }); }
     }
     return rpcErr(id, -32601, "Method not found: " + method);
@@ -2597,12 +2773,19 @@ async function edgeCache(request, ctx, ttl, handlerFn) {
   const hit = await cache.match(key);
   if (hit) return hit;
   const resp = await handlerFn();
+  // Empty results are never edge-cached (a transient D1 hiccup or a just-published item must not look like "nothing" for the TTL).
+  if (resp && resp.headers.get("X-MGD-No-Edge-Cache")) { resp.headers.delete("X-MGD-No-Edge-Cache"); return resp; }
   if (resp && resp.status === 200) {
     const cached = new Response(resp.body, resp);
     cached.headers.set("Cache-Control", `public, s-maxage=${ttl}, max-age=${ttl}`);
     if (ctx && ctx.waitUntil) ctx.waitUntil(cache.put(key, cached.clone()));
     return cached;
   }
+  return resp;
+}
+
+function noEdgeIfEmpty(resp, items) {
+  if (!items || !items.length) resp.headers.set("X-MGD-No-Edge-Cache", "1");
   return resp;
 }
 

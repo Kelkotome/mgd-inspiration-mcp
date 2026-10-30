@@ -148,7 +148,7 @@ const G = {};
       if (sd.brand && r.primary !== sd.brand) notes.push("Brand colour " + sd.brand.toUpperCase() + " was adjusted to " + r.primary.toUpperCase() + " in the " + theme + " theme to meet contrast.");
       else if (before !== r.primary && !sd.brand) { /* generated colour nudged — no note needed */ }
     }
-    if (!locked["on-primary"]) r["on-primary"] = bestOn(r.primary, r.text);
+    r["on-primary"] = locked["on-primary"] ? normHex(locked["on-primary"]) : bestOn(r.primary, r.text); // a locked on-primary was dropped before 31-Oct-2026 (crashed generate_design_md)
     if (!locked.accent) r.accent = enforce(r.accent, [r.surface, r.background], 3, dir);
     return { roles: r, notes: notes };
   }
@@ -228,48 +228,118 @@ const G = {};
     var rows = M.checks(r).map(function (c) { return "| " + c.label + " | " + c.a.toUpperCase() + " on " + c.b.toUpperCase() + " | " + c.ratio.toFixed(2) + ":1 | " + c.min + ":1 | " + (c.pass ? "Pass" : "**Fail**") + " |"; });
     return "| Pair (" + th + ") | Colours | Ratio | Needs | Result |\n|---|---|---|---|---|\n" + rows.join("\n");
   }
+  function onColor(hex) { return M.contrast(hex, "#ffffff") >= M.contrast(hex, "#000000") ? "#ffffff" : "#000000"; } // max(white, black) is always >= 4.58:1
+
+  // ---- YAML front matter (DESIGN.md spec, google-labs-code/design.md, version alpha). Strings are JSON-quoted (valid YAML).
+  function yaml(obj, ind) {
+    ind = ind || "";
+    return Object.keys(obj).map(function (k) {
+      var v = obj[k];
+      if (v && typeof v === "object") return ind + k + ":\n" + yaml(v, ind + "  ");
+      return ind + k + ": " + (typeof v === "number" || (k === "version" && !ind) ? String(v) : JSON.stringify(String(v)));
+    }).join("\n");
+  }
+
+  function settings(o) {
+    o = o || {};
+    var s = {};
+    s.name = String(o.name || "").trim() || "Untitled product"; s.desc = String(o.description || "").trim().replace(/\s+/g, " "); s.type = o.productType || "SaaS web app";
+    s.pers = PERSONALITY.filter(function (p) { return (o.personality || []).indexOf(p) > -1; });
+    s.dark = !!o.dark; s.L = o.light; s.D = o.darkColors || o.light;
+    s.hf = String(o.headingFont || "").trim() || "Inter"; s.bf = String(o.bodyFont || "").trim() || "Inter"; s.mf = String(o.monoFont || "").trim() || "JetBrains Mono";
+    s.base = parseFloat(o.baseSize) || 16; s.ratio = parseFloat(o.scaleRatio) || 1.25; s.sp = parseInt(o.spacingUnit, 10) || 4;
+    s.densName = DENSITY[o.density] ? o.density : "comfortable"; s.dens = DENSITY[s.densName];
+    s.radius = String(o.radius == null || o.radius === "" ? "8" : o.radius); s.rad = radiusTokens(s.radius);
+    s.sh = SHADOWS[o.shadows] || SHADOWS.subtle; s.mo = MOTION[o.motion] || MOTION.subtle; s.bw = String(o.borderWidth || "1");
+    s.comps = COMPONENTS.filter(function (c) { return (o.components || []).indexOf(c[0]) > -1; }).map(function (c) { return c[0]; });
+    s.ts = typeScale(s.base, s.ratio);
+    s.dos = toLines(o.dos); s.donts = toLines(o.donts);
+    return s;
+  }
+
+  // Spec token tree: colors, typography, rounded, spacing, components (with {refs}). Dark theme = "dark-*" colour keys
+  // (the spec has no modes yet) plus "-dark" component variants, so every colour token is referenced (no orphaned-tokens warnings).
+  function tokens(o) {
+    var s = o && o._s ? o._s : settings(o), L = s.L, D = s.D, T = {};
+    T.version = "alpha"; T.name = s.name;
+    T.description = s.desc || ("Design system for " + s.name + " (" + s.type + ").");
+    var colors = {};
+    ROLES.forEach(function (k) { colors[k] = L[k].toLowerCase(); });
+    colors["on-accent"] = onColor(L.accent);
+    if (s.dark) { ROLES.forEach(function (k) { colors["dark-" + k] = D[k].toLowerCase(); }); colors["dark-on-accent"] = onColor(D.accent); }
+    T.colors = colors;
+    var ts = {}; s.ts.forEach(function (t) { ts[t.name] = t.rem + "rem"; });
+    T.typography = {
+      h1: { fontFamily: s.hf, fontSize: ts["4xl"], fontWeight: 700, lineHeight: 1.15, letterSpacing: "-0.02em" },
+      h2: { fontFamily: s.hf, fontSize: ts["3xl"], fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.01em" },
+      h3: { fontFamily: s.hf, fontSize: ts["2xl"], fontWeight: 600, lineHeight: 1.25 },
+      h4: { fontFamily: s.hf, fontSize: ts.xl, fontWeight: 600, lineHeight: 1.25 },
+      "body-lg": { fontFamily: s.bf, fontSize: ts.lg, fontWeight: 400, lineHeight: 1.6 },
+      "body-md": { fontFamily: s.bf, fontSize: ts.base, fontWeight: 400, lineHeight: 1.6 },
+      "body-sm": { fontFamily: s.bf, fontSize: ts.sm, fontWeight: 400, lineHeight: 1.5 },
+      label: { fontFamily: s.bf, fontSize: ts.base, fontWeight: 600, lineHeight: 1.25 },
+      caption: { fontFamily: s.bf, fontSize: ts.xs, fontWeight: 600, lineHeight: 1.4 },
+      code: { fontFamily: s.mf, fontSize: ts.sm, fontWeight: 400, lineHeight: 1.5 }
+    };
+    T.rounded = { sm: s.rad.sm, md: s.rad.md, lg: s.rad.lg, full: "9999px" };
+    var sp = s.sp;
+    T.spacing = { unit: sp + "px", xs: sp + "px", sm: sp * 2 + "px", md: sp * 4 + "px", lg: sp * 6 + "px", xl: sp * 8 + "px", "2xl": sp * 12 + "px", "3xl": sp * 16 + "px",
+      gutter: "16px", "control-height": s.dens.h + "px", "control-padding": s.dens.pad + "px", gap: s.dens.gap + "px", section: s.dens.sect + "px" };
+    var h = s.dens.h + "px", pad = s.dens.pad + "px";
+    function set(p) {
+      var c = function (k) { return "{colors." + p + k + "}"; };
+      return {
+        page: { backgroundColor: c("background"), textColor: c("text"), typography: "{typography.body-md}" },
+        "text-muted": { backgroundColor: c("background"), textColor: c("muted"), typography: "{typography.body-sm}" },
+        card: { backgroundColor: c("surface"), textColor: c("text"), rounded: "{rounded.lg}", padding: pad },
+        "card-muted": { backgroundColor: c("surface"), textColor: c("muted"), typography: "{typography.body-sm}" },
+        "button-primary": { backgroundColor: c("primary"), textColor: c("on-primary"), typography: "{typography.label}", rounded: "{rounded.md}", height: h, padding: pad },
+        "button-secondary": { backgroundColor: c("surface"), textColor: c("text"), typography: "{typography.label}", rounded: "{rounded.md}", height: h, padding: pad },
+        input: { backgroundColor: c("surface"), textColor: c("text"), typography: "{typography.body-md}", rounded: "{rounded.md}", height: h, padding: pad },
+        divider: { backgroundColor: c("border"), height: s.bw + "px" },
+        badge: { backgroundColor: c("accent"), textColor: c("on-accent"), typography: "{typography.caption}", rounded: "{rounded.sm}", padding: "2px 8px" }
+      };
+    }
+    var comp = {}, lc = set(""), dc = s.dark ? set("dark-") : null;
+    Object.keys(lc).forEach(function (k) { comp[k] = lc[k]; });
+    if (dc) Object.keys(dc).forEach(function (k) { comp[k + "-dark"] = dc[k]; });
+    T.components = comp;
+    return T;
+  }
 
   function buildDesignMd(o) {
-    o = o || {};
-    var name = String(o.name || "").trim() || "Untitled product", desc = String(o.description || "").trim(), type = o.productType || "SaaS web app";
-    var pers = PERSONALITY.filter(function (p) { return (o.personality || []).indexOf(p) > -1; });
-    var dark = !!o.dark, L = o.light, D = o.darkColors || o.light;
-    var hf = String(o.headingFont || "").trim() || "Inter", bf = String(o.bodyFont || "").trim() || "Inter", mf = String(o.monoFont || "").trim() || "JetBrains Mono";
-    var base = parseFloat(o.baseSize) || 16, ratio = parseFloat(o.scaleRatio) || 1.25, sp = parseInt(o.spacingUnit, 10) || 4;
-    var densName = DENSITY[o.density] ? o.density : "comfortable";
-    var dens = DENSITY[densName], rad = radiusTokens(String(o.radius == null ? "8" : o.radius)), sh = SHADOWS[o.shadows] || SHADOWS.subtle;
-    var mo = MOTION[o.motion] || MOTION.subtle, bw = String(o.borderWidth || "1");
-    var comps = COMPONENTS.filter(function (c) { return (o.components || []).indexOf(c[0]) > -1; }).map(function (c) { return c[0]; });
-    var ts = typeScale(base, ratio), out = [];
+    var s = settings(o), L = s.L, D = s.D, dark = s.dark, pers = s.pers, comps = s.comps, ts = s.ts, sh = s.sh, mo = s.mo, rad = s.rad, dens = s.dens;
+    var hf = s.hf, bf = s.bf, mf = s.mf, sp = s.sp, bw = s.bw, out = [];
     var fails = M.checks(L).filter(function (c) { return !c.pass; }).length + (dark ? M.checks(D).filter(function (c) { return !c.pass; }).length : 0);
-    var fails = M.checks(L).filter(function (c) { return !c.pass; }).length + (dark ? M.checks(D).filter(function (c) { return !c.pass; }).length : 0);
+    var T = tokens({ _s: s });
 
-    out.push("# DESIGN.md — " + name, "");
-    out.push("> Design rules for " + name + (desc ? ": " + desc.replace(/\s+/g, " ") : "") + ". This file is the source of truth for colour, type, spacing, shape, motion and component behaviour. People and AI coding agents should follow it exactly and should not invent new values.", "");
-    out.push("- **Product type:** " + type);
+    out.push("---", yaml(T), "---", "");
+    out.push("# DESIGN.md — " + s.name, "");
+    out.push("> Design rules for " + s.name + (s.desc ? ": " + s.desc : "") + ". This file is the source of truth for colour, type, spacing, shape, motion and component behaviour. People and AI coding agents should follow it exactly and should not invent new values. The YAML front matter holds the tokens in the [DESIGN.md format](https://github.com/google-labs-code/design.md) (version alpha); the sections below explain how to use them.", "");
+
+    out.push("## Overview", "");
+    out.push("- **Product type:** " + s.type);
     if (pers.length) out.push("- **Personality:** " + pers.join(", "));
-    out.push("- **Themes:** light" + (dark ? " and dark (follows the system setting, overridable with `data-theme`)" : " only"));
+    out.push("- **Themes:** light" + (dark ? " and dark (follows the system setting, overridable with `data-theme`; dark tokens are the `dark-*` colours and the `*-dark` components)" : " only"));
     out.push("- **Accessibility target:** WCAG 2.2 AA", "");
-
-    out.push("## 1. Rules for AI coding agents", "");
+    out.push("### Rules for AI coding agents", "");
     out.push("1. Use only the tokens in this file. If something seems to need a new colour, size or shadow, reuse the nearest token and leave a TODO comment instead of inventing one.");
     out.push("2. Reference colours through CSS variables (`var(--color-primary)`) or the matching Tailwind classes — never raw hex in component code.");
     out.push("3. Build every interactive state: default, hover, active, focus-visible, disabled and loading.");
-    out.push("4. Keep text contrast at the ratios in section 3. Re-check any new colour pairing before using it.");
-    out.push("5. Respect `prefers-reduced-motion` and the motion tokens in section 7.");
+    out.push("4. Keep text contrast at the ratios in the Colors section. Re-check any new colour pairing before using it.");
+    out.push("5. Respect `prefers-reduced-motion` and the tokens in the Motion section.");
     out.push("6. When a rule here conflicts with a framework default, this file wins.", "");
+    out.push("### Personality and voice", "");
+    if (pers.length) pers.forEach(function (p) { out.push("- **" + p + ":** " + VOICE[p]); });
+    else out.push("- Clear, plain language. Sentence case. Say what will happen before it happens.");
+    out.push("");
 
-    if (pers.length) {
-      out.push("## 2. Personality and voice", "");
-      pers.forEach(function (p) { out.push("- **" + p + ":** " + VOICE[p]); });
-      out.push("");
-    } else { out.push("## 2. Personality and voice", "", "- Clear, plain language. Sentence case. Say what will happen before it happens.", ""); }
-
-    out.push("## 3. Colour", "");
+    out.push("## Colors", "");
     out.push("| Token | Role | Light" + (dark ? " | Dark" : "") + " |", "|---|---|---" + (dark ? "|---" : "") + "|");
     var USE = { "background": "Page background", "surface": "Cards, menus, navigation, inputs", "border": "Dividers and input borders", "text": "Body text and headings",
       "muted": "Secondary text, captions, placeholders", "primary": "Primary buttons, key links, selected states", "on-primary": "Text and icons on primary", "accent": "Highlights, tags, focus ring, charts" };
-    ROLES.forEach(function (k) { out.push("| `--color-" + k + "` | " + USE[k] + " | `" + L[k].toUpperCase() + "`" + (dark ? " | `" + D[k].toUpperCase() + "`" : "") + " |"); });
+    ROLES.forEach(function (k) { out.push("| `" + k + "` (`--color-" + k + "`) | " + USE[k] + " | `" + L[k].toUpperCase() + "`" + (dark ? " | `" + D[k].toUpperCase() + "`" : "") + " |"); });
+    out.push("| `on-accent` (`--color-on-accent`) | Text on accent-filled tags | `" + T.colors["on-accent"].toUpperCase() + "`" + (dark ? " | `" + T.colors["dark-on-accent"].toUpperCase() + "`" : "") + " |");
     out.push("", "### Measured contrast", "", contrastTable(L, "light"));
     if (dark) out.push("", contrastTable(D, "dark"));
     out.push("");
@@ -278,76 +348,79 @@ const G = {};
       "- `--color-accent` is for small highlights (tags, focus rings, charts). Never use it for body text" + (M.contrast(L.accent, L.surface) >= 4.5 ? "." : " — it is below 4.5:1 on the surface."),
       "- Errors, warnings and success states use text plus an icon, not colour alone.", "");
 
-    out.push("## 4. Typography", "");
+    out.push("## Typography", "");
     out.push("- **Headings:** " + hf + " (600–700)", "- **Body:** " + bf + " (400; 600 for emphasis)", "- **Code and data:** " + mf);
-    out.push("- **Base size:** " + base + "px, scale ratio " + ratio + ", body line-height 1.6, headings 1.15–1.25", "- Maximum line length: about 70 characters (`max-width: 68ch`).", "");
+    out.push("- **Base size:** " + s.base + "px, scale ratio " + s.ratio + ", body line-height 1.6, headings 1.15–1.25", "- Maximum line length: about 70 characters (`max-width: 68ch`).", "");
     out.push("| Token | Size | rem | Typical use |", "|---|---|---|---|");
-    var useT = { xs: "Fine print, badges", sm: "Captions, table cells, helper text", base: "Body text, inputs, buttons", lg: "Lead paragraph, card titles",
-      xl: "H4 / section titles", "2xl": "H3", "3xl": "H2", "4xl": "H1 / hero" };
+    var useT = { xs: "Fine print, badges (`caption`)", sm: "Captions, table cells, helper text (`body-sm`, `code`)", base: "Body text, inputs, buttons (`body-md`, `label`)", lg: "Lead paragraph, card titles (`body-lg`)",
+      xl: "H4 / section titles (`h4`)", "2xl": "H3 (`h3`)", "3xl": "H2 (`h2`)", "4xl": "H1 / hero (`h1`)" };
     ts.forEach(function (t) { out.push("| `--text-" + t.name + "` | " + t.px + "px | " + t.rem + "rem | " + useT[t.name] + " |"); });
     out.push("");
 
-    out.push("## 5. Spacing and layout", "");
+    out.push("## Layout", "");
     var mult = [0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16];
     out.push("Base unit **" + sp + "px**. Use only these steps: " + mult.map(function (m) { return "`" + (sp * m) + "`"; }).join(", ") + " (px).", "");
-    out.push("- **Density:** " + densName + " — controls " + dens.h + "px tall, " + dens.pad + "px inner padding, " + dens.gap + "px gaps between related items.");
+    out.push("- **Density:** " + s.densName + " — controls " + dens.h + "px tall, " + dens.pad + "px inner padding, " + dens.gap + "px gaps between related items.");
     out.push("- **Section spacing:** " + dens.sect + "px between page sections on desktop, about half on mobile.");
     out.push("- **Layout:** 12-column grid, max content width 1200px, 16px side gutter on phones; no horizontal scrolling at 320px.", "");
 
-    out.push("## 6. Shape and depth", "");
+    out.push("## Elevation & Depth", "");
+    out.push(sh[0] === "none" ? "Flat: hierarchy comes from `--color-surface` on `--color-background` and `--color-border` outlines, not shadows." : "Depth uses three soft shadow levels; surfaces sit on the background and borders separate dense content.", "");
     out.push("| Token | Value | Use |", "|---|---|---|");
-    out.push("| `--radius-sm` | " + rad.sm + " | Badges, checkboxes, small chips |", "| `--radius-md` | " + rad.md + " | Buttons, inputs |", "| `--radius-lg` | " + rad.lg + " | Cards, dialogs, images |");
     out.push("| `--border-width` | " + bw + "px | Inputs, dividers, outline buttons |");
-    out.push("| `--shadow-sm` | `" + sh[0] + "` | Inputs, small cards |", "| `--shadow-md` | `" + sh[1] + "` | Dropdowns, popovers |", "| `--shadow-lg` | `" + sh[2] + "` | Dialogs |");
+    out.push("| `--shadow-sm` | `" + sh[0] + "` | Inputs, small cards |", "| `--shadow-md` | `" + sh[1] + "` | Dropdowns, popovers |", "| `--shadow-lg` | `" + sh[2] + "` | Dialogs |", "");
+
+    out.push("## Shapes", "");
+    out.push("| Token | Value | Use |", "|---|---|---|");
+    out.push("| `--radius-sm` | " + rad.sm + " | Badges, checkboxes, small chips |", "| `--radius-md` | " + rad.md + " | Buttons, inputs |", "| `--radius-lg` | " + rad.lg + " | Cards, dialogs, images |", "| `--radius-full` | 9999px | Avatars, pills |");
     if (rad.note) out.push("", rad.note);
     out.push("");
 
-    out.push("## 7. Motion", "", mo.note, "");
+    out.push("## Components", "");
+    out.push("The `components` tokens in the front matter give the base atoms (page, text-muted, card, button-primary, button-secondary, input, divider, badge" + (dark ? ", each with a `-dark` variant" : "") + "). Behaviour:", "");
+    if (comps.indexOf("buttons") > -1) out.push("### Buttons", "- Height " + dens.h + "px, horizontal padding " + dens.pad + "px, radius `--radius-md`, label in `--text-base` 600.",
+      "- **Primary:** `--color-primary` background, `--color-on-primary` label. **Secondary:** transparent with a `--border-width` `--color-border` outline and `--color-text` label. **Ghost:** text only.",
+      "- Hover: darken or lighten the fill by about 8% lightness; active: a further 4%. Disabled: 50% opacity, no pointer events. Loading: keep the width, show a spinner, block repeat clicks.", "");
+    if (comps.indexOf("forms") > -1) out.push("### Inputs and forms", "- Height " + dens.h + "px, `--color-surface` fill, `--border-width` `--color-border` border, radius `--radius-md`.",
+      "- Every input has a visible label above it; helper text below in `--text-sm` `--color-muted`.", "- Error: message under the field with an icon, border switches to an error colour that passes 3:1, and focus moves to the first invalid field on submit.", "");
+    if (comps.indexOf("cards") > -1) out.push("### Cards", "- `--color-surface`, radius `--radius-lg`, " + dens.pad + "px padding" + (sh[0] === "none" ? ", a `--color-border` outline instead of a shadow." : ", `--shadow-sm`."), "- A whole-card link has one clear target and a visible focus ring.", "");
+    if (comps.indexOf("nav") > -1) out.push("### Navigation", "- Top bar on `--color-surface` with a `--color-border` bottom edge; current page marked with weight and an underline or indicator, not colour alone.", "- Below 768px, collapse to a menu button with an accessible name; the open menu traps focus and closes on Escape.", "");
+    if (comps.indexOf("tables") > -1) out.push("### Tables and lists", "- Header row in `--text-sm` 600 `--color-muted`; rows separated by `--color-border` lines; numbers right-aligned in " + mf + ".", "- On phones, tables scroll inside their own container or collapse to stacked cards.", "");
+    if (comps.indexOf("dialogs") > -1) out.push("### Modals and dialogs", "- `--color-surface`, radius `--radius-lg`, `--shadow-lg`, max width 560px, dimmed backdrop.", "- Focus moves into the dialog and returns to the trigger on close; Escape closes; the primary action sits on the right.", "");
+    if (comps.indexOf("feedback") > -1) out.push("### Toasts and alerts", "- Toasts appear bottom-centre on mobile and bottom-right on desktop, stay at least 5 seconds, pause on hover and are announced with `aria-live=\"polite\"`.", "- Inline alerts use an icon, a title and one sentence; destructive confirmations name the thing being deleted.", "");
+    if (comps.indexOf("badges") > -1) out.push("### Tags and badges", "- `--text-xs` 600, radius `--radius-sm`, padding 2px 8px. Accent-filled tags use `--color-on-accent` (" + (T.colors["on-accent"] === "#ffffff" ? "white" : "black") + ") text.", "");
+
+    if (s.dos.length || s.donts.length) {
+      out.push("## Do's and Don'ts", "");
+      s.dos.forEach(function (d) { out.push("- ✅ Do: " + d); }); s.donts.forEach(function (d) { out.push("- ❌ " + (/^don[’']t/i.test(d) ? d : "Don’t: " + d)); }); out.push("");
+    }
+
+    out.push("## Motion", "", mo.note, "");
     out.push("| Token | Value |", "|---|---|", "| `--duration-fast` | " + mo.fast + "ms (hover, press) |", "| `--duration-base` | " + mo.base + "ms (menus, toasts) |",
       "| `--duration-slow` | " + mo.slow + "ms (dialogs, page sections) |", "| `--ease` | `" + mo.ease + "` |", "");
     out.push("With `prefers-reduced-motion: reduce`, replace movement with an instant change or a fade of 100ms or less.", "");
 
-    if (comps.length) {
-      out.push("## 8. Components", "");
-      if (comps.indexOf("buttons") > -1) out.push("### Buttons", "- Height " + dens.h + "px, horizontal padding " + dens.pad + "px, radius `--radius-md`, label in `--text-base` 600.",
-        "- **Primary:** `--color-primary` background, `--color-on-primary` label. **Secondary:** transparent with a `--border-width` `--color-border` outline and `--color-text` label. **Ghost:** text only.",
-        "- Hover: darken or lighten the fill by about 8% lightness; active: a further 4%. Disabled: 50% opacity, no pointer events. Loading: keep the width, show a spinner, block repeat clicks.", "");
-      if (comps.indexOf("forms") > -1) out.push("### Inputs and forms", "- Height " + dens.h + "px, `--color-surface` fill, `--border-width` `--color-border` border, radius `--radius-md`.",
-        "- Every input has a visible label above it; helper text below in `--text-sm` `--color-muted`.", "- Error: message under the field with an icon, border switches to an error colour that passes 3:1, and focus moves to the first invalid field on submit.", "");
-      if (comps.indexOf("cards") > -1) out.push("### Cards", "- `--color-surface`, radius `--radius-lg`, " + dens.pad + "px padding" + (sh[0] === "none" ? ", a `--color-border` outline instead of a shadow." : ", `--shadow-sm`.") , "- A whole-card link has one clear target and a visible focus ring.", "");
-      if (comps.indexOf("nav") > -1) out.push("### Navigation", "- Top bar on `--color-surface` with a `--color-border` bottom edge; current page marked with weight and an underline or indicator, not colour alone.", "- Below 768px, collapse to a menu button with an accessible name; the open menu traps focus and closes on Escape.", "");
-      if (comps.indexOf("tables") > -1) out.push("### Tables and lists", "- Header row in `--text-sm` 600 `--color-muted`; rows separated by `--color-border` lines; numbers right-aligned in " + mf + ".", "- On phones, tables scroll inside their own container or collapse to stacked cards.", "");
-      if (comps.indexOf("dialogs") > -1) out.push("### Modals and dialogs", "- `--color-surface`, radius `--radius-lg`, `--shadow-lg`, max width 560px, dimmed backdrop.", "- Focus moves into the dialog and returns to the trigger on close; Escape closes; the primary action sits on the right.", "");
-      if (comps.indexOf("feedback") > -1) out.push("### Toasts and alerts", "- Toasts appear bottom-centre on mobile and bottom-right on desktop, stay at least 5 seconds, pause on hover and are announced with `aria-live=\"polite\"`.", "- Inline alerts use an icon, a title and one sentence; destructive confirmations name the thing being deleted.", "");
-      if (comps.indexOf("badges") > -1) out.push("### Tags and badges", "- `--text-xs` 600, radius `--radius-sm`, padding 2px 8px. Accent-filled tags use " + (M.contrast(L.accent, "#ffffff") >= 4.5 ? "white" : "dark") + " text.", "");
-    }
-
-    out.push("## " + (comps.length ? 9 : 8) + ". Accessibility checklist", "");
+    out.push("## Accessibility", "");
     out.push("- Text contrast at least 4.5:1 (3:1 for 24px+ or 18.7px+ bold); UI parts and focus rings at least 3:1.",
       "- Visible focus on everything interactive: 2px `--color-accent` outline with a 2px offset.",
       "- Touch targets at least 24×24px (44×44px preferred) with 8px between targets.",
       "- Every image has alt text (empty `alt=\"\"` if decorative); icons-only buttons have an accessible name.",
       "- Pages work with keyboard only and at 200% zoom; headings are in order (one H1 per page).", "");
 
-    var dos = toLines(o.dos), donts = toLines(o.donts);
-    if (dos.length || donts.length) {
-      out.push("## " + (comps.length ? 10 : 9) + ". Do and don’t", "");
-      dos.forEach(function (d) { out.push("- ✅ " + d); }); donts.forEach(function (d) { out.push("- ❌ " + d); }); out.push("");
-    }
-
-    out.push("## Appendix: tokens as CSS", "", "```css", ":root {");
-    ROLES.forEach(function (k) { out.push("  --color-" + k + ": " + L[k] + ";"); });
+    out.push("## Tokens as CSS", "", "Check this file with `npx @google/design.md lint DESIGN.md`; export the front-matter tokens with `npx @google/design.md export --format css-tailwind DESIGN.md` (Tailwind v4 `@theme`) or `--format dtcg` (W3C design tokens). The same tokens as plain CSS:", "", "```css", ":root {");
+    ROLES.concat(["on-accent"]).forEach(function (k) { out.push("  --color-" + k + ": " + T.colors[k] + ";"); });
     out.push("  --font-heading: \"" + hf + "\", system-ui, sans-serif;", "  --font-body: \"" + bf + "\", system-ui, sans-serif;", "  --font-mono: \"" + mf + "\", ui-monospace, monospace;");
     ts.forEach(function (t) { out.push("  --text-" + t.name + ": " + t.rem + "rem;"); });
     [1, 2, 3, 4, 6, 8, 12, 16].forEach(function (m) { out.push("  --space-" + m + ": " + (sp * m) + "px;"); });
-    out.push("  --radius-sm: " + rad.sm + ";", "  --radius-md: " + rad.md + ";", "  --radius-lg: " + rad.lg + ";", "  --border-width: " + bw + "px;");
+    out.push("  --radius-sm: " + rad.sm + ";", "  --radius-md: " + rad.md + ";", "  --radius-lg: " + rad.lg + ";", "  --radius-full: 9999px;", "  --border-width: " + bw + "px;");
     out.push("  --shadow-sm: " + sh[0] + ";", "  --shadow-md: " + sh[1] + ";", "  --shadow-lg: " + sh[2] + ";");
     out.push("  --duration-fast: " + mo.fast + "ms;", "  --duration-base: " + mo.base + "ms;", "  --duration-slow: " + mo.slow + "ms;", "  --ease: " + mo.ease + ";", "}");
     if (dark) {
+      var dk = ROLES.concat(["on-accent"]);
       out.push("", "@media (prefers-color-scheme: dark) {", "  :root:not([data-theme=\"light\"]) {");
-      ROLES.forEach(function (k) { out.push("    --color-" + k + ": " + D[k] + ";"); });
+      dk.forEach(function (k) { out.push("    --color-" + k + ": " + T.colors["dark-" + k] + ";"); });
       out.push("  }", "}", ":root[data-theme=\"dark\"] {");
-      ROLES.forEach(function (k) { out.push("  --color-" + k + ": " + D[k] + ";"); });
+      dk.forEach(function (k) { out.push("  --color-" + k + ": " + T.colors["dark-" + k] + ";"); });
       out.push("}");
     }
     out.push("", "@media (prefers-reduced-motion: reduce) {", "  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }", "}", "```", "");
@@ -355,9 +428,8 @@ const G = {};
     return out.join("\n");
   }
 
-
   win.MGDDesignMd = { PERSONALITY: PERSONALITY, COMPONENTS: COMPONENTS, DENSITY: DENSITY, SHADOWS: SHADOWS, MOTION: MOTION,
-    DEFAULT_DO: DEFAULT_DO, DEFAULT_DONT: DEFAULT_DONT, build: buildDesignMd };
+    DEFAULT_DO: DEFAULT_DO, DEFAULT_DONT: DEFAULT_DONT, build: buildDesignMd, tokens: tokens, SPEC: "alpha" };
 })(G);
 export const MGDRoles = G.MGDRoles;
 export const MGDDesignMd = G.MGDDesignMd;

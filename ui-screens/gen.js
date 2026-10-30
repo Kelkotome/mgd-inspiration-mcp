@@ -3,7 +3,8 @@
    Pattern templates live in tpl/*.js (each exports { "<pattern>": { family, name, shows, elements, web, mobile, type?, size?, variants? } }).
    For each pattern × platform × style (× variant): out/<slug>/{index.html, DESIGN.md, meta.json}, plus out/manifest.json and out/flows.json.
    Colours come from color-roles-core.js and DESIGN.md from design-md-core.js, so screens, website tools and the MCP share one engine.
-   Usage: node gen.js [--only pattern,pattern] [--styles minimal,editorial] [--platforms web,mobile] */
+   Usage: node gen.js [--only pattern,pattern] [--styles minimal,editorial] [--platforms web,mobile] [--md-only]
+   --md-only: rewrite only out/<slug>/DESIGN.md (index.html, meta.json, manifest and flows untouched) — used by regen_design_md.py. */
 const fs = require("fs"), path = require("path"), vm = require("vm");
 const lib = require("./lib");
 const { STYLES, FAMILIES, esc, baseCss } = lib;
@@ -15,6 +16,7 @@ const TAX = JSON.parse(fs.readFileSync(path.join(ROOT, "taxonomy.json"), "utf8")
 // Seeded Math.random so a given screen always renders the same colours and data.
 function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 function hashStr(s) { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; }
+const MD_ONLY = process.argv.includes("--md-only");
 const sandbox = { Math: Object.create(Math) };
 sandbox.window = sandbox;
 vm.createContext(sandbox);
@@ -66,6 +68,7 @@ function buildOne(pattern, platform, styleName, variant) {
 <!-- Made Good Designs UI screen — original reference design, free to copy. Tokens: see DESIGN.md -->
 <style>${baseCss(light, st, dark)}${st.css || ""}</style></head><body>${body}</body></html>`;
   const dir = path.join(OUT, slug);
+  if (MD_ONLY) { if (!fs.existsSync(path.join(dir, "meta.json"))) return null; fs.writeFileSync(path.join(dir, "DESIGN.md"), md); return { slug }; }
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, "index.html"), html);
   fs.writeFileSync(path.join(dir, "DESIGN.md"), md);
@@ -85,6 +88,7 @@ for (const pa of pats) {
   const vars = PATTERNS[pa].variants ? Object.keys(PATTERNS[pa].variants) : [null];
   for (const pl of plats) for (const s of styles) for (const v of vars) if (buildOne(pa, pl, s, v)) n++;
 }
+if (MD_ONLY) { console.log(`rewrote DESIGN.md for ${n} existing screens (--md-only)`); process.exit(process.exitCode || 0); }
 // Manifest covers everything in out/ (partial runs keep the rest).
 const all = fs.readdirSync(OUT).filter((d) => fs.existsSync(path.join(OUT, d, "meta.json")) && PATTERNS[JSON.parse(fs.readFileSync(path.join(OUT, d, "meta.json"))).pattern])
   .map((d) => { const { tokens, ...m } = JSON.parse(fs.readFileSync(path.join(OUT, d, "meta.json"))); return m; });

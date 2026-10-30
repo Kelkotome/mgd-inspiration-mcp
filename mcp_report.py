@@ -1,7 +1,7 @@
 """MCP analytics report (mcp_events + mcp_calls in D1). Usage: python3 mcp_report.py [days=7] [--include-bots]
 mcp_events started 29-Oct-2026 (connections, sessions, outcomes); mcp_calls has the per-call query text since Aug.
 Bots/scanners (curl, undici, probes — incl. our own live tests) are excluded via the bot flag / UA."""
-import subprocess, json, os, sys
+import subprocess, json, os, re, sys
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
 DAYS = int(ARGS[0]) if ARGS else 7
@@ -15,9 +15,10 @@ CALLS_EX = "1=1" if "--include-bots" in sys.argv else "ip!='129.126.14.17' AND u
 def sql(q):
     p = subprocess.run(["npx", "wrangler", "d1", "execute", "mgd-inspiration", "--remote", "--json", "--command", q],
                        capture_output=True, text=True, env=dict(os.environ, CI="1", WRANGLER_SEND_METRICS="false"))
-    o = p.stdout; i = o.find("[")
-    if i < 0: sys.exit(p.stderr or o)
-    return json.loads(o[i:])[0]["results"]
+    # wrangler can print banners/warnings before or after the JSON ("Extra data" crash, 31-Oct-2026): decode just the JSON array.
+    o = p.stdout; m = re.search(r"\[\s*\{", o)
+    if not m: sys.exit(p.stderr or o)
+    return json.JSONDecoder().raw_decode(o[m.start():])[0][0]["results"]
 
 
 def table(title, rows):
@@ -50,8 +51,15 @@ table("Common tool chains (consecutive calls in a session)", sql(
 table("Returning visitors (desktop clients; claude.ai users can't be told apart)", sql(
     f"SELECT COUNT(*) visitors, SUM(days>1) returned_on_another_day, MAX(days) max_days FROM "
     f"(SELECT visitor, COUNT(DISTINCT date({SG})) days {EV} AND ua NOT LIKE 'Claude-User%' GROUP BY visitor)"))
-table("Zero-result searches (content gaps for the library)", sql(
-    f"SELECT {SG} t, tool, substr(query,1,70) query FROM mcp_calls WHERE {CALLS_EX} AND {W} AND query != '' AND EXISTS ("
+# mcp_calls (query text) and mcp_events (zero flag) are separate rows, matched by tool+UA+time. When several calls of one tool
+# fire together (claude.ai fan-out), only `zero_events` of the `parallel` calls returned 0 — those rows are ambiguous, not all empty
+# (the 30-Oct "5 museum searches all returned 0" was 1 real zero, Bauhaus, smeared over 5 parallel calls).
+table("Zero-result searches (content gaps; parallel>zero_events = ambiguous, only some of those calls were empty)", sql(
+    f"SELECT {SG} t, tool, substr(query,1,70) query, "
+    f"(SELECT COUNT(*) FROM mcp_calls c2 WHERE c2.tool=mcp_calls.tool AND c2.ua=mcp_calls.ua AND ABS(c2.created_at-mcp_calls.created_at)<=3000) parallel, "
+    f"(SELECT COUNT(*) FROM mcp_events e WHERE e.zero=1 AND e.{BOT} AND e.tool=mcp_calls.tool AND e.ua=mcp_calls.ua "
+    f"AND e.created_at BETWEEN mcp_calls.created_at AND mcp_calls.created_at+15000) zero_events "
+    f"FROM mcp_calls WHERE {CALLS_EX} AND {W} AND query != '' AND EXISTS ("
     f"SELECT 1 FROM mcp_events e WHERE e.zero=1 AND e.{BOT} AND e.tool=mcp_calls.tool AND e.ua=mcp_calls.ua "
     f"AND e.created_at BETWEEN mcp_calls.created_at AND mcp_calls.created_at+15000) ORDER BY created_at DESC LIMIT 40"))
 table("Countries (desktop clients; claude.ai shows Anthropic's servers)", sql(
