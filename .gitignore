@@ -15,3 +15,4 @@ wrangler.baseline.jsonc
 dev_*.log
 public_mcp_orig.json
 .test_tokens
+docs_updates/backup-*.html

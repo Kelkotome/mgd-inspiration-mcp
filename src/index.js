@@ -12,6 +12,7 @@ import { getUser, googleLogin, googleCallback, logout, devLogin } from "./auth.j
 import { MGDRoles, MGDDesignMd } from "./design_core.js";
 import { TOOL_DEFS as MCP_TOOLS_43, isToolsTool, callToolsTool } from "./mcp_tools.js";
 import { TOOL_DEFS as MCP_TOOLS_44, isTools44Tool, callTools44Tool } from "./mcp_tools44.js";
+import { TOOL_DEFS as MCP_TOOLS_45, isTools45Tool, callTools45Tool } from "./mcp_tools45.js";
 import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields } from "./ui_screens.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
   token as oauthToken, revoke as oauthRevoke, verifyBearer, challengeHeader,
@@ -1544,7 +1545,7 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
-MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...UI_MCP_TOOLS); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 
 function mcpCors() {
   return {
@@ -1698,7 +1699,7 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
 async function mcpCallTool(params, env, ip, ua, who) {
   const name = params.name;
   const a = params.arguments || {};
-  await logMcp(env, name, a.query || a.q || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || "", ip, ua, who);
+  await logMcp(env, name, a.query || a.q || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || (typeof a.colors === "string" ? a.colors.slice(0, 80) : Array.isArray(a.colors) ? a.colors.slice(0, 6).join(" ") : "") || a.preset || "", ip, ua, who);
   const opts = who ? { ids: true } : undefined; // authenticated endpoint also shows item_id (needed by save_to_board)
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
@@ -1755,6 +1756,7 @@ async function mcpCallTool(params, env, ip, ua, who) {
   if (name === "generate_design_md") return mcpDesignMd(a);
   if (isToolsTool(name)) return callToolsTool(name, a);
   if (isTools44Tool(name)) return callTools44Tool(name, a);
+  if (isTools45Tool(name)) return callTools45Tool(name, a);
   if (isUiTool(name)) return callUiTool(name, a, env, { mcpSearchRows, rowToItem, clampInt, site: MCP_SITE });
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
 }

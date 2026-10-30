@@ -155,7 +155,9 @@ if args.snapshot_out:
     json.dump(snap, open(args.snapshot_out, "w"), indent=1); print(f"wrote {len(snap)} public /mcp responses to {args.snapshot_out}"); sys.exit(0)
 tl = jl(snap[2][3])["result"]["tools"]
 PUBLIC = ["search_design_inspiration", "list_inspiration_themes", "browse_inspiration_by_theme", "search_annual_reports", "search_museum_art", "get_share_feedback", "generate_website_color_palette", "generate_design_md"]
-check("public /mcp: no auth needed, tools/list = the 8 public tools", snap[2][0] == 200 and [t["name"] for t in tl] == PUBLIC)
+TOOL_CORES = ["style_text_unicode", "make_word_search", "generate_data_matrix", "convert_text_case", "search_ui_screens"]  # spot-check: b43, b44, b45, UI screens
+check("public /mcp: no auth needed, tools/list = the 8 core public tools first, then the tool cores", snap[2][0] == 200 and [t["name"] for t in tl][:8] == PUBLIC and all(n in [t["name"] for t in tl] for n in TOOL_CORES))
+PUBLIC = [t["name"] for t in tl]
 check("public /mcp: search returns curated item + cites madegooddesigns.com", "Retro serif poster" in snap[3][3] and "https://madegooddesigns.com/inspiration" in snap[3][3])
 check("public /mcp: output does NOT gain item_id lines", "item_id" not in snap[3][3] and "item_id" not in snap[6][3])
 check("public /mcp: private user item never returned", "Private user item" not in snap[3][3])
@@ -326,7 +328,7 @@ s, h, b = rpc(MCP_ME, "initialize", {"protocolVersion": "2025-06-18", "capabilit
 check("initialize with token", s == 200 and (jl(b) or {}).get("result", {}).get("protocolVersion") == "2025-06-18")
 s, h, b = rpc(MCP_ME, "tools/list", {}, AT)
 names = [t["name"] for t in (jl(b) or {}).get("result", {}).get("tools", [])]
-check("tools/list = 8 board tools + 8 public tools", names == ["list_my_boards", "get_board", "create_board", "save_to_board", "update_board", "add_to_board_canvas", "board_design_system", "remove_from_board"] + PUBLIC, names)
+check("tools/list = 8 board tools + every public tool", names == ["list_my_boards", "get_board", "create_board", "save_to_board", "update_board", "add_to_board_canvas", "board_design_system", "remove_from_board"] + PUBLIC, names)
 check("tool defs do not leak internal 'scope' field", '"scope"' not in b)
 s, res, t = call(AT, "search_design_inspiration", {"query": "serif"})
 check("public search via /mcp/boards includes item_id + madegooddesigns.com", "item_id: aaaaaaaaaaa1" in t and "https://madegooddesigns.com/inspiration" in t)
@@ -345,8 +347,8 @@ s, res, t = call(AT, "save_to_board", {"board_id": BID, "item_id": "doesnotexist
 check("save unknown item -> isError", res.get("isError"))
 s, res, t = call(AT, "get_board", {"board_id": BID})
 check("get_board lists items with title/description/palette/tags", "Retro serif poster" in t and "palette: #112233 #ffcc00" in t and "tags: serif, poster" in t and "A bold retro serif poster." in t)
-check("get_board cites madegooddesigns.com page + image URLs", "page (cite this): https://madegooddesigns.com/inspiration/#i/aaaaaaaaaaa1" in t
-      and "https://madegooddesigns.com/inspiration/annual-reports/acme-transit-1972-aaaaaaaaaaa2" in t and "image: https://madegooddesigns.com/inspiration/img/items/aaaaaaaaaaa1.jpg" in t)
+check("get_board cites madegooddesigns.com page + image URLs", re.search(r"page \(cite this\): https://madegooddesigns\.com/inspiration/\S*#i/aaaaaaaaaaa1", t)  # UTM tags are inserted before the #
+      and "https://madegooddesigns.com/inspiration/annual-reports/acme-transit-1972-aaaaaaaaaaa2" in t and "image: https://madegooddesigns.com/inspiration/img/items/aaaaaaaaaaa1.jpg" in t, t[:900])
 check("get_board does not expose curated source_url (no-link policy)", "https://example.com/p1" not in t and "source: example.com" in t)
 s, res, t = call(AT, "list_my_boards")
 check("list_my_boards shows the board with count", "Alice Retro Board" in t and f"board_id: {BID}" in t and "items: 2" in t)

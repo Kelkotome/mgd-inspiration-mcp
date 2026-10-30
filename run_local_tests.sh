@@ -50,6 +50,9 @@ echo "-- testing NEW worker"
 PORT=8797 LOG=dev_new.log; start_dev -c wrangler.test.jsonc --port 8797 --inspector-port 9242 --var PUBLIC_ORIGIN:http://localhost:8797 || exit 1
 python3 test_mcp_oauth.py --base http://localhost:8797 --baseline-file public_mcp_orig.json
 RC=$?
+echo; echo "-- batch-45 tool cores (Node unit + JSON-RPC)"
+node --experimental-default-type=module tests/test_tools45.mjs 2>/dev/null | tail -1 | grep -q " 0 failed" && echo "PASS tests/test_tools45.mjs" || { echo "FAIL tests/test_tools45.mjs"; RC=1; }
+python3 tests/rpc45.py --base http://localhost:8797 || RC=1
 
 echo; echo "-- secrecy checks"
 LEAK=0
