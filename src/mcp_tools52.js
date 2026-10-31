@@ -59,6 +59,7 @@ export const TOOL_DEFS = [
         locale: { type: "string", description: "Quote style language, e.g. en (default), en-GB, de, fr, es, it, nl, sv, pl, ru, ja, zh." },
         dash_style: { type: "string", enum: ["closed", "spaced", "en_spaced"], description: "How a dash between words is set: closed em dash (US default), spaced em dash, or spaced en dash (UK default)." },
         em_dash: { type: "string", enum: ["keep", "closed", "spaced", "en_spaced", "comma"], description: "Restyle every existing em dash (default keep)." },
+        french_spacing: { type: "boolean", description: "locale fr only: add no-break spaces inside « » and before ; : ! ? (default false)." },
         options: { type: "object", description: "Turn rules off: {quotes, dashes, ranges, ellipsis, primes, times, spaces} = false.", properties: { quotes: { type: "boolean" }, dashes: { type: "boolean" }, ranges: { type: "boolean" }, ellipsis: { type: "boolean" }, primes: { type: "boolean" }, times: { type: "boolean" }, spaces: { type: "boolean" } } },
       },
       required: ["text"],
@@ -104,6 +105,7 @@ function typography(a) {
   if (a.locale) o.locale = str(a.locale, 12);
   if (["closed", "spaced", "en_spaced"].includes(a.dash_style)) o.dash_style = a.dash_style;
   if (["keep", "closed", "spaced", "en_spaced", "comma"].includes(a.em_dash)) o.em_dash = a.em_dash;
+  o.french_spacing = a.french_spacing === true;
   const r = MGDTypo.fix(text, o);
   const ch = Object.entries(r.changes).filter(([, v]) => v).map(([k, v]) => `${v} ${k.replace(/_/g, " ")}`).join(", ");
   return ok(`${r.text}\n\n(${ch ? "Changed: " + ch : "No changes needed"}; quote style ${r.locale}.)`, { text: r.text, changes: r.changes, locale: r.locale });

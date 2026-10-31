@@ -160,7 +160,7 @@ function looksHtml(s) { return /<\/?[a-z][a-z0-9]*(\s[^<>]*)?>/i.test(s); }
 /* fix(text, opts) → { text, changes: {quotes, apostrophes, dashes, ranges, ellipses, primes, times, spaces, em_dashes_restyled}, locale }
    opts: locale ('en'), quotes (true), dashes (true), dash_style ('closed' em dash | 'spaced' em dash | 'en_spaced' spaced en dash; default by locale:
    en-GB → en_spaced, else closed), double_hyphen ('em' default | 'en'), ranges (true), ellipsis (true), primes (true), times (true), spaces (true),
-   em_dash ('keep' | 'closed' | 'spaced' | 'en_spaced' | 'comma'), single_first (false; ‘…’ outer quotes, UK house style), french_spacing (default true for fr), html ('auto'). */
+   em_dash ('keep' | 'closed' | 'spaced' | 'en_spaced' | 'comma'), single_first (false; ‘…’ outer quotes, UK house style), french_spacing (default false; opt-in no-break spaces inside « » and before ; : ! ? for fr), html ('auto'). */
 function fix(text, opts) {
   opts = opts || {};
   text = String(text == null ? '' : text);
@@ -230,7 +230,7 @@ function fix(text, opts) {
       return m;
     });
   }
-  if (L === 'fr' && on('french_spacing', true)) {
+  if (L === 'fr' && on('french_spacing', false)) {
     t = t.replace(/« ?/g, function (m) { if (m !== '« ') c.french_spaces++; return '« '; }).replace(/ ?»/g, function (m) { if (m !== ' »') c.french_spaces++; return ' »'; });
     t = t.replace(/([^\s \d]) ?([;:!?])(?=\s|$)/g, function (m, a, p) { c.french_spaces++; return a + ' ' + p; });
   }
