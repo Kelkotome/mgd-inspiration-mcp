@@ -48,7 +48,7 @@ check("initialize: old protocol still echoed", old.get("protocolVersion") == "20
 
 # ---- tools/list: backward compatible; descriptions; outputSchema only for 2025-06-18 clients
 tools = rpc("tools/list")["result"]["tools"]; names = [t["name"] for t in tools]
-check("tools/list: 48 tools", len(tools) == 48, len(tools))
+check("tools/list: >= 54 tools", len(tools) >= 54, len(tools))
 if args.baseline:
     base = {t["name"]: t for t in json.load(open(args.baseline))["result"]["tools"]}
     check("tools/list: same tool names as baseline", set(base) == set(names), set(base) ^ set(names))
