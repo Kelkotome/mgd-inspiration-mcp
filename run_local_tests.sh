@@ -52,6 +52,7 @@ python3 test_mcp_oauth.py --base http://localhost:8797 --baseline-file public_mc
 RC=$?
 echo; echo "-- batch-45 tool cores (Node unit + JSON-RPC)"
 node --experimental-default-type=module tests/test_tools45.mjs 2>/dev/null | tail -1 | grep -q " 0 failed" && echo "PASS tests/test_tools45.mjs" || { echo "FAIL tests/test_tools45.mjs"; RC=1; }
+node --experimental-default-type=module tests/test_board_tint.mjs | tail -1 | grep -q "^\([0-9]*\)/\1 passed" && echo "PASS tests/test_board_tint.mjs" || { echo "FAIL tests/test_board_tint.mjs"; RC=1; }
 python3 tests/rpc45.py --base http://localhost:8797 || RC=1
 
 echo; echo "-- secrecy checks"

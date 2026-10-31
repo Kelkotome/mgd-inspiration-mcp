@@ -12,6 +12,7 @@ Scope: `tool-gap-2026-10/kp/SCOPE-mcp-design.md`, items Q1–Q6 and Q10. Everyth
 | Worker `src/index.js` | Server `instructions` are now a routing guide, and serverInfo is 1.1. All 36 tool descriptions start with "Use when…/Use after…". The museum `bauhaus` example is gone (0 works); an unknown museum theme is now searched as text instead of returning 0. The annual-reports description is corrected (no Chermayeff & Geismar items; real date range), and the search now covers the `designer` column, so "Paul Rand" hits exactly. One-line "Next step:" hints are added to non-empty results. The palette hint carries `colors=` JSON for `generate_design_md`. Zero results suggest a sibling tool. `structuredContent` + `outputSchema` are added for `generate_website_color_palette` and `generate_design_md`, only for clients that send `MCP-Protocol-Version >= 2025-06-18`; older clients see exactly the old shapes. Three MCP prompts: `design-system-from-references`, `brand-kit`, `build-screen-from-reference`. Q6: D1 search calls retry once, then return `isError` with the real error instead of "0 results". Search patterns are now capped by UTF-8 bytes; live currently errors with `LIKE or GLOB pattern too complex` on long CJK/accented queries. Empty `/api/feed` and `/api/search` responses are no longer edge-cached. |
 | `ui-screens/gen.js` + `regen_design_md.py` | `--md-only` regeneration of the 1,168 UI-screen DESIGN.md files, which live in R2 at `ui/<id>/DESIGN.md`. Only R2 changes; D1 is untouched. Backup, upload log, verify and rollback are built in. |
 | `mcp_report.py` | Q10: the wrangler JSON is parsed with `raw_decode`, so the "Extra data" crash is gone. The zero-result table now shows `parallel` and `zero_events`. The 30-Oct "5 museum searches returned 0" was **one** real zero (Bauhaus) smeared over 6 parallel calls by the report's time-window join. The search itself did not fail. |
+| Worker `src/board_design.js` (new) + `src/index.js` `boardDesign` | **Boards blue-tint fix (second commit, 31-Oct, user-approved).** A board's DESIGN.md / palette neutrals (background, surface, text, muted, border) now always follow the board's primary hue. Before, `seed()` picked the tint hue from a random harmony accent about 30% of the time, and the board-accent override came too late, so warm boards (terracotta, mustard) could get a blue- or green-tinted background. The pure colour step moved into `boardRolesFromWeights()` so it can be tested in Node. This is the same fix as `tool-gap-2026-10/newtools/moodboard-core.js` (batch 48, keep in sync). Regression: `node tests/test_board_tint.mjs` (1,301 checks; 1,017/1,301 without the fix). Affects `/api/boards/<id>/design`, the board "Design system" panel and the /mcp/boards tool `board_design_system`. No schema/API shape change. |
 | WordPress `/tools/design-md-generator/` (parent repo `tool-gap-2026-10`) | The embed is rebuilt (`newtools/design-md-generator-embed.html`). Copy and FAQ in `pages_batch42.py` now mention spec conformance, lint and export. |
 | WordPress `/tools/website-color-palette-generator/` | The embed is rebuilt **only** for the on-primary lock fix in color-roles-core.js. Locking "On primary" and pressing Generate threw `Cannot read properties of null` on the live page. |
 
@@ -33,6 +34,7 @@ cd ~/Downloads/EtiennAubertBonn/mgd-inspiration
 python3 gen_design_core.py && git diff --exit-code src/design_core.js    # Worker core in sync with tool-gap-2026-10/newtools
 node ../tool-gap-2026-10/test_designmd.js                                # 54 checks: official CLI lint 0/0 + export css-tailwind/dtcg/json-tailwind
 node ../tool-gap-2026-10/test_designmd_embed.js                          # 15 checks: embed in Chrome 1280/375px, lint of page output, palette lock fix
+node tests/test_board_tint.mjs                                           # boards blue-tint regression → "1301/1301 passed"
 bash run_local_tests.sh                                                  # OAuth/boards 161/161 + test_tools45 + rpc45 → "ALL TESTS PASSED"
 bash tests/designmd_local/run.sh                                         # 71 checks vs wrangler dev on :8796 (seeds /tmp/mgd-designmd-test read-only from live)
 ```
@@ -41,7 +43,7 @@ If `run.sh` reuses an old seed, run `rm -rf /tmp/mgd-designmd-test` first to ref
 ### 3. Push BEFORE deploying
 ```bash
 git push origin museum-collection-2026-10
-git fetch origin && git log --oneline origin/museum-collection-2026-10 | grep -E "DESIGN.md spec|MCP quick wins"   # must list our commit(s)
+git fetch origin && git log --oneline origin/museum-collection-2026-10 | grep -E "DESIGN.md spec|MCP quick wins|blue-tint"   # must list BOTH our commits
 ```
 
 ### 4. Deploy the Worker
@@ -99,6 +101,7 @@ node test_designmd_embed.js        # optional re-run; for a live check, open bot
 
 ## Rollback
 
+- **Boards tint fix only:** `git revert <tint commit>` + push + deploy (pure colour change; no data touched).
 - **Worker:** run `npx wrangler rollback <version id noted in step 4>`. Then `git revert` our commits and **push**, otherwise the next wrap-up deploy from origin re-ships them.
 - **R2 (UI DESIGN.md):** run `cd ui-screens && python3 regen_design_md.py rollback --remote`. It re-uploads every object in `upload.jsonl` from `regen_logs/2026-10-31/backup/`. Keep that folder until the change has been live for a week.
 - **WordPress:** restore the previous revision of each page in wp-admin, or `git revert` the parent-repo commit and re-run step 7. Then purge.

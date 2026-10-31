@@ -10,6 +10,7 @@ import BOARD_CANVAS_JS from "./ui/board-canvas.html"; // plain JS, imported as T
 import SAVE_HTML from "./ui/save.html";
 import { getUser, googleLogin, googleCallback, logout, devLogin } from "./auth.js";
 import { MGDRoles, MGDDesignMd } from "./design_core.js";
+import { boardRolesFromWeights } from "./board_design.js";
 import { TOOL_DEFS as MCP_TOOLS_43, isToolsTool, callToolsTool } from "./mcp_tools.js";
 import { TOOL_DEFS as MCP_TOOLS_44, isTools44Tool, callTools44Tool } from "./mcp_tools44.js";
 import { TOOL_DEFS as MCP_TOOLS_45, isTools45Tool, callTools45Tool } from "./mcp_tools45.js";
@@ -1355,21 +1356,7 @@ async function boardDesign(env, uid, boardId) {
   rows.forEach((r) => safeArr(r.palette).slice(0, 6).forEach((c, i) => addC(c, 6 - i)));
   const els = parseCanvas(board.canvas);
   els.filter((e) => e.t === "swatch").forEach((e) => addC(e.color, 12));
-  const colors = Object.keys(w).map((hex) => ({ hex, weight: w[hex], o: MGDRoles.lch(hex) })).sort((a, b) => b.weight - a.weight);
-  const score = (c) => c.weight * Math.min(1, c.o.c / 0.08) * (c.o.l > 0.25 && c.o.l < 0.85 ? 1 : 0.35);
-  const ranked = colors.slice().sort((a, b) => score(b) - score(a));
-  const primary = ranked.length && score(ranked[0]) > 0 ? ranked[0].hex : null;
-  let accentHue = null;
-  if (primary) {
-    const ph = MGDRoles.lch(primary).h;
-    const alt = ranked.find((c) => c.o.c > 0.05 && Math.min(Math.abs(c.o.h - ph), 360 - Math.abs(c.o.h - ph)) > 40);
-    if (alt) accentHue = alt.o.h;
-  }
-  const avgC = colors.length ? colors.slice(0, 8).reduce((m, c) => m + c.o.c, 0) / Math.min(8, colors.length) : 0.1;
-  const mood = !primary ? "clean" : avgC < 0.05 ? "muted" : "clean";
-  const sd = MGDRoles.seed({ mood, brand: primary });
-  if (accentHue != null) { sd.ha = accentHue; sd.harmony = "board"; }
-  const light = MGDRoles.build(sd, "light"), dark = MGDRoles.build(sd, "dark");
+  const { colors, primary, mood, light, dark } = boardRolesFromWeights(w);
   const types = els.filter((e) => e.t === "type").sort((a, b) => b.size - a.size);
   const heading = types[0] ? types[0].font : "Inter";
   const body = types.find((t) => t.font !== heading && t.size <= 24) ? types.find((t) => t.font !== heading && t.size <= 24).font : "Inter";
