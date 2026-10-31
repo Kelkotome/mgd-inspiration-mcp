@@ -17,6 +17,7 @@ import { TOOL_DEFS as MCP_TOOLS_45, isTools45Tool, callTools45Tool } from "./mcp
 import { TOOL_DEFS as MCP_TOOLS_48, isTools48Tool, callTools48Tool, NEXT48, OUTPUT_SCHEMAS48 } from "./mcp_tools48.js";
 import { TOOL_DEFS as MCP_TOOLS_49, isTools49Tool, callTools49Tool, NEXT49 } from "./mcp_tools49.js";
 import { TOOL_DEFS as MCP_TOOLS_50, isTools50Tool, callTools50Tool, NEXT50 } from "./mcp_tools50.js";
+import { TOOL_DEFS as MCP_TOOLS_51, isTools51Tool, callTools51Tool, NEXT51 } from "./mcp_tools51.js";
 import { MGDMoodboard } from "./tools_core48.js";
 import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields } from "./ui_screens.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
@@ -1537,19 +1538,20 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
-MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 
 // ---- Routing guide (sent on initialize; clients load it into the model's context) — 31-Oct-2026
 const MCP_INSTRUCTIONS = "Made Good Designs (madegooddesigns.com): free design references and design-system generators. Which tool to use:\n" +
-  "- Building an app screen, web page or landing-page section: search_ui_screens, then get_ui_screen_code for its HTML + DESIGN.md; multi-step journeys (sign-up, checkout…): get_ui_flow.\n" +
-  "- Typography, branding, logo, poster or editorial references: search_design_inspiration (or browse_inspiration_by_theme for a style such as swiss, retro, brutalist).\n" +
-  "- Historical art and public-domain imagery (posters, Art Nouveau, ukiyo-e, ornament, maps): search_museum_art. Corporate design history: search_annual_reports.\n" +
-  "- Setting up a design system: generate_website_color_palette (accessible light + dark roles), then generate_design_md with those colours (spec-conformant DESIGN.md).\n" +
+  "- App screen, web page or landing section: search_ui_screens, then get_ui_screen_code (HTML + DESIGN.md); journeys (sign-up, checkout…): get_ui_flow.\n" +
+  "- Typography, branding, logo, poster or editorial references: search_design_inspiration (or browse_inspiration_by_theme, e.g. swiss, retro).\n" +
+  "- Public-domain art (posters, Art Nouveau, ukiyo-e, maps): search_museum_art. Corporate design history: search_annual_reports.\n" +
+  "- Design system: generate_website_color_palette (accessible light/dark roles), then generate_design_md with those colours.\n" +
   "- Logos: generate_logo_concepts, then generate_color_combinations or generate_website_color_palette.\n" +
   "- One step from references: design_md_from_references. shadcn/Tailwind: generate_shadcn_theme, generate_color_scale, generate_type_scale, export_design_tokens (DTCG). Verify: check_contrast, lint_design_md; formats: convert_color.\n" +
-  "- Icons with real import names: search_icons. Viewports: get_screen_sizes. Brand: generate_slogans, make_brand_board.\n" +
+  "- Icons (real import names): search_icons. Viewports: get_screen_sizes. Brand: generate_slogans, make_brand_board.\n" +
   "- Print: get_paper_sizes, make_grid_paper, get_book_cover_size. Also make_storyboard, make_affinity_diagram, generate_llms_txt.\n" +
-  "Other tools are utilities (charts, diagrams, timelines, barcodes, puzzles, text). Cite the madegooddesigns.com page links.";
+  "- 3D print/product design: make_extruded_part, analyze_3d_model, get_print_clearance, make_box_template, make_gear, get_screw_specs, get_hand_anthropometrics.\n" +
+  "Other tools are utilities (charts, diagrams, barcodes, puzzles, text). Cite the madegooddesigns.com page links.";
 
 // Every description leads with when to use the tool (selection quality). Applied here so the tool modules stay unchanged.
 const MCP_USE_WHEN = {
@@ -1629,6 +1631,7 @@ const MCP_NEXT = {
 Object.assign(MCP_NEXT, NEXT48);
 Object.assign(MCP_NEXT, NEXT49);
 Object.assign(MCP_NEXT, NEXT50);
+Object.assign(MCP_NEXT, NEXT51);
 function mcpAddNext(name, r) {
   const hint = MCP_NEXT[name];
   if (!hint || !r || r.isError || mcpZero(r) || !Array.isArray(r.content) || /^0 /.test((r.content[0] && r.content[0].text) || "")) return r;
@@ -1923,6 +1926,7 @@ async function mcpCallToolInner(name, a, env, opts) {
   if (name === "design_md_from_references") return mcpDesignFromRefs(a, env);
   if (isTools49Tool(name)) return callTools49Tool(name, a);
   if (isTools50Tool(name)) return callTools50Tool(name, a);
+  if (isTools51Tool(name)) return callTools51Tool(name, a);
   if (isTools48Tool(name)) return callTools48Tool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, site: MCP_SITE });
   if (isUiTool(name)) return callUiTool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, clampInt, site: MCP_SITE });
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
