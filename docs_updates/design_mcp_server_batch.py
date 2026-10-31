@@ -47,6 +47,15 @@ BATCHES = {
         ("get_book_cover_size", "work out a KDP paperback full-wrap cover size, spine width, safe zones and barcode box from trim size and page count, with an optional true-size SVG template", "kdp-cover-calculator", "KDP Cover Calculator"),
         ("make_affinity_diagram", "turn research notes, interview quotes or workshop stickies into an affinity diagram SVG, from groups you clustered or a deterministic keyword grouping", "affinity-diagram", "Affinity Diagram Maker"),
     ]),
+    "51": (61, [
+        ("make_extruded_part", "extrude an SVG path, a polygon with holes or simple shapes to a thickness in mm and get a watertight STL, 3MF or faceted STEP, with size, volume and a minimum-wall check", "svg-to-stl", "SVG to STL Converter"),
+        ("analyze_3d_model", "read an STL, OBJ or 3MF file for its real size, volume, triangle count, shells and watertight check, plus an estimated filament weight and print cost", "stl-viewer", "STL Viewer"),
+        ("get_print_clearance", "look up the clearance to design in for pins, lids, sliding joints and press fits on FDM, resin, SLS or MJF printers, with cited sources and hole and pin sizes", "3d-print-tolerance", "3D Print Tolerance calculator"),
+        ("make_box_template", "make a finger-jointed laser-cut box (SVG or DXF, kerf-compensated) or a 3D-printable project enclosure with a lid, screw posts and cut-outs", "box-generator", "Box Generator"),
+        ("make_gear", "design an involute spur gear or gear pair from module or diametral pitch, with all dimensions and contact ratio, as SVG, DXF, STL, 3MF or STEP", "gear-generator", "Gear Generator"),
+        ("get_screw_specs", "look up sourced ISO metric and UNC/UNF thread data: pitch, minor diameter, tap drill, clearance holes, nut and socket-head sizes, and 3D-printing guidance", "screw-size-chart", "Screw Size Chart"),
+        ("get_hand_anthropometrics", "get hand measurements in mm (length, breadth, circumference, grip) as 1st–99th percentiles by sex from the public ANSUR II survey, for sizing handles and grips", "hand-size-chart", "Hand Size Chart"),
+    ]),
 }
 
 def main(b):
