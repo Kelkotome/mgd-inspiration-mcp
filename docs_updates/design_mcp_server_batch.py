@@ -1,5 +1,5 @@
 """Add a batch's new MCP tools to /design-mcp-server/ (WP page 107901) and set the public tool count. Run ONLY after the
-Worker for that batch is deployed and live-tested. Usage (from anywhere): python3 design_mcp_server_batch.py 48|49|50
+Worker for that batch is deployed and live-tested. Usage (from anywhere): python3 design_mcp_server_batch.py 48|49|50|51|52
 Pattern: design_mcp_server_b45.py. Backs the page up to docs_updates/backup-107901-b<N>-<timestamp>.html first, appends the
 list items after the last tool item of the public list, writes/updates the "The public server has N tools" sentence under the
 "Available tools" heading, checks that every linked page returns 200, then purges Cloudflare. Idempotent per tool."""
@@ -55,6 +55,10 @@ BATCHES = {
         ("make_gear", "design an involute spur gear or gear pair from module or diametral pitch, with all dimensions and contact ratio, as SVG, DXF, STL, 3MF or STEP", "gear-generator", "Gear Generator"),
         ("get_screw_specs", "look up sourced ISO metric and UNC/UNF thread data: pitch, minor diameter, tap drill, clearance holes, nut and socket-head sizes, and 3D-printing guidance", "screw-size-chart", "Screw Size Chart"),
         ("get_hand_anthropometrics", "get hand measurements in mm (length, breadth, circumference, grip) as 1st–99th percentiles by sex from the public ANSUR II survey, for sizing handles and grips", "hand-size-chart", "Hand Size Chart"),
+    ]),
+    "52": (63, [
+        ("lookup_character", "identify or find any special character (em dash, degree, ©, accents, Greek, math, currency) and get its name, code point, HTML entity, LaTeX and how to type it on Mac, Windows, Linux and Word", "unicode-characters", "Unicode Character Lookup"),
+        ("fix_typography", "turn straight quotes, double hyphens, three dots and number ranges into proper typographic quotes, dashes, ellipses and primes (or straighten them back), leaving code and URLs untouched", "em-dash", "Em Dash tool"),
     ]),
 }
 
