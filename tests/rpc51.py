@@ -95,6 +95,15 @@ check("gear pair m2 20:40: centre 60, ratio 2", sc.get("dims", {}).get("centreDi
 r = call("make_gear", {"module": 2, "teeth": 20, "bore": 6, "thickness": 8, "format": "stl_base64"}); sc = r.get("structuredContent") or {}
 w, dims = stl_check(base64.b64decode(sc["base64"])) if sc.get("base64") else (False, None)
 check("gear STL: closed, 44 mm tip, 8 mm thick", w and dims and abs(dims[0] - 44) < 0.05 and abs(dims[2] - 8) < 1e-3, dims)
+# --- STEP (faceted AP214) output
+import re as _re
+def step_ok(s, solids):
+    ids = set(_re.findall(r"^#(\d+)=", s, _re.M))
+    return s.startswith("ISO-10303-21;") and "AUTOMOTIVE_DESIGN" in s and ".MILLI.,.METRE." in s and all(i in ids for i in _re.findall(r"#(\d+)", s)) and s.count("MANIFOLD_SOLID_BREP(") == solids
+r = call("make_extruded_part", {"polygons": [[[0, 0], [60, 0], [60, 15], [0, 15]]], "thickness_mm": 3, "format": "step"}); f = (r.get("structuredContent") or {}).get("file", {})
+check("extruded bar → STEP: 1 solid, 6 faces, refs intact", step_ok(f.get("step", ""), 1) and f.get("step_stats", {}).get("faces") == 6, f.get("step_stats"))
+r = call("make_box_template", {"kind": "enclosure", "length": 60, "width": 40, "height": 20, "format": "step"}); sc = r.get("structuredContent") or {}
+check("enclosure → STEP: Box + Lid solids", step_ok(sc.get("step", ""), 2), sc.get("too_big") or sc.get("step_stats"))
 check("gear: bore through root → isError", call("make_gear", {"module": 1, "teeth": 12, "bore": 20}).get("isError"))
 check("unknown arg types don't crash", "result" in rpc(args.base, "tools/call", {"name": "make_gear", "arguments": {"teeth": "lots", "module": None}}))
 print(f"{ok} passed, {fail} failed"); sys.exit(1 if fail else 0)

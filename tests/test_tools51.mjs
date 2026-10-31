@@ -119,5 +119,15 @@ t("bore through the root → isError", r.isError, txt(r));
 r = await callTools51Tool("make_gear", { module: 2, teeth: 20, format: "dxf" });
 t("gear DXF in mm", !r.isError && /SECTION/.test(r.structuredContent.dxf));
 
+// ---- STEP output (our own faceted AP214 writer)
+const stepRefsOK = (s) => { const ids = new Set([...s.matchAll(/^#(\d+)=/gm)].map((m) => m[1])); return s.startsWith("ISO-10303-21;") && /END-ISO-10303-21;\s*$/.test(s) && [...s.matchAll(/#(\d+)/g)].every((m) => ids.has(m[1])); };
+r = await callTools51Tool("make_extruded_part", { polygons: [[[[0, 0], [40, 0], [40, 20], [0, 20]], [[10, 5], [30, 5], [30, 15], [10, 15]]]], thickness_mm: 2, format: "step" });
+sc = r.structuredContent;
+t("extruded frame → STEP: AP214, mm, 1 solid, 10 faces (holes as inner loops), refs intact, fenced in text", !r.isError && sc.file.step && /AUTOMOTIVE_DESIGN/.test(sc.file.step) && /SI_UNIT\(\.MILLI\.,\.METRE\.\)/.test(sc.file.step) && sc.file.step_stats.solids === 1 && sc.file.step_stats.faces === 10 && stepRefsOK(sc.file.step) && /```step/.test(txt(r)) && sc.file.filename.endsWith(".step"), sc.file.step_stats);
+r = await callTools51Tool("make_box_template", { kind: "enclosure", length: 60, width: 40, height: 20, format: "step" });
+sc = r.structuredContent;
+t("enclosure → STEP: 2 named solids (Box, Lid), refs intact", !r.isError && sc.step && (sc.step.match(/MANIFOLD_SOLID_BREP\(/g) || []).length === 2 && /'Box'/.test(sc.step) && /'Lid'/.test(sc.step) && stepRefsOK(sc.step), sc && (sc.too_big || sc.step_stats));
+r = await callTools51Tool("make_box_template", { kind: "enclosure", length: 60, width: 40, height: 20, lid: "screw", cutouts: [{ face: "front", shape: "round", x: 30, z: 10, d: 8 }], format: "step" });
+t("dense enclosure → STEP too_big hint, not an error", !r.isError && r.structuredContent.too_big && !r.structuredContent.step, txt(r).slice(0, 200));
 t("all 7 tools registered", ["make_extruded_part", "analyze_3d_model", "get_print_clearance", "make_box_template", "make_gear", "get_screw_specs", "get_hand_anthropometrics"].every(isTools51Tool) && TOOL_DEFS.length === 7);
 console.log(`${ok} passed, ${fail} failed`); process.exit(fail ? 1 : 0);

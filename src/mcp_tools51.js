@@ -17,7 +17,8 @@ const r2 = (x) => Math.round(x * 100) / 100;
 const STL_TEXT_CAP = 200 * 1024;    // ASCII STL returned inline
 const B64_OUT_CAP = 400 * 1024;     // base64 STL/3MF returned inline
 const B64_IN_CAP = 4 * 1024 * 1024; // base64 input accepted by analyze_3d_model
-const MAX_VERTS = 20000;            // 2D outline vertices accepted by make_extruded_part
+const MAX_VERTS = 20000;
+const STEP_TEXT_CAP = 300 * 1024; // STEP (faceted B-rep, text) returned inline            // 2D outline vertices accepted by make_extruded_part
 
 export const TOOL_DEFS = [];
 const HANDLERS = {};
@@ -34,6 +35,13 @@ function countVerts(mp) { let n = 0; mp.forEach((p) => p.forEach((r) => (n += r.
 function fileOut(parts, mesh, format, base) {
   const out = {};
   if (format === "none") return out;
+  if (format === "step") {
+    if (!C.MGDStep) { out.too_big = "STEP export is not available on this server."; return out; }
+    let r; try { r = C.MGDStep.toSTEP(parts.map((p) => ({ mesh: p.mesh, name: p.name })), { name: base }); } catch (e) { out.too_big = "STEP export failed: " + str(e && e.message, 200); return out; }
+    if (r.step.length > STEP_TEXT_CAP) out.too_big = `The STEP file is ${Math.round(r.step.length / 1024)} KB: too big to return inline. Use stl_base64 / 3mf_base64, or download STEP from the page.`;
+    else { out.step = r.step; out.filename = base + ".step"; out.mime = "model/step"; out.step_stats = r.stats; }
+    return out;
+  }
   if (format === "stl_base64" || format === "3mf_base64") {
     const bytes = format === "3mf_base64" ? MGDMesh.to3MF(parts.map((p) => ({ mesh: p.mesh, name: p.name })), { title: base }) : MGDMesh.toSTL(mesh, base);
     const b64 = MGDMesh.toBase64(bytes);
@@ -72,7 +80,7 @@ def({
       fillet_mm: { type: "number", description: "Round the outline's corners (convex and concave) by this radius." },
       min_wall_mm: { type: "number", description: "Warn where the outline is narrower than this (default 1.2 mm = 3 perimeters of a 0.4 mm nozzle)." },
       mirror: { type: "boolean" },
-      format: { type: "string", enum: ["stl_ascii", "stl_base64", "3mf_base64", "none"], description: "Output file. stl_ascii (default, capped at 200 KB), stl_base64 (binary), 3mf_base64 (mm units, one object per part), none (just the report)." },
+      format: { type: "string", enum: ["stl_ascii", "stl_base64", "3mf_base64", "step", "none"], description: "Output file. step = faceted STEP AP214 solid for CAD (text, capped at 300 KB; curves become flat facets). stl_ascii (default, capped at 200 KB), stl_base64 (binary), 3mf_base64 (mm units, one object per part), none (just the report)." },
       name: { type: "string", description: "Part name for the file (default 'part')." },
     },
   },
@@ -130,7 +138,7 @@ function extrudedPart(a) {
   try { r = MGDPart.build(mp, o); } catch (e) { return err("Could not build the part: " + str(e && e.message, 200)); }
   if (!r || !r.mesh || !r.mesh.tri.length) return err("Could not build the part: " + str(r && r.error, 200));
   const an = r.analysis, main = r.parts.length > 1 ? MGDMesh.analyze(r.parts[0].mesh) : an, base = (str(a.name, 40).replace(/[^\w-]+/g, "-").replace(/^-+|-+$/g, "") || "part") + `-${r2(main.size[0])}x${r2(main.size[1])}x${r2(main.size[2])}mm`;
-  const file = fileOut(r.parts, r.mesh, ["stl_ascii", "stl_base64", "3mf_base64", "none"].includes(a.format) ? a.format : "stl_ascii", base);
+  const file = fileOut(r.parts, r.mesh, ["stl_ascii", "stl_base64", "3mf_base64", "step", "none"].includes(a.format) ? a.format : "stl_ascii", base);
   warn = warn.concat(r.warnings || []);
   const lines = [
     `**${o.style} part from ${srcNote}**: ${r2(main.size[0])} × ${r2(main.size[1])} × ${r2(main.size[2])} mm${r.parts.length > 1 ? ` (with pins laid out beside it: ${r2(an.size[0])} × ${r2(an.size[1])} × ${r2(an.size[2])} mm overall)` : ""}, total volume ${r2(an.volume / 1000)} cm³ (≈ ${r2(an.volume / 1000 * 1.24)} g of solid PLA at 1.24 g/cm³), ${an.triangles} triangles, ${r.parts.length} part(s)${r.parts.length > 1 ? " (" + r.parts.map((p) => p.name).join(", ") + ")" : ""}.`,
@@ -141,6 +149,7 @@ function extrudedPart(a) {
   if (warn.length) lines.push("Notes: " + warn.join(" "));
   lines.push("Profile preview (SVG, mm):\n" + fence("svg", r.svg));
   if (file.stl) lines.push(`${file.filename} (ASCII STL, mm):\n` + fence("stl", file.stl));
+  else if (file.step) lines.push(`${file.filename} (STEP AP214, mm, ${file.step_stats.solids} solid(s) of ${file.step_stats.faces} flat faces; curves are faceted):\n` + fence("step", file.step));
   else if (file.base64) lines.push(`${file.filename}: ${file.bytes} bytes, base64 in structuredContent.file.base64 (${file.mime}). Decode and save it to print.`);
   else if (file.too_big) lines.push(file.too_big);
   lines.push(`Edit, preview in 3D and download in the browser: ${T}/svg-to-stl/ (vector) or ${T}/image-to-stl/ (images).`);
@@ -335,14 +344,14 @@ def({
       screw_mode: { type: "string", enum: ["insert", "selftap"] },
       cutouts: { type: "array", items: { type: "object" }, description: "enclosure: [{face front|back|left|right|bottom|top, shape round|rect|slots, x, z (sides) or y (bottom/top), d | w,h,r | w,h,n,pitch}] in mm from the inner corner." },
       standoffs: { type: "array", items: { type: "object" }, description: "enclosure: [{x, y, h, d, screw}] from the inner front-left corner." },
-      format: { type: "string", enum: ["svg", "dxf", "stl_ascii", "stl_base64", "3mf_base64", "none"], description: "laser: svg (default) or dxf. enclosure: none (default, sizes only), stl_base64 or 3mf_base64." },
+      format: { type: "string", enum: ["svg", "dxf", "stl_ascii", "stl_base64", "3mf_base64", "step", "none"], description: "laser: svg (default) or dxf. enclosure: none (default, sizes only), stl_base64, 3mf_base64 or step (faceted STEP for CAD, box + lid as two solids, text capped at 300 KB)." },
     },
   },
   annotations: RO("Box template (laser / 3D-print enclosure)"),
 }, (a) => {
   const B = C.MGDBox; if (!B) return err("Box maker is not available on this server yet.");
   if (a.kind === "enclosure") {
-    const fmt = ["stl_ascii", "stl_base64", "3mf_base64"].includes(a.format) ? a.format : "none";
+    const fmt = ["stl_ascii", "stl_base64", "3mf_base64", "step"].includes(a.format) ? a.format : "none";
     const o = { length: num(a.length, 80, 1, 2000), width: num(a.width, 50, 1, 2000), height: num(a.height, 25, 1, 2000), meshes: fmt !== "none" };
     ["wall", "floor", "radius"].forEach((k) => { if (a[k] != null) o[k] = num(a[k], 2, 0, 100); });
     o.lid = { type: ["lip", "screw", "none"].includes(a.lid) ? a.lid : "lip" };
@@ -362,8 +371,9 @@ def({
       const f = fileOut(parts, MGDMesh.merge(...parts.map((p) => p.mesh)), fmt, "enclosure");
       if (f.too_big) f.too_big = f.too_big.replace(/Simplify the outline or make it in the browser\./, "Round cut-outs combined with a screw lid make dense meshes: try format=\"stl_base64\" (smaller), rectangular cut-outs, or build it on the page.");
       Object.assign(sc, f);
-      lines.push(f.too_big || `${f.filename} (${f.bytes ? Math.round(f.bytes / 1024) + " KB, " : ""}box and lid side by side, mm, watertight) is in structuredContent.`);
+      lines.push(f.too_big || `${f.filename} (${f.bytes ? Math.round(f.bytes / 1024) + " KB, " : ""}box and lid side by side, mm, ${f.step ? "two solids; curves are faceted" : "watertight"}) is in structuredContent.`);
       if (f.stl) lines.push(fence("stl", f.stl));
+      if (f.step) lines.push(fence("step", f.step));
     }
     lines.push(`Preview, cut-out editor and 3MF: ${T}/enclosure-generator/`);
     return ok(lines.join("\n\n"), sc);
