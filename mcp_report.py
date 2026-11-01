@@ -1,4 +1,5 @@
 """MCP analytics report (mcp_events + mcp_calls in D1). Usage: python3 mcp_report.py [days=7] [--include-bots]
+History (all of mcp_calls since Aug, rebuilt estimates): python3 mcp_report.py --history [--rerun-zero]  → also saved to reports/
 mcp_events started 29-Oct-2026 (connections, sessions, outcomes); mcp_calls has the per-call query text since Aug.
 Bots/scanners (curl, undici, probes — incl. our own live tests) are excluded via the bot flag / UA."""
 import subprocess, json, os, re, sys
@@ -28,6 +29,9 @@ def table(title, rows):
     print("  " + " | ".join(keys))
     for r in rows: print("  " + " | ".join("" if r[k] is None else str(r[k]) for k in keys))
 
+
+if "--history" in sys.argv:
+    import mcp_history; mcp_history.run(sql, "--rerun-zero" in sys.argv); sys.exit()
 
 print(f"# MCP report — last {DAYS} days (bots excluded)")
 table("Totals", sql(f"SELECT SUM(kind='initialize') connections, COUNT(DISTINCT CASE WHEN kind='initialize' THEN visitor END) connecting_visitors, "
@@ -62,6 +66,10 @@ table("Zero-result searches (content gaps; parallel>zero_events = ambiguous, onl
     f"FROM mcp_calls WHERE {CALLS_EX} AND {W} AND query != '' AND EXISTS ("
     f"SELECT 1 FROM mcp_events e WHERE e.zero=1 AND e.{BOT} AND e.tool=mcp_calls.tool AND e.ua=mcp_calls.ua "
     f"AND e.created_at BETWEEN mcp_calls.created_at AND mcp_calls.created_at+15000) ORDER BY created_at DESC LIMIT 40"))
+table("What people searched for (all queries)", sql(
+    f"SELECT {SG} t, tool, substr(query,1,90) query, CASE WHEN ua LIKE 'Claude-User%' THEN 'claude.ai' ELSE substr(ua,1,20) END app "
+    f"FROM mcp_calls WHERE {CALLS_EX} AND {W} AND query != '' AND ua NOT LIKE 'AMP-Server%' AND ua NOT LIKE 'undici%' AND ua NOT LIKE 'Go-http%' "
+    f"AND ua NOT LIKE 'python-%' ORDER BY created_at DESC LIMIT 200"))
 table("Countries (desktop clients; claude.ai shows Anthropic's servers)", sql(
     f"SELECT country, COUNT(DISTINCT visitor) visitors, COUNT(*) events {EV} AND ua NOT LIKE 'Claude-User%' GROUP BY 1 ORDER BY 2 DESC LIMIT 10"))
 print("\nVisits from MCP answers: GA4 → Reports → Acquisition → Traffic acquisition, filter Session source = 'mcp' "
