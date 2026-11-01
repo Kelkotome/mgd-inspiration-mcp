@@ -122,7 +122,7 @@ for n in ["search_museum_art", "search_design_inspiration", "search_ui_screens",
     check(f"{n}: long multibyte queries don't error", not bad, bad)
 
 # ---- other changed tools: hints + sibling suggestions
-t = text(call("search_design_inspiration", {"query": "serif", "limit": 2})); check("search_design_inspiration: results + next-step hint", not t.startswith("0 ") and t.rstrip().endswith("then generate_design_md."), t[-200:])
+t = text(call("search_design_inspiration", {"query": "serif", "limit": 2})); check("search_design_inspiration: results + next-step hint", not t.startswith("0 ") and "then generate_design_md." in t and t.rstrip().endswith("gives a public link."), t[-200:])  # 2-Nov: + save_moodboard sentence
 t = text(call("search_design_inspiration", {"query": "zzqxflarbnothing"})); check("search_design_inspiration zero: sibling hint, no next step", t.startswith("0 ") and "search_museum_art" in t and "Next step:" not in t, t)
 t = text(call("browse_inspiration_by_theme", {"theme": "retro", "limit": 2})); check("browse_inspiration_by_theme: ok", "item(s) in theme" in t, t[:200])
 t = text(call("list_inspiration_themes", {})); check("list_inspiration_themes: ok", "retro:" in t, t[:200])
@@ -145,7 +145,8 @@ t = text(call("make_word_search", {"words": ["alpha", "beta", "gamma"]})); check
 
 # ---- prompts
 pl = rpc("prompts/list")["result"]["prompts"]
-check("prompts/list: 3 prompts with arguments", sorted(p["name"] for p in pl) == ["brand-kit", "build-screen-from-reference", "design-system-from-references"] and all(p["arguments"] for p in pl), pl)
+# 2-Nov-2026 MCP UX pass added "moodboard" (tests/rpc_mcpux.py covers it); the original three must still be there.
+check("prompts/list: the 3 original prompts (+ moodboard) with arguments", {"brand-kit", "build-screen-from-reference", "design-system-from-references"} <= {p["name"] for p in pl} and set(p["name"] for p in pl) <= {"brand-kit", "build-screen-from-reference", "design-system-from-references", "moodboard"} and all(p["arguments"] for p in pl), pl)
 pg = rpc("prompts/get", {"name": "design-system-from-references", "arguments": {"product": "a yoga booking app", "style": "warm editorial"}})["result"]
 check("prompts/get: user message naming the tool chain", pg["messages"][0]["role"] == "user" and "generate_design_md" in pg["messages"][0]["content"]["text"] and "yoga" in pg["messages"][0]["content"]["text"], pg)
 e = rpc("prompts/get", {"name": "brand-kit", "arguments": {}})
