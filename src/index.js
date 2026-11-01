@@ -115,7 +115,9 @@ export default {
       if (path.startsWith("/annual-reports/") && method === "GET") return edgeCache(request, ctx, 1800, () => annualItemPage(path.slice(16), env, base));
 
       // ---- MCP server (public, for AI assistants) ----
-      if (path === "/mcp") return mcpHandler(request, env);
+      if (path === "/mcp") return mcpHandler(request, env, env.MCP_PUBLIC_PROFILE || MCP_DEFAULT_PROFILE);
+      if (path === "/mcp/core" || path === "/mcp/core/") return mcpHandler(request, env, "core"); // lean design-only tool list (2-Nov-2026)
+      if (path === "/mcp/all" || path === "/mcp/all/") return mcpHandler(request, env, "all");
       // ---- Authenticated MCP (OAuth 2.1 bearer; the user's own boards + the public tools) ----
       if (path === "/mcp/boards" || path === "/mcp/boards/") return mcpMeHandler(request, env, ctx, url, base);
 
@@ -1543,18 +1545,17 @@ const MCP_TOOLS = [
 MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 
 // ---- Routing guide (sent on initialize; clients load it into the model's context) — 31-Oct-2026
-const MCP_INSTRUCTIONS = "Made Good Designs (madegooddesigns.com): free design references and design-system generators. Which tool to use:\n" +
+// 2-Nov-2026 (MCP UX audit): leads with WHEN to call (before UI/colour/font/logo work) — Claude Code shows this even when tools are deferred.
+const MCP_INSTRUCTIONS = "Made Good Designs (madegooddesigns.com): free, original design references and design-system generators. Call them BEFORE building or restyling UI, picking colours or fonts, or making a logo or brand: real references and tested tokens beat guessing.\n" +
   "- App screen or web page: search_ui_screens, then get_ui_screen_code (HTML + DESIGN.md); journeys: get_ui_flow.\n" +
   "- Typography, branding, logo or poster references: search_design_inspiration (or browse_inspiration_by_theme).\n" +
-  "- Public-domain art (posters, ukiyo-e, maps): search_museum_art. Corporate design history: search_annual_reports.\n" +
-  "- Design system: generate_website_color_palette (accessible light/dark roles), then generate_design_md.\n" +
-  "- Logos: generate_logo_concepts, then generate_color_combinations or generate_website_color_palette.\n" +
-  "- One step from references: design_md_from_references. shadcn/Tailwind: generate_shadcn_theme, generate_color_scale, generate_type_scale, export_design_tokens (DTCG). Verify: check_contrast, lint_design_md; formats: convert_color.\n" +
-  "- Icons (real import names): search_icons. Viewports: get_screen_sizes. Brand: generate_slogans, make_brand_board.\n" +
-  "- Print: get_paper_sizes, make_grid_paper, get_book_cover_size, make_dieline. Also make_storyboard, make_affinity_diagram, generate_llms_txt.\n" +
-  "- 3D print/product design: make_extruded_part, analyze_3d_model, get_print_clearance, make_box_template, make_gear, get_screw_specs, get_hand_anthropometrics.\n" +
-  "- Characters (codes, how to type): lookup_character. Curly quotes/dashes: fix_typography.\n" +
-  "Other tools are utilities (charts, diagrams, barcodes, puzzles). Cite the madegooddesigns.com page links.";
+  "- Public-domain art: search_museum_art. Corporate design history: search_annual_reports.\n" +
+  "- Design system: generate_website_color_palette, then generate_design_md; from references: design_md_from_references. shadcn/Tailwind: generate_shadcn_theme, generate_color_scale, generate_type_scale, export_design_tokens. Verify: check_contrast, lint_design_md; convert_color.\n" +
+  "- Logos: generate_logo_concepts, then generate_color_combinations. Brand: generate_slogans, make_brand_board. Icons: search_icons. Viewports: get_screen_sizes.\n" +
+  "- Print: get_paper_sizes, make_grid_paper, get_book_cover_size, make_dieline; also make_storyboard, make_affinity_diagram, generate_llms_txt.\n" +
+  "- 3D print: make_extruded_part, analyze_3d_model, get_print_clearance, make_box_template, make_gear, get_screw_specs, get_hand_anthropometrics.\n" +
+  "- Characters: lookup_character; curly quotes/dashes: fix_typography.\n" +
+  "Other tools: charts, diagrams, barcodes, puzzles. Cite the madegooddesigns.com links you get.";
 
 // Every description leads with when to use the tool (selection quality). Applied here so the tool modules stay unchanged.
 const MCP_USE_WHEN = {
@@ -1612,7 +1613,7 @@ const MCP_OUTPUT_SCHEMAS = {
     spec: { type: "string" }, edit_url: { type: "string" }, contrast_failures: { type: "integer" } }, required: ["design_md", "tokens"] },
 };
 Object.assign(MCP_OUTPUT_SCHEMAS, OUTPUT_SCHEMAS48);
-const MCP_TOOLS_STRUCTURED = MCP_TOOLS.map((t) => MCP_OUTPUT_SCHEMAS[t.name] ? { ...t, outputSchema: MCP_OUTPUT_SCHEMAS[t.name] } : t);
+let MCP_TOOLS_STRUCTURED = MCP_TOOLS.map((t) => MCP_OUTPUT_SCHEMAS[t.name] ? { ...t, outputSchema: MCP_OUTPUT_SCHEMAS[t.name] } : t);
 function mcpShape(r, structured) {
   if (r && r.structuredContent && (!structured || r.isError)) { const { structuredContent, ...rest } = r; return rest; }
   return r;
@@ -1688,6 +1689,65 @@ function mcpPromptGet(p) {
   return { description: pr.description, messages: [{ role: "user", content: { type: "text", text: pr.text(a) } }] };
 }
 
+// ---- MCP UX pass (2-Nov-2026, docs/MCP-UX-AUDIT-2026-11-02.md) ----
+// (a) Schema hygiene: some clients (OpenAI-function-based agents) reject an array schema without "items" and descriptions over
+//     1024 chars. Fix generically here so the tool modules stay unchanged. Type-only additions: arguments that validated before still do.
+function mcpSchemaFix(s) {
+  if (!s || typeof s !== "object") return s;
+  if (Array.isArray(s)) { s.forEach(mcpSchemaFix); return s; }
+  if (s.type === "array" && !("items" in s)) s.items = {};
+  for (const k of ["properties", "$defs", "definitions"]) if (s[k] && typeof s[k] === "object") Object.values(s[k]).forEach(mcpSchemaFix);
+  for (const k of ["items", "additionalProperties", "anyOf", "oneOf", "allOf"]) if (s[k] && typeof s[k] === "object") mcpSchemaFix(s[k]);
+  return s;
+}
+const MCP_DESC_MAX = 1000;
+const MCP_DESC_OVERRIDE = {
+  search_ui_screens: "Use when building or designing an app screen, web page or landing-page section and you want an original reference with starter HTML and a DESIGN.md. " +
+    "Searches Made Good Designs' free library of ORIGINAL web and mobile screens: dashboards, tables, charts, login/sign-up/2FA, onboarding, settings, billing, paywalls, " +
+    "kanban, calendars, editors, AI chat, e-commerce, empty/404/success states and landing sections (hero, features, pricing, testimonials, FAQ, footer), " +
+    "in 8 styles (minimal, editorial, brutalist, luxury, playful, corporate, retro, monochrome). Every screen ships with copyable HTML and a DESIGN.md token file " +
+    "(colours with WCAG contrast, type, spacing, radius, shadows). Each result gives the screenshot URL, colour roles, elements, flows, a page URL to cite and a screen_id for get_ui_screen_code.",
+};
+for (const t of MCP_TOOLS) {
+  if (MCP_DESC_OVERRIDE[t.name]) t.description = MCP_DESC_OVERRIDE[t.name];
+  mcpSchemaFix(t.inputSchema);
+}
+
+// (b) Profiles. "core" = the design tools people actually call (mcp_calls since Aug-2026: 17 of 64 tools ever used by a real client),
+//     ~30 KB instead of ~100 KB, so clients that defer or truncate big tool lists still surface them. Every tool stays CALLABLE on
+//     every profile (tools/call is never filtered) — only tools/list differs. /mcp/core and /mcp/all are explicit; /mcp follows
+//     MCP_DEFAULT_PROFILE (flip to "core" in one line once the user decides; env MCP_PUBLIC_PROFILE overrides for local tests).
+const MCP_DEFAULT_PROFILE = "all";
+const MCP_CORE_NAMES = ["search_ui_screens", "get_ui_screen_code", "get_ui_flow", "search_design_inspiration", "browse_inspiration_by_theme",
+  "list_inspiration_themes", "search_museum_art", "search_annual_reports", "generate_website_color_palette", "generate_design_md",
+  "design_md_from_references", "generate_logo_concepts", "generate_color_combinations", "check_contrast", "generate_shadcn_theme",
+  "search_icons", "make_brand_board", "generate_type_scale"];
+const MCP_INSTRUCTIONS_CORE = "Made Good Designs (madegooddesigns.com): free, original design references and design-system generators. Call them BEFORE building or restyling UI, picking colours or fonts, or making a logo or brand: real references and tested tokens beat guessing.\n" +
+  "- App screen, dashboard, form or landing-page section: search_ui_screens, then get_ui_screen_code (HTML + DESIGN.md). Multi-step journeys (sign-up, checkout, onboarding): get_ui_flow.\n" +
+  "- Typography, branding, packaging, logo or poster references: search_design_inspiration, or browse_inspiration_by_theme (list_inspiration_themes shows the themes).\n" +
+  "- Public-domain art, posters, ukiyo-e, ornament: search_museum_art. Corporate design history: search_annual_reports.\n" +
+  "- Design system: generate_website_color_palette (accessible light + dark roles), then generate_design_md; or design_md_from_references in one step. shadcn/Tailwind: generate_shadcn_theme, generate_type_scale. Check colours: check_contrast.\n" +
+  "- New brand: generate_logo_concepts, generate_color_combinations, make_brand_board. Icons with real import names: search_icons.\n" +
+  "Cite the madegooddesigns.com links you get.";
+
+// (c) Prompt for the most common claude.ai job (moodboards); shows as a slash command in Claude Code and other clients.
+MCP_PROMPTS.push({ name: "moodboard", title: "Moodboard",
+  description: "A moodboard of real design and art references for a project, with a shared colour palette and the page links.",
+  arguments: [{ name: "topic", description: "What it's for, e.g. 'a natural wine bar in Lisbon'.", required: true },
+    { name: "style", description: "Optional style words, e.g. 'art nouveau, hand-lettered'.", required: false }],
+  text: (a) => `Make a moodboard for ${a.topic}${a.style ? ` in this style: ${a.style}` : ""} with the Made Good Designs tools.\n` +
+    `1. Call search_design_inspiration with 2–3 short queries${a.style ? ` drawn from "${a.style}"` : ""} and search_museum_art with 1–2.\n` +
+    `2. Show the best 6–9 references as a grid or list: image, one line on why it fits, and its madegooddesigns.com page link.\n` +
+    `3. Pull a 5-colour palette (hex) that the references share, and suggest a heading and a body typeface.\n` +
+    `4. Offer next steps: generate_website_color_palette with the main colour, or search_ui_screens to see it applied to a screen.` });
+
+MCP_TOOLS_STRUCTURED = MCP_TOOLS.map((t) => MCP_OUTPUT_SCHEMAS[t.name] ? { ...t, outputSchema: MCP_OUTPUT_SCHEMAS[t.name] } : t); // rebuilt after (a)
+const MCP_PROFILES = {
+  all: { tools: MCP_TOOLS, structured: MCP_TOOLS_STRUCTURED, instructions: MCP_INSTRUCTIONS, endpoint: "public" },
+  core: { tools: MCP_TOOLS.filter((t) => MCP_CORE_NAMES.includes(t.name)), structured: MCP_TOOLS_STRUCTURED.filter((t) => MCP_CORE_NAMES.includes(t.name)),
+    instructions: MCP_INSTRUCTIONS_CORE, endpoint: "public-core" },
+};
+
 // Q6 (31-Oct): a D1 error/timeout must never read as "0 results". Retry once, then the caller returns isError.
 async function mcpRetry(fn) {
   try { return await fn(); }
@@ -1713,7 +1773,8 @@ function mcpJson(obj, status, extra) {
 const rpcOk = (id, result) => ({ jsonrpc: "2.0", id, result });
 const rpcErr = (id, code, message) => ({ jsonrpc: "2.0", id, error: { code, message } });
 
-async function mcpHandler(request, env) {
+async function mcpHandler(request, env, profile) {
+  const P = MCP_PROFILES[profile] || MCP_PROFILES.all;
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: mcpCors() });
   if (request.method === "GET") {
     // MCP clients GET with Accept: text/event-stream to open a server→client stream. We don't offer one, and the spec
@@ -1738,11 +1799,11 @@ async function mcpHandler(request, env) {
     if (method === "initialize") {
       const pv = (params && params.protocolVersion) || "2025-06-18";
       return rpcOk(id, { protocolVersion: pv, capabilities: { tools: { listChanged: false }, prompts: { listChanged: false } },
-        serverInfo: { name: "MGD Inspiration", version: "1.1" }, instructions: MCP_INSTRUCTIONS });
+        serverInfo: { name: "MGD Inspiration", version: "1.2" }, instructions: P.instructions });
     }
     if (typeof method === "string" && method.startsWith("notifications/")) return null; // notifications: no reply
     if (method === "ping") return rpcOk(id, {});
-    if (method === "tools/list") return rpcOk(id, { tools: structured ? MCP_TOOLS_STRUCTURED : MCP_TOOLS });
+    if (method === "tools/list") return rpcOk(id, { tools: structured ? P.structured : P.tools });
     if (method === "prompts/list") return rpcOk(id, { prompts: MCP_PROMPTS.map(({ text, ...p }) => p) });
     if (method === "prompts/get") { const p = mcpPromptGet(params || {}); return p.error ? rpcErr(id, -32602, p.error) : rpcOk(id, p); }
     if (method === "tools/call") {
@@ -1752,7 +1813,7 @@ async function mcpHandler(request, env) {
     return rpcErr(id, -32601, "Method not found: " + method);
   };
 
-  const ctx = mcpCtx(request, "public"), hdrs = {};
+  const ctx = mcpCtx(request, P.endpoint), hdrs = {};
   const run = (m) => mcpTracked(env, ctx, m, handle, hdrs);
   if (Array.isArray(body)) {
     const out = (await Promise.all(body.map(run))).filter(Boolean);
@@ -1782,7 +1843,7 @@ async function logMcp(env, tool, query, ip, ua, who) {
 
 // MCP analytics: connections, sessions and outcomes (migrate_mcp_events.sql). Best-effort — never affects a response.
 // Includes uptime monitors / directory checkers (AMP-Server calls the same 3 tools daily) so they don't count as users.
-const MCP_BOT_UA = /^(curl\/|undici|python-|Go-http-client|node-fetch|axios|okhttp|aiohttp|httpx|Wget|Java\/|node$|mgd-selftest)|mcp-probe|MCPYP|evyAI|scanner|AMP-Server|amp-mcp-tester|Inspection/i;
+const MCP_BOT_UA = /^(curl\/|undici|python-|Go-http-client|node-fetch|axios|okhttp|aiohttp|httpx|Wget|Java\/|node$|mgd-selftest)|mcp-probe|MCPYP|evyAI|scanner|AMP-Server|amp-mcp-tester|Inspection|SentinelOracle|histor\//i;
 function mcpCtx(request, endpoint) {
   return { endpoint, ip: request.headers.get("CF-Connecting-IP") || "", ua: request.headers.get("User-Agent") || "",
     country: (request.cf && request.cf.country) || "", sid: request.headers.get("mcp-session-id") || "" };
@@ -1839,6 +1900,7 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
     return inner(msg);
   }
   if (method === "tools/list") { await mcpEvent(env, c, { kind: "tools_list" }); return inner(msg); }
+  if (method === "prompts/list") { await mcpEvent(env, c, { kind: "prompts_list" }); return inner(msg); }
   if (method === "prompts/get") { await mcpEvent(env, c, { kind: "prompt", tool: String((msg.params && msg.params.name) || "").slice(0, 60) }); return inner(msg); }
   if (method !== "tools/call") return inner(msg);
   const t0 = Date.now(), tool = (msg.params && msg.params.name) || "";
@@ -1866,6 +1928,7 @@ const MCP_SIBLING = {
   "annual-report": "Nothing in the annual-report archive; try search_design_inspiration or search_museum_art.",
   museum: "Nothing in the museum collection (public-domain works, mostly before the 1930s); for modern movements such as Bauhaus or Swiss style try search_design_inspiration or search_annual_reports.",
 };
+const MCP_THEME_COUNTS = { at: 0, counts: null };
 async function mcpCallToolInner(name, a, env, opts) {
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
@@ -1877,9 +1940,14 @@ async function mcpCallToolInner(name, a, env, opts) {
     return mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design);
   }
   if (name === "list_inspiration_themes") {
-    const rows = await mcpRetry(() => env.DB.prepare(`SELECT themes FROM items WHERE status='published' AND owner_id IS NULL AND collection='design'`).all());
-    const counts = {};
-    (rows.results || []).forEach((r) => safeArr(r.themes).forEach((t) => { counts[t] = (counts[t] || 0) + 1; }));
+    // 2-Nov-2026: this scans every design row (avg 2.6 s live); counts move slowly, so memoise per isolate for 30 min.
+    let counts = MCP_THEME_COUNTS.at > Date.now() - 1800e3 ? MCP_THEME_COUNTS.counts : null;
+    if (!counts) {
+      const rows = await mcpRetry(() => env.DB.prepare(`SELECT themes FROM items WHERE status='published' AND owner_id IS NULL AND collection='design'`).all());
+      counts = {};
+      (rows.results || []).forEach((r) => safeArr(r.themes).forEach((t) => { counts[t] = (counts[t] || 0) + 1; }));
+      MCP_THEME_COUNTS.at = Date.now(); MCP_THEME_COUNTS.counts = counts;
+    }
     const lines = MCP_THEMES.map((t) => `- ${t}: ${counts[t] || 0} items  (${MCP_SITE}/?theme=${t})`);
     return { content: [{ type: "text", text: `Curated design-inspiration themes at Made Good Designs (${MCP_SITE}/):\n` + lines.join("\n") }] };
   }

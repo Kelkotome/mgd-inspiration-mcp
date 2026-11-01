@@ -145,7 +145,8 @@ t = text(call("make_word_search", {"words": ["alpha", "beta", "gamma"]})); check
 
 # ---- prompts
 pl = rpc("prompts/list")["result"]["prompts"]
-check("prompts/list: 3 prompts with arguments", sorted(p["name"] for p in pl) == ["brand-kit", "build-screen-from-reference", "design-system-from-references"] and all(p["arguments"] for p in pl), pl)
+# 2-Nov-2026 MCP UX pass added "moodboard" (tests/rpc_mcpux.py covers it); the original three must still be there.
+check("prompts/list: the 3 original prompts (+ moodboard) with arguments", {"brand-kit", "build-screen-from-reference", "design-system-from-references"} <= {p["name"] for p in pl} and set(p["name"] for p in pl) <= {"brand-kit", "build-screen-from-reference", "design-system-from-references", "moodboard"} and all(p["arguments"] for p in pl), pl)
 pg = rpc("prompts/get", {"name": "design-system-from-references", "arguments": {"product": "a yoga booking app", "style": "warm editorial"}})["result"]
 check("prompts/get: user message naming the tool chain", pg["messages"][0]["role"] == "user" and "generate_design_md" in pg["messages"][0]["content"]["text"] and "yoga" in pg["messages"][0]["content"]["text"], pg)
 e = rpc("prompts/get", {"name": "brand-kit", "arguments": {}})

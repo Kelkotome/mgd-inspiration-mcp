@@ -2,24 +2,33 @@
 History (all of mcp_calls since Aug, rebuilt estimates): python3 mcp_report.py --history [--rerun-zero]  → also saved to reports/
 mcp_events started 29-Oct-2026 (connections, sessions, outcomes); mcp_calls has the per-call query text since Aug.
 Bots/scanners (curl, undici, probes — incl. our own live tests) are excluded via the bot flag / UA."""
-import subprocess, json, os, re, sys
+import subprocess, json, os, re, sys, time
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
 DAYS = int(ARGS[0]) if ARGS else 7
 BOT = "bot>=0" if "--include-bots" in sys.argv else "bot=0"  # --include-bots: sanity-check the queries on test traffic
 W = f"created_at > (strftime('%s','now')-{DAYS}*86400)*1000"
 SG = "datetime(created_at/1000,'unixepoch','+8 hours')"
-EV = f"FROM mcp_events WHERE {BOT} AND {W}"
+# Liveness probes / catalog crawlers that send a real clientInfo but never use tools (2-Nov-2026 audit): glimind SentinelOracle alone was
+# 937 "connections" in 7 days. The Worker now bot-flags SentinelOracle/histor by UA; this also drops them (and older rows) by client name.
+BOT_CLIENTS = "('glimind-probe','histor','catalog-health','mcpcost','probe','agentready-probe','agentservicedirectory.com','analytics-test')"
+NOT_BOT_CLIENT = "" if "--include-bots" in sys.argv else (
+    f" AND visitor NOT IN (SELECT visitor FROM mcp_events WHERE kind='initialize' AND client_name IN {BOT_CLIENTS} AND {W})")
+EV = f"FROM mcp_events WHERE {BOT} AND {W}{NOT_BOT_CLIENT}"
 CALLS_EX = "1=1" if "--include-bots" in sys.argv else "ip!='129.126.14.17' AND ua NOT LIKE 'curl/%'"
 
 
-def sql(q):
-    p = subprocess.run(["npx", "wrangler", "d1", "execute", "mgd-inspiration", "--remote", "--json", "--command", q],
-                       capture_output=True, text=True, env=dict(os.environ, CI="1", WRANGLER_SEND_METRICS="false"))
-    # wrangler can print banners/warnings before or after the JSON ("Extra data" crash, 31-Oct-2026): decode just the JSON array.
-    o = p.stdout; m = re.search(r"\[\s*\{", o)
-    if not m: sys.exit(p.stderr or o)
-    return json.JSONDecoder().raw_decode(o[m.start():])[0][0]["results"]
+def sql(q, tries=4):
+    # D1 over the API intermittently answers 7403 / network errors (the "first query errors" seen 1–2 Nov-2026): retry with backoff.
+    for i in range(tries):
+        p = subprocess.run(["npx", "wrangler", "d1", "execute", "mgd-inspiration", "--remote", "--json", "--command", q],
+                           capture_output=True, text=True, env=dict(os.environ, CI="1", WRANGLER_SEND_METRICS="false"))
+        # wrangler can print banners/warnings before or after the JSON ("Extra data" crash, 31-Oct-2026): decode just the JSON array.
+        o = p.stdout; m = re.search(r"\[\s*\{", o)
+        if m: return json.JSONDecoder().raw_decode(o[m.start():])[0][0]["results"]
+        err = (p.stderr or o).strip()
+        if i == tries - 1 or "SQLITE_ERROR" in err or "no such" in err: sys.exit(err)  # real SQL errors: don't retry
+        time.sleep(3 * (i + 1))
 
 
 def table(title, rows):
@@ -37,6 +46,18 @@ print(f"# MCP report — last {DAYS} days (bots excluded)")
 table("Totals", sql(f"SELECT SUM(kind='initialize') connections, COUNT(DISTINCT CASE WHEN kind='initialize' THEN visitor END) connecting_visitors, "
                     f"SUM(kind='call') calls, COUNT(DISTINCT CASE WHEN kind='call' THEN session_id END) sessions_with_calls, "
                     f"SUM(kind='call' AND ok=0) errors, SUM(zero=1) zero_results {EV}"))
+# KPIs (2-Nov-2026, docs/MCP-UX-AUDIT-2026-11-02.md). Visitor = salted hash of IP+UA, so claude.ai (Anthropic server IPs) under-counts people.
+table("KPIs by client: activation = visitors who called ≥1 tool / visitors who connected (via=proxy: Claude-User UA = Anthropic egress IPs, so 1 visitor ≠ 1 person)", sql(
+    f"SELECT COALESCE(i.client_name,'?') client, i.via, COUNT(DISTINCT i.visitor) connected, COUNT(DISTINCT c.visitor) activated, "
+    f"ROUND(100.0*COUNT(DISTINCT c.visitor)/COUNT(DISTINCT i.visitor),1) activation_pct, SUM(c.n) calls, ROUND(1.0*SUM(c.n)/MAX(COUNT(DISTINCT c.visitor),1),1) calls_per_active "
+    f"FROM (SELECT DISTINCT visitor, client_name, CASE WHEN ua LIKE 'Claude-User%' THEN 'proxy' ELSE 'direct' END via {EV} AND kind='initialize') i "
+    f"LEFT JOIN (SELECT visitor, COUNT(*) n {EV} AND kind='call' GROUP BY visitor) c USING(visitor) "
+    f"GROUP BY 1,2 HAVING connected >= 3 ORDER BY 3 DESC LIMIT 14"))
+table("Retention: callers who called again on a later day (D7-style, within the window)", sql(
+    f"SELECT COUNT(*) callers, SUM(days>1) called_on_2plus_days, ROUND(100.0*SUM(days>1)/MAX(COUNT(*),1),1) pct "
+    f"FROM (SELECT visitor, COUNT(DISTINCT date({SG})) days {EV} AND kind='call' GROUP BY visitor)"))
+table("Prompts (slash commands) used", sql(f"SELECT kind, COALESCE(tool,'') prompt, COUNT(*) n {EV} AND kind IN ('prompt','prompts_list') GROUP BY 1,2 ORDER BY 3 DESC"))
+table("Endpoint profile (public = /mcp all tools, public-core = /mcp/core)", sql(f"SELECT endpoint, SUM(kind='initialize') connects, SUM(kind='call') calls {EV} GROUP BY 1"))
 table("Connections by client app (from initialize)", sql(
     f"SELECT COALESCE(client_name,'?') client, COUNT(*) connections, COUNT(DISTINCT visitor) visitors, MAX(client_version) latest_version "
     f"{EV} AND kind='initialize' GROUP BY 1 ORDER BY 2 DESC LIMIT 15"))
