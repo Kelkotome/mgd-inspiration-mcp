@@ -60,6 +60,9 @@ BATCHES = {
         ("lookup_character", "identify or find any special character (em dash, degree, ©, accents, Greek, math, currency) and get its name, code point, HTML entity, LaTeX and how to type it on Mac, Windows, Linux and Word", "unicode-characters", "Unicode Character Lookup"),
         ("fix_typography", "turn straight quotes, double hyphens, three dots and number ranges into proper typographic quotes, dashes, ellipses and primes (or straighten them back), leaving code and URLs untouched", "em-dash", "Em Dash tool"),
     ]),
+    "53": (64, [
+        ("make_dieline", "draw a packaging dieline (tuck-end carton, FEFCO 0201 shipping box, tray, lid and base, sleeve, matchbox, pillow box) from inside dimensions and board thickness, with every panel size, the flat size and a true-size SVG or DXF with cut, crease and bleed layers", "dieline-generator", "Dieline Generator"),
+    ]),
 }
 
 def main(b):
