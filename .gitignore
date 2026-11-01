@@ -16,3 +16,5 @@ dev_*.log
 public_mcp_orig.json
 .test_tokens
 docs_updates/backup-*.html
+# b60 AI local test config (tests/run_ai_local.sh)
+wrangler.ai-test.jsonc
