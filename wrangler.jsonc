@@ -41,7 +41,13 @@
     // Mount the whole Worker under madegooddesigns.com/inspiration/ (see routes below).
     "BASE_PATH": "/inspiration",
     // Canonical public origin for the OAuth issuer / MCP resource URLs (src/oauth.js).
-    "PUBLIC_ORIGIN": "https://madegooddesigns.com"
+    "PUBLIC_ORIGIN": "https://madegooddesigns.com",
+    // b60 AI design tools (src/ai_tools.js, DEPLOY-b60-ai.md). Model claude-haiku-5-5 via the Anthropic Messages API.
+    // TURNSTILE_SITE_KEY: the PUBLIC site key of an invisible Turnstile widget for madegooddesigns.com (Cloudflare dashboard >
+    // Turnstile > Add widget). deploy_b60_ai.sh refuses while it is empty.
+    "TURNSTILE_SITE_KEY": "",
+    "AI_DAILY_PER_IP": "20",
+    "AI_DAILY_BUDGET_USD": "3"
   },
 
   // Daily 03:17 UTC: purge MCP call logs older than 12 months (see scheduled() in src/index.js).
@@ -64,5 +70,7 @@
   //   SESSION_SECRET           — signs login session cookies
   //   GOOGLE_CLIENT_ID         — Google OAuth web client id
   //   GOOGLE_CLIENT_SECRET     — Google OAuth web client secret
+  //   ANTHROPIC_API_KEY        — b60 AI tools (Console API key; never client-side)
+  //   TURNSTILE_SECRET         — b60 AI tools: secret key of the Turnstile widget above
   // (Local only, in .dev.vars: DEV_LOGIN="1" enables /auth/dev-login to bypass Google.)
 }

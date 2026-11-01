@@ -21,6 +21,7 @@ import { TOOL_DEFS as MCP_TOOLS_51, isTools51Tool, callTools51Tool, NEXT51 } fro
 import { TOOL_DEFS as MCP_TOOLS_52, isTools52Tool, callTools52Tool, NEXT52 } from "./mcp_tools52.js";
 import { TOOL_DEFS as MCP_TOOLS_53, isTools53Tool, callTools53Tool, NEXT53 } from "./mcp_tools53.js";
 import { MGDMoodboard } from "./tools_core48.js";
+import { handleAi, cleanupAiUsage } from "./ai_tools.js";
 import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields } from "./ui_screens.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
   token as oauthToken, revoke as oauthRevoke, verifyBearer, challengeHeader,
@@ -54,6 +55,12 @@ export default {
     // CORS preflight for OAuth endpoints called from browser-based MCP clients.
     if (method === "OPTIONS" && (path === "/oauth/token" || path === "/oauth/register" || path === "/oauth/revoke")) {
       return new Response(null, { status: 204, headers: oauthCors() });
+    }
+
+    // b60 AI design tools (image describer / alt text / image-to-prompt): own CORS, caps and Turnstile (src/ai_tools.js).
+    if (path.startsWith("/api/ai/")) {
+      try { return await handleAi(request, env, ctx, path); }
+      catch (e) { return new Response(JSON.stringify({ ok: false, error: "unavailable", message: "The AI tool is not available right now." }), { status: 503, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" } }); }
     }
 
     // CORS preflight for the API (gallery may be embedded on the WP site, cross-origin).
@@ -190,6 +197,7 @@ export default {
     // privacy: keep raw IPs for 90 days only (abuse checks + excluding our own tests), then blank them
     ctx.waitUntil(env.DB.prepare("UPDATE mcp_calls SET ip='' WHERE created_at < ? AND ip != ''").bind(Date.now() - 90 * DAY).run().catch(() => {}));
     ctx.waitUntil(env.DB.prepare("DELETE FROM mcp_events WHERE created_at < ?").bind(cutoff).run().catch(() => {}));
+    ctx.waitUntil(cleanupAiUsage(env)); // b60: AI usage counters kept 7 days
   },
 };
 
