@@ -45,7 +45,7 @@
     // b60 AI design tools (src/ai_tools.js, DEPLOY-b60-ai.md). Model claude-haiku-5-5 via the Anthropic Messages API.
     // TURNSTILE_SITE_KEY: the PUBLIC site key of an invisible Turnstile widget for madegooddesigns.com (Cloudflare dashboard >
     // Turnstile > Add widget). deploy_b60_ai.sh refuses while it is empty.
-    "TURNSTILE_SITE_KEY": "",
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFvxBzhSRizITNuC",
     "AI_DAILY_PER_IP": "20",
     "AI_DAILY_BUDGET_USD": "3"
   },
