@@ -21,12 +21,14 @@ import { TOOL_DEFS as MCP_TOOLS_51, isTools51Tool, callTools51Tool, NEXT51 } fro
 import { TOOL_DEFS as MCP_TOOLS_52, isTools52Tool, callTools52Tool, NEXT52 } from "./mcp_tools52.js";
 import { TOOL_DEFS as MCP_TOOLS_53, isTools53Tool, callTools53Tool, NEXT53 } from "./mcp_tools53.js";
 import { MGDMoodboard } from "./tools_core48.js";
-import { MOODBOARD_TOOL, callMoodboard, moodboardRoute, moodboardAdmin } from "./moodboards.js";
-import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs } from "./discovery.js";
-import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields, uiItemPath } from "./ui_screens.js";
+import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields } from "./ui_screens.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
   token as oauthToken, revoke as oauthRevoke, verifyBearer, challengeHeader,
   connectedAppsApi, connectedAppsPage } from "./oauth.js";
+// 2-Nov-2026 MCP UX: no-login moodboards + progressive tool discovery
+import { MOODBOARD_TOOL, callMoodboard, moodboardRoute, moodboardAdmin } from "./moodboards.js";
+import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs } from "./discovery.js";
+import { uiItemPath } from "./ui_screens.js";
 
 // Aggressive AI-training / SEO / bulk crawlers that spider the JSON read API (which is
 // meant for the SPA running in real browsers) and can burn the D1 read quota on cache
