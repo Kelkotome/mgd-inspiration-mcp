@@ -172,7 +172,7 @@ Directory or claude.ai connectors may therefore cache tool metadata, which means
 
 ### P2: retention hooks (medium)
 
-1. **Shareable moodboard link, no login**:
+1. **Shareable moodboard link, no login** — ✅ **built** (user approved 2 Nov; see section 7):
    - Search results already carry item ids.
    - A `save_moodboard(items[], title)` tool, or a "board" link built from the session's results, creates a public, unlisted page on madegooddesigns.com/inspiration/b/<id>.
    - That page is something people revisit, share and cite: a traffic and return loop.
@@ -264,3 +264,123 @@ The run covers:
 | live / baseline `/mcp` | 102,061 B | 101,052 B |
 | new `/mcp` (all) | 101,816 B | 100,807 B |
 | new `/mcp/core` | **30,995 B** | 29,986 B |
+
+## 7. Added 2 Nov (user decisions): moodboards, progressive discovery, designer-role taxonomy
+
+### 7.1 No-login shareable moodboards (`save_moodboard`): replaces the OAuth boards for anonymous users
+
+The flow is one tool, so the tool count grows by one:
+
+| Call | What it does |
+|---|---|
+| `save_moodboard(items, title, notes?, item_notes?)` | Creates a board from search results. Returns the public link `https://madegooddesigns.com/inspiration/board/<14-char id>` and a private `edit_token` (`mbt_…`). |
+| `save_moodboard(board_id, edit_token, add_items / remove_items / title / notes / delete)` | Edits or deletes the board, in this session or any later one. |
+| `save_moodboard(board_id)` | Read-only listing of the board's items. |
+
+- **Items** can be the image URLs, museum/annual-report page URLs or `screen_id`s that the search tools already print. No output format changed to make this work.
+- **Only curated, published items** are accepted. User uploads are never included, and unknown refs are reported back as "skipped".
+- **The edit token** is shown once. Only its SHA-256 is stored, and it never appears on the page.
+- **Board page:**
+  - Server-rendered and `noindex` (meta tag plus `X-Robots-Tag`), no-store.
+  - Every title and note is HTML-escaped.
+  - Each image links back to its MGD page: museum page, annual-report page, `/ui/` page, or gallery `#i/<id>`.
+  - Each image has a plain-text "Source:" line (artist/museum, company/designer, "Original UI by Made Good Designs", or the gallery source). There are no outbound links, which matches the attribution rules.
+  - The footer reads "Made with Made Good Designs' free design MCP" and links to /design-mcp-server/.
+- **Limits:**
+  - 30 items per board.
+  - Title 80 characters, notes 500, per-item note 200.
+  - **20 new boards per IP-hash per 24 h** (`MOODBOARD_DAILY_LIMIT` var). Edits are not rate-limited.
+- **Expiry:** none, by decision. Links get pasted into chats and docs, and citations should keep working. The creator can delete a board.
+- **Abuse:** a "Report this board" button sends a POST. **3 reports hide the board (410) pending review.** An admin can disable or restore with `POST /inspiration/api/admin/moodboard {id, disabled}` (Bearer `ADMIN_TOKEN`), the same pattern as MGD Share.
+- **Storage:** D1 table `mcp_moodboards`, created by `migrate_moodboards.sql` (additive). Without the table, the tool answers "not available yet".
+- **Old OAuth `/mcp/boards`:** untouched and still working (0 grants, so nothing to migrate). The public `/mcp` never listed its tools. **Recommendation:** when the docs page is next edited, demote the "boards (sign in with Google)" section and point to `save_moodboard`. That is a WordPress edit and needs the user's go-ahead.
+- **Retention hook:** search hints now end with "To keep or share picks: save_moodboard(…) gives a public link." The `moodboard` prompt already ends with next steps.
+
+### 7.2 Progressive tool discovery (`/mcp/core`): popular list plus the long tail
+
+`/mcp/core` lists **21 tools**:
+- the **18 popular** tools, chosen from real usage since Aug;
+- **`save_moodboard`**;
+- **`browse_design_tools`**, which accepts `query`, `category` and `role`:
+  - With no arguments it returns the menu: **10 designer roles and 10 categories, each with tool counts**.
+  - Otherwise it returns up to 8 matching tools, each with a one-line purpose, its categories and roles, its **madegooddesigns.com tool-page URL** (citable), whether it is already in your list, and its **exact `inputSchema`** (identical to tools/list).
+- **`run_design_tool(name, arguments)`**, which validates arguments against the tool's schema (required fields, types, enums, min/max, and `anyOf` branches) and then runs the tool through the same code path as a direct call.
+  - Numeric strings are accepted, just as a direct call accepts them.
+  - Invalid names or arguments return `isError` with the problem and the schema.
+
+**Citations:** every successful answer, direct or dispatched, now carries a madegooddesigns.com link. If a tool's own text has none, a final `Source: <tool page>` line is appended, taken from the taxonomy.
+
+**Logging:**
+- Dispatched calls log as `run:<tool>` in `mcp_events.tool`, and as the real tool name in `mcp_calls`.
+- The UTM campaign is the real tool.
+- "Popular" can therefore be re-ranked from data: `SELECT tool, COUNT(*) FROM mcp_events WHERE kind='call' AND tool LIKE 'run:%' GROUP BY 1`.
+
+**`notifications/tools/list_changed`: not built.** The transport is stateless JSON over POST. GET/SSE answers 405 on purpose: a 200 there caused a client reconnect storm of about 2.5M GETs a day on 29 Oct. That leaves no robust channel for server-initiated notifications. The dispatcher is the universal path and works in every client.
+
+**Instructions** (`/mcp/core`, 1,322 chars) list the popular tools, then: "These are the popular tools. 60+ more (print and packaging, dielines, 3D/industrial, charts and diagrams, type and symbols, image sizes…): whenever a design task isn't covered above, call browse_design_tools (query, category or the user's designer role), then run_design_tool."
+
+**Endpoints:**
+- `/mcp/all` keeps the full list: 65 tools including `save_moodboard`, and no meta-tools.
+- `/mcp` follows `MCP_DEFAULT_PROFILE` (still `"all"`).
+- **Recommendation:** advertise `/mcp/core` first, for coding agents, on /design-mcp-server/. After about a week, compare the `public-core` and `public` rows in `mcp_report.py` (activation and calls per active visitor). Then flip `MCP_DEFAULT_PROFILE = "core"`, which is a one-line change. Nothing is lost by flipping: every tool stays callable directly and through `run_design_tool`, and `/mcp/all` remains.
+
+### 7.3 Designer-role taxonomy (data-driven, reusable by the website)
+
+The taxonomy lives in one mapping file, `src/design_taxonomy.json`, generated by `gen_design_taxonomy.py`:
+- **10 categories:** typography, colour, ui, brand, print, 3d, images, diagrams, text, everyday.
+- **10 roles:**
+  - brand
+  - graphic-print
+  - ui-ux-web
+  - packaging
+  - industrial-product
+  - type-lettering
+  - illustration-pattern
+  - photo-image
+  - motion
+  - marketing-content
+- **All 65 MCP tools** are hand-curated: categories, roles, and the page URL. Every `/tools/` slug was verified against the live /tools/ hub.
+- **All 788 madegooddesigns.com /tools/ pages** are mapped:
+  - Pages that back an MCP tool inherit its curated roles (`"auto": false`).
+  - The rest are keyword-mapped (`"auto": true`) and should be reviewed before public use.
+  - The slug source is `docs/tool_page_slugs.txt` (`--refresh` re-reads the hub).
+
+**Follow-up (website):** "Tools for brand designers"-style hub pages generated from `pages` × `roles`, after a human pass over the `auto` rows. Motion design is thin: 3 MCP tools, 67 pages.
+
+### 7.4 Tests and sizes after 7.1–7.3
+
+**Tests:** `bash tests/mcpux_local/run.sh` runs the new worker against origin, each on the same seeded local D1 with the moodboard migration applied.
+
+| Suite | Result |
+|---|---|
+| `rpc_mcpux` | 37/37 |
+| **`rpc_moodboard_discovery`** | **55/55** |
+| rpc45 / 48 / 49 / 50 / 51 / 52 / 53 | 12 / 73 / 29 / 23 / 38 / 19 / 16, all passing |
+| `rpc_designmd` | 66/68 (the same 2 failures as baseline, both because there is no local R2) |
+| Node test_tools45–53 | all pass |
+
+`rpc_moodboard_discovery` covers:
+- create, then view the page;
+- escaping of a `<script>` title, notes and item notes;
+- edit with the token, rejection without it or with a wrong one;
+- the 30-item limit, title truncation, empty or unknown items, and the rate limit (local limit 6);
+- the 3-report hide, admin restore and admin 401;
+- delete, after which the page returns 404;
+- `screen_id` boards;
+- the browse menu, query, role and role∩category, with schemas identical to tools/list;
+- **run_design_tool against all 14 ever-used tools.** Outputs are byte-identical for every deterministic tool. The 3 random-by-design generators (palette, combinations, DESIGN.md) are compared by shape: two direct calls already differ;
+- an unlisted tool on core, citations, an unknown name, bad arguments, an enum violation, and numeric strings.
+
+Logging was verified in local D1: `run:make_dieline`, `browse_design_tools` and `save_moodboard` events are present.
+
+**OAuth suite:** public `/mcp` differs from origin only at requests 1 (initialize), 2 (tools/list) and 3/5/6 (search answers gain the moodboard hint), as intended.
+
+**tools/list bytes:**
+
+| Endpoint | 2025-06-18 client | 2024-11-05 client |
+|---|---|---|
+| live / origin `/mcp` (64 tools) | 102,061 | 101,052 |
+| new `/mcp` = `/mcp/all` (65 tools) | 103,613 | 102,604 |
+| new `/mcp/core` (21 tools) | **34,684** | 33,675 |
+
+All-profile instructions: 1,498 chars (`save_moodboard` added). Core: 1,322.

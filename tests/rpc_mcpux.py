@@ -66,12 +66,12 @@ check("schema hygiene: names valid, descriptions <= 1024, every array has items"
 check("no duplicate tool names", len(by) == len(tools))
 core_l, sizes["new /mcp/core (2025-06-18)"] = rpc(args.base, "tools/list", raw=True, path="/inspiration/mcp/core"); core = core_l["result"]["tools"]
 sizes["new /mcp/core (2024-11-05)"] = rpc(args.base, "tools/list", pv="2024-11-05", raw=True, path="/inspiration/mcp/core")[1]
-check("/mcp/core lists the 18 design tools in /mcp order", [t["name"] for t in core] == [n for n in by if n in CORE] and len(core) == 18, [t["name"] for t in core])
-check("/mcp/core entries are byte-identical to their /mcp entries", all(t == by[t["name"]] for t in core))
-check("/mcp/core tools/list < 35 KB", sizes["new /mcp/core (2025-06-18)"] < 35000, sizes["new /mcp/core (2025-06-18)"])
+check("/mcp/core lists the 18 popular tools + save_moodboard (in /mcp order) + browse_design_tools, run_design_tool", [t["name"] for t in core] == [n for n in by if n in CORE + ["save_moodboard"]] + ["browse_design_tools", "run_design_tool"], [t["name"] for t in core])
+check("/mcp/core entries are byte-identical to their /mcp entries", all(t == by[t["name"]] for t in core if t["name"] in by))
+check("/mcp/core tools/list < 40 KB", sizes["new /mcp/core (2025-06-18)"] < 40000, sizes["new /mcp/core (2025-06-18)"])
 cins = init(args.base, "/inspiration/mcp/core").get("instructions", "")
 named = set(re.findall(r"\b[a-z]+(?:_[a-z0-9]+)+\b", cins))
-check("/mcp/core instructions < 1500 chars, lead with when to call, name only core tools", len(cins) < 1500 and "BEFORE" in cins.split("\n")[0] and named <= set(CORE) and len(named) >= 15, (len(cins), named - set(CORE)))
+check("/mcp/core instructions < 1500 chars, lead with when to call, name only listed tools, point to browse → run", len(cins) < 1500 and "BEFORE" in cins.split("\n")[0] and named <= set(t["name"] for t in core) and len(named) >= 18 and "browse_design_tools" in cins and "run_design_tool" in cins, (len(cins), named - set(t["name"] for t in core)))
 r = call("count_characters", {"text": "Hello world"}, path="/inspiration/mcp/core")
 check("/mcp/core: a tool hidden from its list is still callable", not r.get("isError") and "11" in text(r), text(r)[:200])
 r = call("search_ui_screens", {"query": "pricing"}, path="/inspiration/mcp/core")
@@ -90,7 +90,7 @@ check("prompts/get moodboard: missing topic → JSON-RPC -32602", "error" in e a
 if args.baseline_base:
     bl, sizes["baseline /mcp (2025-06-18)"] = rpc(args.baseline_base, "tools/list", raw=True); base = bl["result"]["tools"]
     sizes["baseline /mcp (2024-11-05)"] = rpc(args.baseline_base, "tools/list", pv="2024-11-05", raw=True)[1]
-    check("same tool names in the same order as baseline", [t["name"] for t in base] == [t["name"] for t in tools], set(t["name"] for t in base) ^ set(by))
+    check("same tool names in the same order as baseline, + save_moodboard at the end", [t["name"] for t in base] + ["save_moodboard"] == [t["name"] for t in tools], set(t["name"] for t in base) ^ set(by))
     def add_items(s):
         s = json.loads(json.dumps(s)); walk(s, lambda d, p: d.setdefault("items", {}) if d.get("type") == "array" and "items" not in d else None); return s
     changed_schema = [t["name"] for t in base if add_items(t["inputSchema"]) != by[t["name"]]["inputSchema"]]
@@ -102,6 +102,7 @@ if args.baseline_base:
     check("annotations / outputSchema identical", all(t.get("annotations") == by[t["name"]].get("annotations") and t.get("outputSchema") == by[t["name"]].get("outputSchema") for t in base))
     bpl = rpc(args.baseline_base, "prompts/list")["result"]["prompts"]
     check("old prompts byte-identical", pl[:3] == bpl, (pl[:3], bpl))
+    cited = []
     for n, a in [("count_characters", {"text": "Hello — world"}), ("style_text_unicode", {"text": "Hi"}), ("convert_color", {"colors": ["#2563eb"]}),
                  ("generate_logo_concepts", {"name": "Luma"}),
                  ("check_contrast", {"colors": ["#111111", "#ffffff"]}), ("make_extruded_part", {"polygons": [[[0, 0], [20, 0], [20, 10], [0, 10]]], "thickness_mm": 3, "format": "none"}),
@@ -109,8 +110,13 @@ if args.baseline_base:
                  ("search_museum_art", {"query": "Mucha"}), ("search_ui_screens", {"query": "billing settings"}), ("list_inspiration_themes", {}),
                  ("search_annual_reports", {"query": "Paul Rand"}), ("search_design_inspiration", {"query": "zzqxnothing"})]:
         old, new = call(n, a, base=args.baseline_base), call(n, a)
-        check(f"unchanged output: {n} {json.dumps(a)[:40]}", text(old) == text(new) and old.get("structuredContent") == new.get("structuredContent") and old.get("isError") == new.get("isError"),
+        # intended: search hints gain the save_moodboard sentence; answers without an MGD link gain a final "Source: <page>" line
+        nt = re.sub(r" To keep or share picks: save_moodboard\(items=\[image URLs above\], title=…\) gives a public link\.", "", text(new))
+        nt = re.sub(r"\n\nSource: https://madegooddesigns\.com/\S+$", "", nt) if "https://madegooddesigns.com/" not in text(old) else nt
+        cited.append((n, "https://madegooddesigns.com/" in text(new) or new.get("isError")))
+        check(f"unchanged output (apart from intended hint/citation): {n} {json.dumps(a)[:40]}", text(old) == nt and old.get("structuredContent") == new.get("structuredContent") and old.get("isError") == new.get("isError"),
               (text(old)[:160], text(new)[:160]))
+    check("every successful sampled answer now cites madegooddesigns.com", all(c for _, c in cited), [n for n, c in cited if not c])
     a1, a2 = call("list_inspiration_themes", {}), call("list_inspiration_themes", {})
     check("list_inspiration_themes: memoised second call == first == baseline", text(a1) == text(a2) == text(call("list_inspiration_themes", {}, base=args.baseline_base)))
     # generate_website_color_palette is random by design (design_core.js jitter) → compare shape, not bytes
