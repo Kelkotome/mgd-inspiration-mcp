@@ -724,6 +724,7 @@ THIS SOFTWARE.
     var u = m.n.unit === 'in' ? 'in' : 'mm', f = function (v) { return u === 'in' ? f3(v / IN) : f3(v); };
     if (m.structure === 'solid') return (SOLIDS[m.solid] || {}).name + ' net, flat ' + f(m.w) + ' × ' + f(m.h) + ' ' + u;
     var S = STRUCTURES[m.structure], d = m.dims;
+    if (!S) return (m.name || 'Custom net') + ', flat ' + f(m.w) + ' × ' + f(m.h) + ' ' + u; // fromPieces models
     if (m.structure === 'pillow') return S.name + ' — panel ' + f(d.panel[0]) + ' × ' + f(d.panel[1]) + ' ' + u + ', end curve ' + f(d.curve) + ' ' + u + ', flat ' + f(m.w) + ' × ' + f(m.h) + ' ' + u;
     return S.name + ' (' + S.ref + ') — inside ' + d.inside.map(f).join(' × ') + ' ' + u + ', caliper ' + f3(m.n.t) + ' mm, flat ' + f(m.w) + ' × ' + f(m.h) + ' ' + u;
   }
@@ -743,7 +744,7 @@ THIS SOFTWARE.
     if (o.checks) { N.checks.bbox = o.checks.bbox || null; N.checks.coplanar = o.checks.coplanar || []; N.checks.seams = o.checks.seams || []; N.checks.meet = o.checks.meet || []; }
     N.noFold = !!o.noFold; N.info = o.info || {}; N.extra = (o.extra || []).map(function (x) { return { layer: x.layer, pts: x.pts.map(function (q) { return [q[0], q[1]]; }), closed: !!x.closed }; });
     var n = { structure: o.structure || 'custom', unit: o.unit || 'mm', t: o.caliper || 0, bleed: o.bleed || 0, L: 0, W: 0, H: 0 };
-    var m = finish(N, n, []); m.dims = { flat: [m.w, m.h] }; return m;
+    var m = finish(N, n, []); m.dims = { flat: [m.w, m.h] }; m.name = o.name || null; return m;
   }
   function sheetsFor(m) { return Object.keys(SHEETS).filter(function (k) { return layout(m, k).fits; }); }
 
