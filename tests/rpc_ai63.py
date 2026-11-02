@@ -51,7 +51,7 @@ if args.live:
 
 # ---------------------------------------------------------------- local (fresh D1)
 s, h, b = req("/api/ai/health", ip="10.2.0.1"); d = J(b)
-check("health lists modes describe/alt/prompt/palette", d.get("modes") == ["describe", "alt", "prompt", "palette"] and d.get("ai") is True and d.get("remaining") == 20, d)
+check("health lists modes describe/alt/prompt/palette (b64 may append more)", (d.get("modes") or [])[:4] == ["describe", "alt", "prompt", "palette"] and d.get("ai") is True and d.get("remaining") == 20, d)
 s, h, b = req("/api/ai/palette", method="OPTIONS"); hl = {k.lower(): v for k, v in h.items()}
 check("OPTIONS /api/ai/palette 204, POST allowed, CORS reflects local origin", s == 204 and "POST" in hl.get("access-control-allow-methods", "") and hl.get("access-control-allow-origin") == LOCAL_ORIGIN, (s, hl))
 s, h, b = req("/api/ai/palette", ip="10.2.0.1"); check("GET /api/ai/palette -> 405", s == 405, (s, b[:200]))
