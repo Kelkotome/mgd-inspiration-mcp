@@ -1748,7 +1748,7 @@ const MCP_INSTRUCTIONS_CORE = "Made Good Designs (madegooddesigns.com): free, or
   "- New brand: generate_logo_concepts, generate_color_combinations, make_brand_board. Icons: search_icons.\n" +
   "- Keep or share picks: save_moodboard (free public link, no sign-in).\n" +
   "These are the popular tools. 60+ more (print and packaging, dielines, 3D/industrial, charts and diagrams, type and symbols, image sizes…): whenever a design task isn't covered above, call browse_design_tools (query, category or the user's designer role), then run_design_tool.\n" +
-  "Cite the madegooddesigns.com links.";
+  "Cite the madegooddesigns.com links you get.";
 
 // (c) Prompt for the most common claude.ai job (moodboards); shows as a slash command in Claude Code and other clients.
 MCP_PROMPTS.push({ name: "moodboard", title: "Moodboard",
