@@ -17,6 +17,7 @@ add-watermark-to-video
 affinity-diagram
 ai-color-palette-generator
 ai-diagram-generator
+ai-flyer-generator
 ai-image-checker
 ai-infographic-generator
 ai-svg-generator
@@ -94,8 +95,10 @@ calendar-maker
 calligraphy-generator
 calligraphy-practice-sheets
 camo-pattern-generator
+candy-bar-wrapper-template
 canvas-sizes
 case-converter
+cassette-j-card-template
 cd-case-template
 celtic-knot-generator
 cent-symbol
@@ -123,6 +126,7 @@ cm-to-mm
 cm-to-pixels
 cmyk-to-hex
 cmyk-to-rgb
+coat-of-arms-maker
 code-to-image
 color-blindness-simulator
 color-combination-generator
@@ -249,6 +253,7 @@ excel-to-json
 excel-to-pdf
 exif-stripper
 exif-viewer
+exposure-value-calculator
 extract-frames-from-video
 extract-pdf-pages
 fabric-yardage-calculator
@@ -260,6 +265,7 @@ feet-to-cm
 feet-to-inches
 feet-to-meters
 feet-to-pixels
+field-of-view-calculator
 fill-pdf-form
 find-and-replace
 fishbone-diagram-maker
@@ -398,6 +404,7 @@ isometric-graph-paper
 italic-text-generator
 japanese-pattern-generator
 javascript-beautifier
+jersey-maker
 jewel-tone-colors
 jfif-to-jpg
 jigsaw-puzzle-generator
@@ -439,6 +446,7 @@ lined-paper
 lithophane-maker
 living-hinge-generator
 llms-txt-generator
+logo-animation-maker
 logo-grid-generator
 logo-maker
 logo-mockup-generator
@@ -451,6 +459,7 @@ lut-generator
 m4a-to-mp3
 m4a-to-wav
 m4v-to-mp4
+magazine-cover-maker
 magic-eraser
 make-background-transparent
 mandala-maker
@@ -491,6 +500,7 @@ motion-blur
 mov-to-gif
 mov-to-mp3
 mov-to-mp4
+movie-poster-maker
 mp3-converter
 mp3-cutter
 mp3-to-mp4
@@ -517,6 +527,7 @@ neon-sign-generator
 neubrutalism-generator
 neumorphism-generator
 neutral-colors
+newspaper-template
 noise-texture-generator
 normal-map-generator
 not-equal-sign
@@ -535,6 +546,7 @@ ohm-symbol
 oil-painting-effect
 oklch-color-picker
 oklch-to-hex
+online-protractor
 online-ruler
 op-art-generator
 open-graph-generator
@@ -555,6 +567,7 @@ passport-photo-maker
 passport-photo-size
 password-generator
 pastel-color-generator
+patch-maker
 pdf-booklet-maker
 pdf-compress
 pdf-merge-split
@@ -628,6 +641,7 @@ print-size-calculator
 print-size-to-pixels
 protect-pdf
 psd-to-png
+punch-card-template
 px-to-rem-converter
 qr-code-generator
 qr-code-scanner
@@ -715,6 +729,7 @@ small-caps-generator
 small-text-generator
 sort-text-lines
 spanish-accents
+speech-bubble-maker
 spiral-art-generator
 spirograph-generator
 split-complementary-color-generator
@@ -769,6 +784,7 @@ tailwind-color-generator
 tailwind-colors
 tap-drill-chart
 tattoo-font-generator
+tattoo-stencil-maker
 tessellation-maker
 text-behind-image
 text-diff
@@ -787,6 +803,7 @@ tiff-to-png
 tilt-shift
 timeline-maker
 topographic-map-generator
+tracing-light-box
 trademark-symbol
 trading-card-template
 treemap-maker
@@ -831,6 +848,7 @@ voice-recorder
 voice-to-text
 voronoi-generator
 wallet-size-photo
+wanted-poster-maker
 warm-and-cool-colors
 watercolor-effect
 waterfall-chart-maker
@@ -863,6 +881,7 @@ word-counter
 word-search-maker
 word-to-jpg
 word-to-pdf
+wristband-template
 xml-sitemap-validator
 xml-to-json
 y2k-design-generator

@@ -4,7 +4,7 @@ import * as A from "../src/ai_tools.js";
 let pass = 0, fail = 0; const failed = [];
 const ok = (name, cond, info = "") => { cond ? pass++ : (fail++, failed.push(name)); console.log((cond ? "PASS " : "FAIL ") + name + (cond ? "" : " | " + info)); };
 
-ok("modes: older modes kept in order, infographic + wireframe appended", JSON.stringify(A.MODES) === JSON.stringify(["describe", "alt", "prompt", "palette", "svg", "diagram", "infographic", "wireframe"]), JSON.stringify(A.MODES));
+ok("modes: older modes kept in order, infographic + wireframe appended (b66 may append more)", JSON.stringify(A.MODES.slice(0, 8)) === JSON.stringify(["describe", "alt", "prompt", "palette", "svg", "diagram", "infographic", "wireframe"]), JSON.stringify(A.MODES));
 // ---- parse
 let r = A.parseInfographicRequest({ prompt: "  Coffee\tfacts:\n2.25 billion cups a day ", layout: "stats", turnstile: "t" });
 ok("infographic parse: trimmed, newline kept, layout kept, turnstile kept", r.ok && r.mode === "infographic" && r.prompt === "Coffee facts:\n2.25 billion cups a day" && r.layout === "stats" && r.turnstile === "t", JSON.stringify(r));

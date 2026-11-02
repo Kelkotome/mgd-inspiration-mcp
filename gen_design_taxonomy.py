@@ -66,9 +66,23 @@ T = {
  "make_paper_piecing_template": (["print"], "/tools/english-paper-piecing-templates/", ["illustration-pattern"]),
  "make_voronoi_pattern": (["images", "3d"], "/tools/voronoi-generator/", ["illustration-pattern"]), "edit_svg_path": (["ui", "images"], "/tools/svg-path-editor/", ["illustration-pattern"]),
  "calc_depth_of_field": (["images"], "/tools/depth-of-field-calculator/", ["photo-image", "motion"]),
+ # batch 66 (3-Nov-2026): speech bubbles, coats of arms, cassette J-cards, field of view, exposure value
+ "make_speech_bubble": (["images", "typography"], "/tools/speech-bubble-maker/", ["illustration-pattern", "marketing-content"]),
+ "make_coat_of_arms": (["brand", "images"], "/tools/coat-of-arms-maker/", ["illustration-pattern", "graphic-print"]),
+ "make_jcard_template": (["print"], "/tools/cassette-j-card-template/", ["packaging"]),
+ "calc_field_of_view": (["images", "3d"], "/tools/field-of-view-calculator/", ["photo-image", "motion"]),
+ "calc_exposure_value": (["images"], "/tools/exposure-value-calculator/", ["photo-image", "motion"]),
 }
 # /tools/ pages: first matching rule wins (slug regex → categories, roles)
 RULES = [
+ # batch 66 pages without an MCP tool (3-Nov-2026), ahead of the generic rules
+ (r"^(tattoo-stencil-maker|tracing-light-box)$", ["images"], ["illustration-pattern", "graphic-print"]),
+ (r"^logo-animation-maker$", ["brand", "images"], ["motion", "brand", "marketing-content"]),
+ (r"^(jersey-maker|patch-maker)$", ["brand", "print"], ["brand", "graphic-print"]),
+ (r"^(candy-bar-wrapper-template|punch-card-template|wristband-template)$", ["print"], ["graphic-print", "packaging"]),
+ (r"^online-protractor$", ["3d", "everyday"], ["industrial-product", "illustration-pattern"]),
+ (r"^ai-flyer-generator$", ["print"], ["graphic-print", "marketing-content"]),
+ (r"^(wanted-poster-maker|movie-poster-maker|newspaper-template|magazine-cover-maker)$", ["print", "typography"], ["graphic-print", "type-lettering", "marketing-content"]),
  # batch 65 pages without an MCP tool (3-Nov-2026), ahead of the generic rules
  (r"^(photo-to-cartoon|text-behind-image|image-overlay|before-and-after-image)$", ["images"], ["photo-image", "graphic-print", "marketing-content"]),
  (r"^phone-wallpaper-maker$", ["images", "colour"], ["graphic-print", "marketing-content"]),
@@ -129,7 +143,7 @@ def main():
             pg["roles"] = sorted({r for n in pg["mcp_tools"] for r in tools[n]["roles"]})
     missing = [s for s in used_pages if s not in pages]
     if missing: sys.exit(f"MCP tool pages not on the /tools/ hub: {missing}")
-    out = {"version": "2026-11-03b", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
+    out = {"version": "2026-11-03c", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
     json.dump(out, open(OUT, "w"), indent=0, separators=(",", ":"))
     print(f"{len(tools)} MCP tools, {len(pages)} /tools/ pages → {OUT} ({os.path.getsize(OUT):,} bytes)")
 main()
