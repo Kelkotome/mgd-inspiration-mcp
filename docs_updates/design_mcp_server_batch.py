@@ -71,6 +71,13 @@ BATCHES = {
         ("make_nutrition_label", "build a US-style Nutrition Facts panel (standard, tabular, linear or simplified) with FDA rounding and %DV applied, as a true-size SVG, to check against your regulator", "nutrition-label-generator", "Nutrition Label Generator"),
         ("get_desk_ergonomics", "estimate seated and standing desk height, chair seat height and monitor position from body height or measured elbow height, using ANSUR II body ratios and OSHA workstation guidance", "desk-height-calculator", "Desk Height Calculator"),
     ]),
+    "64": (76, [   # 76 = tools/list on /mcp and /mcp/all after b64 (71 + 5), checked on a local Worker 2-Nov
+        ("calc_quilt", "plan a quilt from a bed size or from blocks, sashing and borders: finished size, a cutting list with fabric to buy in yards and metres, backing panels and seam direction, binding strips and batting", "quilt-calculator", "Quilt Calculator"),
+        ("calc_fabric_yardage", "work out how much fabric to buy for a list of cut pieces on a given bolt width, allowing for nap or one-way prints, pattern repeat, seam allowance and shrinkage, with an SVG cutting layout", "fabric-yardage-calculator", "Fabric Yardage Calculator"),
+        ("optimize_cut_list", "nest parts onto plywood or MDF sheets (guillotine cuts a table or track saw can make) or onto lumber and bar lengths, with saw kerf, edge trim and grain lock, returning sheets needed, utilisation, a CSV cut list and SVG layouts", "cut-list-optimizer", "Cut List Optimizer"),
+        ("make_jigsaw_puzzle", "generate a jigsaw puzzle cut file for a laser or CNC: rows by columns of classic interlocking pieces at a board size, seeded so the same seed gives the same puzzle, as a true-size SVG or DXF", "jigsaw-puzzle-generator", "Jigsaw Puzzle Generator"),
+        ("convert_drawing_scale", "convert between real size and a scale drawing with architect, engineer or metric scales (feet-inches accepted), re-scale a drawing, or find the scale from a known length", "architectural-scale-calculator", "Architectural Scale Calculator"),
+    ]),
 }
 
 def main(b):

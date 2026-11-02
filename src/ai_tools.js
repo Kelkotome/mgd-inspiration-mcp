@@ -519,6 +519,7 @@ export function sanitizeSvg(src) {
       const v = safeAttrValue(an, raw); if (v == null) continue;
       seen.add(an); attrs.push(" " + (CASE[an] || an) + '="' + escAttr(v) + '"');
     }
+    if (name === "use" && !seen.has("href") && !seen.has("xlink:href")) { if (!selfClose) { stack.push("#skip:" + name); skip++; } continue; } // <use> whose external ref was removed
     if (name === "svg" && stack.length === 0) {
       if (!seen.has("xmlns")) attrs.unshift(' xmlns="http://www.w3.org/2000/svg"');
       else for (let k = 0; k < attrs.length; k++) if (attrs[k].startsWith(" xmlns=")) attrs[k] = ' xmlns="http://www.w3.org/2000/svg"';

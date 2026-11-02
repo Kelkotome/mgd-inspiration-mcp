@@ -36,6 +36,7 @@ for (const [n, bad] of [["script", /script|alert\(2\)/i], ["event handlers", /\s
   ["external url() fill", /url\(http/i], ["external use href", /evil\.example/], ["image/data URI", /<image|data:/i], ["<text>", /<text/i], ["<a> wrapper", /<a[\s>]/], ["PI/doctype/comments", /<\?|<!/]])
   ok("sanitize: drops " + n, out && !bad.test(out), out);
 ok("sanitize: keeps paths, internal #refs and gradients (camelCase restored)", out && /<path d="M2 2L22 22" stroke="#111"\/>/.test(out) && /<use xlink:href="#a"\/>/.test(out) && /fill="url\(#g\)"/.test(out) && /<linearGradient id="g"><stop offset="0" stop-color="#fff"\/><\/linearGradient>/.test(out), out);
+ok("sanitize: <use> left without a reference is dropped", out && !/<use\/>/.test(out) && !/<use>/.test(out), out);
 ok("sanitize: path inside dropped <a> is dropped too (skip subtree)", out && !/M1 1h10/.test(out));
 ok("sanitize: title text escaped, child tags (and their text) dropped", out && out.includes("<title>A &amp; B </title>"), out);
 ok("sanitize: no root / no viewBox / no shapes -> null", A.sanitizeSvg("<g><path d='M0 0'/></g>") === null && A.sanitizeSvg('<svg><path d="M0 0"/></svg>') === null && A.sanitizeSvg('<svg viewBox="0 0 1 1"><title>x</title></svg>') === null && A.sanitizeSvg(42) === null);

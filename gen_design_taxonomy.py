@@ -57,9 +57,19 @@ T = {
  "get_sheet_metal_gauge": (["3d"], "/tools/sheet-metal-gauge-chart/", []), "calc_sheet_metal_bend": (["3d"], "/tools/bend-allowance-calculator/", []),
  "make_cone_pattern": (["3d", "print"], "/tools/cone-template/", []), "make_living_hinge": (["3d"], "/tools/living-hinge-generator/", ["packaging"]),
  "make_nutrition_label": (["print"], "/tools/nutrition-label-generator/", ["brand"]), "get_desk_ergonomics": (["3d"], "/tools/desk-height-calculator/", ["ui-ux-web"]),
+ # batch 64 (3-Nov-2026): quilting + fabric, cut lists, jigsaw cut files, drawing scales
+ "calc_quilt": (["print"], "/tools/quilt-calculator/", ["illustration-pattern"]), "calc_fabric_yardage": (["print"], "/tools/fabric-yardage-calculator/", ["illustration-pattern"]),
+ "optimize_cut_list": (["3d"], "/tools/cut-list-optimizer/", []), "make_jigsaw_puzzle": (["3d", "print"], "/tools/jigsaw-puzzle-generator/", ["illustration-pattern"]),
+ "convert_drawing_scale": (["3d", "print"], "/tools/architectural-scale-calculator/", []),
 }
 # /tools/ pages: first matching rule wins (slug regex → categories, roles)
 RULES = [
+ # batch 64 pages without an MCP tool (3-Nov-2026), ahead of the generic rules ("crochet-chart" is not a diagram, "alt-text" is not a text tool)
+ (r"^(quilt-backing-calculator|quilt-binding-calculator|quilt-border-calculator|crochet-chart-maker|bead-pattern-maker|string-art-generator)$", ["print"], ["illustration-pattern", "graphic-print"]),
+ (r"^mug-template$", ["print"], ["graphic-print", "brand"]),
+ (r"^(silhouette-maker|isometric-drawing-tool|ai-svg-generator)$", ["images"], ["illustration-pattern", "graphic-print"]),
+ (r"^(svg-to-ico|png-to-icns)$", ["ui"], ["ui-ux-web"]),
+ (r"^alt-text-generator$", ["images", "ui"], ["photo-image", "ui-ux-web", "marketing-content"]),
  # batch 63 pages without an MCP tool (2-Nov-2026), ahead of the generic rules ("knitting-chart" is not a diagram)
  (r"^(notan-generator|low-poly-generator|topographic-map-generator|watercolor-effect|oil-painting-effect|mosaic-maker)$", ["images"], ["illustration-pattern", "photo-image"]),
  (r"^(stamp-maker|logo-mockup-generator)$", ["brand"], ["brand", "graphic-print"]),
@@ -106,7 +116,7 @@ def main():
             pg["roles"] = sorted({r for n in pg["mcp_tools"] for r in tools[n]["roles"]})
     missing = [s for s in used_pages if s not in pages]
     if missing: sys.exit(f"MCP tool pages not on the /tools/ hub: {missing}")
-    out = {"version": "2026-11-02", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
+    out = {"version": "2026-11-03", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
     json.dump(out, open(OUT, "w"), indent=0, separators=(",", ":"))
     print(f"{len(tools)} MCP tools, {len(pages)} /tools/ pages → {OUT} ({os.path.getsize(OUT):,} bytes)")
 main()
