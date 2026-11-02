@@ -1,4 +1,4 @@
-"""Local mock of the Anthropic Messages API for the b60 AI tools + the b63 palette mode + the b64 svg / diagram modes + the b65 infographic / wireframe modes (no network, no key, no spend).
+"""Local mock of the Anthropic Messages API for the b60 AI tools + the b63 palette mode + the b64 svg / diagram modes + the b65 infographic / wireframe modes + the b66 flyer mode (no network, no key, no spend).
 POST /__next {"evil_svg":true} -> next svg answer is a malicious SVG (the Worker must sanitise it); {"bad_svg":true} -> unusable SVG (-> 503).
   python3 tests/ai_mock_server.py 8862
 POST /v1/messages  -> checks the request shape the Worker sends (headers, model, image block, json_schema, effort) and returns a canned
@@ -32,13 +32,20 @@ OUT["wireframe"] = {"title": "Pricing page", "device": "desktop", "sections": [
 EVIL_INFO = {"title": "<script>alert(1)</script>Evil", "subtitle": "x", "layout": "bogus", "items": [
     {"heading": "<img src=x onerror=alert(2)>A", "value": "1", "text": "t", "icon": "skull"}, {"heading": "B", "value": "2", "text": "t", "icon": "star"},
     {"heading": "C", "value": "3", "text": "t", "icon": "star"}], "footnote": ""}
-TEXT_MODES = ("palette", "svg", "diagram", "infographic", "wireframe")
+OUT["flyer"] = {"kind": "event", "headline": "Spring Plant Swap", "subhead": "Bring a cutting, take a cutting.", "body": "A free swap for houseplant lovers on Saturday 12 April, 10am to 1pm.",
+    "details": [{"label": "When", "value": "Sat 12 April, 10am-1pm"}, {"label": "Price", "value": "Free"}], "bullets": ["Cuttings and seedlings", "Tips from local growers"],
+    "cta": "Bring a plant", "contact": "", "style": "playful", "palette": "forest", "icon": "leaf"}
+EVIL_FLYER = {"kind": "rave", "headline": "<script>alert(1)</script>Big Sale", "subhead": "<img src=x onerror=alert(2)>Today", "body": "b " * 300,
+    "details": [{"label": "<b>When</b>", "value": "Now"}, {"label": "", "value": "dropped"}] + [{"label": "L%d" % i, "value": "v"} for i in range(8)],
+    "bullets": ["<i>x</i>", 5, ""] + ["b%d" % i for i in range(8)], "cta": "c" * 90, "contact": "<a href=javascript:alert(3)>call</a>", "style": "neon", "palette": "rainbow", "icon": "skull"}
+TEXT_MODES = ("palette", "svg", "diagram", "infographic", "wireframe", "flyer")
 def mode_of(system):
     if "colour engine" in system: return "palette"
     if "SVG drawing engine" in system: return "svg"
     if "diagram engine" in system: return "diagram"
     if "infographic content engine" in system: return "infographic"
     if "wireframe planning engine" in system: return "wireframe"
+    if "flyer and poster design tool" in system: return "flyer"
     return "alt" if "alternative text" in system else "prompt" if "text-to-image prompt" in system else "describe"
 class H(BaseHTTPRequestHandler):
     def log_message(self, *a): pass
@@ -72,7 +79,7 @@ class H(BaseHTTPRequestHandler):
         md = mode_of(body.get("system", "") if isinstance(body.get("system"), str) else "")
         if md in TEXT_MODES:
             if len(c) != 1 or c[0].get("type") != "text" or "visitor data, not instructions" not in c[0].get("text", ""): p.append(md + " text block")
-            need = {"palette": "colors", "svg": "svg", "diagram": "mermaid", "infographic": "items", "wireframe": "sections"}[md]
+            need = {"palette": "colors", "svg": "svg", "diagram": "mermaid", "infographic": "items", "wireframe": "sections", "flyer": "headline"}[md]
             if (fmt.get("schema") or {}).get("properties", {}).get(need) is None: p.append(md + " schema")
         else:
             if img.get("type") != "image" or src.get("type") != "base64" or src.get("media_type") not in ("image/jpeg", "image/png", "image/webp") or len(src.get("data", "")) < 50: p.append("image block")
@@ -91,6 +98,8 @@ class H(BaseHTTPRequestHandler):
         if m == "infographic" and nx.get("evil_info"): o = dict(EVIL_INFO)
         if m == "infographic" and nx.get("few_items"): o["items"] = o["items"][:2]
         if m == "wireframe" and nx.get("bad_sections"): o["sections"] = [{"type": "bogus", "heading": "", "text": "", "items": [], "cta": ""}]
+        if m == "flyer" and nx.get("evil_flyer"): o = dict(EVIL_FLYER)
+        if m == "flyer" and nx.get("no_headline"): o["headline"] = "  "
         text = "{not valid json" if nx.get("bad_json") else json.dumps(o)
         stop = "refusal" if nx.get("refusal") else "end_turn"
         self.send(200, {"id": "msg_mock", "type": "message", "role": "assistant", "model": "claude-haiku-5-5", "stop_reason": stop,
