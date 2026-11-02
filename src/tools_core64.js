@@ -10,6 +10,7 @@ const G = {};
    MGDQuilt.size({unit, mode:'bed'|'blocks'|'target', bed, mattressW, mattressL, drop, footDrop, pillow,
                   cols, rows, block, sashing, frame, borders:[w,...], targetW, targetL})
      bed:    finished W = mattress W + 2 x drop;  L = mattress L + foot drop + pillow tuck (no drop at the headboard)
+             default drop 12 in + pillow tuck 10 in; a crib defaults to a 6 in drop and no pillow tuck (40 x 58 in)
      blocks: inner = cols x block + (cols-1) x sashing (+ 2 x sashing if frame);  finished = inner + 2 x sum(borders)
      target: cols/rows = nearest whole count to the target (bed preset or targetW/L) -> actual size + difference
      -> {ok, width, length, inner:{width,length}, cols, rows, blocks, ...}
@@ -33,7 +34,7 @@ const G = {};
    MGDQuilt.BEDS (US mattress sizes, inches), MGDQuilt.FABRICS (bolt widths and usable widths, inches). */
 (function (G) {
   var CM = 2.54;
-  var BEDS = { crib: { name: 'Crib', w: 28, l: 52 }, twin: { name: 'Twin', w: 38, l: 75 }, twinxl: { name: 'Twin XL', w: 38, l: 80 }, full: { name: 'Full / double', w: 54, l: 75 },
+  var BEDS = { crib: { name: 'Crib', w: 28, l: 52, drop: 6, pillow: 0 }, twin: { name: 'Twin', w: 38, l: 75 }, twinxl: { name: 'Twin XL', w: 38, l: 80 }, full: { name: 'Full / double', w: 54, l: 75 },
     queen: { name: 'Queen', w: 60, l: 80 }, king: { name: 'King', w: 76, l: 80 }, calking: { name: 'California king', w: 72, l: 84 } };
   // usable = width left after trimming selvages (conservative shop figures)
   var FABRICS = { wof44: { name: '44/45 in quilting cotton', bolt: 44, usable: 42 }, wof42: { name: '42 in (narrow bolt)', bolt: 42, usable: 40 },
@@ -60,7 +61,8 @@ const G = {};
     var bsum = borders.reduce(function (a, b) { return a + b; }, 0);
     var bedW, bedL, bed = BEDS[o.bed];
     function fromBed() {
-      var mw = bed ? bed.w : I('mattressW'), ml = bed ? bed.l : I('mattressL'), drop = I('drop', u === 'cm' ? 30.48 : 12), foot = o.footDrop == null || o.footDrop === '' ? drop : I('footDrop'), pil = I('pillow', u === 'cm' ? 25.4 : 10);
+      var mw = bed ? bed.w : I('mattressW'), ml = bed ? bed.l : I('mattressL'), dd = bed && bed.drop != null ? bed.drop : 12, pd = bed && bed.pillow != null ? bed.pillow : 10,
+        drop = I('drop', u === 'cm' ? dd * 2.54 : dd), foot = o.footDrop == null || o.footDrop === '' ? drop : I('footDrop'), pil = I('pillow', u === 'cm' ? pd * 2.54 : pd);
       if (!(mw > 10 && ml > 10)) { errs.push('Choose a bed size or enter the mattress width and length.'); return null; }
       if (!(drop >= 0 && foot >= 0 && pil >= 0)) { errs.push('Drop and pillow tuck must be 0 or more.'); return null; }
       return { mattressW: mw, mattressL: ml, drop: drop, footDrop: foot, pillow: pil, width: mw + 2 * drop, length: ml + foot + pil };
