@@ -20,6 +20,7 @@ import { TOOL_DEFS as MCP_TOOLS_50, isTools50Tool, callTools50Tool, NEXT50 } fro
 import { TOOL_DEFS as MCP_TOOLS_51, isTools51Tool, callTools51Tool, NEXT51 } from "./mcp_tools51.js";
 import { TOOL_DEFS as MCP_TOOLS_52, isTools52Tool, callTools52Tool, NEXT52 } from "./mcp_tools52.js";
 import { TOOL_DEFS as MCP_TOOLS_53, isTools53Tool, callTools53Tool, NEXT53 } from "./mcp_tools53.js";
+import { TOOL_DEFS as MCP_TOOLS_63, isTools63Tool, callTools63Tool, NEXT63 } from "./mcp_tools63.js";
 import { MGDMoodboard } from "./tools_core48.js";
 import { handleAi, cleanupAiUsage } from "./ai_tools.js";
 import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields } from "./ui_screens.js";
@@ -1557,20 +1558,21 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
-MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, MOODBOARD_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, MOODBOARD_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 
 // ---- Routing guide (sent on initialize; clients load it into the model's context) — 31-Oct-2026
 // 2-Nov-2026 (MCP UX audit): leads with WHEN to call (before UI/colour/font/logo work) — Claude Code shows this even when tools are deferred.
-const MCP_INSTRUCTIONS = "Made Good Designs (madegooddesigns.com): free, original design references and design-system generators. Call them BEFORE building or restyling UI, picking colours or fonts, or making a logo or brand: real references and tested tokens beat guessing.\n" +
+const MCP_INSTRUCTIONS = "Made Good Designs: free design references and tools. Call them BEFORE building or restyling UI, choosing colours or fonts, or making a logo or brand.\n" +
   "- App screen or web page: search_ui_screens, then get_ui_screen_code (HTML + DESIGN.md); journeys: get_ui_flow.\n" +
-  "- Typography, branding, logo or poster references: search_design_inspiration (or browse_inspiration_by_theme).\n" +
-  "- Public-domain art: search_museum_art. Corporate design history: search_annual_reports.\n" +
+  "- Type, brand, logo or poster references: search_design_inspiration (or browse_inspiration_by_theme).\n" +
+  "- Public-domain art: search_museum_art. Old annual reports: search_annual_reports.\n" +
   "- Design system: generate_website_color_palette, then generate_design_md; from references: design_md_from_references. shadcn/Tailwind: generate_shadcn_theme, generate_color_scale, generate_type_scale, export_design_tokens. Verify: check_contrast, lint_design_md; convert_color.\n" +
   "- Logos: generate_logo_concepts, then generate_color_combinations. Brand: generate_slogans, make_brand_board. Icons: search_icons. Viewports: get_screen_sizes.\n" +
-  "- Print: get_paper_sizes, make_grid_paper, get_book_cover_size, make_dieline; also make_storyboard, make_affinity_diagram, generate_llms_txt.\n" +
-  "- 3D print: make_extruded_part, analyze_3d_model, get_print_clearance, make_box_template, make_gear, get_screw_specs, get_hand_anthropometrics.\n" +
-  "- Characters: lookup_character; curly quotes/dashes: fix_typography. Keep or share picks: save_moodboard (public link).\n" +
-  "Other tools: charts, diagrams, barcodes, puzzles. Cite the madegooddesigns.com links you get.";
+  "- Print/packaging: get_paper_sizes, make_grid_paper, get_book_cover_size, make_dieline, make_nutrition_label; also make_storyboard, make_affinity_diagram, generate_llms_txt.\n" +
+  "- 3D/product: make_extruded_part, analyze_3d_model, get_print_clearance, make_box_template, make_gear, get_screw_specs, get_hand_anthropometrics, get_desk_ergonomics.\n" +
+  "- Sheet metal/laser: get_sheet_metal_gauge, calc_sheet_metal_bend, make_cone_pattern, make_living_hinge.\n" +
+  "- Characters: lookup_character, fix_typography (quotes/dashes). Share picks: save_moodboard.\n" +
+  "Also charts, diagrams, barcodes. Cite the madegooddesigns.com links.";
 
 // Every description leads with when to use the tool (selection quality). Applied here so the tool modules stay unchanged.
 const MCP_USE_WHEN = {
@@ -1653,6 +1655,7 @@ Object.assign(MCP_NEXT, NEXT50);
 Object.assign(MCP_NEXT, NEXT51);
 Object.assign(MCP_NEXT, NEXT52);
 Object.assign(MCP_NEXT, NEXT53);
+Object.assign(MCP_NEXT, NEXT63);
 function mcpAddNext(name, r) {
   const hint = MCP_NEXT[name];
   if (!hint || !r || r.isError || mcpZero(r) || !Array.isArray(r.content) || /^0 /.test((r.content[0] && r.content[0].text) || "")) return r;
@@ -1745,7 +1748,7 @@ const MCP_INSTRUCTIONS_CORE = "Made Good Designs (madegooddesigns.com): free, or
   "- New brand: generate_logo_concepts, generate_color_combinations, make_brand_board. Icons: search_icons.\n" +
   "- Keep or share picks: save_moodboard (free public link, no sign-in).\n" +
   "These are the popular tools. 60+ more (print and packaging, dielines, 3D/industrial, charts and diagrams, type and symbols, image sizes…): whenever a design task isn't covered above, call browse_design_tools (query, category or the user's designer role), then run_design_tool.\n" +
-  "Cite the madegooddesigns.com links you get.";
+  "Cite the madegooddesigns.com links.";
 
 // (c) Prompt for the most common claude.ai job (moodboards); shows as a slash command in Claude Code and other clients.
 MCP_PROMPTS.push({ name: "moodboard", title: "Moodboard",
@@ -2053,6 +2056,7 @@ async function mcpCallToolInner(name, a, env, opts) {
   if (isTools51Tool(name)) return callTools51Tool(name, a);
   if (isTools52Tool(name)) return callTools52Tool(name, a);
   if (isTools53Tool(name)) return callTools53Tool(name, a);
+  if (isTools63Tool(name)) return callTools63Tool(name, a);
   if (isTools48Tool(name)) return callTools48Tool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, site: MCP_SITE });
   if (isUiTool(name)) return callUiTool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, clampInt, site: MCP_SITE });
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
