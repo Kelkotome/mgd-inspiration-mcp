@@ -1,5 +1,5 @@
 """Add a batch's new MCP tools to /design-mcp-server/ (WP page 107901) and set the public tool count. Run ONLY after the
-Worker for that batch is deployed and live-tested. Usage (from anywhere): python3 design_mcp_server_batch.py 48|49|50|51|52
+Worker for that batch is deployed and live-tested. Usage (from anywhere): python3 design_mcp_server_batch.py 48|49|50|51|52|53|63
 Pattern: design_mcp_server_b45.py. Backs the page up to docs_updates/backup-107901-b<N>-<timestamp>.html first, appends the
 list items after the last tool item of the public list, writes/updates the "The public server has N tools" sentence under the
 "Available tools" heading, checks that every linked page returns 200, then purges Cloudflare. Idempotent per tool."""
@@ -62,6 +62,14 @@ BATCHES = {
     ]),
     "53": (64, [
         ("make_dieline", "draw a packaging dieline (tuck-end carton, FEFCO 0201 shipping box, tray, lid and base, sleeve, matchbox, pillow box) from inside dimensions and board thickness, with every panel size, the flat size and a true-size SVG or DXF with cut, crease and bleed layers", "dieline-generator", "Dieline Generator"),
+    ]),
+    "63": (71, [   # 71 = tools/list on /mcp and /mcp/all after b63 (65 incl. save_moodboard + 6), checked on a local Worker 2-Nov
+        ("get_sheet_metal_gauge", "look up sheet metal gauge thickness in inches and mm for steel, galvanized, stainless, aluminium, copper and brass, find the nearest gauge to a measured thickness, and get sheet weight", "sheet-metal-gauge-chart", "Sheet Metal Gauge Chart"),
+        ("calc_sheet_metal_bend", "work out bend allowance, bend deduction, outside setback and the flat blank length for one or more bends from thickness, inside radius, angle and K-factor, with a true-size flat pattern as SVG or DXF", "bend-allowance-calculator", "Bend Allowance Calculator"),
+        ("make_cone_pattern", "unroll a cone or truncated cone (frustum) into a flat pattern from diameters and height or slant, with radii and sweep angle, seam allowance, optional segments and a true-size SVG or DXF", "cone-template", "Cone Template"),
+        ("make_living_hinge", "generate a laser-cut living hinge (straight, staggered, lattice or wave) for plywood, MDF, acrylic and more, with a bend estimate and a kerf-aware SVG or DXF", "living-hinge-generator", "Living Hinge Generator"),
+        ("make_nutrition_label", "build a US-style Nutrition Facts panel (standard, tabular, linear or simplified) with FDA rounding and %DV applied, as a true-size SVG, to check against your regulator", "nutrition-label-generator", "Nutrition Label Generator"),
+        ("get_desk_ergonomics", "estimate seated and standing desk height, chair seat height and monitor position from body height or measured elbow height, using ANSUR II body ratios and OSHA workstation guidance", "desk-height-calculator", "Desk Height Calculator"),
     ]),
 }
 

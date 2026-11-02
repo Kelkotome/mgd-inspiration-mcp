@@ -53,9 +53,17 @@ T = {
  "make_word_search": (["everyday"], "/tools/word-search-maker/", []), "make_crossword": (["everyday"], "/tools/crossword-maker/", []),
  "make_bingo_cards": (["everyday"], "/tools/bingo-card-generator/", []), "get_public_holidays": (["everyday"], "/tools/calendar-maker/", []),
  "make_weekly_schedule": (["everyday"], "/tools/schedule-maker/", []), "get_share_feedback": (["everyday", "ui"], "/tools/html-to-link/", []),
+ # batch 63 (2-Nov-2026): sheet metal + fabrication, packaging nutrition panels, desk ergonomics
+ "get_sheet_metal_gauge": (["3d"], "/tools/sheet-metal-gauge-chart/", []), "calc_sheet_metal_bend": (["3d"], "/tools/bend-allowance-calculator/", []),
+ "make_cone_pattern": (["3d", "print"], "/tools/cone-template/", []), "make_living_hinge": (["3d"], "/tools/living-hinge-generator/", ["packaging"]),
+ "make_nutrition_label": (["print"], "/tools/nutrition-label-generator/", ["brand"]), "get_desk_ergonomics": (["3d"], "/tools/desk-height-calculator/", ["ui-ux-web"]),
 }
 # /tools/ pages: first matching rule wins (slug regex → categories, roles)
 RULES = [
+ # batch 63 pages without an MCP tool (2-Nov-2026), ahead of the generic rules ("knitting-chart" is not a diagram)
+ (r"^(notan-generator|low-poly-generator|topographic-map-generator|watercolor-effect|oil-painting-effect|mosaic-maker)$", ["images"], ["illustration-pattern", "photo-image"]),
+ (r"^(stamp-maker|logo-mockup-generator)$", ["brand"], ["brand", "graphic-print"]),
+ (r"^(knitting-chart-maker|circle-skirt-calculator)$", ["print"], ["illustration-pattern", "graphic-print"]),
  (r"stl|3mf|step|obj-|glb|3d-|gear|screw|tap-drill|enclosure|tolerance|hand-size|orthographic", ["3d"], ["industrial-product"]),
  (r"dieline|box|matchbox|pillow|label|upc|barcode|ean|isbn|data-matrix|qr", ["print"], ["packaging", "graphic-print"]),
  (r"font|typeface|letter|calligraph|cursive|fancy-text|handwrit|glyph|kerning|type-scale|text-to-font", ["typography"], ["type-lettering", "graphic-print"]),
