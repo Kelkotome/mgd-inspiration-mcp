@@ -85,6 +85,37 @@ export const TOOL_DEFS = [
     },
     annotations: RO("Living hinge pattern"),
   },
+  {
+    name: "make_nutrition_label",
+    description: "Use when food packaging needs a US Nutrition Facts panel: applies the FDA rounding rules (21 CFR 101.9) to raw per-serving values, computes %DV from the 2016 daily values, flags insignificant nutrients, simplified-format eligibility and calorie mismatches, and returns the rounded table plus a true-size SVG panel (standard, simplified, tabular or linear). A layout aid, not a compliance service.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        nutrients: { type: "object", additionalProperties: { type: "number" }, description: "Raw amounts per serving: calories; fat, satfat, transfat, carb, fiber, sugars, addedsugars, protein (g); cholesterol, sodium, calcium, iron, potassium (mg); vitd (mcg)." },
+        servings_per_container: { type: "string", description: "e.g. '8' or 'About 8'." }, serving_size: { type: "string", description: "Household measure, e.g. '2/3 cup'." },
+        serving_size_metric: { type: "string", description: "e.g. '55g'." },
+        format: { type: "string", enum: ["standard", "simplified", "tabular", "linear"], description: "Default standard." },
+        output: { type: "string", enum: ["svg", "none"], description: "Default svg." },
+      },
+      required: ["nutrients"],
+    },
+    annotations: RO("Nutrition Facts label"),
+  },
+  {
+    name: "get_desk_ergonomics",
+    description: "Use when sizing a desk, workstation, standing desk, chair or monitor setup for a person: seat height, sitting and standing desk (keyboard) heights, monitor top and viewing distance from body height (ANSUR II body ratios) or a measured elbow height, with ±1 SD ranges and OSHA workstation placement rules, in cm or inches.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        height: { type: "number", description: "Body height (stature)." }, unit: { type: "string", enum: ["cm", "in"], description: "Default cm." },
+        mode: { type: "string", enum: ["both", "sit", "stand"] }, shoe: { type: "number", description: "Shoe allowance (default 2.5 cm)." },
+        elbow_sit: { type: "number", description: "Measured seated elbow height from the floor (optional, more accurate)." },
+        elbow_stand: { type: "number", description: "Measured standing elbow height (optional)." },
+      },
+      required: ["height"],
+    },
+    annotations: RO("Desk ergonomics"),
+  },
 ];
 
 export const NEXT63 = {
@@ -92,6 +123,8 @@ export const NEXT63 = {
   calc_sheet_metal_bend: "Next step: open the page link for a multi-flange drawing and a PDF of the working; get_sheet_metal_gauge for gauge thicknesses.",
   make_cone_pattern: "Next step: open the page link to print the pattern true size over several A4/Letter sheets (tiled PDF with alignment marks).",
   make_living_hinge: "Next step: test-cut a small sample first; the bend estimate is approximate and depends on the material batch.",
+  make_nutrition_label: "Next step: open the page link for a vector PDF at the exact label width, then make_dieline for the carton it goes on.",
+  get_desk_ergonomics: "Next step: get_hand_anthropometrics for hand and grip sizes, or open the page link for the side-view diagram.",
 };
 
 function file(lines, sc, fmt, svgFn, dxfFn, svgLabel, dxfLabel) {
@@ -203,7 +236,55 @@ function hinge(a) {
   return ok(lines.join("\n"), sc);
 }
 
-const HANDLERS = { get_sheet_metal_gauge: gauge, calc_sheet_metal_bend: bendTool, make_cone_pattern: cone, make_living_hinge: hinge };
+const NUT_ALIAS = { kcal: "calories", energy: "calories", totalfat: "fat", saturatedfat: "satfat", saturated: "satfat", transfattyacids: "transfat", trans: "transfat",
+  salt: "", carbohydrate: "carb", carbohydrates: "carb", carbs: "carb", totalcarbohydrate: "carb", totalcarbs: "carb", dietaryfiber: "fiber", fibre: "fiber",
+  dietaryfibre: "fiber", sugar: "sugars", totalsugars: "sugars", addedsugar: "addedsugars", vitamind: "vitd", vitd: "vitd", ca: "calcium", fe: "iron", k: "potassium", na: "sodium" };
+function nutrition(a) {
+  const raw = a.nutrients && typeof a.nutrients === "object" && !Array.isArray(a.nutrients) ? a.nutrients : null;
+  if (!raw) return err("nutrients must be an object of raw per-serving amounts, e.g. {\"calories\": 230, \"fat\": 8, \"sodium\": 160}.");
+  const nutrients = {}, unknown = [];
+  for (const [k, v] of Object.entries(raw).slice(0, 40)) {
+    const k0 = String(k).toLowerCase().replace(/[^a-z]/g, ""), key = NUT_ALIAS[k0] || k0;
+    if (!N.KEYS.includes(key)) { unknown.push(k); continue; }
+    const n = Number(v); if (!Number.isFinite(n) || n < 0) return err(`${k} must be a number ≥ 0.`); nutrients[key] = n;
+  }
+  if (!Object.keys(nutrients).length) return err("No known nutrients given. Keys: " + N.KEYS.join(", ") + ".");
+  const format = ["standard", "simplified", "tabular", "linear"].includes(a.format) ? a.format : "standard";
+  const l = N.label({ servingsPerContainer: str(a.servings_per_container, 40) || "1", servingSize: str(a.serving_size, 40) || "1 serving", servingSizeMetric: str(a.serving_size_metric, 20), nutrients, format });
+  if (!l || !l.ok) return err("Could not build the label: " + ((l && (l.errors || []).join(" ")) || "check the values."));
+  const page = `${T}/nutrition-label-generator/`;
+  const lines = [`**Nutrition Facts (${l.format}), FDA-rounded:**`, "| Nutrient | Raw | Declared | %DV |", "|---|---|---|---|",
+    ...l.rows.map((r) => `| ${r.name} | ${r3(r.raw)} | ${r.declared} | ${r.dvText || ""} |`)];
+  if (l.simplifiedEligible && format !== "simplified") lines.push(`Simplified format allowed (${l.insignificantCount} of the core nutrients are insignificant).`);
+  if (unknown.length) lines.push("Ignored unknown keys: " + unknown.slice(0, 8).join(", ") + ".");
+  if (l.warnings && l.warnings.length) lines.push("Check: " + l.warnings.join(" "));
+  const sc = { format: l.format, rows: l.rows, simplified_eligible: !!l.simplifiedEligible, insignificant_count: l.insignificantCount, warnings: l.warnings || [], width_pt: l.W, height_pt: l.H, page };
+  if (a.output !== "none") {
+    if (l.svg.length > OUT_CAP) lines.push("The SVG is too big to return inline; download it from the page.");
+    else { lines.push(`True-size SVG panel (${r3(l.W)} × ${r3(l.H)} pt, Helvetica):`, fence("svg", l.svg)); sc.svg = l.svg; }
+  }
+  lines.push("Layout aid using the published 21 CFR 101.9 rounding rules and 2016 daily values; confirm with your regulator or a labelling specialist before printing. Vector PDF: " + page);
+  return ok(lines.join("\n"), sc);
+}
+
+function ergo(a) {
+  const unit = a.unit === "in" ? "in" : "cm", h = num(a.height);
+  if (!(h > 0)) return err("height must be a positive number.");
+  const spec = { height: h, unit, mode: ["sit", "stand", "both"].includes(a.mode) ? a.mode : "both" };
+  if (num(a.shoe) !== undefined) spec.shoe = num(a.shoe);
+  if (num(a.elbow_sit) > 0) spec.elbowSit = num(a.elbow_sit);
+  if (num(a.elbow_stand) > 0) spec.elbowStand = num(a.elbow_stand);
+  const r = E.calc(spec);
+  if (!r || !r.ok) return err("Could not calculate: " + ((r && (r.errors || []).join(" ")) || "check the height (e.g. 120–220 cm)."));
+  const u = r.unit, page = `${T}/desk-height-calculator/`, lines = [`**Workstation heights for ${r.height} ${u} tall (shoes ${r.shoe} ${u}):**`];
+  if (r.sit) lines.push(`Sitting: seat ${r.sit.seat} ${u} (${r.sit.ranges.seat.join("–")}), desk / keyboard surface ${r.sit.desk} ${u} (${r.sit.ranges.desk.join("–")}), elbow ${r.sit.elbow} ${u}, monitor top ${r.sit.monitorTopMin}–${r.sit.monitorTop} ${u}, screen ${r.sit.viewMin}–${r.sit.viewMax} ${u} away${r.sit.measured ? " (from your measured elbow height)" : ""}.`);
+  if (r.stand) lines.push(`Standing: desk ${r.stand.desk} ${u} (${r.stand.ranges.desk.join("–")}), elbow ${r.stand.elbow} ${u}, monitor top ${r.stand.monitorTopMin}–${r.stand.monitorTop} ${u}${r.stand.measured ? " (from your measured elbow height)" : ""}.`);
+  lines.push(r.method);
+  lines.push("Sources: " + (r.sources || []).map((x) => x.name).join("; ") + ". Side-view diagram and chart: " + page);
+  return ok(lines.join("\n"), { unit: u, height: r.height, shoe: r.shoe, mode: r.mode, sit: r.sit || null, stand: r.stand || null, method: r.method, sources: r.sources, page });
+}
+
+const HANDLERS = { get_sheet_metal_gauge: gauge, calc_sheet_metal_bend: bendTool, make_cone_pattern: cone, make_living_hinge: hinge, make_nutrition_label: nutrition, get_desk_ergonomics: ergo };
 const NAMES = new Set(TOOL_DEFS.map((t) => t.name));
 export function isTools63Tool(name) { return NAMES.has(name); }
 export async function callTools63Tool(name, a) {
@@ -215,5 +296,3 @@ export async function callTools63Tool(name, a) {
   }
   return err("Unknown tool: " + name);
 }
-// for the B tools appended below
-export { N as _N, E as _E };
