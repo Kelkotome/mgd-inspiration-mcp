@@ -1,5 +1,5 @@
 {
- "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style.",
+ "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries; +6 round 2). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style.",
  "types": [
   "screen",
   "section",
@@ -32,7 +32,8 @@
    "detail-view",
    "list-view",
    "kanban-board",
-   "calendar"
+   "calendar",
+   "split-view"
   ],
   "commerce": [
    "product-detail",
@@ -53,7 +54,9 @@
    "chat-ai-assistant",
    "image-viewer",
    "file-manager",
-   "search-results"
+   "search-results",
+   "canvas-editor",
+   "floor-plan"
   ],
   "states": [
    "empty-state",
@@ -68,7 +71,8 @@
   "messaging": [
    "chat-list",
    "chat-thread",
-   "video-call"
+   "video-call",
+   "voice-call"
   ],
   "media": [
    "map-view",
@@ -114,6 +118,12 @@
   ],
   "forms": [
    "form-wizard"
+  ],
+  "finance": [
+   "bank-onboarding"
+  ],
+  "camera": [
+   "product-scan"
   ]
  },
  "section_patterns": [
@@ -306,6 +316,21 @@
     "playlist",
     "music-player"
    ]
+  },
+  "open-an-account": {
+   "name": "Open a bank account",
+   "steps": [
+    "bank-onboarding:welcome",
+    "bank-onboarding:verify-identity",
+    "bank-onboarding:account-ready"
+   ]
+  },
+  "scan-a-product": {
+   "name": "Scan a product and check it",
+   "steps": [
+    "product-scan:camera",
+    "product-scan:result"
+   ]
   }
  },
  "categories": [
@@ -319,7 +344,8 @@
   "media",
   "education",
   "developer",
-  "portfolio"
+  "portfolio",
+  "beauty"
  ],
  "styles": [
   "minimal",
@@ -361,7 +387,11 @@
    "success-confirmation",
    "version-history",
    "approval-queue",
-   "project-tracker"
+   "project-tracker",
+   "voice-call",
+   "split-view",
+   "canvas-editor",
+   "floor-plan"
   ],
   "finance": [
    "dashboard",
@@ -421,6 +451,12 @@
   "learning": [
    "course-dashboard",
    "form-wizard"
+  ],
+  "bank": [
+   "bank-onboarding"
+  ],
+  "beauty": [
+   "product-scan"
   ]
  }
 }

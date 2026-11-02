@@ -1978,5 +1978,125 @@
     "Yes. A running summary on wide screens, or a review step at the end, lets people check their answers before submitting and reduces errors."
    ]
   ]
+ },
+ "bank-onboarding": {
+  "h1": "Bank account onboarding UI design examples",
+  "intro": "Opening a bank account online takes a welcome screen, an identity check and a clear moment when the account is ready. Our screens show each step: what you will need, a numbered progress list, identity fields with a plain explanation of why they are needed, and an account-ready screen with account details, the card on its way and next steps, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Tell people up front what they will need (ID, address, a few minutes) so they can finish in one go.",
+   "Explain why each piece of personal information is needed and how it is protected, right next to the fields.",
+   "Show progress with named steps and let people pause and come back.",
+   "End with something useful to do next, such as adding money or ordering a card, not just a success message."
+  ],
+  "faq": [
+   [
+    "Why do banking apps ask for ID and a selfie?",
+    "Banks are legally required to confirm who their customers are (often called know-your-customer checks). A photo ID plus a selfie lets this happen online in minutes instead of in a branch."
+   ],
+   [
+    "How many steps should account opening have?",
+    "Keep it to the few the regulation and the product need, usually four to six short steps, with progress shown throughout. Pre-fill what you can and ask for documents only once."
+   ]
+  ]
+ },
+ "product-scan": {
+  "h1": "Product scanner UI design examples",
+  "intro": "A product scanner lets people point their camera at a barcode or label and get useful information back. Our screens show the camera view with a scan frame, mode switcher, zoom and flash controls and a manual-entry fallback, and a result screen with the matched product, a personal verdict, key ingredients explained in plain language and an add-to-routine action, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Frame the target clearly and tell people what the camera is looking for (barcode, label or product).",
+   "Always offer a fallback: type the code, import a photo or search by name.",
+   "Lead the result with a clear verdict for this person, then the detail that supports it.",
+   "Let people correct a wrong match quickly with a rescan or search."
+  ],
+  "faq": [
+   [
+    "What should a barcode scanner screen include?",
+    "A camera view with a visible scan frame, short guidance text, flash and zoom controls, a way to switch scan modes, and a manual-entry option. Recent scans are a helpful shortcut."
+   ],
+   [
+    "How should a product scan result be laid out?",
+    "Start with the product name, image and a one-line verdict, then the reasons (ingredients, compatibility, warnings) and finally the actions, such as save or add to a list."
+   ]
+  ]
+ },
+ "split-view": {
+  "h1": "Split view (master-detail) UI design examples",
+  "intro": "A split view, also called master-detail, shows a list on one side and the selected item's detail on the other, so people can move through many items without losing their place. Our screens use grouped, compact list rows with hairline separators and a calm detail pane, with the list on its own screen on mobile, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Keep list rows compact and scannable: title, a short snippet and one or two pieces of metadata.",
+   "Make the selected row obvious and keep it in view while the detail changes.",
+   "Group the list by something meaningful, such as date or status.",
+   "On mobile, show the list first and open the detail as a full screen with a clear back button."
+  ],
+  "faq": [
+   [
+    "When should I use a master-detail layout?",
+    "When people browse many similar items and need to look at them one by one, such as email, documents, tickets or contacts. It saves a page load for every item."
+   ],
+   [
+    "How does a split view work on mobile?",
+    "Mobile screens are usually too narrow for two panes, so the list and the detail become separate screens. On tablets, both panes can sit side by side."
+   ]
+  ]
+ },
+ "canvas-editor": {
+  "h1": "Canvas and diagram editor UI design examples",
+  "intro": "A canvas editor lets people lay out ideas as connected nodes, such as a sitemap, user flow or automation. Our screens show a dotted-grid canvas with connected node cards and branch labels, a tool palette, layers, an inspector for the selected node, zoom and undo controls and live collaborators, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Keep node cards small and consistent: an icon, a title and one line of description.",
+   "Label branches on the connector lines so the logic can be read without opening each node.",
+   "Put details for the selected node in a side inspector instead of crowding the canvas.",
+   "Show zoom level, fit-to-screen and undo where people expect them."
+  ],
+  "faq": [
+   [
+    "What does a diagram editor need?",
+    "A canvas that can pan and zoom, a way to add and connect nodes, a panel to edit the selected node, undo and redo, and a way to share or publish. Collaboration cues such as cursors help teams."
+   ],
+   [
+    "How should a canvas editor work on mobile?",
+    "Most people review rather than build on a phone. A read-and-comment view with pinch to zoom and a bottom sheet for the selected node works well."
+   ]
+  ]
+ },
+ "floor-plan": {
+  "h1": "Floor plan and desk booking UI design examples",
+  "intro": "An interactive floor plan helps people find and book a desk or room in an office. Our screens show a floor plan with available, booked and selected spaces, a floor switcher, filters for desks, meeting rooms and equipment, a date and time picker and a details panel for the selected room with its schedule and a book button, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Show availability with labels or patterns as well as colour, so the plan reads for everyone.",
+   "Let people filter by what they need (a monitor, a quiet booth, room size) before they scan the plan.",
+   "Show who else is in the office and where, for teams who want to sit together.",
+   "Keep the selected space's details and the book button next to the plan."
+  ],
+  "faq": [
+   [
+    "What should an office floor plan app show?",
+    "The layout of the floor, which desks and rooms are free at the chosen time, filters for equipment and space type, a legend, and the details of the selected space with a way to book it."
+   ],
+   [
+    "How do you make an interactive floor plan accessible?",
+    "Do not rely on colour alone for availability, provide a list view of the same spaces, make each space focusable with a clear label, and keep text on the plan large enough to read."
+   ]
+  ]
+ },
+ "voice-call": {
+  "h1": "Voice call screen UI design examples",
+  "intro": "A call screen shows who you are talking to and gives quick access to the controls you need mid-call. Our screens show the contact's picture or initials, name and role, a call timer and connection quality, mute, speaker, keypad, add person and hold controls with a clear end-call button, and on web a contact details panel with shared files and notes, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Make end call large, distinct and always in the same place.",
+   "Show the call timer and connection quality so people know the call is live.",
+   "Keep mute and speaker one tap away, with clear on and off states.",
+   "On desktop, use the extra space for context about the person, such as recent messages or shared files."
+  ],
+  "faq": [
+   [
+    "What controls should a call screen have?",
+    "Mute, speaker or audio output, keypad, add a person, hold and end call. Video calls add camera on or off and screen sharing."
+   ],
+   [
+    "How should an active call appear when the user leaves the call screen?",
+    "Keep a small persistent indicator, such as a bar or floating pill with the timer and end and mute buttons, so people can return to the call or hang up from anywhere."
+   ]
+  ]
  }
 }

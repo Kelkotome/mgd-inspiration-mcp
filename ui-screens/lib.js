@@ -47,6 +47,8 @@ const FAMILIES = {
   portfolio: { name: "Ines Calder", cat: "portfolio", desc: "the portfolio of an independent product designer and front-end developer", type: { web: "Portfolio website", mobile: "Portfolio website" } },
   security: { name: "Wardline", cat: "developer", desc: "cloud security monitoring for engineering teams", type: { web: "Internal dashboard", mobile: "Mobile app" } },
   learning: { name: "Brightpath", cat: "education", desc: "an online course platform for schools and their students", type: { web: "SaaS web app", mobile: "Mobile app" } },
+  bank: { name: "Mintwell", cat: "finance", desc: "a digital bank for freelancers and small businesses", type: { web: "Online banking web app", mobile: "Mobile banking app" } },
+  beauty: { name: "Dewline", cat: "beauty", desc: "a skincare routine app with an ingredient and product scanner", type: { web: "SaaS web app", mobile: "Mobile app" } },
 };
 
 const ICON = {

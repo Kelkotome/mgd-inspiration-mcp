@@ -15,7 +15,8 @@ export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts"
   "cancel-subscription", "empty-state", "error-404", "loading-skeleton", "success-confirmation",
   // 3-Nov-2026 expansion (from real search_ui_screens queries)
   "ai-workspace", "ai-settings", "version-history", "approval-queue", "doctor-directory", "telehealth-visit", "clinic-home",
-  "music-player", "playlist", "portfolio-home", "case-study", "security-dashboard", "project-tracker", "course-dashboard", "form-wizard"];
+  "music-player", "playlist", "portfolio-home", "case-study", "security-dashboard", "project-tracker", "course-dashboard", "form-wizard",
+  "bank-onboarding", "product-scan", "split-view", "canvas-editor", "floor-plan", "voice-call"];
 export const UI_SECTION_PATTERNS = ["hero", "navigation-header", "feature-grid", "bento-features", "how-it-works", "logo-cloud", "stats-band",
   "testimonials", "pricing", "comparison-table", "integrations-grid", "security-trust", "faq", "cta-banner", "about-team", "careers",
   "blog-index", "changelog", "contact-form", "footer"];
@@ -29,12 +30,14 @@ export const UI_FLOWS = {
   "browse-photos": "Browse and open a photo", "book-a-class": "Book a class", "message-and-call": "Message a teammate and start a call",
   "review-access": "Review team access", "post-a-photo": "Post a photo", "explore-a-place": "Explore a place on the map",
   "see-a-doctor": "Find a doctor and have a video visit", "review-changes": "Approve a change and check its history", "play-music": "Open a playlist and play a track",
+  "open-an-account": "Open a bank account", "scan-a-product": "Scan a product and check it",
 };
 const ROLES = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"];
 const LABELS = { "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys", "security-trust": "Security and trust", "how-it-works": "How it works", "saas": "SaaS", "ai": "AI", "error-404": "404 error", "faq": "FAQ", "cta-banner": "CTA banner",
   "two-factor": "Two-factor code", "kanban-board": "Kanban board", "data-table": "Data table",
   "ai-workspace": "AI workspace", "ai-settings": "AI settings", "telehealth-visit": "Telehealth visit", "form-wizard": "Multi-step form wizard",
-  "in-call": "In call", "visit-summary": "Visit summary" };
+  "in-call": "In call", "visit-summary": "Visit summary",
+  "split-view": "Split view (master-detail)", "verify-identity": "Verify identity", "account-ready": "Account ready" };
 const label = (s) => LABELS[s] || (s || "").replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const order = (p) => { const i = UI_PATTERNS.indexOf(p); return i < 0 ? 999 : i; };
 const parseTags = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } };
