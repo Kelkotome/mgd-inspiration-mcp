@@ -53,7 +53,7 @@ if args.live:
 
 # ---------------------------------------------------------------- local (fresh D1)
 s, h, b = req("/api/ai/health", ip="10.4.0.1"); d = J(b)
-check("health modes = describe/alt/prompt/palette/svg/diagram, ai true, 20 left", d.get("modes") == ["describe", "alt", "prompt", "palette", "svg", "diagram"] and d.get("ai") is True and d.get("remaining") == 20, d)
+check("health modes start describe/alt/prompt/palette/svg/diagram (b65 may append more), ai true, 20 left", (d.get("modes") or [])[:6] == ["describe", "alt", "prompt", "palette", "svg", "diagram"] and d.get("ai") is True and d.get("remaining") == 20, d)
 for route in ("svg", "diagram"):
     s, h, b = req("/api/ai/" + route, method="OPTIONS"); hl = {k.lower(): v for k, v in h.items()}
     check(f"OPTIONS /api/ai/{route} 204, CORS reflects local origin", s == 204 and "POST" in hl.get("access-control-allow-methods", "") and hl.get("access-control-allow-origin") == LOCAL_ORIGIN, (s, hl))

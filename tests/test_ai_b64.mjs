@@ -4,7 +4,7 @@ import * as A from "../src/ai_tools.js";
 let pass = 0, fail = 0; const failed = [];
 const ok = (name, cond, info = "") => { cond ? pass++ : (fail++, failed.push(name)); console.log((cond ? "PASS " : "FAIL ") + name + (cond ? "" : " | " + info)); };
 
-ok("modes: b60/b63 modes kept in order, svg + diagram appended", JSON.stringify(A.MODES) === JSON.stringify(["describe", "alt", "prompt", "palette", "svg", "diagram"]));
+ok("modes: b60/b63 modes kept in order, svg + diagram appended (b65 may append more)", JSON.stringify(A.MODES.slice(0, 6)) === JSON.stringify(["describe", "alt", "prompt", "palette", "svg", "diagram"]));
 // ---- svg parse
 let r = A.parseSvgRequest({ prompt: "  a paper\n plane  ", turnstile: "t" });
 ok("svg parse: default style icon, whitespace collapsed", r.ok && r.style === "icon" && r.prompt === "a paper plane" && r.mode === "svg" && r.turnstile === "t", JSON.stringify(r));

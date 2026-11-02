@@ -78,6 +78,14 @@ BATCHES = {
         ("make_jigsaw_puzzle", "generate a jigsaw puzzle cut file for a laser or CNC: rows by columns of classic interlocking pieces at a board size, seeded so the same seed gives the same puzzle, as a true-size SVG or DXF", "jigsaw-puzzle-generator", "Jigsaw Puzzle Generator"),
         ("convert_drawing_scale", "convert between real size and a scale drawing with architect, engineer or metric scales (feet-inches accepted), re-scale a drawing, or find the scale from a known length", "architectural-scale-calculator", "Architectural Scale Calculator"),
     ]),
+    "65": (82, [   # 82 = tools/list on /mcp and /mcp/all after b65 (76 + 6), checked on a local Worker 2-Nov
+        ("get_logo_placement", "get typical recommended and maximum logo print sizes on tees, long sleeves, polos, hoodies, crewnecks and tanks (left chest, centre chest, full front, back collar, full back, sleeve, hood) by garment size, with how far below the collar seam and from the centre line, and the largest box that fits your logo", "shirt-logo-placement", "Shirt Logo Placement guide"),
+        ("make_cd_case_template", "make a print template for a CD jewel case insert, booklet, tray card with spines, disc label, slim case, DVD case or card wallet, with trim, bleed and safe area as a true-size SVG", "cd-case-template", "CD Case Template"),
+        ("make_paper_piecing_template", "draw English paper piecing templates (hexagon, half-hexagon, 60° and 45° diamonds, elongated hexagon, triangle, kite, pentagon, octagon, square) by side length, with the fabric outline and seam allowance, how many fit on a Letter or A4 sheet and a true-size SVG", "english-paper-piecing-templates", "English Paper Piecing Templates"),
+        ("make_voronoi_pattern", "generate a seeded Voronoi cell pattern in a rectangle or circle, with Lloyd relaxation, as filled cells, edges, stained glass or a laser-cut lattice with a minimum web width, as SVG or DXF", "voronoi-generator", "Voronoi Generator"),
+        ("edit_svg_path", "inspect and edit an SVG path d attribute: exact bounding box, length and viewBox, normalize, convert to absolute or relative commands, round, or translate, scale, rotate, flip and skew it into the coordinates", "svg-path-editor", "SVG Path Editor"),
+        ("calc_depth_of_field", "work out near and far limits of acceptable sharpness, total depth of field and hyperfocal distance from focal length, f-number, focus distance and sensor size (full frame to phone) or your own circle of confusion", "depth-of-field-calculator", "Depth of Field Calculator"),
+    ]),
 }
 
 def main(b):
