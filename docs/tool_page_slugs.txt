@@ -18,7 +18,9 @@ affinity-diagram
 ai-color-palette-generator
 ai-diagram-generator
 ai-image-checker
+ai-infographic-generator
 ai-svg-generator
+ai-wireframe-generator
 album-cover-maker
 alt-codes
 alt-text-generator
@@ -53,6 +55,7 @@ barcode-scanner
 base64-encode-decode
 base64-to-image
 bead-pattern-maker
+before-and-after-image
 bend-allowance-calculator
 bento-grid-generator
 big-ascii-text
@@ -93,6 +96,7 @@ calligraphy-practice-sheets
 camo-pattern-generator
 canvas-sizes
 case-converter
+cd-case-template
 celtic-knot-generator
 cent-symbol
 certificate-maker
@@ -199,6 +203,7 @@ delete-pdf-pages
 delta-e-calculator
 delta-symbol
 depth-map-generator
+depth-of-field-calculator
 design-brief-template
 design-md-generator
 design-skill-generator
@@ -231,6 +236,7 @@ emoji-maker
 empathy-map-template
 en-dash
 enclosure-generator
+english-paper-piecing-templates
 envelope-printer
 envelope-sizes
 envelope-template
@@ -279,6 +285,7 @@ font-size-converter
 font-subsetter
 font-to-base64
 font-type-tester
+fractal-generator
 funnel-chart-maker
 gallery-wall-planner
 gantt-chart-maker
@@ -312,6 +319,7 @@ graph-paper
 greater-than-or-equal-to-symbol
 greek-alphabet
 greek-key-pattern-generator
+greeting-card-maker
 halftone-image
 hand-size-chart
 handwriting-to-font
@@ -355,6 +363,7 @@ image-converter
 image-describer
 image-editor
 image-ocr
+image-overlay
 image-resizer
 image-resizer-cropper
 image-splitter
@@ -433,6 +442,7 @@ llms-txt-generator
 logo-grid-generator
 logo-maker
 logo-mockup-generator
+logo-resizer
 loop-video
 lorem-ipsum-generator
 low-poly-generator
@@ -503,6 +513,7 @@ mute-video
 name-tag-template
 nato-phonetic-alphabet
 neon-colors
+neon-sign-generator
 neubrutalism-generator
 neumorphism-generator
 neutral-colors
@@ -564,10 +575,12 @@ pdf-watermark
 penrose-tiling-generator
 perspective-grid
 pert-chart-maker
+phone-wallpaper-maker
 photo-booth
 photo-collage-maker
 photo-editor
 photo-print-sizes
+photo-to-cartoon
 photo-to-coloring-page
 pi-symbol
 picture-frame-sizes
@@ -631,6 +644,7 @@ random-color-generator
 random-letter-generator
 random-number-generator
 random-word-generator
+ransom-note-generator
 receipt-generator
 recipe-card-template
 redact-pdf
@@ -687,6 +701,7 @@ shadcn-theme-generator
 shape-nets
 sharpen-image
 sheet-metal-gauge-chart
+shirt-logo-placement
 sign-sizes
 signature-background-remover
 signature-generator
@@ -700,6 +715,7 @@ small-caps-generator
 small-text-generator
 sort-text-lines
 spanish-accents
+spiral-art-generator
 spirograph-generator
 split-complementary-color-generator
 split-gif
@@ -733,6 +749,7 @@ svg-converter
 svg-editor
 svg-icons
 svg-optimizer
+svg-path-editor
 svg-pattern-generator
 svg-to-dxf
 svg-to-ico
@@ -753,6 +770,7 @@ tailwind-colors
 tap-drill-chart
 tattoo-font-generator
 tessellation-maker
+text-behind-image
 text-diff
 text-repeater
 text-shadow-generator
@@ -773,6 +791,7 @@ trademark-symbol
 trading-card-template
 treemap-maker
 trim-video
+truchet-tiles
 ttf-to-otf
 ttf-to-svg
 ttf-to-woff
@@ -810,6 +829,7 @@ violin-plot-maker
 voice-changer
 voice-recorder
 voice-to-text
+voronoi-generator
 wallet-size-photo
 warm-and-cool-colors
 watercolor-effect

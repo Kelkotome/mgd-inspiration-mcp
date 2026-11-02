@@ -61,9 +61,22 @@ T = {
  "calc_quilt": (["print"], "/tools/quilt-calculator/", ["illustration-pattern"]), "calc_fabric_yardage": (["print"], "/tools/fabric-yardage-calculator/", ["illustration-pattern"]),
  "optimize_cut_list": (["3d"], "/tools/cut-list-optimizer/", []), "make_jigsaw_puzzle": (["3d", "print"], "/tools/jigsaw-puzzle-generator/", ["illustration-pattern"]),
  "convert_drawing_scale": (["3d", "print"], "/tools/architectural-scale-calculator/", []),
+ # batch 65 (3-Nov-2026): logo placement, CD/DVD templates, paper piecing, Voronoi, SVG paths, depth of field
+ "get_logo_placement": (["brand", "print"], "/tools/shirt-logo-placement/", ["graphic-print"]), "make_cd_case_template": (["print"], "/tools/cd-case-template/", ["packaging"]),
+ "make_paper_piecing_template": (["print"], "/tools/english-paper-piecing-templates/", ["illustration-pattern"]),
+ "make_voronoi_pattern": (["images", "3d"], "/tools/voronoi-generator/", ["illustration-pattern"]), "edit_svg_path": (["ui", "images"], "/tools/svg-path-editor/", ["illustration-pattern"]),
+ "calc_depth_of_field": (["images"], "/tools/depth-of-field-calculator/", ["photo-image", "motion"]),
 }
 # /tools/ pages: first matching rule wins (slug regex → categories, roles)
 RULES = [
+ # batch 65 pages without an MCP tool (3-Nov-2026), ahead of the generic rules
+ (r"^(photo-to-cartoon|text-behind-image|image-overlay|before-and-after-image)$", ["images"], ["photo-image", "graphic-print", "marketing-content"]),
+ (r"^phone-wallpaper-maker$", ["images", "colour"], ["graphic-print", "marketing-content"]),
+ (r"^(greeting-card-maker|neon-sign-generator)$", ["print"], ["graphic-print", "brand"]),
+ (r"^(truchet-tiles|spiral-art-generator|fractal-generator)$", ["images"], ["illustration-pattern", "graphic-print"]),
+ (r"^ransom-note-generator$", ["typography", "images"], ["type-lettering", "graphic-print"]),
+ (r"^logo-resizer$", ["brand", "images"], ["brand", "ui-ux-web", "marketing-content"]),
+ (r"^(ai-infographic-generator|ai-wireframe-generator)$", ["diagrams", "ui"], ["ui-ux-web", "marketing-content"]),
  # batch 64 pages without an MCP tool (3-Nov-2026), ahead of the generic rules ("crochet-chart" is not a diagram, "alt-text" is not a text tool)
  (r"^(quilt-backing-calculator|quilt-binding-calculator|quilt-border-calculator|crochet-chart-maker|bead-pattern-maker|string-art-generator)$", ["print"], ["illustration-pattern", "graphic-print"]),
  (r"^mug-template$", ["print"], ["graphic-print", "brand"]),
@@ -116,7 +129,7 @@ def main():
             pg["roles"] = sorted({r for n in pg["mcp_tools"] for r in tools[n]["roles"]})
     missing = [s for s in used_pages if s not in pages]
     if missing: sys.exit(f"MCP tool pages not on the /tools/ hub: {missing}")
-    out = {"version": "2026-11-03", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
+    out = {"version": "2026-11-03b", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
     json.dump(out, open(OUT, "w"), indent=0, separators=(",", ":"))
     print(f"{len(tools)} MCP tools, {len(pages)} /tools/ pages → {OUT} ({os.path.getsize(OUT):,} bytes)")
 main()
