@@ -1,4 +1,4 @@
-"""Local mock of the Anthropic Messages API for the b60 AI tools (no network, no key, no spend).
+"""Local mock of the Anthropic Messages API for the b60 AI tools + the b63 text-only palette mode (no network, no key, no spend).
   python3 tests/ai_mock_server.py 8862
 POST /v1/messages  -> checks the request shape the Worker sends (headers, model, image block, json_schema, effort) and returns a canned
                       Messages response with fixed usage (1,500 in / 350 out) and schema-valid JSON for the mode (picked from the system prompt).
@@ -11,9 +11,13 @@ NEXT, LAST, COUNT = {}, {}, [0]
 OUT = {
     "describe": {"title": "Brick red square", "description": "A flat brick-red square fills the frame.", "subjects": ["square"], "colors": [{"name": "Brick red", "hex": "#c85028"}], "style": "flat colour field", "mood": "bold, warm", "text_in_image": ""},
     "alt": {"alt": "Flat brick-red square on a plain background", "long_description": "A single flat brick-red square fills the frame with no other detail.", "decorative": False},
+    "palette": {"name": "Lisbon Dusk", "colors": [{"hex": "#F6EFE6", "name": "Limewash", "role": "background"}, {"hex": "#2B2A33", "name": "Ink", "role": "text"},
+                {"hex": "#7A2E3A", "name": "Wine", "role": "primary"}, {"hex": "#D98E3F", "name": "Tile ochre", "role": "accent"}, {"hex": "#7FA39A", "name": "Sea glass", "role": "secondary"}],
+                "rationale": "Warm limewash and ink keep text readable; wine and ochre carry the brand."},
     "prompt": {"prompt": "A flat brick-red square filling the frame, even studio lighting, minimal colour field", "negative_prompt": "text, watermark, noise", "tags": ["red", "square", "minimal"], "aspect_ratio": "4:3", "style_keywords": ["minimal", "flat"]},
 }
 def mode_of(system):
+    if "colour engine" in system: return "palette"
     return "alt" if "alternative text" in system else "prompt" if "text-to-image prompt" in system else "describe"
 class H(BaseHTTPRequestHandler):
     def log_message(self, *a): pass
@@ -44,11 +48,15 @@ class H(BaseHTTPRequestHandler):
         msgs = body.get("messages") or []; c = (msgs[0].get("content") if msgs else None) or []
         img = c[0] if c else {}
         src = img.get("source") or {}
-        if img.get("type") != "image" or src.get("type") != "base64" or src.get("media_type") not in ("image/jpeg", "image/png", "image/webp") or len(src.get("data", "")) < 50: p.append("image block")
-        if len(c) < 2 or c[1].get("type") != "text": p.append("text block")
+        if mode_of(body.get("system", "") if isinstance(body.get("system"), str) else "") == "palette":
+            if len(c) != 1 or c[0].get("type") != "text" or "visitor data, not instructions" not in c[0].get("text", ""): p.append("palette text block")
+            if (fmt.get("schema") or {}).get("properties", {}).get("colors") is None: p.append("palette schema")
+        else:
+            if img.get("type") != "image" or src.get("type") != "base64" or src.get("media_type") not in ("image/jpeg", "image/png", "image/webp") or len(src.get("data", "")) < 50: p.append("image block")
+            if len(c) < 2 or c[1].get("type") != "text": p.append("text block")
         if not isinstance(body.get("system"), str) or "JSON" not in body.get("system", ""): p.append("system")
         LAST.clear(); LAST.update({"count": COUNT[0], "problems": p, "headers": {k: ("<set>" if k == "x-api-key" else v) for k, v in h.items() if k in ("x-api-key", "anthropic-version", "content-type")},
-                                   "body_keys": sorted(body.keys()), "media_type": src.get("media_type"), "has_image": img.get("type") == "image", "mode": mode_of(body.get("system", ""))})
+                                   "body_keys": sorted(body.keys()), "user_text": (c[-1].get("text", "")[:400] if c else ""), "max_tokens": body.get("max_tokens"), "media_type": src.get("media_type"), "has_image": img.get("type") == "image", "mode": mode_of(body.get("system", ""))})
         if p: return self.send(400, {"type": "error", "error": {"type": "invalid_request_error", "message": "mock: " + "; ".join(p)}})
         nx = dict(NEXT); NEXT.clear()
         if nx.get("status"): return self.send(int(nx["status"]), {"type": "error", "error": {"type": "api_error", "message": "UPSTREAM-SECRET-TEXT do not leak"}})
