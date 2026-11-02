@@ -39,7 +39,7 @@ def fields_for(slug, flow_tags):
     kind = "section" if m["type"] == "section" else "screen"
     plat = ("website" if m["platform"] == "web" else "mobile website") if kind == "section" else ("web app" if m["platform"] == "web" else "mobile app")
     title = f"{name} — {m['platform']}, {m['style']} ({m['product']})"
-    desc = (f"{name} {kind} for a {plat}, designed for {m['product']}, a fictional {m['category']} product. "
+    desc = (f"{name} {kind} for a {plat}, designed for {m['product']}, " + ("the fictional portfolio of an independent designer. " if m['category'] == "portfolio" else f"a fictional {m['category']} product. ") +
             f"Shows {shows}. {STYLE[m['style']]} Comes with the full HTML and a DESIGN.md with light and dark colour tokens.")
     roles = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"]
     tags = [m["pattern"], m["platform"], m["category"]] + [e for e in elements if e not in (m["pattern"], m["platform"])]

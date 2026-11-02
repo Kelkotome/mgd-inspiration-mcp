@@ -1,0 +1,90 @@
+ | 5
+work index list of projects | 1
+weekly calendar schedule with staff | 1
+warm premium landing hero for a food business tool | 1
+success confirmation celebration friendly | 1
+stats band with colourful rounded cards and badges | 1
+staff dashboard with task list and student table | 1
+small agency services pricing packages | 1
+skincare routine app | 1
+skincare beauty app scan product result | 1
+sitemap canvas flow diagram nodes | 1
+security vulnerabilities dashboard with severity breakdown critical high medium low | 1
+running shoes | 1
+review and approve proposed changes | 1
+record detail page with header stats and activity | 1
+projects list with circular progress ring per row and team avatars | 1
+project tracker dashboard with phases progress and activity feed | 1
+project catalog list and project details with compact search filter toolbar, clear primary action and readable reward terms | 1
+product detail with big photo and price, mobile shopping, warm | 1
+private members club welcome page, exclusive community | 1
+pricing plans | 1
+premium editorial business partnership clear process steps | 1
+premium SaaS dashboard analytics sidebar stats cards light theme blue | 1
+portfolio hero | 1
+playlist | 1
+playful learning progress dashboard with stat cards and profile header | 1
+personal developer portfolio case study | 1
+onboarding welcome carousel beauty skincare app with illustration, large serif headline, continue button | 1
+onboarding step choose your goal, friendly, one question per screen | 1
+music player track list mobile | 1
+music audio player home screen | 1
+music | 1
+multi-step form wizard with summary side panel | 1
+mobile feed of ideas and posts, calm, editorial | 1
+minimal diagram workspace with clear hierarchy and inspector | 1
+master detail list with detail pane, minimal, no cards | 1
+list view of items grouped compact mobile | 1
+kanban pipeline board | 1
+kanban board full height columns | 1
+invoice detail with payment status and line items | 1
+integrations settings connected apps | 1
+integrations grid of app tiles filled with brand colours, logo, status chip, connected | 1
+hero section | 1
+health clinic doctor directory profile medical team contact appointment | 1
+friendly welcome onboarding for beginners, playful warm, big button | 1
+friendly class schedule and home dashboard | 1
+form with sections settings list | 1
+fintech bank account welcome screen | 1
+finance money account setup | 1
+empty state first run with steps | 1
+editorial hero with name and two paths | 1
+editorial dashboard with text rows and hairlines | 1
+download queue list with progress and status icons | 1
+donut chart and waffle unit chart breakdown with legend counts | 1
+document detail list grouped | 1
+detail page with stat tiles, main content and sticky right rail checklist | 1
+dense data table with live status column and sidebar | 1
+data table with logo cells, right-aligned tabular numbers, inline bars, row selection checkboxes | 1
+data table list with filters and status chips | 1
+dashboard with data table and summary cards | 1
+dashboard with KPI stat tiles and onboarding checklist | 1
+dark settings panel with readable labels and clear hierarchy | 1
+dark security dashboard with charts and cards | 1
+dark centered hero decorative graphics below heading | 1
+dark analytics dashboard with KPI figures, sparklines and charts | 1
+daily habit checklist home screen, soft, rounded, friendly | 1
+contact form enquiry | 1
+comparison table of products with scores and source footnotes | 1
+comparison table comparing plans or products side by side with checkmarks and prices | 1
+compare versions diff before and after changes history | 1
+clinic/hospital website patient homepage with medical specialties, doctor team and appointment booking | 1
+changelog timeline monochrome | 1
+camera scan | 1
+call in progress screen contact details | 1
+billing plans current subscription usage | 1
+barcode product scan result | 1
+banking app onboarding | 1
+approval queue pending requests approve reject | 1
+analytics report with revenue cost margin charts | 1
+Telehealth doctor and patient video call with appointment details, mute camera and end call controls | 1
+Professional healthcare team doctor profile directory for a clinic, easy to browse, trustworthy and human-centered. | 1
+Interactive building floor plan navigation map with highlighted rooms and location details panel | 1
+Healthcare patient virtual appointment video consultation waiting room, prepare camera microphone, select doctor, join call, visit summary | 1
+Distinctive, premium healthcare clinic medical team page featuring doctors, specialties, expertise and staff profiles. Professional editorial layout, patient-trust oriented. | 1
+AI voice assistant settings panel dark | 1
+AI model settings with provider API keys and usage | 1
+AI generation workspace with input panel, result and next step | 1
+AI chat assistant with suggestions | 1
+AI chat assistant with sources and follow-up suggestions | 1
+AI assistant welcome screen with suggested prompts | 1

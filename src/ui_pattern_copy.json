@@ -1678,5 +1678,305 @@
     "No. Displaying a badge implies the certification has been achieved, so showing it early is misleading. If an audit is underway, say so in plain text, for example that an assessment is in progress, and update the badge once the report is issued."
    ]
   ]
+ },
+ "ai-workspace": {
+  "h1": "AI workspace UI design examples",
+  "intro": "An AI workspace is where someone gives a model a task, checks what it produced and decides what happens next. Our screens pair an input panel with sources and options, a generated result with citations, and clear next-step actions to refine, export or share, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Keep the input, the result and the next action visible together, so people can iterate without losing context.",
+   "Show which sources the result draws on, with citations people can open, so the output can be checked.",
+   "Make generation state obvious: queued, generating, done or failed, with a way to stop a long run.",
+   "Offer specific follow-ups (shorten, add a table, change tone) rather than only an empty prompt box."
+  ],
+  "faq": [
+   [
+    "What should an AI generation workspace include?",
+    "An input area with the prompt and any attached sources or settings, the generated result, the state of the run, and actions for what to do next, such as refine, regenerate, export or share. Citations or source links help people trust and verify the output."
+   ],
+   [
+    "Should the prompt panel sit beside or above the result?",
+    "On wide screens a side-by-side layout works well because people can tweak the input while reading the result. On mobile, stack them and keep the input reachable at the bottom of the screen."
+   ]
+  ]
+ },
+ "ai-settings": {
+  "h1": "AI settings UI design examples",
+  "intro": "AI settings let people choose a model, connect provider API keys, cap spending and tune how an assistant behaves or sounds. Our screens show model and provider choices, masked API keys, usage meters with spend limits and voice options, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Mask API keys after they are saved and show only the last few characters, with copy, rotate and revoke actions.",
+   "Put usage and spend next to the limit that controls it, so people can see how close they are before they hit it.",
+   "Explain model choices in plain terms (speed, cost, quality) instead of listing only model names.",
+   "Group voice and behaviour options separately from billing and keys, since different people manage them."
+  ],
+  "faq": [
+   [
+    "How should API keys be displayed in settings?",
+    "Show a key in full only once, when it is created. After that, display a masked version with the last four characters, its creation date and last use, plus actions to copy, rotate or revoke it."
+   ],
+   [
+    "What usage information belongs on an AI settings page?",
+    "Current usage against a monthly limit, spend so far, a simple trend, and a control to set or change the limit. Alerts at thresholds such as 80% help avoid surprise cut-offs."
+   ]
+  ]
+ },
+ "version-history": {
+  "h1": "Version history UI design examples",
+  "intro": "A version history screen lets people see how a document changed over time, compare two versions and restore an earlier one. Our screens show a timeline of versions with authors and times, a before-and-after diff with additions and removals highlighted, and a restore action, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Mark additions and removals with more than colour, such as plus and minus signs or strikethrough, so the diff stays readable for everyone.",
+   "Name versions by author and time, and let people label important ones, so the timeline is easy to scan.",
+   "Let people compare any two versions, not only a version with the current one.",
+   "Make restoring safe: restore as a new version rather than deleting the history after it."
+  ],
+  "faq": [
+   [
+    "How do you show differences between two versions?",
+    "Use a side-by-side or inline diff. Highlight added text and removed text with distinct backgrounds, and add plus and minus markers or strikethrough so the change is clear without relying on colour."
+   ],
+   [
+    "Should restoring a version delete later versions?",
+    "No. Restore by creating a new version that copies the old content. That keeps the full history and lets people undo the restore."
+   ]
+  ]
+ },
+ "approval-queue": {
+  "h1": "Approval queue UI design examples",
+  "intro": "An approval queue collects requests that need a decision, such as access requests, expenses or content changes, so a reviewer can work through them quickly. Our screens show pending requests with filters, a selected request with its proposed changes, and approve and reject actions, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Show what is being requested, by whom and why in the list itself, so many requests can be triaged without opening each one.",
+   "Keep approve and reject next to the details of the selected request, and ask for a reason when rejecting.",
+   "Support bulk actions and keyboard shortcuts for reviewers who handle many requests a day.",
+   "Show how long each request has waited, so older requests do not get stuck."
+  ],
+  "faq": [
+   [
+    "What should each request in an approval queue show?",
+    "The requester, what they are asking for, the reason or context, when it was submitted and its current status. A preview of the proposed change helps reviewers decide quickly."
+   ],
+   [
+    "Should rejecting a request require a reason?",
+    "It is good practice. A short reason tells the requester what to change and gives the team a record of the decision."
+   ]
+  ]
+ },
+ "doctor-directory": {
+  "h1": "Doctor directory UI design examples",
+  "intro": "A doctor directory helps patients find the right clinician and book with confidence. Our screens show specialty filters, search, and doctor cards with photo placeholders, specialties, languages spoken, the next available slot and in-person or video badges, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Lead with what patients filter by most: specialty, availability, language and in-person or video visits.",
+   "Show the next available appointment on each card, so patients can book without opening every profile.",
+   "Use real photos and plain-language bios in production; a friendly, human tone builds trust.",
+   "Make the book button the clear primary action on each card."
+  ],
+  "faq": [
+   [
+    "What information should a doctor profile card show?",
+    "Name, specialty, a photo, languages spoken, whether they offer video visits, and the next available appointment. Ratings, qualifications and a short bio can go on the full profile."
+   ],
+   [
+    "How should patients filter a medical team page?",
+    "By specialty first, then availability, visit type (in person or video), language and location if the clinic has several sites."
+   ]
+  ]
+ },
+ "telehealth-visit": {
+  "h1": "Telehealth visit UI design examples",
+  "intro": "A telehealth visit takes a patient from a waiting room with a camera and microphone check, into the video consultation, and out to a visit summary. Our screens show each step: device check and appointment details, the in-call view with mute, camera and end-call controls, and an after-visit summary with prescriptions and follow-up, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Let patients test their camera, microphone and connection in the waiting room before the doctor joins.",
+   "Keep call controls large, labelled and always visible, especially end call and mute.",
+   "Show appointment details and the doctor's name during the call, so patients know who they are speaking with.",
+   "End with a plain-language summary: what was discussed, prescriptions sent, and how to book a follow-up."
+  ],
+  "faq": [
+   [
+    "What should a telehealth waiting room include?",
+    "A camera preview, microphone and speaker checks, the appointment time and doctor, a status message such as 'Your doctor will join shortly', and a clear join button."
+   ],
+   [
+    "What goes in an after-visit summary?",
+    "A plain-language note of what was discussed, any prescriptions and where they were sent, next steps, a follow-up booking option and billing or insurance status."
+   ]
+  ]
+ },
+ "clinic-home": {
+  "h1": "Clinic website homepage UI design examples",
+  "intro": "A clinic homepage has to help patients book quickly and feel reassured. Our screens show a hero with a booking entry point, a grid of medical specialties, a preview of the doctor team, opening hours and location, and accepted insurance, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Put booking and contact in the first screen; most visitors arrive wanting an appointment.",
+   "List specialties in plain language so patients can find the right service without medical vocabulary.",
+   "Show real doctors and opening hours to build trust and answer common questions up front.",
+   "Make phone numbers tappable and addresses open in maps on mobile."
+  ],
+  "faq": [
+   [
+    "What should a clinic homepage include?",
+    "A clear way to book or call, the specialties offered, the doctor team, opening hours and location, insurance accepted, and whether video appointments are available."
+   ],
+   [
+    "How do you make a healthcare website feel trustworthy?",
+    "Use real people, plain language and calm, readable design, and be specific about hours, costs and how to get help. Accessibility, with good contrast and large tap targets, matters for patients of all ages."
+   ]
+  ]
+ },
+ "music-player": {
+  "h1": "Music player UI design examples",
+  "intro": "A music player's now-playing screen puts the track front and centre with the controls people use most. Our screens show album artwork, track and artist, a scrubber with elapsed and remaining time, transport controls, an up-next queue and lyrics or credits, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Keep play and pause the largest control, with previous and next on either side.",
+   "Show elapsed and remaining time on the scrubber, and make it easy to drag accurately.",
+   "Give quick access to the queue, so listeners can see and change what plays next.",
+   "Credit artists and writers on the screen; listeners often want to know who made the track."
+  ],
+  "faq": [
+   [
+    "What controls should a music player have?",
+    "Play and pause, previous and next, a seek bar with times, shuffle and repeat, volume (on web), like or save, and access to the queue and lyrics."
+   ],
+   [
+    "How should a web music player differ from mobile?",
+    "On web, a three-part layout works well: library on the left, now playing in the middle and the queue on the right. On mobile, focus on the artwork and controls, with the queue and lyrics a swipe or tap away."
+   ]
+  ]
+ },
+ "playlist": {
+  "h1": "Playlist UI design examples",
+  "intro": "A playlist or album screen lets listeners see what is in a collection and start playing it. Our screens show the cover, title and curator, play and shuffle buttons, and a numbered track list with durations, play counts, explicit and downloaded badges and download progress, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Put play and shuffle right under the title, so starting the playlist is one tap.",
+   "Keep track rows consistent: number, title and artist, then duration, with badges small and secondary.",
+   "Show download progress per track and overall when people save a playlist for offline listening.",
+   "Highlight the track that is currently playing in the list."
+  ],
+  "faq": [
+   [
+    "What should a playlist track list show?",
+    "Track number, title, artist, duration and small indicators such as explicit, downloaded or currently playing. Album and date added are useful on wide screens."
+   ],
+   [
+    "How should offline downloads be shown?",
+    "Show a download toggle for the whole playlist, a progress indicator on tracks that are downloading, and a clear mark on tracks that are available offline."
+   ]
+  ]
+ },
+ "portfolio-home": {
+  "h1": "Portfolio website UI design examples",
+  "intro": "A portfolio homepage should say who you are, show your best work and make it easy to get in touch. Our screens show a hero with a name, positioning and two clear paths (hire me or see the work), a selected-work index with client, year and role, services and contact, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Say what you do and for whom in one line at the top of the page.",
+   "Show a handful of strong projects rather than everything, each with client, year and your role.",
+   "Give visitors two clear paths, such as 'See the work' and 'Get in touch'.",
+   "Keep contact details on every page, not only on a contact page."
+  ],
+  "faq": [
+   [
+    "How many projects should a portfolio show?",
+    "Four to eight strong, relevant projects is usually enough. Lead with the work closest to the jobs you want, and link each one to a short case study."
+   ],
+   [
+    "What makes a good portfolio hero?",
+    "Your name, a one-line description of what you do and who you do it for, and one or two clear actions. Let the work below carry the visual weight."
+   ]
+  ]
+ },
+ "case-study": {
+  "h1": "Case study page UI design examples",
+  "intro": "A case study explains a project from problem to outcome, so a reader can see how you think as well as what you made. Our screens show the project title, client, role, timeline and stack, the problem, process steps, outcome metrics, large artwork panels and a next-project link, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Open with a summary: client, your role, timeline and the result, for readers who only skim.",
+   "Explain the problem and the constraints before showing the solution.",
+   "Show outcomes with numbers where you can, and be specific about your contribution.",
+   "End with a link to the next project to keep people reading."
+  ],
+  "faq": [
+   [
+    "How long should a design case study be?",
+    "Long enough to cover the problem, your process, the solution and the outcome, usually a few minutes' read. Use headings and a summary at the top so skimmers get the point quickly."
+   ],
+   [
+    "What should a case study include?",
+    "The context and problem, your role, key decisions and how you reached them, the final design, and the results. Images of the work should be large and clearly captioned."
+   ]
+  ]
+ },
+ "security-dashboard": {
+  "h1": "Security dashboard UI design examples",
+  "intro": "A security dashboard shows a team where it is exposed and what to fix first. Our screens show vulnerabilities broken down by severity (critical, high, medium and low), an open-findings table with affected assets, a trend over time, a compliance score and recent alerts, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Order everything by severity, and make critical findings impossible to miss.",
+   "Pair severity colours with labels or icons, since colour alone is not enough.",
+   "Show the trend, not just today's count, so teams can see whether they are improving.",
+   "Link each finding to the affected asset and a clear next step."
+  ],
+  "faq": [
+   [
+    "What should a security dashboard show first?",
+    "The number of critical and high findings, how they have changed recently, and the specific items that need attention now. Details such as compliance scores and lower-severity issues can follow."
+   ],
+   [
+    "How should vulnerability severity be visualised?",
+    "A donut or stacked bar works well for the breakdown, with each severity labelled and counted. Use a consistent colour scale and always include the text label."
+   ]
+  ]
+ },
+ "project-tracker": {
+  "h1": "Project tracker dashboard UI design examples",
+  "intro": "A project tracker gives a team a shared view of what is on track and what is slipping. Our screens show project phases with progress, a project list with progress rings and team avatars, upcoming milestones, stat tiles and an activity feed, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Show progress per project and per phase, so people can see where work is stuck.",
+   "Put owners and due dates next to each project; accountability needs names.",
+   "Flag at-risk projects with a status label as well as colour.",
+   "Keep the activity feed short and link through to the full history."
+  ],
+  "faq": [
+   [
+    "What should a project tracker dashboard include?",
+    "A list of projects with status, progress, owner and due date, upcoming milestones, a few summary numbers such as on track versus at risk, and recent activity."
+   ],
+   [
+    "Progress bars or progress rings?",
+    "Both work. Rings are compact in dense lists and cards; bars are easier to compare across many rows. Always show the percentage or count as text too."
+   ]
+  ]
+ },
+ "course-dashboard": {
+  "h1": "Learning dashboard UI design examples",
+  "intro": "A learning dashboard helps students see their progress and what is due next, and helps teachers see how a class is doing. Our screens show course progress cards, learning streaks and stats, upcoming assignments, the class schedule and a student progress table, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Lead with what is due next; it is the question students open the dashboard to answer.",
+   "Show progress per course with a clear percentage and the next lesson to continue.",
+   "Use streaks and badges with care, as encouragement rather than pressure.",
+   "Give teachers a sortable student table that highlights who needs help."
+  ],
+  "faq": [
+   [
+    "What should a student dashboard show?",
+    "Courses in progress with completion, upcoming assignments and due dates, the timetable for the day or week, and recent grades or feedback."
+   ],
+   [
+    "What does a teacher or LMS admin dashboard need?",
+    "A class overview with average progress, a student table with completion and last activity, assignments to mark and alerts for students falling behind."
+   ]
+  ]
+ },
+ "form-wizard": {
+  "h1": "Multi-step form wizard UI design examples",
+  "intro": "A multi-step form, or wizard, breaks a long form into short steps so it feels manageable. Our screens show a stepper with the current step, filled example fields, validation hints and a summary side panel on web, and one step per screen with progress on mobile, designed for web and mobile across eight visual styles, light and dark.",
+  "tips": [
+   "Show how many steps there are and where the person is, with step names, not only numbers.",
+   "Ask related questions together and keep each step short.",
+   "Validate fields as people go, with specific, helpful messages next to the field.",
+   "Let people go back without losing what they entered, and review everything before submitting."
+  ],
+  "faq": [
+   [
+    "How many steps should a form wizard have?",
+    "As few as the task needs, usually three to five. Group related fields, and skip steps that do not apply to the person's earlier answers."
+   ],
+   [
+    "Should a multi-step form show a summary?",
+    "Yes. A running summary on wide screens, or a review step at the end, lets people check their answers before submitting and reduces errors."
+   ]
+  ]
  }
 }

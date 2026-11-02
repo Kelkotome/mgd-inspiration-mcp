@@ -1,0 +1,57 @@
+   40,500  LOW      $  3.44  dashboard design
+   27,100  LOW      $ 15.39  agency website design
+   18,100  LOW      $  3.43  login page design
+   18,100  LOW      $  3.54  landing page design
+   14,800  LOW      $  3.12  portfolio website design
+   14,800  LOW      $  4.04  portfolio website examples
+   12,100  LOW      $  5.42  whiteboard app
+    9,900  LOW      $ 16.17  ai dashboard
+    8,100  LOW      $  3.95  dashboard ui design
+    4,400  MEDIUM   $  1.98  skincare app
+    4,400  MEDIUM   $  3.98  floor plan app
+    3,600  LOW      $  0.00  spotify ui
+    2,900  LOW      $  1.97  developer portfolio
+    2,400  LOW      $  2.47  diff viewer
+    2,400  LOW      $ 11.21  ai chat ui
+    1,900  LOW      $ 11.99  lms dashboard
+    1,900  LOW      $  5.92  chatbot ui design
+    1,600  LOW      $  0.00  dark mode ui
+    1,300  LOW      $  0.00  music player ui
+    1,300  LOW      $ 14.61  onboarding ui
+    1,000  LOW      $ 13.70  multi step form
+      880  LOW      $  0.00  split view ui
+      720  LOW      $  4.73  pricing page design
+      590  LOW      $  1.09  hospital website design
+      590  MEDIUM   $  8.54  ai app design
+      480  LOW      $ 19.75  dark mode dashboard
+      480  LOW      $  3.34  music app ui
+      480  LOW      $  7.72  finance app ui
+      390  LOW      $  3.23  music app design
+      390  LOW      $  8.08  banking app ui
+      320  LOW      $  6.00  kanban board ui
+      260  LOW      $  1.54  dark ui design
+      260  LOW      $  5.28  banking app design
+      260  LOW      $  0.00  call screen ui
+      210  LOW      $  0.00  version history ui
+      170  LOW      $  7.79  fintech app design
+      170  LOW      $  1.97  education app design
+      170  LOW      $  3.97  multi step form design
+      140  LOW      $  0.00  qr scanner ui
+      140  LOW      $  0.00  learning app ui
+      110  LOW      $  7.12  medical app design
+      110  LOW      $  0.00  barcode scanner ui
+      110  LOW      $  0.00  master detail ui
+       90  LOW      $ 17.29  healthcare app ui
+       90  LOW      $  0.00  habit tracker app design
+       90  LOW      $  0.00  calling app ui
+       50  LOW      $  0.00  doctor app ui
+       50  LOW      $  0.00  node editor ui
+       50  LOW      $  8.28  approval workflow ui
+       50  LOW      $  0.00  scan app ui
+       40  LOW      $  0.00  skincare app design
+       30  LOW      $  0.00  beauty app design
+       20  LOW      $  0.00  telemedicine app design
+       20  LOW      $  0.00  form wizard ui
+        0  UNSPECIFIED $  0.00  canvas editor ui
+        0  UNSPECIFIED $  0.00  voip app design
+

@@ -1,5 +1,5 @@
 {
- "_note": "MGD UI screens taxonomy v3 (30-Oct-2026). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style.",
+ "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style.",
  "types": [
   "screen",
   "section",
@@ -85,6 +85,35 @@
    "audit-log",
    "roles-permissions",
    "integrations"
+  ],
+  "ai": [
+   "ai-workspace",
+   "ai-settings"
+  ],
+  "review": [
+   "version-history",
+   "approval-queue"
+  ],
+  "healthcare": [
+   "doctor-directory",
+   "telehealth-visit",
+   "clinic-home"
+  ],
+  "music": [
+   "music-player",
+   "playlist"
+  ],
+  "portfolio": [
+   "portfolio-home",
+   "case-study"
+  ],
+  "dashboards": [
+   "security-dashboard",
+   "project-tracker",
+   "course-dashboard"
+  ],
+  "forms": [
+   "form-wizard"
   ]
  },
  "section_patterns": [
@@ -254,6 +283,29 @@
     "map-view",
     "image-viewer"
    ]
+  },
+  "see-a-doctor": {
+   "name": "Find a doctor and have a video visit",
+   "steps": [
+    "doctor-directory",
+    "telehealth-visit:waiting-room",
+    "telehealth-visit:in-call",
+    "telehealth-visit:visit-summary"
+   ]
+  },
+  "review-changes": {
+   "name": "Approve a change and check its history",
+   "steps": [
+    "approval-queue",
+    "version-history"
+   ]
+  },
+  "play-music": {
+   "name": "Open a playlist and play a track",
+   "steps": [
+    "playlist",
+    "music-player"
+   ]
   }
  },
  "categories": [
@@ -266,7 +318,8 @@
   "travel",
   "media",
   "education",
-  "developer"
+  "developer",
+  "portfolio"
  ],
  "styles": [
   "minimal",
@@ -305,7 +358,10 @@
    "cancel-subscription",
    "error-404",
    "loading-skeleton",
-   "success-confirmation"
+   "success-confirmation",
+   "version-history",
+   "approval-queue",
+   "project-tracker"
   ],
   "finance": [
    "dashboard",
@@ -313,7 +369,9 @@
    "analytics-charts"
   ],
   "ai": [
-   "chat-ai-assistant"
+   "chat-ai-assistant",
+   "ai-workspace",
+   "ai-settings"
   ],
   "commerce": [
    "product-detail",
@@ -343,6 +401,26 @@
    "contact-form",
    "stats-band",
    "comparison-table"
+  ],
+  "clinic": [
+   "doctor-directory",
+   "telehealth-visit",
+   "clinic-home"
+  ],
+  "audio": [
+   "music-player",
+   "playlist"
+  ],
+  "portfolio": [
+   "portfolio-home",
+   "case-study"
+  ],
+  "security": [
+   "security-dashboard"
+  ],
+  "learning": [
+   "course-dashboard",
+   "form-wizard"
   ]
  }
 }

@@ -12,7 +12,10 @@ export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts"
   "map-view", "video-player", "create-post", "class-schedule", "booking-details", "booking-confirmed", "product-detail", "cart", "checkout",
   "order-confirmation", "settings", "profile", "notifications-center", "team-members", "roles-permissions", "audit-log", "api-keys",
   "integrations", "billing-plans", "invoice", "paywall-upgrade",
-  "cancel-subscription", "empty-state", "error-404", "loading-skeleton", "success-confirmation"];
+  "cancel-subscription", "empty-state", "error-404", "loading-skeleton", "success-confirmation",
+  // 3-Nov-2026 expansion (from real search_ui_screens queries)
+  "ai-workspace", "ai-settings", "version-history", "approval-queue", "doctor-directory", "telehealth-visit", "clinic-home",
+  "music-player", "playlist", "portfolio-home", "case-study", "security-dashboard", "project-tracker", "course-dashboard", "form-wizard"];
 export const UI_SECTION_PATTERNS = ["hero", "navigation-header", "feature-grid", "bento-features", "how-it-works", "logo-cloud", "stats-band",
   "testimonials", "pricing", "comparison-table", "integrations-grid", "security-trust", "faq", "cta-banner", "about-team", "careers",
   "blog-index", "changelog", "contact-form", "footer"];
@@ -25,10 +28,13 @@ export const UI_FLOWS = {
   "invite-teammate": "Invite a teammate", "first-run": "First run to first project", "search-to-detail": "Search and open a result",
   "browse-photos": "Browse and open a photo", "book-a-class": "Book a class", "message-and-call": "Message a teammate and start a call",
   "review-access": "Review team access", "post-a-photo": "Post a photo", "explore-a-place": "Explore a place on the map",
+  "see-a-doctor": "Find a doctor and have a video visit", "review-changes": "Approve a change and check its history", "play-music": "Open a playlist and play a track",
 };
 const ROLES = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"];
 const LABELS = { "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys", "security-trust": "Security and trust", "how-it-works": "How it works", "saas": "SaaS", "ai": "AI", "error-404": "404 error", "faq": "FAQ", "cta-banner": "CTA banner",
-  "two-factor": "Two-factor code", "kanban-board": "Kanban board", "data-table": "Data table" };
+  "two-factor": "Two-factor code", "kanban-board": "Kanban board", "data-table": "Data table",
+  "ai-workspace": "AI workspace", "ai-settings": "AI settings", "telehealth-visit": "Telehealth visit", "form-wizard": "Multi-step form wizard",
+  "in-call": "In call", "visit-summary": "Visit summary" };
 const label = (s) => LABELS[s] || (s || "").replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const order = (p) => { const i = UI_PATTERNS.indexOf(p); return i < 0 ? 999 : i; };
 const parseTags = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } };
@@ -407,13 +413,17 @@ export async function callUiTool(name, a, env, h) {
   const flowsLine = (it) => (it.flows || []).filter((f) => UI_FLOWS[f.id]).map((f) => `${f.id} step ${f.step}`).join(", ");
   if (name === "search_ui_screens") {
     const q = (a.query || "").toString().trim();
+    // Every screen ships light AND dark (tokens + screenshot), so "dark" is a theme, not a search word: drop it from the text match
+    // (it matched almost nothing and pushed out the right pattern) and lead with the dark screenshot instead.
+    const wantDark = /\b(dark|night)(\s+(mode|theme|ui))?\b/i.test(q);
+    const qText = wantDark ? q.replace(/\b(dark|night)(\s+(mode|theme|ui))?\b/gi, " ").replace(/\s+/g, " ").trim() : q;
     const limit = h.clampInt(a.limit, 6, 1, 12);
     const binds = ["published", "ui"];
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.platform) { where += " AND country=?"; binds.push(String(a.platform)); }
     if (a.pattern) { where += " AND category=?"; binds.push(String(a.pattern)); }
     if (a.style) { where += " AND style=?"; binds.push(String(a.style)); }
-    let r = await h.mcpSearchRows(env, where, binds, ["title", "description", "tags", "category", "style", "industry"], q, "created_at DESC", limit);
+    let r = await h.mcpSearchRows(env, where, binds, ["title", "description", "tags", "category", "style", "industry"], qText, "created_at DESC", limit);
     let note = r.note;
     // Filters alone already narrow the set; if the free text matches nothing inside them, show the filtered set instead of nothing.
     if (!r.rows.length && (a.platform || a.pattern || a.style)) { r = await h.mcpSearchRows(env, where, binds, ["title"], "", "created_at DESC", limit); note = " (no text match; showing screens matching your filters)"; }
@@ -426,10 +436,11 @@ export async function callUiTool(name, a, env, h) {
       return [`• ${it.title}`, `  screen_id: ${it.id}`, `  pattern: ${it.pattern}${it.variant ? " (" + it.variant + ")" : ""} · platform: ${it.platform} · style: ${it.style}${it.app_category ? " · category: " + it.app_category : ""}`,
         it.description ? `  ${it.description}` : null, roles ? `  colour roles (light): ${roles}` : null,
         uiShownTags(it.tags).length ? `  elements: ${uiShownTags(it.tags).join(", ")}` : null, fl ? `  flows: ${fl} (get_ui_flow)` : null,
-        `  screenshot: ${site}${it.image}${it.image_dark ? ` · dark: ${site}${it.image_dark}` : ""}`, `  page (cite this): ${site}${uiItemPath(it, "")} · more ${it.pattern} examples: ${site}/ui/${it.pattern}`,
+        wantDark && it.image_dark ? `  screenshot (dark): ${site}${it.image_dark} · light: ${site}${it.image}` : `  screenshot: ${site}${it.image}${it.image_dark ? ` · dark: ${site}${it.image_dark}` : ""}`, `  page (cite this): ${site}${uiItemPath(it, "")} · more ${it.pattern} examples: ${site}/ui/${it.pattern}`,
         `  code: get_ui_screen_code(screen_id="${it.id}") or ${site}${it.code} · DESIGN.md: ${site}${it.design_md}`].filter(Boolean).join("\n");
     });
-    return { content: [{ type: "text", text: `${hd}. Source: Made Good Designs UI screens — ${site}/ui. ${CITE}\n\n${blocks.join("\n\n")}` }] };
+    const darkNote = wantDark ? " Every screen ships a dark theme: its HTML switches on prefers-color-scheme or data-theme=\"dark\" on <html>, and DESIGN.md lists the dark colour tokens." : "";
+    return { content: [{ type: "text", text: `${hd}.${darkNote} Source: Made Good Designs UI screens — ${site}/ui. ${CITE}\n\n${blocks.join("\n\n")}` }] };
   }
   if (name === "get_ui_flow") {
     const id = String(a.flow || "");

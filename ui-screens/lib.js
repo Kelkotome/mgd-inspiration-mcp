@@ -41,6 +41,12 @@ const FAMILIES = {
   media: { name: "Fieldnote", cat: "media", desc: "a photo-sharing community for travel photographers", type: { web: "SaaS web app", mobile: "Mobile app" } },
   health: { name: "Steadyfit", cat: "health", desc: "a habit and workout tracker", type: { web: "SaaS web app", mobile: "Mobile app" } },
   marketing: { name: "Patchbay", cat: "developer", desc: "API monitoring for small engineering teams", type: { web: "Marketing website", mobile: "Marketing website" } },
+  // Nov-2026 expansion (demand from real MCP queries: healthcare, music, portfolio, security/education dashboards)
+  clinic: { name: "Harbourline Health", cat: "health", desc: "a multi-specialty clinic with in-person and video appointments", type: { web: "Clinic website and patient portal", mobile: "Mobile app" } },
+  audio: { name: "Tidewell", cat: "media", desc: "a music streaming app for independent artists and their listeners", type: { web: "SaaS web app", mobile: "Mobile app" } },
+  portfolio: { name: "Ines Calder", cat: "portfolio", desc: "the portfolio of an independent product designer and front-end developer", type: { web: "Portfolio website", mobile: "Portfolio website" } },
+  security: { name: "Wardline", cat: "developer", desc: "cloud security monitoring for engineering teams", type: { web: "Internal dashboard", mobile: "Mobile app" } },
+  learning: { name: "Brightpath", cat: "education", desc: "an online course platform for schools and their students", type: { web: "SaaS web app", mobile: "Mobile app" } },
 };
 
 const ICON = {
