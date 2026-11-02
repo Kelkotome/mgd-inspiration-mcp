@@ -68,7 +68,7 @@ const CSS = `<style>
 .ms-live{box-shadow:0 0 0 3px var(--primary),0 0 0 6px color-mix(in oklab,var(--primary) 25%,transparent)}
 .ms-ctl{width:48px;height:48px;padding:0;border-radius:999px}
 .ms-ctl.off{background:color-mix(in oklab,var(--accent) 16%,var(--surface));color:color-mix(in oklab,var(--accent) 75%,var(--text));border-color:color-mix(in oklab,var(--accent) 40%,var(--surface))}
-.ms-leave{background:color-mix(in oklab,var(--accent) 82%,var(--text));border-color:transparent;color:var(--bg)}
+.ms-leave{background:var(--danger);border-color:transparent;color:var(--on-danger)}
 .ms-cap{position:absolute;left:50%;transform:translateX(-50%);bottom:52px;max-width:78%;padding:8px 14px;border-radius:var(--radius);background:rgba(18,16,14,.66);color:#fff;font-size:14px;line-height:1.45;text-align:center}
 .main>.top{flex:none}
 </style>`;
@@ -257,7 +257,7 @@ const ctl = (icon, label, cls = "", lab = true) => `<div style="display:grid;jus
 
 TPL["video-call/web"] = (p, st) => `${CSS}<div style="height:100%;display:flex;flex-direction:column">
 <header style="height:60px;flex:none;display:flex;align-items:center;gap:14px;padding:0 24px;border-bottom:1px solid var(--border);background:var(--surface)"><div class="logo"><b></b>${p.name}</div><span class="ms-sep" style="height:24px"></span>
-<div style="min-width:0"><div class="ms-row" style="gap:8px">${title(st, "Harbor launch go / no-go", 16)}<span class="badge" style="gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:currentColor"></span>Recording</span></div><div class="muted" style="font-size:12px">#harbor-launch · Wed 28 Oct · 3:00 – 3:45 PM</div></div>
+<div style="min-width:0"><div class="ms-row" style="gap:8px">${title(st, "Harbor launch go / no-go", 16)}<span class="badge" style="gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:var(--danger)"></span>Recording</span></div><div class="muted" style="font-size:12px">#harbor-launch · Wed 28 Oct · 3:00 – 3:45 PM</div></div>
 <span class="num" style="font-size:15px;margin-left:auto;display:inline-flex;gap:6px;align-items:center">${ic("clock", 15)}24:18</span>
 ${seg([`${ic("grid", 13)}Gallery`, `${I("layout", 13)}Speaker`], 1)}<span class="btn">${ic("users", 15)}6</span><span class="btn">${ic("link", 15)}Copy invite</span></header>
 <div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:0">
@@ -282,7 +282,7 @@ ${[["MO", "3:02 PM", "Slides and the launch plan are linked in Notes if you join
 <div style="padding:12px 16px 16px;flex:none;border-top:1px solid var(--border)"><div class="input" style="gap:8px;height:40px">Send a message to everyone<span style="margin-left:auto;display:inline-flex;gap:8px">${I("smile", 16)}<span style="color:var(--primary);display:inline-flex">${ic("send", 16)}</span></span></div></div>
 </aside></div></div>`;
 
-TPL["video-call/mobile"] = (p, st) => phone(`<div class="mtop" style="gap:12px;padding-bottom:10px">${ic("chevdown", 22)}<div style="flex:1;min-width:0;text-align:center"><div style="font-weight:700" class="ms-ell">Harbor go / no-go</div><div class="muted" style="font-size:12px;display:inline-flex;gap:6px;align-items:center"><span style="width:7px;height:7px;border-radius:50%;background:var(--accent)"></span>REC · <span class="num" style="font-size:12px;font-weight:600">24:18</span> · 6 people</div></div>${I("flip", 22)}</div>
+TPL["video-call/mobile"] = (p, st) => phone(`<div class="mtop" style="gap:12px;padding-bottom:10px">${ic("chevdown", 22)}<div style="flex:1;min-width:0;text-align:center"><div style="font-weight:700" class="ms-ell">Harbor go / no-go</div><div class="muted" style="font-size:12px;display:inline-flex;gap:6px;align-items:center"><span style="width:7px;height:7px;border-radius:50%;background:var(--danger)"></span>REC · <span class="num" style="font-size:12px;font-weight:600">24:18</span> · 6 people</div></div>${I("flip", 22)}</div>
 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;padding:2px 14px 12px;position:relative">
 ${tile("TR", { live: true, full: true, style: "flex:1;min-height:0", extra: `<div class="ms-cap" style="bottom:48px;max-width:88%;font-size:13px"><b>Teodora:</b> Pricing’s locked and both pilots get the PDF tonight. I’m a go.</div>` })}
 <div style="position:absolute;right:26px;top:14px;width:96px;height:132px;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg),0 0 0 2px var(--surface);overflow:hidden" class="ms-tile">${feed("MO")}<span class="ms-tag" style="left:6px;bottom:6px;height:22px;font-size:11px;padding:0 7px">You</span></div>

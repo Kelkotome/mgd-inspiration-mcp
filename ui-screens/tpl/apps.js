@@ -52,9 +52,9 @@ const CUST = [
 const SELECTED = new Set([2, 3, 5]);
 function sBadge(s) {
   const st = {
-    Active: "",
+    Active: "background:color-mix(in oklab,var(--success) 14%,var(--surface));color:color-mix(in oklab,var(--success) 80%,var(--text))",
     Trial: "background:color-mix(in oklab,var(--primary) 14%,var(--surface));color:color-mix(in oklab,var(--primary) 75%,var(--text))",
-    "Past due": "background:var(--surface);color:var(--text);box-shadow:inset 0 0 0 1px var(--text)",
+    "Past due": "background:color-mix(in oklab,var(--danger) 14%,var(--surface));color:color-mix(in oklab,var(--danger) 80%,var(--text))",
     Paused: "background:color-mix(in oklab,var(--text) 8%,var(--surface));color:var(--muted)",
     Cancelled: "background:color-mix(in oklab,var(--text) 8%,var(--surface));color:var(--muted)",
   }[s];
@@ -75,7 +75,7 @@ ${[["mail", "Send reminder"], ["tag", "Change plan"], ["download", "Export"]].ma
 <table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:color-mix(in oklab,var(--bg) 60%,var(--surface));border-bottom:1px solid var(--border)"><th style="width:40px;padding:9px 0 9px 14px;text-align:left">${cb(false)}</th>${th("Customer")}${th("Plan")}${th("MRR", true, true)}${th("Status")}${th("Seats", false, true)}${th("Customer since")}${th("Next invoice")}<th></th></tr></thead><tbody>
 ${CUST.map(([n, e, pl, m, s, seats, since, nxt], i) => `<tr style="border-top:1px solid var(--border);${SELECTED.has(i) ? "background:color-mix(in oklab,var(--primary) 6%,var(--surface))" : ""}"><td style="padding:7px 0 7px 14px">${cb(SELECTED.has(i))}</td>
 <td style="padding:7px 12px"><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${initials(n)}</div><div><div style="font-weight:500;line-height:1.3">${n}</div><div class="muted" style="font-size:12px;line-height:1.3">${e}</div></div></div></td>
-<td style="padding:7px 12px">${pl}</td><td class="num" style="padding:7px 12px;text-align:right;font-size:13px">${m}</td><td style="padding:7px 12px">${sBadge(s)}</td><td style="padding:7px 12px;text-align:right">${seats}</td><td style="padding:7px 12px" class="muted">${since}</td><td style="padding:7px 12px;${s === "Past due" ? "font-weight:600" : ""}">${nxt}</td><td style="padding:7px 14px 7px 0;color:var(--muted);text-align:right">${ic("more", 18)}</td></tr>`).join("")}</tbody></table>
+<td style="padding:7px 12px">${pl}</td><td class="num" style="padding:7px 12px;text-align:right;font-size:13px">${m}</td><td style="padding:7px 12px">${sBadge(s)}</td><td style="padding:7px 12px;text-align:right">${seats}</td><td style="padding:7px 12px" class="muted">${since}</td><td style="padding:7px 12px;${s === "Past due" ? "font-weight:600;color:var(--danger)" : ""}">${nxt}</td><td style="padding:7px 14px 7px 0;color:var(--muted);text-align:right">${ic("more", 18)}</td></tr>`).join("")}</tbody></table>
 <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--border);font-size:13px"><span class="muted">Showing <b style="color:var(--text)">1–11</b> of 3,918</span><span class="muted" style="margin-left:16px">Rows per page</span><span class="btn" style="height:28px;padding:0 8px">11 ${ic("chevdown", 13)}</span>
 <div style="margin-left:auto;display:flex;gap:4px;align-items:center"><span class="btn" style="height:28px;padding:0 8px;color:var(--muted)">${ic("back", 14)}Prev</span>${["1", "2", "3", "…", "356"].map((x, i) => `<span class="btn${i === 0 ? " primary" : ""}" style="height:28px;min-width:28px;padding:0 6px;${x === "…" ? "border-color:transparent;background:none" : ""}">${x}</span>`).join("")}<span class="btn" style="height:28px;padding:0 8px">Next${ic("chevron", 14)}</span></div></div></div></div></main></div>`;
 };

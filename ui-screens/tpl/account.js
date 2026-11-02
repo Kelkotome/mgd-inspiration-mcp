@@ -33,9 +33,9 @@ TPL["settings/web"] = (p, st) => shell(p, "Settings", crumbs("Settings", "Genera
 <div class="field"><label>Default language</label>${select("English (UK)")}</div><div class="field"><label>Time zone</label>${select("(UTC−07:00) Phoenix")}</div></div></div>
 <div class="card" style="overflow:hidden"><div style="padding:14px 20px;border-bottom:1px solid var(--border)"><div style="font-weight:600">Permissions</div><div class="muted" style="font-size:12px">Applies to members and guests</div></div>
 ${PREFS.map(([t, d, on], i) => `<div style="display:flex;align-items:center;gap:16px;padding:12px 20px;${i ? "border-top:1px solid var(--border)" : ""}"><div style="flex:1"><div style="font-weight:500">${t}</div><div class="muted" style="font-size:12px">${d}</div></div>${toggle(on)}</div>`).join("")}</div>
-<div class="card" style="padding:16px 20px;border-color:var(--text);display:grid;gap:12px"><div style="font-weight:600">Danger zone</div>
+<div class="card" style="padding:16px 20px;border-color:color-mix(in oklab,var(--danger) 55%,var(--border));background:color-mix(in oklab,var(--danger) 4%,var(--surface));display:grid;gap:12px"><div style="font-weight:600;color:var(--danger)">Danger zone</div>
 <div style="display:flex;align-items:center;gap:16px"><div style="flex:1"><div style="font-weight:500">Transfer ownership</div><div class="muted" style="font-size:12px">Hand the workspace to another admin. You stay an admin.</div></div><button class="btn">Transfer</button></div>
-<div style="display:flex;align-items:center;gap:16px;border-top:1px solid var(--border);padding-top:12px"><div style="flex:1"><div style="font-weight:500">Delete workspace</div><div class="muted" style="font-size:12px">Permanently removes 1,284 tasks, 312 docs and 4.2 GB of files.</div></div><button class="btn" style="background:var(--text);border-color:var(--text);color:var(--bg)">${ic("trash", 15)}Delete workspace</button></div></div></div></div>`);
+<div style="display:flex;align-items:center;gap:16px;border-top:1px solid var(--border);padding-top:12px"><div style="flex:1"><div style="font-weight:500">Delete workspace</div><div class="muted" style="font-size:12px">Permanently removes 1,284 tasks, 312 docs and 4.2 GB of files.</div></div><button class="btn" style="background:var(--danger);border-color:var(--danger);color:var(--on-danger)">${ic("trash", 15)}Delete workspace</button></div></div></div></div>`);
 
 const mrow = (icon, label, right, i) => `<div style="display:flex;align-items:center;gap:12px;padding:0 14px;height:48px;${i ? "border-top:1px solid var(--border)" : ""}"><span style="width:28px;height:28px;border-radius:var(--radius);display:grid;place-items:center;background:color-mix(in oklab,var(--primary) 12%,var(--surface));color:var(--primary)">${ic(icon, 16)}</span><span style="flex:1;font-weight:500">${label}</span>${right}</div>`;
 const mgroup = (rows) => `<div class="card" style="overflow:hidden;flex:none">${rows.map((r, i) => mrow(...r, i)).join("")}</div>`;
@@ -45,7 +45,7 @@ ${sub("Workspace")}${mgroup([["gear", "General", chev()], ["users", "Members", `
 ${sub("Notifications")}${mgroup([["bell", "Push notifications", toggle(true)], ["mail", "Weekly digest", toggle(false)]])}
 ${sub("Security")}${mgroup([["shield", "Two-factor authentication", `<span class="badge">On</span>${chev()}`], ["phone", "Active sessions", `<span class="muted">3</span>${chev()}`]])}
 ${sub("Support")}${mgroup([["chat", "Help and feedback", chev()]])}
-<div class="card" style="flex:none;height:48px;display:flex;align-items:center;justify-content:center;font-weight:600">Delete workspace</div></div></div>`;
+<div class="card" style="flex:none;height:48px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;color:var(--danger);border-color:color-mix(in oklab,var(--danger) 45%,var(--border))">${ic("trash", 16)}Delete workspace</div></div></div>`;
 
 /* ---------------- profile ---------------- */
 const TEAMS = ["Operations", "Client services", "Launch squad"];
@@ -87,7 +87,7 @@ const NOTE = [
 const TYPEIC = { mention: "account-at", assignment: "check", comment: "chat", due: "clock" };
 const noteRow = (n, i, compact) => {
   const [, who, type, verb, obj, quote, when, where, unread] = n;
-  const av = who ? `<div class="avatar" style="width:${compact ? 36 : 38}px;height:${compact ? 36 : 38}px;font-size:12px">${ini(who)}</div>` : `<div style="width:${compact ? 36 : 38}px;height:${compact ? 36 : 38}px;border-radius:50%;display:grid;place-items:center;background:color-mix(in oklab,var(--accent) 18%,var(--surface));color:color-mix(in oklab,var(--accent) 70%,var(--text))">${ic("clock", 18)}</div>`;
+  const av = who ? `<div class="avatar" style="width:${compact ? 36 : 38}px;height:${compact ? 36 : 38}px;font-size:12px">${ini(who)}</div>` : `<div style="width:${compact ? 36 : 38}px;height:${compact ? 36 : 38}px;border-radius:50%;display:grid;place-items:center;background:color-mix(in oklab,var(--danger) 14%,var(--surface));color:var(--danger)">${ic("clock", 18)}</div>`;
   return `<div style="display:flex;gap:12px;padding:${compact ? "11px 14px" : "12px 18px"};align-items:flex-start;${i ? "border-top:1px solid var(--border);" : ""}${unread ? "background:color-mix(in oklab,var(--primary) 5%,var(--surface))" : ""}">
 <span style="width:8px;height:8px;border-radius:50%;margin-top:15px;flex:none;background:${unread ? "var(--primary)" : "transparent"}"></span>
 <div style="position:relative;flex:none">${av}${who ? `<span style="position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:1px solid var(--border);color:var(--primary)">${ic(TYPEIC[type], 11)}</span>` : ""}</div>

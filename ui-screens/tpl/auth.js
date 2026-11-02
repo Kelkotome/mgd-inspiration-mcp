@@ -11,7 +11,7 @@ const box = (on, size = 16) => `<span style="flex:none;width:${size}px;height:${
 const checkRow = (on, label, extra = "") => `<label style="display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.45;${extra}"><span style="margin-top:1px;display:flex">${box(on)}</span><span>${label}</span></label>`;
 const divider = (t) => `<div style="display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px"><span style="flex:1;height:1px;background:var(--border)"></span>${t}<span style="flex:1;height:1px;background:var(--border)"></span></div>`;
 const iconDisc = (name, size = 52) => `<div style="width:${size}px;height:${size}px;border-radius:50%;display:grid;place-items:center;background:color-mix(in oklab,var(--primary) 12%,var(--surface));color:var(--primary);border:1px solid color-mix(in oklab,var(--primary) 22%,var(--border))">${ic(name, Math.round(size * 0.44))}</div>`;
-const segs = (n, done, h = 4) => `<div style="display:grid;grid-template-columns:repeat(${n},1fr);gap:6px">${Array.from({ length: n }, (_, i) => `<span style="height:${h}px;border-radius:999px;background:${i < done ? "var(--primary)" : "var(--border)"}"></span>`).join("")}</div>`;
+const segs = (n, done, h = 4, c = "var(--primary)") => `<div style="display:grid;grid-template-columns:repeat(${n},1fr);gap:6px">${Array.from({ length: n }, (_, i) => `<span style="height:${h}px;border-radius:999px;background:${i < done ? c : "var(--border)"}"></span>`).join("")}</div>`;
 
 // ---- iOS-style keyboards (mobile auth screens show the keyboard up, as on a real phone) ----
 const M_CSS = `<style>.au-m .input{height:48px;font-size:15px}.au-m .btn.block{height:50px;font-size:14px}</style>`;
@@ -36,8 +36,8 @@ ${divider("or sign up with email")}
 <div class="field"><label>Full name</label><div class="input filled">Mara Okafor</div></div>
 <div class="field"><label>Work email</label><div class="input filled">mara@juniperbakery.co</div></div>
 <div class="field"><label>Password</label><div class="input filled" style="justify-content:space-between;border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in oklab,var(--primary) 16%,transparent)"><span style="letter-spacing:3px">••••••••••••</span><span class="muted">${ic("eye", 16)}</span></div>
-<div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-top:2px">${segs(4, 3)}<span style="font-size:12px;font-weight:600;color:var(--primary)">Strong</span></div>
-<div class="muted" style="font-size:12px;display:flex;gap:12px;flex-wrap:wrap"><span style="display:flex;gap:4px;align-items:center;color:var(--text)">${ic("check", 13)}12+ characters</span><span style="display:flex;gap:4px;align-items:center;color:var(--text)">${ic("check", 13)}A number</span><span style="display:flex;gap:4px;align-items:center">${ic("minus", 13)}A symbol</span></div></div>
+<div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-top:2px">${segs(4, 3, 4, "var(--success)")}<span style="font-size:12px;font-weight:600;color:var(--success)">Strong</span></div>
+<div class="muted" style="font-size:12px;display:flex;gap:12px;flex-wrap:wrap"><span style="display:flex;gap:4px;align-items:center;color:var(--text)"><span style="color:var(--success);display:inline-flex">${ic("check", 13)}</span>12+ characters</span><span style="display:flex;gap:4px;align-items:center;color:var(--text)"><span style="color:var(--success);display:inline-flex">${ic("check", 13)}</span>A number</span><span style="display:flex;gap:4px;align-items:center">${ic("minus", 13)}A symbol</span></div></div>
 ${checkRow(true, `I agree to the ${link("Terms of Service")} and ${link("Privacy Policy")}`)}
 <button class="btn primary block">Create account</button>
 ${mobile ? "" : `<p class="muted" style="text-align:center;font-size:13px">Already using ${p.name}? ${link("Log in")}</p>`}</div>`;

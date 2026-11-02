@@ -12,7 +12,7 @@ const STYLES = {
     personality: ["Editorial", "Premium", "Confident"], numRule: true, fonts: "Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600", hscale: 1.35 },
   brutalist: { mood: "contrast", hue: 95, harmony: "complementary", hf: "Space Grotesk", bf: "Space Grotesk", hw: 700, ls: "-0.03em", radius: "0", shadows: "none",
     personality: ["Bold", "Technical", "Confident"], fonts: "Space+Grotesk:wght@400;500;700", hscale: 1.05,
-    css: ".card,.btn,.input,.search,.badge{border:2px solid var(--text)!important;border-radius:0!important}.card{box-shadow:5px 5px 0 var(--text)!important}.btn.primary{box-shadow:3px 3px 0 var(--text)}.badge{background:var(--accent)!important;color:var(--on-primary)!important}.side,.top,.tabs,header{border-color:var(--text)!important;border-width:2px!important}h1,.h{text-transform:uppercase}" },
+    css: ".card,.btn,.input,.search,.badge{border:2px solid var(--text)!important;border-radius:0!important}.card{box-shadow:5px 5px 0 var(--text)!important}.btn.primary{box-shadow:3px 3px 0 var(--text)}.badge:not([style*='--danger']):not([style*='--success']):not([style*='--warning']){background:var(--accent)!important;color:var(--on-primary)!important}.side,.top,.tabs,header{border-color:var(--text)!important;border-width:2px!important}h1,.h{text-transform:uppercase}" },
   luxury: { mood: "muted", hue: 80, harmony: "analogous", hf: "Cormorant Garamond", bf: "Manrope", hw: 500, ls: "0", radius: "0", shadows: "none",
     personality: ["Premium", "Calm", "Editorial"], fonts: "Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600", hscale: 1.35, numRule: true,
     css: ".muted{letter-spacing:.01em}.side .grp,.badge{letter-spacing:.14em;text-transform:uppercase;font-size:10px}.btn{letter-spacing:.08em;text-transform:uppercase;font-size:11px}.card{box-shadow:none}" },
@@ -121,11 +121,15 @@ const setCore = (dm) => { DM = dm; };
 // ---- Shared CSS ---------------------------------------------------------------------------
 // Colour tokens for one theme (light or dark); the rest of the CSS only reads the variables.
 // --ink/--on-ink: an always-dark surface (photo viewers, video stages): the text colour in light, the background in dark.
-const colorVars = (t, dark) => `--ink:${dark ? t.background : t.text};--on-ink:${dark ? t.text : t.background};--bg:${t.background};--surface:${t.surface};--border:${t.border};--text:${t.text};--muted:${t.muted};--primary:${t.primary};--on-primary:${t["on-primary"]};--accent:${t.accent};`;
+// Status colours (3-Nov-2026): fixed, conventional hues (red / green / amber) at a lightness tuned per theme so they read on any style's
+// background; use them only for meaning (end call, destructive, error, critical / success, added / warning), never for decoration.
+const statusVars = (dark) => dark ? "--danger:oklch(0.72 0.17 25);--on-danger:oklch(0.2 0.03 25);--success:oklch(0.76 0.14 150);--warning:oklch(0.82 0.13 80);"
+  : "--danger:oklch(0.55 0.2 27);--on-danger:#ffffff;--success:oklch(0.5 0.12 150);--warning:oklch(0.58 0.13 65);";
+const colorVars = (t, dark) => `${statusVars(dark)}--ink:${dark ? t.background : t.text};--on-ink:${dark ? t.text : t.background};--bg:${t.background};--surface:${t.surface};--border:${t.border};--text:${t.text};--muted:${t.muted};--primary:${t.primary};--on-primary:${t["on-primary"]};--accent:${t.accent};`;
 function baseCss(t, st, dk) {
   const r = parseInt(st.radius, 10), sh = DM.SHADOWS[st.shadows];
   const dark = dk ? `@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){${colorVars(dk, true)}color-scheme:dark}}:root[data-theme="dark"]{${colorVars(dk, true)}color-scheme:dark}\n` : "";
-  return `:root{--ink:${t.text};--on-ink:${t.background};--bg:${t.background};--surface:${t.surface};--border:${t.border};--text:${t.text};--muted:${t.muted};--primary:${t.primary};--on-primary:${t["on-primary"]};--accent:${t.accent};
+  return `:root{${statusVars(false)}--ink:${t.text};--on-ink:${t.background};--bg:${t.background};--surface:${t.surface};--border:${t.border};--text:${t.text};--muted:${t.muted};--primary:${t.primary};--on-primary:${t["on-primary"]};--accent:${t.accent};
 --radius-sm:${Math.round(r / 2)}px;--radius:${r}px;--radius-lg:${r * 2}px;--shadow-sm:${sh[0]};--shadow:${sh[1]};--shadow-lg:${sh[2]};
 --font-h:"${st.hf}",Georgia,serif;--font-b:"${st.bf}",system-ui,sans-serif;--hw:${st.hw};--ls:${st.ls}}
 ${dark}*{box-sizing:border-box;margin:0;padding:0}

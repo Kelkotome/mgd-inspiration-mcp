@@ -69,7 +69,7 @@ const CSS = `<style>
 .vc-dim{color:color-mix(in oklab,var(--on-ink) 66%,var(--ink))}
 .vc-ctl{width:56px;height:56px;border-radius:999px;display:grid;place-items:center;flex:none;background:color-mix(in oklab,var(--on-ink) 13%,var(--ink));color:var(--on-ink);border:1px solid color-mix(in oklab,var(--on-ink) 16%,transparent)}
 .vc-ctl.on{background:var(--on-ink);color:var(--ink)}
-.vc-end{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:56px;padding:0 26px;border-radius:999px;background:color-mix(in oklab,var(--accent) 82%,var(--text));color:var(--bg);font:600 15px var(--font-b);white-space:nowrap;flex:none}
+.vc-end{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:56px;padding:0 26px;border-radius:999px;background:var(--danger);color:var(--on-danger);font:600 15px var(--font-b);white-space:nowrap;flex:none}
 .vc-av{box-shadow:0 0 0 2px color-mix(in oklab,var(--on-ink) 22%,transparent);border-radius:50%;display:grid;place-items:center;font-family:var(--font-h);font-weight:var(--hw);color:var(--on-primary);background:linear-gradient(140deg,var(--primary),color-mix(in oklab,var(--primary) 55%,var(--accent)))}
 .vc-ring{position:absolute;border-radius:50%;border:1.5px solid color-mix(in oklab,var(--primary) 50%,var(--ink))}
 .vc-pill{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border-radius:999px;background:color-mix(in oklab,var(--on-ink) 11%,var(--ink));font:500 12.5px var(--font-b)}
@@ -86,7 +86,7 @@ const CSS = `<style>
 .vc-ft{width:32px;height:32px;border-radius:var(--radius-sm);display:grid;place-items:center;flex:none;font:700 9px var(--font-b);letter-spacing:.02em;background:color-mix(in oklab,var(--accent) 16%,var(--surface));color:color-mix(in oklab,var(--accent) 72%,var(--text))}
 .vc-mini{display:flex;align-items:center;gap:10px;height:52px;padding:0 8px 0 10px;border-radius:999px;background:var(--ink);color:var(--on-ink);box-shadow:var(--shadow-lg)}
 .vc-mini .b{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:none;background:color-mix(in oklab,var(--on-ink) 13%,var(--ink))}
-.vc-mini .b.end{background:color-mix(in oklab,var(--accent) 82%,var(--text));color:var(--bg)}
+.vc-mini .b.end{background:var(--danger);color:var(--on-danger)}
 </style>`;
 
 // =============================================================================================

@@ -62,17 +62,19 @@ const CSS = `<style>
 .sc-thumb>svg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .sc-spin{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;flex:none}
 .sc-flag{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font:600 11.5px var(--font-b);white-space:nowrap;flex:none;border:1px solid color-mix(in oklab,var(--primary) 28%,var(--border));background:color-mix(in oklab,var(--primary) 8%,var(--surface));color:color-mix(in oklab,var(--primary) 72%,var(--text))}
-.sc-flag.warn{border-color:color-mix(in oklab,var(--accent) 40%,var(--border));background:color-mix(in oklab,var(--accent) 12%,var(--surface));color:color-mix(in oklab,var(--accent) 62%,var(--text))}
+.sc-flag.warn{border-color:color-mix(in oklab,var(--warning) 45%,var(--border));background:color-mix(in oklab,var(--warning) 12%,var(--surface));color:color-mix(in oklab,var(--warning) 78%,var(--text))}
+.sc-flag.ok{border-color:color-mix(in oklab,var(--success) 35%,var(--border));background:color-mix(in oklab,var(--success) 10%,var(--surface));color:var(--success)}
 .sc-flag.plain{border-color:var(--border);background:var(--surface);color:var(--muted)}
 .sc-dot{width:30px;height:30px;border-radius:var(--radius);display:grid;place-items:center;flex:none;background:color-mix(in oklab,var(--primary) 12%,var(--surface));color:color-mix(in oklab,var(--primary) 78%,var(--text))}
-.sc-dot.warn{background:color-mix(in oklab,var(--accent) 16%,var(--surface));color:color-mix(in oklab,var(--accent) 66%,var(--text))}
+.sc-dot.warn{background:color-mix(in oklab,var(--warning) 16%,var(--surface));color:color-mix(in oklab,var(--warning) 78%,var(--text))}
+.sc-dot.ok{background:color-mix(in oklab,var(--success) 14%,var(--surface));color:var(--success)}
 .sc-meter{height:6px;border-radius:999px;background:color-mix(in oklab,var(--text) 9%,var(--surface));overflow:hidden;flex:1}
 .sc-meter>i{display:block;height:100%;border-radius:999px;background:var(--primary)}
 .sc-seg{display:inline-flex;padding:3px;border-radius:var(--radius);background:color-mix(in oklab,var(--text) 6%,var(--surface));border:1px solid var(--border);font:500 13px var(--font-b)}
 .sc-seg span{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:30px;padding:0 12px;border-radius:calc(var(--radius) - 2px);color:var(--muted);white-space:nowrap}
 .sc-seg span.on{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm);font-weight:600}
 .sc-ing{display:grid;grid-template-columns:30px 1fr;gap:4px 11px;align-content:start;padding:13px 14px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);min-width:0}
-.sc-ing.warn{border-color:color-mix(in oklab,var(--accent) 45%,var(--border));background:color-mix(in oklab,var(--accent) 5%,var(--surface))}
+.sc-ing.warn{border-color:color-mix(in oklab,var(--warning) 50%,var(--border));background:color-mix(in oklab,var(--warning) 6%,var(--surface))}
 .sc-art{position:relative;overflow:hidden;flex:none;border-radius:var(--radius-lg);background:linear-gradient(160deg,#ece6dc,#d7cdbd)}
 .sc-art>svg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .sc-drop{border:1.5px dashed color-mix(in oklab,var(--text) 26%,var(--border));border-radius:var(--radius-lg);background:color-mix(in oklab,var(--primary) 4%,var(--surface));display:grid;justify-items:center;text-align:center;gap:8px}
@@ -152,7 +154,7 @@ const INGS = [
   ["scan_leaf", "Centella asiatica", "extract", "Plant extract that calms irritation and visible redness.", "Calming", 0],
 ];
 const FLAGS = [["check", "Fragrance-free", 0], ["check", "No essential oils", 0], ["check", "Alcohol-free", 0], ["scan_warn", "Contains retinol", 1]];
-const flag = ([i, t, w]) => `<span class="sc-flag${w ? " warn" : ""}">${ic(i, 12)}${t}</span>`;
+const flag = ([i, t, w]) => `<span class="sc-flag${w ? " warn" : " ok"}">${ic(i, 12)}${t}</span>`;
 const RECENT = [["tube", "Halden Lab", "Daily Mineral Sunscreen SPF 50", "Good match", 0, "Yesterday"], ["amber", "Halden Lab", "Vitamin C 15% Serum", "In your AM routine", 0, "Mon"], ["pink", "Oyelaran", "Rosewater Toning Mist", "Contains fragrance", 1, "Sat"], ["jar", "Fenna & Co.", "Oat Milk Cleansing Balm", "Good match", 0, "28 Oct"]];
 const ROUTINE_PM = [["Oat Milk Cleansing Balm", "Fenna & Co."], ["Hydrating Toner", "Ilse Skin"], ["Peptide Serum", "Halden Lab"], ["Night Barrier Gel Cream", "Morrow Botanics", 1], ["Rosehip Face Oil", "Fenna & Co.", 0, "Optional"]];
 
@@ -201,7 +203,7 @@ ${webStage(788, 794, { fw: 336, fh: 452, fy: 104, laser: 1, hit: `${ic("scan_sca
 <div class="sc-row" style="gap:8px"><div class="input" style="flex:1;letter-spacing:.08em">5 060412 7…</div><span class="btn primary">Look up</span></div></div>
 <div class="sc-hr"></div>
 <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:600">Recent scans</span><span class="sc-link" style="font-size:13px">View all 23</span></div>
-<div style="display:grid;gap:0;margin-top:-6px">${RECENT.map(([k, br, n, v, w, d], i) => `<div class="sc-row" style="gap:12px;padding:9px 0;${i ? "border-top:1px solid var(--border)" : ""}">${thumb(k, 44)}<div style="flex:1;min-width:0"><div class="muted sc-ell" style="font-size:11.5px">${br}</div><div class="sc-ell" style="font-weight:600;font-size:13px">${n}</div><div class="sc-ell" style="font-size:11.5px;color:${w ? "color-mix(in oklab,var(--accent) 62%,var(--text))" : "color-mix(in oklab,var(--primary) 70%,var(--text))"}">${w ? ic("scan_warn", 11) : ic("check", 11)} ${v}</div></div><span class="muted" style="font-size:11.5px">${d}</span></div>`).join("")}</div>
+<div style="display:grid;gap:0;margin-top:-6px">${RECENT.map(([k, br, n, v, w, d], i) => `<div class="sc-row" style="gap:12px;padding:9px 0;${i ? "border-top:1px solid var(--border)" : ""}">${thumb(k, 44)}<div style="flex:1;min-width:0"><div class="muted sc-ell" style="font-size:11.5px">${br}</div><div class="sc-ell" style="font-weight:600;font-size:13px">${n}</div><div class="sc-ell" style="font-size:11.5px;color:${w ? "color-mix(in oklab,var(--warning) 78%,var(--text))" : "var(--success)"}">${w ? ic("scan_warn", 11) : ic("check", 11)} ${v}</div></div><span class="muted" style="font-size:11.5px">${d}</span></div>`).join("")}</div>
 <div style="margin-top:auto;padding:12px 14px;border-radius:var(--radius-lg);background:color-mix(in oklab,var(--primary) 7%,var(--surface));border:1px solid color-mix(in oklab,var(--primary) 18%,var(--border));font-size:12.5px;line-height:1.5"><b style="font-weight:600">Checked against your profile.</b> <span class="muted">Results flag fragrance, clashing actives and anything you’ve marked as a trigger.</span></div>
 </div></div></main></div>`;
 
@@ -231,10 +233,10 @@ TPL["camera/mobile"] = (p, st) => {
 
 // ============================== product-scan: result ==============================
 const verdict = (st, compact) => `<div style="display:grid;gap:${compact ? 10 : 12}px">
-<div class="sc-row" style="gap:12px;align-items:flex-start"><span class="sc-dot" style="width:${compact ? 36 : 40}px;height:${compact ? 36 : 40}px">${ic("scan_face", compact ? 18 : 20)}</span><div style="min-width:0"><div class="h" style="font-size:${H(st, compact ? 17 : 20)}px">Good match for combination, sensitive skin</div><div class="muted" style="font-size:12.5px;margin-top:3px">8 of 9 key ingredients suit your profile · no fragrance or drying alcohols</div></div></div>
-<div style="display:flex;gap:10px;align-items:flex-start;padding:${compact ? "9px 11px" : "11px 13px"};border-radius:var(--radius);background:color-mix(in oklab,var(--accent) 11%,var(--surface));border:1px solid color-mix(in oklab,var(--accent) 34%,var(--border));font-size:${compact ? 12.5 : 13}px;line-height:1.45"><span style="color:color-mix(in oklab,var(--accent) 66%,var(--text));margin-top:1px">${ic("scan_warn", 16)}</span><div><b style="font-weight:600">Contains retinol.</b> Don’t layer it with your Halden Lab Vitamin C 15% serum — use it at night only, 2–3 nights a week to start.</div></div></div>`;
+<div class="sc-row" style="gap:12px;align-items:flex-start"><span class="sc-dot ok" style="width:${compact ? 36 : 40}px;height:${compact ? 36 : 40}px">${ic("scan_face", compact ? 18 : 20)}</span><div style="min-width:0"><div class="h" style="font-size:${H(st, compact ? 17 : 20)}px">Good match for combination, sensitive skin</div><div class="muted" style="font-size:12.5px;margin-top:3px">8 of 9 key ingredients suit your profile · no fragrance or drying alcohols</div></div></div>
+<div style="display:flex;gap:10px;align-items:flex-start;padding:${compact ? "9px 11px" : "11px 13px"};border-radius:var(--radius);background:color-mix(in oklab,var(--warning) 11%,var(--surface));border:1px solid color-mix(in oklab,var(--warning) 42%,var(--border));font-size:${compact ? 12.5 : 13}px;line-height:1.45"><span style="color:color-mix(in oklab,var(--warning) 78%,var(--text));margin-top:1px">${ic("scan_warn", 16)}</span><div><b style="font-weight:600">Contains retinol.</b> Don’t layer it with your Halden Lab Vitamin C 15% serum — use it at night only, 2–3 nights a week to start.</div></div></div>`;
 const ingCard = ([i, n, conc, what, tag, w]) => `<div class="sc-ing${w ? " warn" : ""}"><span class="sc-dot${w ? " warn" : ""}">${ic(i, 15)}</span><div style="min-width:0"><div style="font-weight:600;font-size:13.5px" class="sc-ell">${n}${conc ? ` <span class="muted" style="font-weight:500;font-size:12px">${conc}</span>` : ""}</div></div>
-<span></span><div style="display:grid;gap:7px"><div class="muted" style="font-size:12.5px;line-height:1.45">${what}</div><span class="sc-flag${w ? " warn" : ""}" style="justify-self:start;height:22px;font-size:11px">${w ? ic("scan_warn", 11) : ic("check", 11)}${tag}</span></div></div>`;
+<span></span><div style="display:grid;gap:7px"><div class="muted" style="font-size:12.5px;line-height:1.45">${what}</div><span class="sc-flag${w ? " warn" : " ok"}" style="justify-self:start;height:22px;font-size:11px">${w ? ic("scan_warn", 11) : ic("check", 11)}${tag}</span></div></div>`;
 
 TPL["result/web"] = (p, st) => `${CSS}<div class="shell">${side(p, "Scan")}<main class="main">
 <div class="top"><div class="muted">Scan</div><span class="muted">/</span><div style="font-weight:500">${PROD.name}</div><span class="sc-flag" style="margin-left:6px">${ic("check", 12)}Matched in 1.4 s</span><div class="search">${ic("search", 16)}Search products or an ingredient…</div><span class="btn">${ic("share", 15)}Share</span></div>
@@ -298,7 +300,7 @@ const SV_CSS = `<style>
 .sv-st i{width:6px;height:6px;border-radius:50%;background:var(--muted)}
 .sv-st.rev i{background:var(--accent)}
 .sv-st.dr i{background:transparent;border:1.5px solid var(--muted)}
-.sv-st.ok i{background:var(--primary)}
+.sv-st.ok i{background:var(--success)}
 .sv-ib{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--radius);color:var(--muted);flex:none}
 .sv-tabs{display:flex;gap:18px;font-size:13px;font-weight:500;color:var(--muted)}
 .sv-tabs span{padding:0 0 9px;border-bottom:2px solid transparent;white-space:nowrap}
