@@ -4,14 +4,14 @@
 #   zsh tests/run_ai_local66.sh [BASELINE_REF]     (run from the repo root; BASELINE_REF default museum-collection-2026-10, e.g. ce5a49a)
 # Unlike run_ai_local65.sh (six workers at once on 8861-8866), this uses only two wrangler ports: the NEW worker on :8887 (inspector 9387) is
 # restarted on a FRESH throwaway D1 for each HTTP suite (each suite expects 20 uses left), and the BASELINE worker (git archive of BASELINE_REF)
-# runs on :8888 (inspector 9388) for rpc_ai63's baseline comparison. Mock API on :8889. All dev vars as in run_ai_local65.sh
+# runs on :8890 (inspector 9388; 8888 is taken by Docker Desktop on this Mac) for rpc_ai63's baseline comparison. Mock API on :8889. All dev vars as in run_ai_local65.sh
 # (dummy key, Cloudflare always-pass Turnstile TEST keys, DEV_ALLOW_LOCAL=1, TURNSTILE_BYPASS_LOCAL=1, AI_DAILY_BUDGET_USD=0.01, AI_DAILY_PER_IP=20).
 set -u
 cd "$(dirname "$0")/.."
 REF=${1:-museum-collection-2026-10}
 W=./node_modules/.bin/wrangler
 TMP=$(mktemp -d)
-NEWP=8887 BASEP=8888 MOCKP=8889
+NEWP=8887 BASEP=8890 MOCKP=8889
 python3 - <<'PY'
 src = open("wrangler.jsonc").read(); i = src.index('"routes"'); j = src.index("]", i) + 1
 open("wrangler.ai-test.jsonc", "w").write(src[:i] + '"routes": []' + src[j:])

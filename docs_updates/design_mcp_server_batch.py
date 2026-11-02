@@ -86,6 +86,13 @@ BATCHES = {
         ("edit_svg_path", "inspect and edit an SVG path d attribute: exact bounding box, length and viewBox, normalize, convert to absolute or relative commands, round, or translate, scale, rotate, flip and skew it into the coordinates", "svg-path-editor", "SVG Path Editor"),
         ("calc_depth_of_field", "work out near and far limits of acceptable sharpness, total depth of field and hyperfocal distance from focal length, f-number, focus distance and sensor size (full frame to phone) or your own circle of confusion", "depth-of-field-calculator", "Depth of Field Calculator"),
     ]),
+    "66": (87, [   # 87 = tools/list on /mcp and /mcp/all after b66 (82 + 5), checked on a local Worker 3-Nov
+        ("make_speech_bubble", "draw a comic speech, thought, shout, whisper, cloud or rectangular caption bubble with one or more tails pointed at any spot, text wrapped and fitted inside, as a clean SVG and path", "speech-bubble-maker", "Speech Bubble Maker"),
+        ("make_coat_of_arms", "build a heraldic shield from a field division, ordinary and charges in proper tinctures, with the written blazon, a rule-of-tincture check and an SVG (a design, not a grant of arms)", "coat-of-arms-maker", "Coat of Arms Maker"),
+        ("make_jcard_template", "make a cassette J-card insert print template (standard 3-panel, extended 4-5 panel, O-card and shell label sizes) with fold lines, spine, trim, bleed and safe area as a true-size SVG", "cassette-j-card-template", "Cassette J-Card Template"),
+        ("calc_field_of_view", "work out a lens's horizontal, vertical and diagonal angle of view and the frame width and height at a distance for any sensor size and focal length, or the focal length needed to frame a subject", "field-of-view-calculator", "Field of View Calculator"),
+        ("calc_exposure_value", "calculate exposure value (EV and EV100) from aperture, shutter speed and ISO, solve for the missing setting, list equivalent exposures and work out ND filter shutter times", "exposure-value-calculator", "Exposure Value Calculator"),
+    ]),
 }
 
 def main(b):
