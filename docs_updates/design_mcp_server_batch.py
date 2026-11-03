@@ -103,6 +103,11 @@ BATCHES = {
         ("calc_cross_stitch", "work out a cross-stitch design's finished size on any Aida or evenweave count, the fabric to cut, strands and skeins, or the stitch count for a finished size", "cross-stitch-pattern-maker", "Cross Stitch Pattern Maker"),
         ("get_mockup_print_area", "get the usual print area for t-shirts, hoodies, tote bags, 11 and 15 oz mug wraps, posters and billboards in inches, cm and pixels at your dpi", "t-shirt-mockup", "T-Shirt Mockup"),
     ]),
+    "72": (96, [   # 96 = tools/list on /mcp and /mcp/all after b72 (93 + 3), checked on a local Worker 3-Nov
+        ("make_star_map", "make a custom star map poster of the real night sky for a date, time and place, with constellations, the Moon in its phase, the bright stars that were up, and a vector SVG", "star-map", "Star Map"),
+        ("make_fantasy_map", "generate a seeded fantasy map (island, continent, archipelago or coast) with mountains, forests, rivers, towns, roads and invented names, in parchment, ink, atlas or treasure style, with a square or hex grid", "fantasy-map-generator", "Fantasy Map Generator"),
+        ("make_paper_bag_template", "make a true-size gusseted paper bag dieline from width, gusset and height: flat net, glue flap, bottom flaps and overlap, printable panels, handle holes and sheets needed", "paper-bag-template", "Paper Bag Template"),
+    ]),
 }
 
 def main(b):

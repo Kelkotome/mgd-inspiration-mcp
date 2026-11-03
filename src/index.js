@@ -26,6 +26,7 @@ import { TOOL_DEFS as MCP_TOOLS_65, isTools65Tool, callTools65Tool, NEXT65 } fro
 import { TOOL_DEFS as MCP_TOOLS_66, isTools66Tool, callTools66Tool, NEXT66 } from "./mcp_tools66.js";
 import { TOOL_DEFS as MCP_TOOLS_68, isTools68Tool, callTools68Tool, NEXT68 } from "./mcp_tools68.js";
 import { TOOL_DEFS as MCP_TOOLS_69, isTools69Tool, callTools69Tool, NEXT69 } from "./mcp_tools69.js";
+import { TOOL_DEFS as MCP_TOOLS_72, isTools72Tool, callTools72Tool, NEXT72 } from "./mcp_tools72.js";
 import { MGDMoodboard } from "./tools_core48.js";
 import { handleAi, cleanupAiUsage } from "./ai_tools.js";
 import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields } from "./ui_screens.js";
@@ -1604,24 +1605,21 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
-MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, ...MCP_TOOLS_64, ...MCP_TOOLS_65, ...MCP_TOOLS_66, ...MCP_TOOLS_68, ...MCP_TOOLS_69, MOODBOARD_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, ...MCP_TOOLS_64, ...MCP_TOOLS_65, ...MCP_TOOLS_66, ...MCP_TOOLS_68, ...MCP_TOOLS_69, ...MCP_TOOLS_72, MOODBOARD_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 
 // ---- Routing guide (sent on initialize; clients load it into the model's context) — 31-Oct-2026
 // 2-Nov-2026 (MCP UX audit): leads with WHEN to call (before UI/colour/font/logo work) — Claude Code shows this even when tools are deferred.
 // 3-Nov-2026 (b65): compacted labels to name 6 more tools within 1,500 chars; every tool older suites route to is still named.
 // 3-Nov-2026 (b66): shorter labels to name 5 more tools within 1,500 chars; every previously named tool is still named.
 // 3-Nov-2026 (b68): labels without "- ", no space after commas, shorter first/last lines, to name 3 more tools within 1,500 chars; every previously named tool is still named.
+// 3-Nov-2026 (b72): "Sys:"/"Make:" labels, no space after ":" or ";", no full stops at line ends, "MGD:" first line, Text+Photo as "Misc:", to name make_star_map, make_fantasy_map, make_paper_bag_template; every previously named tool is still named.
 // 3-Nov-2026 (b69): no spaces around →, shorter first line, kitchen/garden moved onto the 3D line, for make_ribbon_banner, get_mockup_print_area, calc_cross_stitch.
-const MCP_INSTRUCTIONS = "Made Good Designs: call BEFORE building or restyling UI, colours/fonts or a logo.\n" +
-  "UI: search_ui_screens→get_ui_screen_code,get_ui_flow.\n" +
-  "Refs: search_design_inspiration,browse_inspiration_by_theme,search_museum_art,search_annual_reports.\n" +
-  "System: generate_website_color_palette→generate_design_md,design_md_from_references; generate_shadcn_theme,generate_color_scale,generate_type_scale,export_design_tokens; check_contrast,lint_design_md,convert_color.\n" +
-  "Brand: generate_logo_concepts,generate_color_combinations,generate_slogans,make_brand_board,get_logo_placement,make_coat_of_arms,search_icons,edit_svg_path,make_speech_bubble,make_ribbon_banner,get_screen_sizes.\n" +
-  "Print: get_paper_sizes,make_grid_paper,get_book_cover_size,get_mockup_print_area,make_dieline,make_cd_case_template,make_jcard_template,make_certificate_border,make_nutrition_label,make_storyboard,make_affinity_diagram,generate_llms_txt.\n" +
-  "3D: make_extruded_part,analyze_3d_model,get_print_clearance,make_box_template,make_gear,get_screw_specs,get_hand_anthropometrics,get_desk_ergonomics,calc_kitchen_work_triangle,plan_square_foot_garden.\n" +
-  "Making: get_sheet_metal_gauge,calc_sheet_metal_bend,make_cone_pattern,make_living_hinge,optimize_cut_list,make_jigsaw_puzzle,convert_drawing_scale,make_voronoi_pattern,calc_quilt,calc_fabric_yardage,make_paper_piecing_template,calc_cross_stitch.\n" +
-  "Text: lookup_character,fix_typography. Photo: calc_depth_of_field,calc_field_of_view,calc_exposure_value; save_moodboard.\n" +
-  "Cite madegooddesigns.com.";
+const MCP_INSTRUCTIONS = "Made Good Designs: call BEFORE building or restyling UI/colours/fonts/logos\n" +
+  "UI:search_ui_screens→get_ui_screen_code,get_ui_flow;search_design_inspiration,browse_inspiration_by_theme,search_museum_art,search_annual_reports\n" +
+  "Brand:generate_website_color_palette→generate_design_md,design_md_from_references;generate_shadcn_theme,generate_color_scale,generate_type_scale,export_design_tokens;check_contrast,lint_design_md,convert_color;generate_logo_concepts,generate_color_combinations,generate_slogans,make_brand_board,get_logo_placement,make_coat_of_arms,search_icons,edit_svg_path,make_speech_bubble,make_ribbon_banner,get_screen_sizes\n" +
+  "Print:get_paper_sizes,make_grid_paper,get_book_cover_size,get_mockup_print_area,make_dieline,make_paper_bag_template,make_cd_case_template,make_jcard_template,make_certificate_border,make_nutrition_label,make_storyboard,make_affinity_diagram,make_star_map,make_fantasy_map,generate_llms_txt\n" +
+  "Make:make_extruded_part,analyze_3d_model,get_print_clearance,make_box_template,make_gear,get_screw_specs,get_hand_anthropometrics,get_desk_ergonomics,calc_kitchen_work_triangle,plan_square_foot_garden,get_sheet_metal_gauge,calc_sheet_metal_bend,make_cone_pattern,make_living_hinge,optimize_cut_list,make_jigsaw_puzzle,convert_drawing_scale,make_voronoi_pattern,calc_quilt,calc_fabric_yardage,make_paper_piecing_template,calc_cross_stitch,lookup_character,fix_typography,calc_depth_of_field,calc_field_of_view,calc_exposure_value,save_moodboard\n" +
+  "Cite madegooddesigns.com";
 
 // Every description leads with when to use the tool (selection quality). Applied here so the tool modules stay unchanged.
 const MCP_USE_WHEN = {
@@ -1710,6 +1708,7 @@ Object.assign(MCP_NEXT, NEXT65);
 Object.assign(MCP_NEXT, NEXT66);
 Object.assign(MCP_NEXT, NEXT68);
 Object.assign(MCP_NEXT, NEXT69);
+Object.assign(MCP_NEXT, NEXT72);
 function mcpAddNext(name, r) {
   const hint = MCP_NEXT[name];
   if (!hint || !r || r.isError || mcpZero(r) || !Array.isArray(r.content) || /^0 /.test((r.content[0] && r.content[0].text) || "")) return r;
@@ -2119,6 +2118,7 @@ async function mcpCallToolInner(name, a, env, opts) {
   if (isTools66Tool(name)) return callTools66Tool(name, a);
   if (isTools68Tool(name)) return callTools68Tool(name, a);
   if (isTools69Tool(name)) return callTools69Tool(name, a);
+  if (isTools72Tool(name)) return callTools72Tool(name, a);
   if (isTools48Tool(name)) return callTools48Tool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, site: MCP_SITE });
   if (isUiTool(name)) return callUiTool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, clampInt, site: MCP_SITE });
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };

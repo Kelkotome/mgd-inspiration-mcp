@@ -70,6 +70,10 @@ T = {
  "make_certificate_border": (["print", "brand"], "/tools/certificate-border/", ["graphic-print"]),
  "calc_kitchen_work_triangle": (["3d", "everyday"], "/tools/kitchen-planner/", ["industrial-product"]),
  "plan_square_foot_garden": (["everyday", "print"], "/tools/garden-planner/", ["illustration-pattern"]),
+ # batch 72 (3-Nov-2026): star map posters, fantasy maps, paper bag dielines
+ "make_star_map": (["print", "images"], "/tools/star-map/", ["graphic-print", "marketing-content"]),
+ "make_fantasy_map": (["images", "print"], "/tools/fantasy-map-generator/", ["illustration-pattern", "graphic-print"]),
+ "make_paper_bag_template": (["print"], "/tools/paper-bag-template/", ["packaging", "graphic-print"]),
  # batch 69 (3-Nov-2026): ribbon banners, cross-stitch sizing, mockup print areas
  "make_ribbon_banner": (["brand", "print"], "/tools/ribbon-banner/", ["graphic-print", "type-lettering"]),
  "calc_cross_stitch": (["print"], "/tools/cross-stitch-pattern-maker/", ["illustration-pattern"]),
@@ -83,6 +87,15 @@ T = {
 }
 # /tools/ pages: first matching rule wins (slug regex → categories, roles)
 RULES = [
+ # batch 70-72 pages without an MCP tool of their own (3-Nov-2026), ahead of the generic rules ("sign-maker" is print signage, "*-filter" are photo effects)
+ (r"^(grass|brick|water|sand|fabric|leather|canvas|cardboard|watercolor)-texture$", ["images"], ["illustration-pattern", "graphic-print", "photo-image"]),
+ (r"^(bathroom-planner|office-layout-planner)$", ["3d", "everyday"], ["industrial-product", "marketing-content"]),
+ (r"^(church-bulletin|event-program|place-card|table-number)-template$", ["print", "typography"], ["graphic-print"]),
+ (r"^(x-ray|night-vision|thermal)-filter$", ["images"], ["photo-image", "marketing-content"]),
+ (r"^guilloche-pattern-generator$", ["images", "print"], ["illustration-pattern", "graphic-print"]),
+ (r"^diploma-template$", ["print", "typography"], ["graphic-print"]),
+ (r"^(wedding-welcome-sign|sign-maker)$", ["print", "typography"], ["graphic-print", "marketing-content"]),
+ (r"^party-hat-template$", ["print"], ["packaging", "graphic-print"]),
  # batch 69 pages without an MCP tool of their own (3-Nov-2026), ahead of the generic rules ("box-mockup" is a mockup, not a dieline)
  (r"^(t-shirt|hoodie|tote-bag|mug)-mockup$", ["print", "brand"], ["graphic-print", "brand", "marketing-content"]),
  (r"^(book|box)-mockup$", ["print", "brand"], ["graphic-print", "packaging", "marketing-content"]),
@@ -167,7 +180,7 @@ def main():
             pg["roles"] = sorted({r for n in pg["mcp_tools"] for r in tools[n]["roles"]})
     missing = [s for s in used_pages if s not in pages]
     if missing: sys.exit(f"MCP tool pages not on the /tools/ hub: {missing}")
-    out = {"version": "2026-11-03e", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
+    out = {"version": "2026-11-03f", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
     json.dump(out, open(OUT, "w"), indent=0, separators=(",", ":"))
     print(f"{len(tools)} MCP tools, {len(pages)} /tools/ pages → {OUT} ({os.path.getsize(OUT):,} bytes)")
 main()
