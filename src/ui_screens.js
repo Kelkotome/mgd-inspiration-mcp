@@ -8,6 +8,7 @@ import UI_COPY from "./ui_pattern_copy.json"; // per-pattern landing-page copy: 
 import { buildIndex, rankRows, resolveName, resolveStyle, resolvePlatform, resolveElement, elHas, PATTERN_ALIASES } from "./ui_search.js";
 import UI_ELEMENTS from "./ui_elements.json"; // HTML-derived element/layout inventory per pattern|variant|platform (ui-screens/elements.js)
 import UI_TAXONOMY from "../ui-screens/taxonomy.json"; // pattern groups + flow steps for list_ui_patterns
+import { extractCopy } from "./ui_copy.js"; // copy deck (visible strings by role) for get_ui_screen_code format=copy
 
 export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts", "login", "sign-up", "forgot-password", "two-factor",
   "welcome", "onboarding-step", "permissions-request", "home", "feed", "list-view", "detail-view", "kanban-board", "calendar",
@@ -398,6 +399,7 @@ export const UI_MCP_TOOLS = [
         limit: { type: "integer", description: "Max distinct screens (1-12, default 6). Each result also lists its other styles.", minimum: 1, maximum: 12 },
         elements: { type: "array", items: { type: "string" }, description: "Optional components the screen must contain (all of them), e.g. ['table', 'checkbox', 'badge'] or ['progress ring', 'avatar stack']. Plain words are fine; list_ui_patterns(kind='elements') shows the vocabulary." },
         distinct: { type: "boolean", description: "Default true: one result per screen (max 2 per pattern), other styles listed on one line. false = every style as its own result." },
+        previews: { type: "boolean", description: "Default false. true = also attach the screenshots of the first 4 results as images (about 100 KB each), so you can see them without opening the URLs." },
       },
       required: ["query"],
     },
@@ -413,6 +415,7 @@ export const UI_MCP_TOOLS = [
         platform: { type: "string", description: "web (default) or mobile." },
         style: { type: "string", description: "Default 'minimal'. Also: editorial, brutalist, luxury, playful, corporate, retro, monochrome." },
         include_errors: { type: "boolean", description: "Default true: include the flow's error/unhappy-path steps (wrong password, expired code, card declined, form errors). false = happy path only." },
+        previews: { type: "boolean", description: "Default false. true = also attach the step screenshots as images (first 6 steps, about 100 KB each)." },
       },
       required: ["flow"],
     },
@@ -420,12 +423,12 @@ export const UI_MCP_TOOLS = [
   },
   {
     name: "get_ui_screen_code",
-    description: "Get the code for a Made Good Designs UI screen (screen_id from search_ui_screens or get_ui_flow, or its page URL): the complete self-contained HTML/CSS page and/or its DESIGN.md (design tokens and rules for AI coding agents). Use it as a starting point and adapt it to the user's framework (React, Tailwind, SwiftUI, etc.).",
+    description: "Get the code for a Made Good Designs UI screen (screen_id from search_ui_screens or get_ui_flow, or its page URL): the complete self-contained HTML/CSS page and/or its DESIGN.md (design tokens and rules for AI coding agents), or format=copy for the screen's copy deck as JSON. Use it as a starting point and adapt it to the user's framework (React, Tailwind, SwiftUI, etc.).",
     inputSchema: {
       type: "object",
       properties: {
         screen_id: { type: "string", description: "The screen_id (12 hex characters), or the screen's page URL." },
-        format: { type: "string", description: "What to return (default 'both').", enum: ["html", "design_md", "both"] },
+        format: { type: "string", description: "What to return (default 'both'): html, design_md, both, or copy (every visible string grouped by role as JSON: title, headings, navigation, buttons, labels, placeholders, messages, table headers, badges, text; for localisation or swapping in your own copy).", enum: ["html", "design_md", "both", "copy"] },
       },
       required: ["screen_id"],
     },
@@ -441,6 +444,22 @@ export const UI_MCP_TOOLS = [
     annotations: { title: "List UI patterns", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
+// previews=true: attach screenshots from R2 as MCP image content (webp). Best-effort: a missing or oversized object is skipped,
+// never an error, so the text answer is always returned.
+async function previewImages(env, its, dark, max) {
+  const out = [];
+  await Promise.all(its.slice(0, max).map(async (it, i) => {
+    const src = (dark && it.image_dark) || it.image || "";
+    if (!src.startsWith("/img/")) return;
+    try {
+      const o = await env.BUCKET.get(src.slice(5)); if (!o) return;
+      const buf = new Uint8Array(await o.arrayBuffer()); if (buf.length > 400000) return;
+      let bin = ""; for (let j = 0; j < buf.length; j += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(j, j + 0x8000));
+      out[i] = { type: "image", data: btoa(bin), mimeType: src.endsWith(".png") ? "image/png" : src.endsWith(".jpg") ? "image/jpeg" : "image/webp" };
+    } catch (e) { /* skip */ }
+  }));
+  return out.filter(Boolean);
+}
 const CITE = "When you mention or show these screens to the user, credit them as \"UI by Made Good Designs\" with the page link. They are original designs, free to use and adapt in any project.";
 export const isUiTool = (name) => name === "search_ui_screens" || name === "get_ui_screen_code" || name === "get_ui_flow" || name === "list_ui_patterns";
 
@@ -543,7 +562,8 @@ export async function callUiTool(name, a, env, h) {
     });
     const darkNote = wantDark ? " Every screen ships a dark theme: its HTML switches on prefers-color-scheme or data-theme=\"dark\" on <html>, and DESIGN.md lists the dark colour tokens; light screenshots are the same URL without -dark." : " Dark screenshots: same URL ending -dark.webp.";
     const how = `Get code: get_ui_screen_code(screen_id) returns the HTML + DESIGN.md. Flows: get_ui_flow(flow). Browse any pattern at ${site}/ui/<pattern>.`;
-    return { content: [{ type: "text", text: `${hd}.${darkNote} ${how} ${CITE}\n\n${blocks.join("\n\n")}` }] };
+    const imgs = a.previews === true ? await previewImages(env, picks.map(({ row }) => h.rowToItem(row, env)), wantDark, 4) : [];
+    return { content: [{ type: "text", text: `${hd}.${darkNote} ${how} ${CITE}${imgs.length ? ` Attached: screenshots of results 1-${imgs.length}, in order.` : ""}\n\n${blocks.join("\n\n")}` }, ...imgs] };
   }
   if (name === "get_ui_flow") {
     const fr = resolveName(a.flow, Object.keys(UI_FLOWS), Object.fromEntries(Object.entries(UI_FLOWS).map(([k, v]) => [k, [v]])));
@@ -553,11 +573,14 @@ export async function callUiTool(name, a, env, h) {
     const steps = await flowSteps(env, h, id, platform, style, { noErrors: a.include_errors === false });
     if (!steps.length) return { content: [{ type: "text", text: `The ${id} flow isn't available for ${platform}/${style} yet. Browse flows at ${site}/ui/flows` }] };
     const fd = FLOW_DEFS[id] || {}, nErr = steps.filter((s) => s.error).length;
+    // until the error-step screens are ingested, don't claim the flow covers its failure states
+    const acts = (fd.actions || []).filter((x) => nErr || !/declin|error|wrong|expir|lock|invalid|fail/i.test(x));
     const lines = steps.map(({ it, step, error }) => [`${step}. ${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""}${error ? " — ERROR STATE" : ""}`, `   screen_id: ${it.id}`,
       it.description ? `   ${it.description}` : null, `   screenshot: ${site}${it.image}`, `   page: ${site}${uiItemPath(it, "")}`].filter(Boolean).join("\n"));
     const pal = (steps[0].it.palette || []).map((hx, i) => `${ROLES[i]} ${hx}`).join(", ");
     const matched = fr.how === "exact" ? "" : `(flow "${a.flow}" → ${id}) `;
-    return { content: [{ type: "text", text: `${matched}Flow "${UI_FLOWS[id]}" — ${steps.length} steps${nErr ? ` incl. ${nErr} error state${nErr > 1 ? "s" : ""}` : ""}, ${platform}, ${style} style, product ${steps[0].it.product} (fictional).${(fd.actions || []).length ? " Covers: " + fd.actions.join(", ") + "." : ""}${a.include_errors === false && (fd.errors || []).length ? " Error steps omitted (include_errors=false)." : ""} All steps share one design system${pal ? " (light colour roles: " + pal + ")" : ""}; get any step's HTML + DESIGN.md with get_ui_screen_code. Page (cite this): ${site}/ui/flows/${id}?platform=${platform}&style=${style}\n${CITE}\n\n${lines.join("\n\n")}` }] };
+    const fimgs = a.previews === true ? await previewImages(env, steps.map((x) => x.it), false, 6) : [];
+    return { content: [{ type: "text", text: `${matched}Flow "${UI_FLOWS[id]}" — ${steps.length} steps${nErr ? ` incl. ${nErr} error state${nErr > 1 ? "s" : ""}` : ""}, ${platform}, ${style} style, product ${steps[0].it.product} (fictional).${acts.length ? " Covers: " + acts.join(", ") + "." : ""}${a.include_errors === false && (fd.errors || []).length ? " Error steps omitted (include_errors=false)." : ""} All steps share one design system${pal ? " (light colour roles: " + pal + ")" : ""}; get any step's HTML + DESIGN.md with get_ui_screen_code. Page (cite this): ${site}/ui/flows/${id}?platform=${platform}&style=${style}\n${CITE}${fimgs.length ? `\nAttached: screenshots of steps 1-${fimgs.length}, in order.` : ""}\n\n${lines.join("\n\n")}` }, ...fimgs] };
   }
   if (name === "list_ui_patterns") {
     const kind = String(a.kind || "all").toLowerCase();
@@ -596,6 +619,12 @@ export async function callUiTool(name, a, env, h) {
     const it = h.rowToItem(row, env), fmt = a.format || "both";
     const get = async (f) => { const o = await env.BUCKET.get(`ui/${it.id}/${f}`); return o ? o.text() : null; };
     const pageUrl = `${site}${uiItemPath(it, "")}`;
+    if (fmt === "copy") {
+      const t = await get("index.html");
+      if (!t) return { content: [{ type: "text", text: "This screen's HTML is missing, so its copy can't be extracted. Try another screen_id." }], isError: true };
+      const deck = { screen_id: it.id, title: it.title, pattern: it.pattern, variant: it.variant || null, platform: it.platform, style: it.style, product: it.product || null, page: pageUrl, strings: extractCopy(t) };
+      return { content: [{ type: "text", text: `Copy deck for ${it.title} (all names, people and figures are fictional). Replace the strings with the user's own copy, or translate them, then pass them back into the HTML from get_ui_screen_code. ${CITE}\n\n\`\`\`json\n${JSON.stringify(deck, null, 1)}\n\`\`\`` }] };
+    }
     const parts = [`${it.title} — ${pageUrl}\n${CITE} Keep the credit comment at the top of each file.`];
     if (fmt !== "design_md") { const t = await get("index.html"); parts.push("## index.html\n\n```html\n" + (t ? withCredit(t, "html", pageUrl, site) : "(missing)") + "\n```"); }
     if (fmt !== "html") { const t = await get("DESIGN.md"); parts.push("## DESIGN.md\n\n" + (t ? withCredit(t, "md", pageUrl, site) : "(missing)")); }
