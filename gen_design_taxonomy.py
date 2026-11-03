@@ -70,6 +70,9 @@ T = {
  "make_certificate_border": (["print", "brand"], "/tools/certificate-border/", ["graphic-print"]),
  "calc_kitchen_work_triangle": (["3d", "everyday"], "/tools/kitchen-planner/", ["industrial-product"]),
  "plan_square_foot_garden": (["everyday", "print"], "/tools/garden-planner/", ["illustration-pattern"]),
+ # batch 75 (3-Nov-2026): mazes and dungeon maps
+ "make_maze": (["images", "print"], "/tools/maze-generator/", ["illustration-pattern", "graphic-print", "marketing-content"]),
+ "make_dungeon": (["images", "print"], "/tools/dungeon-map-generator/", ["illustration-pattern", "graphic-print"]),
  # batch 73 (3-Nov-2026): brochure panel widths, banner specs (get_mockup_print_area also covers the b73 mockup products)
  "get_brochure_panels": (["print"], "/tools/brochure-mockup/", ["graphic-print", "marketing-content"]),
  "get_banner_spec": (["print", "brand"], "/tools/banner-mockup/", ["graphic-print", "marketing-content"]),
@@ -90,6 +93,10 @@ T = {
 }
 # /tools/ pages: first matching rule wins (slug regex → categories, roles)
 RULES = [
+ # batch 75 + 77 pages without an MCP tool of their own (3-Nov-2026), ahead of the generic rules ("heightmap" is a 3D / terrain image, the textures are surfaces)
+ (r"^heightmap-generator$", ["images", "3d"], ["illustration-pattern", "industrial-product"]),
+ (r"^(city-map|planet)-generator$", ["images"], ["illustration-pattern", "graphic-print"]),
+ (r"^(wall|tile|road|rock|carpet|dirt|plastic|rust|snow|velvet)-texture$", ["images"], ["illustration-pattern", "graphic-print", "photo-image"]),
  # batch 73 mockup pages (3-Nov-2026); brochure-mockup and banner-mockup take their categories from their MCP tools
  (r"^(polo-shirt|cap)-mockup$", ["print", "brand"], ["graphic-print", "brand", "marketing-content"]),
  (r"^(canvas|magazine|flyer|brochure|notebook|sticker|banner)-mockup$", ["print", "brand"], ["graphic-print", "marketing-content"]),
@@ -187,7 +194,7 @@ def main():
             pg["roles"] = sorted({r for n in pg["mcp_tools"] for r in tools[n]["roles"]})
     missing = [s for s in used_pages if s not in pages]
     if missing: sys.exit(f"MCP tool pages not on the /tools/ hub: {missing}")
-    out = {"version": "2026-11-03g", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
+    out = {"version": "2026-11-03h", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
     json.dump(out, open(OUT, "w"), indent=0, separators=(",", ":"))
     print(f"{len(tools)} MCP tools, {len(pages)} /tools/ pages → {OUT} ({os.path.getsize(OUT):,} bytes)")
 main()

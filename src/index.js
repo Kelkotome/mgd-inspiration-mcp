@@ -28,6 +28,7 @@ import { TOOL_DEFS as MCP_TOOLS_68, isTools68Tool, callTools68Tool, NEXT68 } fro
 import { TOOL_DEFS as MCP_TOOLS_69, isTools69Tool, callTools69Tool, NEXT69 } from "./mcp_tools69.js";
 import { TOOL_DEFS as MCP_TOOLS_72, isTools72Tool, callTools72Tool, NEXT72 } from "./mcp_tools72.js";
 import { TOOL_DEFS as MCP_TOOLS_73, isTools73Tool, callTools73Tool, NEXT73, isMockup73Call, extendMockupDefs } from "./mcp_tools73.js";
+import { TOOL_DEFS as MCP_TOOLS_75, isTools75Tool, callTools75Tool, NEXT75 } from "./mcp_tools75.js";
 import { MGDMoodboard } from "./tools_core48.js";
 import { handleAi, cleanupAiUsage } from "./ai_tools.js";
 import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields } from "./ui_screens.js";
@@ -1606,7 +1607,7 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
-MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, ...MCP_TOOLS_64, ...MCP_TOOLS_65, ...MCP_TOOLS_66, ...MCP_TOOLS_68, ...MCP_TOOLS_69, ...MCP_TOOLS_72, ...MCP_TOOLS_73, MOODBOARD_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, ...MCP_TOOLS_64, ...MCP_TOOLS_65, ...MCP_TOOLS_66, ...MCP_TOOLS_68, ...MCP_TOOLS_69, ...MCP_TOOLS_72, ...MCP_TOOLS_73, ...MCP_TOOLS_75, MOODBOARD_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 extendMockupDefs(MCP_TOOLS); // batch 73: get_mockup_print_area (mcp_tools69.js) also covers canvas, magazine, flyer, brochure, notebook, polo, cap, sticker, banner, paper bag
 
 // ---- Routing guide (sent on initialize; clients load it into the model's context) — 31-Oct-2026
@@ -1617,6 +1618,7 @@ extendMockupDefs(MCP_TOOLS); // batch 73: get_mockup_print_area (mcp_tools69.js)
 // 3-Nov-2026 (b72): "Sys:"/"Make:" labels, no space after ":" or ";", no full stops at line ends, "MGD:" first line, Text+Photo as "Misc:", to name make_star_map, make_fantasy_map, make_paper_bag_template; every previously named tool is still named.
 // 3-Nov-2026 (b73): line labels (UI:/Brand:/Print:/Make:) dropped — the lines still group the tools — to name get_banner_spec; every previously named tool is still named (get_brochure_panels did not fit: tools/list + browse_design_tools).
 // 3-Nov-2026 (b69): no spaces around →, shorter first line, kitchen/garden moved onto the 3D line, for make_ribbon_banner, get_mockup_print_area, calc_cross_stitch.
+// 3-Nov-2026 (b75): make_maze and make_dungeon are NOT named (no room left under 1,500 chars); clients reach them via tools/list and browse_design_tools.
 const MCP_INSTRUCTIONS = "Made Good Designs: call BEFORE building or restyling UI/colours/fonts/logos\n" +
   "search_ui_screens→get_ui_screen_code,get_ui_flow;search_design_inspiration,browse_inspiration_by_theme,search_museum_art,search_annual_reports\n" +
   "generate_website_color_palette→generate_design_md,design_md_from_references;generate_shadcn_theme,generate_color_scale,generate_type_scale,export_design_tokens;check_contrast,lint_design_md,convert_color;generate_logo_concepts,generate_color_combinations,generate_slogans,make_brand_board,get_logo_placement,make_coat_of_arms,search_icons,edit_svg_path,make_speech_bubble,make_ribbon_banner,get_screen_sizes\n" +
@@ -1713,6 +1715,7 @@ Object.assign(MCP_NEXT, NEXT68);
 Object.assign(MCP_NEXT, NEXT69);
 Object.assign(MCP_NEXT, NEXT72);
 Object.assign(MCP_NEXT, NEXT73);
+Object.assign(MCP_NEXT, NEXT75);
 function mcpAddNext(name, r) {
   const hint = MCP_NEXT[name];
   if (!hint || !r || r.isError || mcpZero(r) || !Array.isArray(r.content) || /^0 /.test((r.content[0] && r.content[0].text) || "")) return r;
@@ -2125,6 +2128,7 @@ async function mcpCallToolInner(name, a, env, opts) {
   if (isTools69Tool(name)) return callTools69Tool(name, a);
   if (isTools72Tool(name)) return callTools72Tool(name, a);
   if (isTools73Tool(name)) return callTools73Tool(name, a);
+  if (isTools75Tool(name)) return callTools75Tool(name, a);
   if (isTools48Tool(name)) return callTools48Tool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, site: MCP_SITE });
   if (isUiTool(name)) return callUiTool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, clampInt, site: MCP_SITE });
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };

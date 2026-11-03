@@ -112,6 +112,10 @@ BATCHES = {
         ("get_brochure_panels", "get the panel widths for a roll (C) fold or Z fold tri-fold or a bi-fold on Letter, Legal, Tabloid, A4 or A3: outside and inside spreads, fold lines, the front-cover panel and the flat file size in pixels", "brochure-mockup", "Brochure Mockup"),
         ("get_banner_spec", "get a banner's size in in/ft/cm, aspect ratio, artwork pixels at 100 and 150 dpi and the grommet count and positions, for vinyl presets, 33 × 81 in roll-ups, pole banners or any custom size", "banner-mockup", "Banner Mockup"),
     ]),
+    "75": (100, [   # 100 = tools/list on /mcp and /mcp/all after b75 (98 + 2), checked on a local Worker 3-Nov
+        ("make_maze", "make a seeded maze (rectangle, circle, hexagon or triangle; backtracker, Prim, Kruskal or Wilson) by size or difficulty, with optional loops and the solution path, as an SVG with dead-end and solution stats", "maze-generator", "Maze Generator"),
+        ("make_dungeon", "generate a seeded dungeon map with rooms, corridors, doors (locked, secret, archway), stairs, traps and a 5 ft grid, rooms numbered by distance, with a room key, as an SVG", "dungeon-map-generator", "Dungeon Map Generator"),
+    ]),
 }
 
 def main(b):
