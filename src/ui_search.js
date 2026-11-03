@@ -188,7 +188,8 @@ export function buildIndex(rows, patternOrder) {
     const f = { pattern: patOf(r.category || "").tok, title: new Set(tokens(title + " " + variant.replace(/-/g, " "))),
       tags: new Set(elTags.flatMap((t) => tokens(t.replace(/-/g, " ")))),
       industry: new Set(tokens(`${r.industry || ""} ${r.company || ""}`)), desc: new Set(tokens(first + " " + shows)) };
-    return { r, f, variant, pattern: r.category, ord: order.has(r.category) ? order.get(r.category) : 999 };
+    const steps = tags.filter((t) => /^flow:[a-z0-9-]+:\d+$/.test(t)).map((t) => +t.split(":")[2]);
+    return { r, f, variant, step: steps.length ? Math.min(...steps) : 0, pattern: r.category, ord: order.has(r.category) ? order.get(r.category) : 999 };
   });
   const df = new Map();
   for (const d of docs) { const seen = new Set(patOf(d.pattern || "").all); for (const k in d.f) for (const t of d.f[k]) seen.add(t); for (const t of seen) df.set(t, (df.get(t) || 0) + 1); }
@@ -255,7 +256,7 @@ export function rankRows(q, idx, opts = {}) {
     out.push({ d, r, score: score + pref, text: score, cover: matched / total, hit, strong });
   }
   const si = (s) => { const i = UI_STYLE_LIST.indexOf(s); return i < 0 ? 99 : i; };
-  out.sort((a, b) => b.score - a.score || a.d.ord - b.d.ord || String(a.d.variant).localeCompare(String(b.d.variant))
+  out.sort((a, b) => b.score - a.score || a.d.ord - b.d.ord || a.d.step - b.d.step || String(a.d.variant).localeCompare(String(b.d.variant))
     || (a.r.country === b.r.country ? 0 : a.r.country === "web" ? -1 : 1) || si(a.r.style) - si(b.r.style) || String(a.r.id).localeCompare(String(b.r.id)));
   const best = out[0];
   const unmatched = terms.filter((x) => !(best && best.hit.includes(x.w))).map((x) => x.w);
@@ -273,6 +274,7 @@ function suggest(pq, idx, ranked) {
   for (const x of ranked.slice(0, 40)) if (x.text > 0) add(x.r.category, x.text / 10);
   for (const w of pq.raw) { const h = HINTS[w] || HINTS[w.replace(/s$/, "")] || HINTS[stem(w)]; if (h) h.forEach((p, i) => add(p, 3 - i)); }
   for (const x of pq.terms) {
+    if (x.t.length < 5) continue;
     const g = grams(x.t);
     for (const [p, P] of Object.entries(idx.pat)) { let m = 0; for (const t of P.all) m = Math.max(m, jacc(g, grams(t))); if (m >= 0.45) add(p, m); }
   }

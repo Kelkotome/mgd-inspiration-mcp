@@ -411,6 +411,28 @@ export const UI_MCP_TOOLS = [
 const CITE = "When you mention or show these screens to the user, credit them as \"UI by Made Good Designs\" with the page link. They are original designs, free to use and adapt in any project.";
 export const isUiTool = (name) => name === "search_ui_screens" || name === "get_ui_screen_code" || name === "get_ui_flow";
 
+// Diversify: one result per pattern+variant (at most 2 per pattern), best style/platform first; the other styles of the
+// same screen are listed as twins on one line instead of filling the answer with six restyled copies.
+// byPlatform (a pattern filter is set): web and mobile count as different screens.
+const ROLE_SHORT = ["bg", "surface", "border", "text", "muted", "primary", "on-primary", "accent"];
+function diversify(ranked, limit, o) {
+  const groups = new Map(), perPat = new Map(), picks = [];
+  for (const x of ranked) {
+    const r = x.r, v = (parseTags(r.tags).find((t) => t.startsWith("variant:")) || "");
+    const key = o.distinct ? `${r.category}|${v}|${o.byPlatform ? r.country : ""}` : r.id;
+    let g = groups.get(key);
+    if (!g) {
+      if (picks.length >= limit) continue;
+      const n = perPat.get(r.category) || 0;
+      if (o.distinct && !o.byPlatform && n >= 2) continue;
+      perPat.set(r.category, n + 1);
+      g = { row: r, twins: [] }; groups.set(key, g); picks.push(g); continue;
+    }
+    if (r.country === g.row.country && g.twins.length < 7 && !g.twins.some((t) => t.style === r.style)) g.twins.push({ style: r.style, id: r.id });
+  }
+  return picks;
+}
+
 // All published UI rows + their search index, cached per isolate (the library is ~1.6k rows and changes only on ingest).
 let UI_IDX = null;
 async function uiSearchIndex(env) {
@@ -442,31 +464,35 @@ export async function callUiTool(name, a, env, h) {
     const patNote = a.pattern && !pattern ? ` (unknown pattern "${a.pattern}" ignored; list_ui_patterns shows them all)` : pr && pr.how !== "exact" ? ` (pattern "${a.pattern}" → ${pattern})` : "";
     const sugg = (res.suggestions || []).filter((p) => p !== pattern);
     const suggLine = sugg.length ? ` Closest patterns: ${sugg.map((p) => `${p} (${label(p).toLowerCase()})`).join(", ")} — search again with one of them, or pass pattern="…".` : "";
-    let rows, note = patNote;
+    let note = patNote, pool;
     if (res.tier === "none" && !pattern) {
       const unk = res.terms.filter((t) => !t.df).map((t) => t.w);
       return { content: [{ type: "text", text: `No screen in the library matches "${q}"${filt}${unk.length ? ` (nothing about: ${unk.join(", ")})` : ""}, so none are shown rather than unrelated ones.${suggLine} Browse all at ${site}/ui` }] };
     }
-    if (res.tier === "none") { rows = res.ranked.slice(0, limit).map((x) => x.r); note += ` (no text match inside pattern ${pattern}; showing its screens)`; }
+    if (res.tier === "none") { pool = res.ranked; note += ` (no text match inside pattern ${pattern}; showing its screens)`; }
     else {
-      rows = res.ranked.filter((x) => res.tier === "all" || x.text > 0).slice(0, limit).map((x) => x.r);
+      const top = res.ranked[0] ? res.ranked[0].score : 0;
+      pool = res.tier === "all" ? res.ranked : res.ranked.filter((x) => x.text > 0 && x.score >= top * 0.2); // relevance floor: no filler
       if (res.tier === "partial") note += ` (no screen matches every part; closest matches, unmatched: ${res.unmatched.join(", ")})`;
     }
-    const hd = `${rows.length} UI screen(s) for "${q}"${filt}${note}`;
-    if (!rows.length) return { content: [{ type: "text", text: `No screen in the library matches "${q}"${filt}.${suggLine} Browse all at ${site}/ui` }] };
-    const r = { rows };
-    const blocks = r.rows.map((row) => {
+    const picks = diversify(pool, limit, { distinct: a.distinct !== false, byPlatform: !!pattern });
+    if (!picks.length) return { content: [{ type: "text", text: `No screen in the library matches "${q}"${filt}.${suggLine} Browse all at ${site}/ui` }] };
+    const nPat = new Set(picks.map((p) => p.row.category)).size;
+    const hd = `${picks.length} UI screen(s) for "${q}"${filt} across ${nPat} pattern${nPat === 1 ? "" : "s"}${note}`;
+    const blocks = picks.map(({ row, twins }, i) => {
       const it = h.rowToItem(row, env);
-      const roles = (it.palette || []).map((hx, i) => `${ROLES[i]} ${hx}`).join(", ");
+      const roles = (it.palette || []).map((hx, j) => `${ROLE_SHORT[j]} ${hx}`).join(" ");
       const fl = flowsLine(it);
-      return [`• ${it.title}`, `  screen_id: ${it.id}`, `  pattern: ${it.pattern}${it.variant ? " (" + it.variant + ")" : ""} · platform: ${it.platform} · style: ${it.style}${it.app_category ? " · category: " + it.app_category : ""}`,
-        it.description ? `  ${it.description}` : null, roles ? `  colour roles (light): ${roles}` : null,
-        uiShownTags(it.tags).length ? `  elements: ${uiShownTags(it.tags).join(", ")}` : null, fl ? `  flows: ${fl} (get_ui_flow)` : null,
-        wantDark && it.image_dark ? `  screenshot (dark): ${site}${it.image_dark} · light: ${site}${it.image}` : `  screenshot: ${site}${it.image}${it.image_dark ? ` · dark: ${site}${it.image_dark}` : ""}`, `  page (cite this): ${site}${uiItemPath(it, "")} · more ${it.pattern} examples: ${site}/ui/${it.pattern}`,
-        `  code: get_ui_screen_code(screen_id="${it.id}") or ${site}${it.code} · DESIGN.md: ${site}${it.design_md}`].filter(Boolean).join("\n");
+      const shows = ((it.description || "").match(/Shows ([^]*?)\.\s+[A-Z][\w-]* style:/) || (it.description || "").match(/Shows ([^]*?)\.(\s|$)/) || [])[1];
+      const els = uiShownTags(it.tags).filter((t) => t !== it.pattern && t !== it.platform && t !== it.app_category);
+      const tw = twins.length ? `  other styles (same screen, pass the screen_id): ${twins.map((t) => `${t.style} ${t.id}`).join(" · ")}` : null;
+      return [`${i + 1}. ${it.title}`, `  screen_id: ${it.id} · pattern: ${it.pattern}${it.variant ? " (" + it.variant + ")" : ""} · ${it.platform} · ${it.style}${it.app_category ? " · " + it.app_category : ""}${fl ? " · flows: " + fl : ""}`,
+        shows ? `  shows: ${shows}` : (it.description ? `  ${it.description}` : null), els.length ? `  elements: ${els.join(", ")}` : null, roles ? `  colours (light): ${roles}` : null,
+        wantDark && it.image_dark ? `  screenshot (dark): ${site}${it.image_dark}` : `  screenshot: ${site}${it.image}`, `  page (cite this): ${site}${uiItemPath(it, "")}`, tw].filter(Boolean).join("\n");
     });
-    const darkNote = wantDark ? " Every screen ships a dark theme: its HTML switches on prefers-color-scheme or data-theme=\"dark\" on <html>, and DESIGN.md lists the dark colour tokens." : "";
-    return { content: [{ type: "text", text: `${hd}.${darkNote} Source: Made Good Designs UI screens — ${site}/ui. ${CITE}\n\n${blocks.join("\n\n")}` }] };
+    const darkNote = wantDark ? " Every screen ships a dark theme: its HTML switches on prefers-color-scheme or data-theme=\"dark\" on <html>, and DESIGN.md lists the dark colour tokens; light screenshots are the same URL without -dark." : " Dark screenshots: same URL ending -dark.webp.";
+    const how = `Get code: get_ui_screen_code(screen_id) returns the HTML + DESIGN.md. Flows: get_ui_flow(flow). Browse any pattern at ${site}/ui/<pattern>.`;
+    return { content: [{ type: "text", text: `${hd}.${darkNote} ${how} ${CITE}\n\n${blocks.join("\n\n")}` }] };
   }
   if (name === "get_ui_flow") {
     const id = String(a.flow || "");

@@ -64,11 +64,11 @@ let pass = 0, chars = 0;
 for (const c of cases) {
   const text = await call(c.args);
   chars += text.length;
-  const top = (text.match(/pattern: ([a-z0-9-]+)/) || [])[1] || null;
+  const top = (text.match(/(?:^\s+|· )pattern: ([a-z0-9-]+)/m) || [])[1] || null;
   const none = NONE_RE.test(text);
   const ok = none ? c.expect.includes("none") : !!top && c.expect.includes(top);
   if (ok) pass++;
-  const distinct = [...new Set([...text.matchAll(/pattern: ([a-z0-9-]+)/g)].map((m) => m[1]))];
+  const distinct = [...new Set([...text.matchAll(/(?:^\s+|· )pattern: ([a-z0-9-]+)/gm)].map((m) => m[1]))];
   results.push({ q: c.q, args: c.args, expect: c.expect, got: none ? "none" : top, ok, distinct, chars: text.length });
   if (flag("--verbose") || !ok) console.log(`${ok ? "PASS" : "FAIL"}  ${c.q}${Object.keys(c.args).length > 1 ? " " + JSON.stringify({ ...c.args, query: undefined }) : ""}\n      expect ${c.expect.join("|")}  got ${none ? "none" : top}  [${distinct.join(", ")}]`);
 }
