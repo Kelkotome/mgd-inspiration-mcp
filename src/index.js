@@ -1784,7 +1784,7 @@ for (const t of MCP_TOOLS) {
 //     every profile (tools/call is never filtered) — only tools/list differs. /mcp/core and /mcp/all are explicit; /mcp follows
 //     MCP_DEFAULT_PROFILE (flip to "core" in one line once the user decides; env MCP_PUBLIC_PROFILE overrides for local tests).
 const MCP_DEFAULT_PROFILE = "all";
-const MCP_CORE_NAMES = ["search_ui_screens", "get_ui_screen_code", "get_ui_flow", "search_design_inspiration", "browse_inspiration_by_theme",
+const MCP_CORE_NAMES = ["search_ui_screens", "get_ui_screen_code", "get_ui_flow", "list_ui_patterns", "search_design_inspiration", "browse_inspiration_by_theme",
   "list_inspiration_themes", "search_museum_art", "search_annual_reports", "generate_website_color_palette", "generate_design_md",
   "design_md_from_references", "generate_logo_concepts", "generate_color_combinations", "check_contrast", "generate_shadcn_theme",
   "search_icons", "make_brand_board", "generate_type_scale", "save_moodboard"];
