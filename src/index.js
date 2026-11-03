@@ -371,7 +371,7 @@ async function feed(url, env, request) {
   const sql = `SELECT * FROM items WHERE ${where.join(" AND ")} ORDER BY ${order} LIMIT ?` + (useOffset ? " OFFSET ?" : "");
   const rows = await env.DB.prepare(sql).bind(...binds, limit, ...(useOffset ? [offset] : [])).all();
 
-  const items = (rows.results || []).map((r) => rowToItem(r, env));
+  const items = (rows.results || []).filter(isPublicRow).map((r) => rowToItem(r, env));
   if (useOffset) {
     const nextOffset = items.length === limit ? offset + limit : null;
     return noEdgeIfEmpty(json({ items, nextOffset }, 200, env, request), items);
@@ -407,13 +407,20 @@ async function search(url, env, request) {
     `SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection = ? AND (title LIKE ? OR description LIKE ? OR tags LIKE ? OR company LIKE ?)
      ORDER BY created_at DESC LIMIT ?`
   ).bind(collection, like, like, like, like, limit).all();
-  const items = (rows.results || []).map((r) => rowToItem(r, env));
+  const items = (rows.results || []).filter(isPublicRow).map((r) => rowToItem(r, env));
   return noEdgeIfEmpty(json({ items }, 200, env, request), items);
 }
 
+// Non-commercial, LINK-ONLY records (hosting='link', status 'staged-nc'/'mcp-nc'; 3-Nov-2026 BSB/ÖNB annual reports)
+// are MCP-only (search_annual_reports include_noncommercial=true) and must never reach the website. SQL already
+// requires status='published' everywhere public; this JS check is the second layer. NOTE: never reference the
+// rights/hosting/image_url columns in SQL — the Worker may run before migrate_rights.sql is applied.
+function isLinkOnly(r) { return !!r && (r.hosting === "link" || r.status === "mcp-nc" || r.status === "staged-nc" || String(r.image_key || "").startsWith("link/")); }
+function isPublicRow(r) { return !!r && (r.status == null || r.status === "published") && !isLinkOnly(r); }
+
 async function getItem(id, env, request) {
   const row = await env.DB.prepare(`SELECT * FROM items WHERE id = ? AND status='published'`).bind(id).first();
-  if (!row) return json({ error: "not_found" }, 404, env, request);
+  if (!isPublicRow(row)) return json({ error: "not_found" }, 404, env, request);
   return json({ item: rowToItem(row, env) }, 200, env, request);
 }
 
@@ -533,7 +540,7 @@ async function annualItemPage(rest, env, base) {
   const m = (rest || "").match(/([0-9a-f]{12})$/);
   if (!m) return new Response("not found", { status: 404 });
   const row = await env.DB.prepare(`SELECT * FROM items WHERE id=? AND status='published' AND collection='annual-report'`).bind(m[1]).first();
-  if (!row) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
+  if (!isPublicRow(row)) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
   const it = rowToItem(row, env);
   // Full report: for archive.org-sourced items, embed the Internet Archive BookReader inline
   // (viewer stays on our page, no outbound link, nothing rehosted). Other sources hold only a cover.
@@ -624,7 +631,7 @@ async function annualFacets(env, request) {
 
 async function annualSitemap(env, base) {
   const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
-  const rows = (await env.DB.prepare(`SELECT id,company,report_year,title,designer,industry,country FROM items WHERE status='published' AND collection='annual-report' ORDER BY created_at DESC`).all()).results || [];
+  const rows = ((await env.DB.prepare(`SELECT id,company,report_year,title,designer,industry,country,status,image_key FROM items WHERE status='published' AND collection='annual-report' ORDER BY created_at DESC`).all()).results || []).filter(isPublicRow);
   const facet = (key, kind) => [...new Set(rows.map((r) => (r[key] || "").trim()).filter(Boolean))]
     .map((v) => `${site}${base}/annual-reports/${kind}/${slugify(v)}`);
   const urls = [`${site}${base}/annual-reports`, `${site}${base}/annual-reports/index`]
@@ -663,7 +670,7 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
 // Browse hub: /annual-reports/index — lists designers, companies, industries as internal links.
 async function annualIndexPage(env, base) {
   const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
-  const rows = (await env.DB.prepare(`SELECT company,designer,industry,country FROM items WHERE status='published' AND collection='annual-report'`).all()).results || [];
+  const rows = ((await env.DB.prepare(`SELECT company,designer,industry,country,status,image_key FROM items WHERE status='published' AND collection='annual-report'`).all()).results || []).filter(isPublicRow);
   const tally = (key) => {
     const m = new Map();
     for (const r of rows) { const v = (r[key] || "").trim(); if (!v) continue; m.set(v, (m.get(v) || 0) + 1); }
@@ -700,7 +707,7 @@ async function annualFacetPage(kind, slug, env, base) {
   const match = distinct.find((r) => slugify(r.v) === slug);
   if (!match) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
   const value = match.v;
-  const rows = (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND collection='annual-report' AND ${col}=? ORDER BY report_year, company`).bind(value).all()).results || [];
+  const rows = ((await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND collection='annual-report' AND ${col}=? ORDER BY report_year, company`).bind(value).all()).results || []).filter(isPublicRow);
   const items = rows.map((r) => rowToItem(r, env));
   const heading = kind === "designer" ? `Designed by ${value}` : kind === "country" ? `Annual reports from ${value}` : `${value} annual reports`;
   const canonical = `${site}${base}/annual-reports/${kind}/${slugify(value)}`;
@@ -1497,6 +1504,7 @@ const MCP_TOOLS = [
         year: { type: "integer", description: "Optional exact report/fiscal year filter, e.g. 1972." },
         industry: { type: "string", description: "Optional industry/sector filter, e.g. 'transit', 'oil', 'retail'." },
         limit: { type: "integer", description: "Max results (1-20, default 8).", minimum: 1, maximum: 20 },
+        include_noncommercial: { type: "boolean", description: "Optional, default false (results are then public domain only). true also returns link-only historical reports (mostly German and Austrian, pre-1931) held by the Bavarian State Library and the Austrian National Library under NON-COMMERCIAL licences: each is marked with its licence and links to the library's own page and image." },
       },
       required: ["query"],
     },
@@ -2040,11 +2048,14 @@ async function mcpCallToolInner(name, a, env, opts) {
   if (name === "search_annual_reports") {
     const q = (a.query || "").toString().trim();
     const limit = clampInt(a.limit, 8, 1, 20);
-    const binds = ["published", "annual-report"];
-    let where = "status=? AND owner_id IS NULL AND collection=?";
+    const nc = a.include_noncommercial === true || a.include_noncommercial === "true";
+    const binds = nc ? ["published", "mcp-nc", "annual-report"] : ["published", "annual-report"];
+    let where = nc ? "status IN (?,?) AND owner_id IS NULL AND collection=?" : "status=? AND owner_id IS NULL AND collection=?";
     if (a.year) { const y = parseInt(a.year, 10); if (y) { where += " AND report_year = ?"; binds.push(y); } }
     if (a.industry) { where += " AND industry = ?"; binds.push(a.industry.toString().trim()); }
     const r = await mcpSearchRowsRetry(env, where, binds, ["company", "designer", "title", "description", "tags", "industry"], q, "report_year DESC, created_at DESC", limit);
+    // default = public domain only: drop any link-only row even if its status were wrong; opt-in keeps only flipped ('mcp-nc') ones
+    r.rows = r.rows.filter((x) => nc ? (isPublicRow(x) || x.status === "mcp-nc") : isPublicRow(x));
     return mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts, MCP_SIBLING["annual-report"]);
   }
   if (name === "search_museum_art") {
@@ -2265,6 +2276,22 @@ function mcpItems(rows, header, opts, sibling) {
     const it = rowToItem(r, null);
     const isReport = it.collection === "annual-report";
     const isMuseum = it.collection === "museum";
+    if (isLinkOnly(r)) {
+      // Non-commercial link-only record: no MGD page (those 404 by design), image = the library's own URL.
+      return [
+        `• ${it.title || it.company || "Untitled"}`,
+        opts && opts.ids ? `  item_id: ${it.id}` : null,
+        it.company ? `  company: ${it.company}${it.report_year ? " ("+it.report_year+")" : ""}` : null,
+        it.industry ? `  industry: ${it.industry}` : null,
+        it.country ? `  country: ${it.country}` : null,
+        `  Licence: ${r.rights || "CC BY-NC"} — non-commercial use only — ${r.rights_holder || prettySource(r.source_host)}`,
+        it.description ? `  ${it.description}` : null,
+        it.tags.length ? `  tags: ${it.tags.join(", ")}` : null,
+        it.palette.length ? `  palette: ${it.palette.join(" ")}` : null,
+        r.source_url ? `  source page: ${r.source_url}` : null,
+        r.image_url ? `  image: ${r.image_url}` : null,
+      ].filter(Boolean).join("\n");
+    }
     return [
       `• ${it.title || it.company || "Untitled"}`,
       opts && opts.ids ? `  item_id: ${it.id}` : null,

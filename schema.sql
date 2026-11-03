@@ -24,7 +24,11 @@ CREATE TABLE IF NOT EXISTS items (
   report_year  INTEGER,                   -- annual-report only: fiscal/report year
   designer     TEXT,                      -- annual-report only: designer/agency (curated, not AI)
   industry     TEXT,                      -- annual-report only: industry/sector
-  country      TEXT                       -- annual-report only: country of the issuing entity
+  country      TEXT,                      -- annual-report only: country of the issuing entity
+  rights       TEXT,                      -- migrate_rights.sql: exact licence statement (link-only NC rows)
+  rights_holder TEXT,                     -- migrate_rights.sql: holding library/museum
+  hosting      TEXT,                      -- migrate_rights.sql: NULL = image in R2; 'link' = metadata only, never on the website (status 'staged-nc'/'mcp-nc', MCP opt-in)
+  image_url    TEXT                       -- migrate_rights.sql: library's own IIIF/thumbnail URL (hosting='link')
 );
 CREATE INDEX IF NOT EXISTS idx_items_created ON items(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_items_style   ON items(style, created_at DESC);
