@@ -2098,5 +2098,149 @@
     "Keep a small persistent indicator, such as a bar or floating pill with the timer and end and mute buttons, so people can return to the call or hang up from anywhere."
    ]
   ]
+ },
+ "toast-snackbar": {
+  "h1": "Toast and snackbar with undo examples",
+  "intro": "A toast confirms an action without stopping the person who took it. These examples show a task list right after a delete: the row is gone, a dark toast names the deleted task, offers Undo with a keyboard shortcut and counts down, and a quieter success toast sits above it. Web and mobile, eight styles, light and dark.",
+  "tips": [
+   "Name the thing that changed (“Draft Q3 launch brief” deleted), not just “Done”.",
+   "Offer Undo for destructive or bulk actions, and keep the toast up long enough to use it; a countdown bar shows how long is left.",
+   "Stack toasts newest-nearest and cap the stack at two or three.",
+   "On mobile, place the toast above the tab bar so it never covers navigation, and keep it to one line plus the action."
+  ],
+  "faq": [
+   [
+    "What is the difference between a toast and a snackbar?",
+    "The terms are used almost interchangeably. Snackbar usually means a toast with a single action such as Undo, placed at the bottom of the screen; toast is the general name for a brief, non-blocking message."
+   ],
+   [
+    "How long should a toast with undo stay on screen?",
+    "Long enough to read and react, typically 6 to 10 seconds for messages with an action. Pause the timer while the pointer is over the toast or it has keyboard focus."
+   ],
+   [
+    "Should errors use toasts?",
+    "Only for errors that need no input. If someone has to fix something, show the error next to the field or in a banner that stays until it is resolved."
+   ]
+  ]
+ },
+ "confirm-dialog": {
+  "h1": "Confirm delete dialog examples",
+  "intro": "A destructive confirmation should slow people down just enough. These dialogs sit over workspace settings and confirm deleting a whole workspace: they list what will be lost, link to an export first, ask the person to type the workspace name and tick an acknowledgement, and keep the red Delete button disabled until both are done.",
+  "tips": [
+   "Say exactly what will be removed and for whom, with numbers, instead of a generic “Are you sure?”.",
+   "Use the danger colour only on the destructive button, and label it with the action (“Delete workspace”), never “OK”.",
+   "Reserve type-to-confirm for irreversible, high-impact actions; for small deletes, an undo toast is kinder.",
+   "Offer the safe path, such as Export or Cancel, as clearly as the destructive one."
+  ],
+  "faq": [
+   [
+    "When should I use a confirmation dialog?",
+    "For actions that cannot be undone and have a large impact, such as deleting an account, a workspace or many records. For reversible actions, act immediately and offer Undo."
+   ],
+   [
+    "Why make people type the name to confirm?",
+    "It stops muscle-memory clicks and makes sure the person knows which item they are deleting, which matters when several look alike."
+   ],
+   [
+    "Where should the destructive button go?",
+    "Keep the platform convention for button order, but make the destructive button visually distinct with the danger colour and a specific label."
+   ]
+  ]
+ },
+ "side-drawer": {
+  "h1": "Side drawer and detail panel examples",
+  "intro": "A side drawer opens a record without leaving the list. These examples slide a customer drawer over a data table, keeping the selected rows visible behind a light scrim: a header with status, three key figures, tabs, plan and payment details, recent activity and a sticky footer. On mobile the same content becomes a bottom sheet.",
+  "tips": [
+   "Keep the list visible behind the drawer so people keep their place and can compare.",
+   "Give the drawer its own header with a close button and a link to the full page.",
+   "Put the most-used action in a sticky footer so it stays reachable when the content scrolls.",
+   "On mobile, use a bottom sheet with a drag handle instead of a narrow side panel."
+  ],
+  "faq": [
+   [
+    "When should I use a drawer instead of a new page?",
+    "Use a drawer for quick look-ups and light edits where people return to the list afterwards. Use a full page for long forms or content people want to share or bookmark."
+   ],
+   [
+    "Should a drawer have a scrim?",
+    "A light scrim helps show that the drawer has focus. Non-modal drawers that let people keep working in the list can skip it."
+   ],
+   [
+    "How wide should a side drawer be?",
+    "Commonly 360 to 480 pixels on desktop, wide enough for a two-column key–value list without wrapping."
+   ]
+  ]
+ },
+ "command-palette": {
+  "h1": "Command palette (⌘K) examples",
+  "intro": "A command palette lets people jump anywhere or run any action from the keyboard. These examples open over a kanban board with a typed query and grouped results: places to jump to, actions with their shortcuts, and recent items, with the highlighted row and a footer of key hints. On mobile it becomes a full-screen search sheet.",
+  "tips": [
+   "Group results (jump to, actions, recent) and show the group label, so mixed results stay scannable.",
+   "Show each action’s own shortcut so the palette teaches faster paths.",
+   "Highlight the first match and keep Enter, arrows and Escape working without the mouse.",
+   "Offer a fallback such as “Search in all docs” when nothing in the list fits."
+  ],
+  "faq": [
+   [
+    "What is a command palette?",
+    "A searchable list of destinations and actions, usually opened with ⌘K or Ctrl+K, that lets people navigate and act without hunting through menus."
+   ],
+   [
+    "What should a command palette show before typing?",
+    "Recent items and the most common actions, so it is useful even with an empty query."
+   ],
+   [
+    "Is a command palette accessible?",
+    "It can be: use a combobox pattern with a listbox of options, move focus with arrow keys, announce the active option and close on Escape."
+   ]
+  ]
+ },
+ "date-range-picker": {
+  "h1": "Date range picker examples",
+  "intro": "A date range picker should make common ranges one click and custom ranges easy. These examples open over a revenue report with presets, two months with the selected range highlighted, start and end date fields, the number of days and a compare-to-previous-period toggle. On mobile, one month sits in a bottom sheet with preset chips.",
+  "tips": [
+   "Lead with presets (last 7 or 30 days, quarter, year to date); most people never need the calendar.",
+   "Show two months on desktop so ranges that cross a month boundary are easy to pick.",
+   "Mirror the selection in editable text fields and show the length of the range.",
+   "Mark the start and end differently from the days in between, and do not rely on colour alone."
+  ],
+  "faq": [
+   [
+    "Should a date range picker use one calendar or two?",
+    "Two side-by-side months work best on desktop because many ranges cross a month boundary. On mobile, one scrolling month in a sheet fits better."
+   ],
+   [
+    "Do I need an Apply button?",
+    "For reports that reload data, yes: it lets people adjust both dates before anything changes. For lightweight filters, apply on selection."
+   ],
+   [
+    "How do I make a date picker accessible?",
+    "Let people type dates in the text fields, support arrow-key navigation in the grid, and label each day with its full date."
+   ]
+  ]
+ },
+ "form-validation": {
+  "h1": "Form validation error examples",
+  "intro": "Good validation tells people what went wrong and how to fix it. This create-workspace form is shown after a failed submit: an error summary links to each problem, invalid fields carry the danger colour plus an icon and a written message, a taken URL comes with alternatives, password rules show which are met, and valid fields are ticked.",
+  "tips": [
+   "Put an error summary at the top after submit, with each problem linking to its field.",
+   "Write messages that say how to fix it (“Add a number”), not just what is wrong (“Invalid password”).",
+   "Never rely on colour alone: pair the danger colour with an icon and text, and keep the label visible.",
+   "Validate on blur or submit, not on every keystroke, and confirm valid fields quietly."
+  ],
+  "faq": [
+   [
+    "When should form validation happen?",
+    "Check formats when a field loses focus and everything again on submit. Avoid showing errors while someone is still typing their first attempt."
+   ],
+   [
+    "Where should error messages go?",
+    "Directly below or beside the field they belong to, plus a summary at the top of the form after a failed submit so screen-reader and keyboard users can find every problem."
+   ],
+   [
+    "Should the submit button be disabled until the form is valid?",
+    "Usually not: a disabled button gives no reason. Let people submit and then show clear errors."
+   ]
+  ]
  }
 }

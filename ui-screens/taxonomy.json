@@ -1,5 +1,5 @@
 {
- "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries; +6 round 2). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style.",
+ "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries; +6 round 2). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style. 3-Nov round 3: +6 interaction-state patterns (overlays on existing family screens).",
  "types": [
   "screen",
   "section",
@@ -124,6 +124,14 @@
   ],
   "camera": [
    "product-scan"
+  ],
+  "interaction-states": [
+   "toast-snackbar",
+   "confirm-dialog",
+   "side-drawer",
+   "command-palette",
+   "date-range-picker",
+   "form-validation"
   ]
  },
  "section_patterns": [
@@ -174,7 +182,13 @@
   "plan-cards",
   "billing-toggle",
   "chat-bubbles",
-  "toolbar"
+  "toolbar",
+  "command-palette",
+  "popover",
+  "inline-errors",
+  "error-summary",
+  "snackbar",
+  "undo"
  ],
  "flows": {
   "sign-up": {

@@ -19,7 +19,9 @@ export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts"
   // 3-Nov-2026 expansion (from real search_ui_screens queries)
   "ai-workspace", "ai-settings", "version-history", "approval-queue", "doctor-directory", "telehealth-visit", "clinic-home",
   "music-player", "playlist", "portfolio-home", "case-study", "security-dashboard", "project-tracker", "course-dashboard", "form-wizard",
-  "bank-onboarding", "product-scan", "split-view", "canvas-editor", "floor-plan", "voice-call"];
+  "bank-onboarding", "product-scan", "split-view", "canvas-editor", "floor-plan", "voice-call",
+  // 3-Nov-2026 round 3: interaction states (overlays on existing screens); pages/sitemap list them only once their rows are ingested
+  "toast-snackbar", "confirm-dialog", "side-drawer", "command-palette", "date-range-picker", "form-validation"];
 export const UI_SECTION_PATTERNS = ["hero", "navigation-header", "feature-grid", "bento-features", "how-it-works", "logo-cloud", "stats-band",
   "testimonials", "pricing", "comparison-table", "integrations-grid", "security-trust", "faq", "cta-banner", "about-team", "careers",
   "blog-index", "changelog", "contact-form", "footer"];
@@ -40,7 +42,9 @@ const LABELS = { "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys
   "two-factor": "Two-factor code", "kanban-board": "Kanban board", "data-table": "Data table",
   "ai-workspace": "AI workspace", "ai-settings": "AI settings", "telehealth-visit": "Telehealth visit", "form-wizard": "Multi-step form wizard",
   "in-call": "In call", "visit-summary": "Visit summary",
-  "split-view": "Split view (master-detail)", "verify-identity": "Verify identity", "account-ready": "Account ready" };
+  "split-view": "Split view (master-detail)", "verify-identity": "Verify identity", "account-ready": "Account ready",
+  "toast-snackbar": "Toast / snackbar with undo", "confirm-dialog": "Confirm dialog (destructive)", "side-drawer": "Side drawer", "command-palette": "Command palette",
+  "date-range-picker": "Date range picker", "form-validation": "Form validation errors" };
 const label = (s) => LABELS[s] || (s || "").replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const order = (p) => { const i = UI_PATTERNS.indexOf(p); return i < 0 ? 999 : i; };
 const parseTags = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } };
@@ -283,7 +287,7 @@ async function uiPatternPage(pattern, env, base, h) {
 ${flows.length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">See it in a flow</h2><p class="lede" style="margin:0">${flows.map(([id, n]) => `<a href="${h.escHtml(flowPath(id, base))}"><b>${h.escHtml(n)}</b></a>`).join(" · ")}</p>` : ""}
 ${(c.tips || []).length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">${h.escHtml(lab)} design tips</h2><ul class="tips">${c.tips.map((t) => `<li>${h.escHtml(t)}</li>`).join("")}</ul>` : ""}
 ${faq.length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .25rem">Questions</h2><div class="faq">${faq.map(([q, a]) => `<h3>${h.escHtml(q)}</h3><p>${h.escHtml(a)}</p>`).join("")}</div>` : ""}
-${patternIndex(base, h)}${MCP_NOTE(base)}${RIGHTS}
+${patternIndex(base, h, await uiPopulated(env))}${MCP_NOTE(base)}${RIGHTS}
 </div><script>
 (function(){var f={platform:"",style:""},cards=[].slice.call(document.querySelectorAll("#grid .card")),cnt=document.getElementById("count");
 function apply(){var n=0;cards.forEach(function(c){var ok=true;for(var k in f)if(f[k]&&c.dataset[k]!==f[k])ok=false;if(ok)n++;c.style.display=ok?"":"none"});
@@ -312,7 +316,7 @@ async function uiFlowsIndex(env, base, h) {
   const desc = `${Object.keys(UI_FLOWS).length} multi-step UI flows (sign-up, two-factor login, password reset, checkout, upgrade, cancel subscription, invite a teammate and more), each for web and mobile in ${UI_STYLES.length} styles, with HTML and DESIGN.md for every step. Free.`;
   const body = head(h, { title: "Free UI flows with code: sign-up, checkout & more | MGD", desc, canonical: `${site}${base}/ui/flows`, image: ogImg,
     jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: "MGD UI Flows", url: `${site}${base}/ui/flows`, description: desc, publisher: { "@type": "Organization", name: "Made Good Designs", url: site } } })
-  + `${h.backLink(base, "/ui", "Back to UI screens")}<h1>UI flows</h1><p class="lede">${h.escHtml(desc)} Shown here in the minimal style on web; open a flow to switch platform and style.</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>${blocks.join("")}${patternIndex(base, h)}${MCP_NOTE(base)}${RIGHTS}</div>${THEME_JS}${h.saveWidget(base)}</body></html>`;
+  + `${h.backLink(base, "/ui", "Back to UI screens")}<h1>UI flows</h1><p class="lede">${h.escHtml(desc)} Shown here in the minimal style on web; open a flow to switch platform and style.</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>${blocks.join("")}${patternIndex(base, h, await uiPopulated(env))}${MCP_NOTE(base)}${RIGHTS}</div>${THEME_JS}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 
@@ -358,7 +362,8 @@ ${sec("No warranty", ["The screens are reference designs, provided as is, withou
 async function uiSitemap(env, base) {
   const site = siteOf(env);
   const rows = await uiRows(env);
-  const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...UI_PATTERNS.map((p) => `${site}${base}/ui/${p}`), ...Object.keys(UI_FLOWS).map((id) => `${site}${base}/ui/flows/${id}`),
+  const have = new Set(rows.map((r) => r.category)); // only patterns that have screens (new patterns appear after their ingest)
+  const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...UI_PATTERNS.filter((p) => have.has(p)).map((p) => `${site}${base}/ui/${p}`), ...Object.keys(UI_FLOWS).map((id) => `${site}${base}/ui/flows/${id}`),
     ...rows.map((r) => site + uiItemPath({ id: r.id, ...uiFields(r), style: r.style }, base))];
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${u}</loc></url>`).join("\n")}\n</urlset>`,
     { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
@@ -447,6 +452,9 @@ function diversify(ranked, limit, o) {
 }
 
 const filt0 = (platform, pattern, style) => `${platform ? " on " + platform : ""}${pattern ? " in " + pattern : ""}${style ? " in the " + style + " style" : ""}`;
+
+// Patterns that have published screens (crawlable pattern links must not point at a pattern before its screens are ingested).
+async function uiPopulated(env) { const idx = await uiSearchIndex(env); return new Set(idx.docs.map((d) => d.pattern)); }
 
 // All published UI rows + their search index, cached per isolate (the library is ~1.6k rows and changes only on ingest).
 let UI_IDX = null;

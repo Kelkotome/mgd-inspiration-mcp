@@ -18,7 +18,9 @@ const flag = (k) => args.includes(k);
 const val = (k, d) => { const i = args.indexOf(k); return i >= 0 && args[i + 1] && !args[i + 1].startsWith("--") ? args[i + 1] : d; };
 const LIVE = flag("--live") ? val("--live", "https://madegooddesigns.com/inspiration/mcp") : null;
 
-const cases = readFileSync(path.join(HERE, "cases.txt"), "utf8").split("\n").filter((l) => l.trim() && !l.startsWith("#")).map((l) => {
+//   --cases f.txt (default cases.txt; cases_states.txt = the interaction-state patterns, valid once they are ingested)
+//   --rows f.json (local mode: use this row dump instead of .cache/rows.json, e.g. one with not-yet-ingested screens added)
+const cases = readFileSync(path.resolve(HERE, val("--cases", "cases.txt")), "utf8").split("\n").filter((l) => l.trim() && !l.startsWith("#")).map((l) => {
   const [q, exp, extra] = l.split("|").map((s) => (s || "").trim());
   const a = { query: q };
   for (const kv of (extra || "").split(/\s+/).filter(Boolean)) { const [k, v] = kv.split("="); a[k] = v.replace(/_/g, " "); }
@@ -36,8 +38,8 @@ if (LIVE) {
     return (j.result.content || []).filter((c) => c.type === "text").map((c) => c.text).join("\n");
   };
 } else {
-  const cache = path.join(HERE, ".cache"), file = path.join(cache, "rows.json");
-  if (flag("--refresh") || !existsSync(file)) {
+  const cache = path.join(HERE, ".cache"), file = val("--rows") ? path.resolve(val("--rows")) : path.join(cache, "rows.json");
+  if (!val("--rows") && (flag("--refresh") || !existsSync(file))) {
     mkdirSync(cache, { recursive: true });
     console.error("dumping published UI rows (read-only SELECT on remote D1)…");
     const sql = "SELECT * FROM items WHERE collection='ui' AND status='published' AND owner_id IS NULL";
@@ -72,9 +74,9 @@ for (const c of cases) {
   results.push({ q: c.q, args: c.args, expect: c.expect, got: none ? "none" : top, ok, distinct, chars: text.length });
   if (flag("--verbose") || !ok) console.log(`${ok ? "PASS" : "FAIL"}  ${c.q}${Object.keys(c.args).length > 1 ? " " + JSON.stringify({ ...c.args, query: undefined }) : ""}\n      expect ${c.expect.join("|")}  got ${none ? "none" : top}  [${distinct.join(", ")}]`);
 }
-const secA = results.slice(0, 89), secA_pass = secA.filter((r) => r.ok).length;
+const secA = val("--cases") ? [] : results.slice(0, 89), secA_pass = secA.filter((r) => r.ok).length;
 const rate = pass / cases.length;
-console.log(`\n${LIVE ? "LIVE " + LIVE : "LOCAL (src/ui_screens.js)"}: ${pass}/${cases.length} = ${(rate * 100).toFixed(1)}% hit@1  ·  real-log queries ${secA_pass}/${secA.length} = ${(secA_pass / secA.length * 100).toFixed(1)}%  ·  avg ${Math.round(chars / cases.length)} chars/answer  ·  avg distinct patterns ${(results.reduce((s, r) => s + r.distinct.length, 0) / results.length).toFixed(1)}`);
+console.log(`\n${LIVE ? "LIVE " + LIVE : "LOCAL (src/ui_screens.js)"}: ${pass}/${cases.length} = ${(rate * 100).toFixed(1)}% hit@1  ·  real-log queries ${secA.length ? `${secA_pass}/${secA.length} = ${(secA_pass / secA.length * 100).toFixed(1)}%` : "n/a"}  ·  avg ${Math.round(chars / cases.length)} chars/answer  ·  avg distinct patterns ${(results.reduce((s, r) => s + r.distinct.length, 0) / results.length).toFixed(1)}`);
 if (val("--json")) writeFileSync(val("--json"), JSON.stringify(results, null, 1));
 const min = parseFloat(val("--min", "0"));
 if (rate < min) process.exit(1);

@@ -82,6 +82,13 @@ export const PATTERN_ALIASES = {
   "canvas-editor": ["canvas", "flow diagram", "sitemap", "diagram", "whiteboard", "nodes", "flowchart", "inspector"],
   "floor-plan": ["floor plan", "office map", "desk booking", "room booking", "building map", "indoor map"],
   "voice-call": ["voice call", "phone call", "call in progress", "calling", "audio call", "call"],
+  // interaction states (3-Nov-2026 round 3)
+  "toast-snackbar": ["toast", "snackbar", "toast notification", "undo", "undo toast", "toast with undo", "notification toast"],
+  "confirm-dialog": ["confirm dialog", "confirmation dialog", "confirm delete", "delete confirmation", "destructive", "modal", "dialog", "are you sure", "type to confirm"],
+  "side-drawer": ["drawer", "side drawer", "side panel", "slide over", "detail panel", "sheet", "bottom sheet"],
+  "command-palette": ["command palette", "cmd k", "command menu", "quick switcher", "spotlight search", "command bar"],
+  "date-range-picker": ["date range", "date range picker", "date picker", "range picker", "calendar picker", "datepicker"],
+  "form-validation": ["validation", "form validation", "form errors", "inline errors", "error messages", "error state", "invalid", "error summary"],
   // website sections
   "hero": ["hero", "landing hero", "hero section", "above the fold", "landing page", "landing"],
   "navigation-header": ["navigation", "nav", "header", "navbar", "mega menu", "menu", "navigation header"],
@@ -191,6 +198,7 @@ export function buildIndex(rows, patternOrder, elMap) {
       tags: new Set(elTags.flatMap((t) => tokens(t.replace(/-/g, " ")))),
       industry: new Set(tokens(`${r.industry || ""} ${r.company || ""}`)), desc: new Set(tokens(first + " " + shows)) };
     const steps = tags.filter((t) => /^flow:[a-z0-9-]+:\d+$/.test(t)).map((t) => +t.split(":")[2]);
+    patOf(r.category || "").n = (patOf(r.category || "").n || 0) + 1;
     return { r, f, variant, els: new Set(elTags), layout: inv ? inv.layout : null, density: inv ? inv.density : null, step: steps.length ? Math.min(...steps) : 0, pattern: r.category, ord: order.has(r.category) ? order.get(r.category) : 999 };
   });
   const df = new Map();
@@ -273,7 +281,7 @@ export function rankRows(q, idx, opts = {}) {
 // Closest patterns for an honest "no match" answer: patterns the matched words point at, then hint words, then trigram similarity.
 function suggest(pq, idx, ranked) {
   const s = new Map();
-  const add = (p, v) => { if (idx.pat[p]) s.set(p, (s.get(p) || 0) + v); };
+  const add = (p, v) => { if (idx.pat[p] && idx.pat[p].n) s.set(p, (s.get(p) || 0) + v); };
   for (const x of ranked.slice(0, 40)) if (x.text > 0) add(x.r.category, x.text / 10);
   for (const w of pq.raw) { const h = HINTS[w] || HINTS[w.replace(/s$/, "")] || HINTS[stem(w)]; if (h) h.forEach((p, i) => add(p, 3 - i)); }
   for (const x of pq.terms) {

@@ -1,0 +1,16 @@
+# Interaction-state patterns (3-Nov-2026 round 3). Valid once ui-screens/out/{toast-snackbar,confirm-dialog,side-drawer,command-palette,date-range-picker,form-validation}-* are ingested.
+# Pre-ingest check: node tests/ui_rank/with_pending.mjs > /tmp/rows.json && run.mjs --rows /tmp/rows.json --cases cases_states.txt
+toast notification undo | toast-snackbar
+snackbar with undo action | toast-snackbar
+confirm delete modal | confirm-dialog
+are you sure you want to delete dialog | confirm-dialog
+side drawer with customer details | side-drawer
+slide over detail panel | side-drawer
+command palette | command-palette
+cmd k quick switcher | command-palette
+date range picker | date-range-picker
+date picker range | date-range-picker
+form validation errors | form-validation
+inline error messages on sign up form | form-validation
+modal | confirm-dialog
+data table | side-drawer data-table | elements=drawer

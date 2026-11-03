@@ -96,9 +96,9 @@ banking app onboarding | bank-onboarding | platform=mobile
 Telehealth video call with appointment details, mute camera, end call | telehealth-visit | platform=web
 small agency services pricing packages | pricing | platform=web
 settings with toggle switches | settings | platform=mobile
-toast notification undo | none notifications-center success-confirmation
+toast notification undo | none notifications-center success-confirmation toast-snackbar
 running shoes | none product-detail | platform=mobile
-date picker range | none calendar booking-details analytics-charts floor-plan
+date picker range | none calendar booking-details analytics-charts floor-plan date-range-picker
 plumber home services booking | none booking-details class-schedule
 now-playing music screen | music-player
 video consult with a doctor | telehealth-visit
