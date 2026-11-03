@@ -135,3 +135,8 @@ roles and permissions | roles-permissions
 audit log | audit-log
 api keys | api-keys
 weekly planner calendar | calendar
+# Section D: free-text pattern / style / platform args (schemas no longer use enums; "_" = space in args)
+settings | doctor-directory | pattern=doctor_directory
+board | kanban-board | pattern=kanban
+plans | pricing | pattern=pricing_table style=premium
+login | login | platform=iPhone style=minimalist

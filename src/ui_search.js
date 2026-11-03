@@ -305,3 +305,18 @@ export function resolveName(input, ids, aliases) {
   }
   return bs >= 0.5 ? { id: best, how: "fuzzy" } : null;
 }
+
+// Free-text style / platform → canonical value (null if unknown). "minimalist" → minimal, "premium" → luxury, "iPhone" → mobile.
+export function resolveStyle(v) {
+  const w = String(v || "").trim().toLowerCase(); if (!w) return null;
+  if (UI_STYLE_LIST.includes(w)) return w;
+  if (STYLE_WORDS[w]) return STYLE_WORDS[w];
+  const r = resolveName(w, UI_STYLE_LIST, null); return r ? r.id : null;
+}
+export function resolvePlatform(v) {
+  const w = String(v || "").trim().toLowerCase(); if (!w) return null;
+  if (PLATFORM_WORDS[w]) return PLATFORM_WORDS[w];
+  if (/^(phone|app|native|mobile[\s-]?app|ios[\s-]?app)$/.test(w)) return "mobile";
+  if (/^(webapp|web[\s-]?app|saas|laptop)$/.test(w)) return "web";
+  return null;
+}

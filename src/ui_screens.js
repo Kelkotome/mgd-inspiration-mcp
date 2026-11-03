@@ -5,7 +5,8 @@
 // R2: screenshot at ui/<id>-<v>.webp (+ -dark.webp twin), code at ui/<id>/index.html, tokens at ui/<id>/DESIGN.md.
 
 import UI_COPY from "./ui_pattern_copy.json"; // per-pattern landing-page copy: { h1, intro, tips[], faq[[q,a]] }
-import { buildIndex, rankRows, resolveName, PATTERN_ALIASES } from "./ui_search.js";
+import { buildIndex, rankRows, resolveName, resolveStyle, resolvePlatform, PATTERN_ALIASES } from "./ui_search.js";
+import UI_TAXONOMY from "../ui-screens/taxonomy.json"; // pattern groups + flow steps for list_ui_patterns
 
 export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts", "login", "sign-up", "forgot-password", "two-factor",
   "welcome", "onboarding-step", "permissions-request", "home", "feed", "list-view", "detail-view", "kanban-board", "calendar",
@@ -371,10 +372,11 @@ export const UI_MCP_TOOLS = [
       type: "object",
       properties: {
         query: { type: "string", description: "What screen you need, e.g. 'billing settings with plan cards', 'AI chat assistant', 'dashboard with data table'." },
-        platform: { type: "string", description: "Optional platform filter.", enum: ["web", "mobile"] },
-        pattern: { type: "string", description: "Optional screen pattern or website section.", enum: UI_PATTERNS },
-        style: { type: "string", description: "Optional visual style.", enum: UI_STYLES },
-        limit: { type: "integer", description: "Max results (1-12, default 6).", minimum: 1, maximum: 12 },
+        platform: { type: "string", description: "Optional platform: web or mobile." },
+        pattern: { type: "string", description: "Optional pattern filter. Free text is fine: an exact id (e.g. doctor-directory, kanban-board, pricing) or a plain name ('doctor directory', 'kanban') is matched server-side. Call list_ui_patterns for the live list; new patterns are added often." },
+        style: { type: "string", description: "Optional visual style: minimal, editorial, brutalist, luxury, playful, corporate, retro or monochrome." },
+        limit: { type: "integer", description: "Max distinct screens (1-12, default 6). Each result also lists its other styles.", minimum: 1, maximum: 12 },
+        distinct: { type: "boolean", description: "Default true: one result per screen (max 2 per pattern), other styles listed on one line. false = every style as its own result." },
       },
       required: ["query"],
     },
@@ -386,9 +388,9 @@ export const UI_MCP_TOOLS = [
     inputSchema: {
       type: "object",
       properties: {
-        flow: { type: "string", description: "Which flow.", enum: Object.keys(UI_FLOWS) },
-        platform: { type: "string", description: "Default 'web'.", enum: ["web", "mobile"] },
-        style: { type: "string", description: "Default 'minimal'.", enum: UI_STYLES },
+        flow: { type: "string", description: "Which flow: an id from the list above or a plain description ('reset password', 'open a bank account'); matched server-side. list_ui_patterns lists the live flows." },
+        platform: { type: "string", description: "web (default) or mobile." },
+        style: { type: "string", description: "Default 'minimal'. Also: editorial, brutalist, luxury, playful, corporate, retro, monochrome." },
       },
       required: ["flow"],
     },
@@ -407,9 +409,18 @@ export const UI_MCP_TOOLS = [
     },
     annotations: { title: "Get UI screen code", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
+  {
+    name: "list_ui_patterns",
+    description: "List every pattern (app screens and website sections) and multi-step flow in Made Good Designs' free UI library, live, with screen counts, variants and flow steps. Use it to pick a pattern or flow id for search_ui_screens / get_ui_flow, or to see what exists before searching.",
+    inputSchema: {
+      type: "object",
+      properties: { kind: { type: "string", description: "Optional: screens, sections, flows or all (default)." } },
+    },
+    annotations: { title: "List UI patterns", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+  },
 ];
 const CITE = "When you mention or show these screens to the user, credit them as \"UI by Made Good Designs\" with the page link. They are original designs, free to use and adapt in any project.";
-export const isUiTool = (name) => name === "search_ui_screens" || name === "get_ui_screen_code" || name === "get_ui_flow";
+export const isUiTool = (name) => name === "search_ui_screens" || name === "get_ui_screen_code" || name === "get_ui_flow" || name === "list_ui_patterns";
 
 // Diversify: one result per pattern+variant (at most 2 per pattern), best style/platform first; the other styles of the
 // same screen are listed as twins on one line instead of filling the answer with six restyled copies.
@@ -454,14 +465,14 @@ export async function callUiTool(name, a, env, h) {
     const wantDark = /\b(dark|night)(\s+(mode|theme|ui))?\b/i.test(q);
     const qText = wantDark ? q.replace(/\b(dark|night)(\s+(mode|theme|ui))?\b/gi, " ").replace(/\s+/g, " ").trim() : q;
     const limit = h.clampInt(a.limit, 6, 1, 12);
-    const platform = a.platform === "web" || a.platform === "mobile" ? a.platform : null;
-    const style = UI_STYLES.includes(a.style) ? a.style : null;
+    const platform = resolvePlatform(a.platform), style = resolveStyle(a.style);
     const pr = a.pattern ? resolveName(a.pattern, UI_PATTERNS, PATTERN_ALIASES) : null;
     const pattern = pr ? pr.id : null;
     const idx = await uiSearchIndex(env);
     const res = rankRows(qText, idx, { platform, style, pattern });
     const filt = `${platform ? ", " + platform : ""}${pattern ? ", " + pattern : ""}${style ? ", " + style + " style" : ""}`;
-    const patNote = a.pattern && !pattern ? ` (unknown pattern "${a.pattern}" ignored; list_ui_patterns shows them all)` : pr && pr.how !== "exact" ? ` (pattern "${a.pattern}" → ${pattern})` : "";
+    const patNote = (a.platform && !platform ? ` (platform "${a.platform}" not available yet; web and mobile only)` : "") + (a.style && !style ? ` (unknown style "${a.style}" ignored)` : "")
+      + (a.pattern && !pattern ? ` (unknown pattern "${a.pattern}" ignored; list_ui_patterns shows them all)` : pr && pr.how !== "exact" ? ` (pattern "${a.pattern}" → ${pattern})` : "");
     const sugg = (res.suggestions || []).filter((p) => p !== pattern);
     const suggLine = sugg.length ? ` Closest patterns: ${sugg.map((p) => `${p} (${label(p).toLowerCase()})`).join(", ")} — search again with one of them, or pass pattern="…".` : "";
     let note = patNote, pool;
@@ -495,15 +506,41 @@ export async function callUiTool(name, a, env, h) {
     return { content: [{ type: "text", text: `${hd}.${darkNote} ${how} ${CITE}\n\n${blocks.join("\n\n")}` }] };
   }
   if (name === "get_ui_flow") {
-    const id = String(a.flow || "");
-    if (!UI_FLOWS[id]) return { content: [{ type: "text", text: "Unknown flow. Available: " + Object.keys(UI_FLOWS).join(", ") }], isError: true };
-    const platform = a.platform === "mobile" ? "mobile" : "web", style = UI_STYLES.includes(a.style) ? a.style : "minimal";
+    const fr = resolveName(a.flow, Object.keys(UI_FLOWS), Object.fromEntries(Object.entries(UI_FLOWS).map(([k, v]) => [k, [v]])));
+    if (!fr) return { content: [{ type: "text", text: `No flow matches "${a.flow || ""}". Available: ` + Object.entries(UI_FLOWS).map(([k, v]) => `${k} (${v.toLowerCase()})`).join(", ") }], isError: true };
+    const id = fr.id;
+    const platform = resolvePlatform(a.platform) || "web", style = resolveStyle(a.style) || "minimal";
     const steps = await flowSteps(env, h, id, platform, style);
     if (!steps.length) return { content: [{ type: "text", text: `The ${id} flow isn't available for ${platform}/${style} yet. Browse flows at ${site}/ui/flows` }] };
     const lines = steps.map(({ it, step }) => [`${step}. ${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""}`, `   screen_id: ${it.id}`,
       it.description ? `   ${it.description}` : null, `   screenshot: ${site}${it.image}`, `   page: ${site}${uiItemPath(it, "")}`].filter(Boolean).join("\n"));
     const pal = (steps[0].it.palette || []).map((hx, i) => `${ROLES[i]} ${hx}`).join(", ");
-    return { content: [{ type: "text", text: `Flow "${UI_FLOWS[id]}" — ${steps.length} steps, ${platform}, ${style} style, product ${steps[0].it.product} (fictional). All steps share one design system${pal ? " (light colour roles: " + pal + ")" : ""}; get any step's HTML + DESIGN.md with get_ui_screen_code. Page (cite this): ${site}/ui/flows/${id}?platform=${platform}&style=${style}\n${CITE}\n\n${lines.join("\n\n")}` }] };
+    const matched = fr.how === "exact" ? "" : `(flow "${a.flow}" → ${id}) `;
+    return { content: [{ type: "text", text: `${matched}Flow "${UI_FLOWS[id]}" — ${steps.length} steps, ${platform}, ${style} style, product ${steps[0].it.product} (fictional). All steps share one design system${pal ? " (light colour roles: " + pal + ")" : ""}; get any step's HTML + DESIGN.md with get_ui_screen_code. Page (cite this): ${site}/ui/flows/${id}?platform=${platform}&style=${style}\n${CITE}\n\n${lines.join("\n\n")}` }] };
+  }
+  if (name === "list_ui_patterns") {
+    const kind = String(a.kind || "all").toLowerCase();
+    const want = (k) => kind === "all" || kind.startsWith(k) || !/^(screen|section|flow|app)/.test(kind);
+    const idx = await uiSearchIndex(env);
+    const cnt = {}, vars = {};
+    for (const d of idx.docs) { cnt[d.pattern] = (cnt[d.pattern] || 0) + 1; if (d.variant) (vars[d.pattern] = vars[d.pattern] || new Set()).add(d.variant); }
+    const line = (p) => `  ${p} — ${label(p)} (${cnt[p] || 0} screens${vars[p] ? `; variants: ${[...vars[p]].join(", ")}` : ""})`;
+    const out = [], grouped = new Set();
+    if (want("screen") || kind.startsWith("app")) {
+      out.push("APP SCREENS (pattern ids for search_ui_screens):");
+      for (const [g, ps] of Object.entries(UI_TAXONOMY.screen_patterns || {})) {
+        const live = ps.filter((p) => cnt[p]); live.forEach((p) => grouped.add(p));
+        if (live.length) out.push(`${g}:`, ...live.map(line));
+      }
+      const rest = Object.keys(cnt).filter((p) => !grouped.has(p) && !UI_SECTION_PATTERNS.includes(p));
+      if (rest.length) out.push("other:", ...rest.map(line));
+    }
+    if (want("section")) out.push("", "WEBSITE SECTIONS:", ...UI_SECTION_PATTERNS.filter((p) => cnt[p]).map(line));
+    if (want("flow")) {
+      const tf = UI_TAXONOMY.flows || {};
+      out.push("", "FLOWS (ids for get_ui_flow):", ...Object.entries(UI_FLOWS).map(([k, v]) => `  ${k} — ${v}${tf[k] && tf[k].steps ? ` (${tf[k].steps.length} steps: ${tf[k].steps.join(" → ")})` : ""}`));
+    }
+    return { content: [{ type: "text", text: `Made Good Designs UI library: ${idx.docs.length} screens, ${Object.keys(cnt).length} patterns, ${Object.keys(UI_FLOWS).length} flows; every pattern in web + mobile × ${UI_STYLES.length} styles (${UI_STYLES.join(", ")}), each with HTML + DESIGN.md. Plain names work too: search_ui_screens(pattern="doctor directory"). Browse: ${site}/ui\n\n${out.join("\n").trim()}` }] };
   }
   if (name === "get_ui_screen_code") {
     const m = String(a.screen_id || "").match(/([0-9a-f]{12})\/?$/);

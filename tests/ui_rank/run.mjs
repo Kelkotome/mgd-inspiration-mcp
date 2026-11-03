@@ -21,7 +21,7 @@ const LIVE = flag("--live") ? val("--live", "https://madegooddesigns.com/inspira
 const cases = readFileSync(path.join(HERE, "cases.txt"), "utf8").split("\n").filter((l) => l.trim() && !l.startsWith("#")).map((l) => {
   const [q, exp, extra] = l.split("|").map((s) => (s || "").trim());
   const a = { query: q };
-  for (const kv of (extra || "").split(/\s+/).filter(Boolean)) { const [k, v] = kv.split("="); a[k] = v; }
+  for (const kv of (extra || "").split(/\s+/).filter(Boolean)) { const [k, v] = kv.split("="); a[k] = v.replace(/_/g, " "); }
   return { q, args: a, expect: exp.split(/\s+/).filter(Boolean) };
 });
 
