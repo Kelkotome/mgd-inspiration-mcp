@@ -100,6 +100,6 @@ r = call("get_mockup_print_area", {"product": "tshirt", "area": "full", "dpi": 1
 check("t-shirt full front 12 × 16 in at 150 dpi = 1800 × 2400 px", a0.get("in") == [12, 16] and a0.get("px") == [1800, 2400], a0)
 r = call("get_mockup_print_area", {"product": "billboard", "size": "bulletin"}); a0 = ((r.get("structuredContent") or {}).get("areas") or [{}])[0]
 check("bulletin 48 × 14 ft", a0.get("ft") == [48, 14] and "billboard-mockup/" in text(r), a0)
-for n, a in [("make_ribbon_banner", {"shape": "zigzag"}), ("calc_cross_stitch", {}), ("get_mockup_print_area", {"product": "cap"})]:
+for n, a in [("make_ribbon_banner", {"shape": "zigzag"}), ("calc_cross_stitch", {}), ("get_mockup_print_area", {"product": "jersey"})]:   # b73 made "cap" a valid product
     check(f"bad input → isError: {n}", call(n, a).get("isError"), a)
 print(f"{ok} passed, {fail} failed"); raise SystemExit(1 if fail else 0)

@@ -108,6 +108,10 @@ BATCHES = {
         ("make_fantasy_map", "generate a seeded fantasy map (island, continent, archipelago or coast) with mountains, forests, rivers, towns, roads and invented names, in parchment, ink, atlas or treasure style, with a square or hex grid", "fantasy-map-generator", "Fantasy Map Generator"),
         ("make_paper_bag_template", "make a true-size gusseted paper bag dieline from width, gusset and height: flat net, glue flap, bottom flaps and overlap, printable panels, handle holes and sheets needed", "paper-bag-template", "Paper Bag Template"),
     ]),
+    "73": (98, [   # 98 = tools/list on /mcp and /mcp/all after b73 (96 + 2), checked on a local Worker 3-Nov; get_mockup_print_area also gained the 10 b73 products
+        ("get_brochure_panels", "get the panel widths for a roll (C) fold or Z fold tri-fold or a bi-fold on Letter, Legal, Tabloid, A4 or A3: outside and inside spreads, fold lines, the front-cover panel and the flat file size in pixels", "brochure-mockup", "Brochure Mockup"),
+        ("get_banner_spec", "get a banner's size in in/ft/cm, aspect ratio, artwork pixels at 100 and 150 dpi and the grommet count and positions, for vinyl presets, 33 × 81 in roll-ups, pole banners or any custom size", "banner-mockup", "Banner Mockup"),
+    ]),
 }
 
 def main(b):

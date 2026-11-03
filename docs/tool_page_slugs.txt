@@ -959,3 +959,13 @@ wedding-welcome-sign
 sign-maker
 party-hat-template
 paper-bag-template
+canvas-mockup
+magazine-mockup
+flyer-mockup
+brochure-mockup
+notebook-mockup
+polo-shirt-mockup
+cap-mockup
+sticker-mockup
+banner-mockup
+paper-bag-mockup
