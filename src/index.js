@@ -459,6 +459,19 @@ function prettySource(host) {
     "collections.vam.ac.uk": "Victoria & Albert Museum",
     "vam.ac.uk": "Victoria & Albert Museum",
     "europeana.eu": "Europeana",
+    // 3-Nov-2026 annual-reports r35: CONTENTdm / Kramerius sources
+    "digitalniknihovna.cz": "Moravian Library (Digitální knihovna)",
+    "babel.banrepcultural.org": "Biblioteca Virtual del Banco de la República",
+    "collections.carli.illinois.edu": "CARLI Digital Collections",
+    "digital.cincinnatilibrary.org": "Public Library of Cincinnati & Hamilton County",
+    "cdm16998.contentdm.oclc.org": "Public Library of Cincinnati & Hamilton County",
+    "cdm16022.contentdm.oclc.org": "Minnesota Digital Library",
+    "cdm17336.contentdm.oclc.org": "University of Alabama Libraries",
+    "cdm16110.contentdm.oclc.org": "Library of Michigan",
+    "cdm17265.contentdm.oclc.org": "Fordham University Libraries",
+    "cdm22029.contentdm.oclc.org": "NovaStory (Pictou-Antigonish Regional Library)",
+    "cdm17532.contentdm.oclc.org": "Edward Kremers Research Library",
+    "cdm17393.contentdm.oclc.org": "Mountain Scholar",
   };
   return map[h] || host || "source";
 }
