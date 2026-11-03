@@ -66,5 +66,22 @@ else:
     ok("Licence: CC BY-NC — non-commercial use only — " in blk, "NC block (old schema) still shows a licence line")
 pdblk = [x for x in t.split("\n\n") if "Pdtestco" in x]; pdblk = pdblk[0] if pdblk else ""
 ok("page (cite this): " in pdblk and "/img/annual/" in pdblk and "Licence" not in pdblk, "PD block unchanged (MGD page + img)")
+# open-licence (CC BY) row: with migration = published WITH attribution; old schema = still staged-open (hidden)
+OP = "dddddddddd01"
+s, b = get(f"/annual-reports/optestlanz-ag-1927-{OP}")
+if A.mode == "with":
+    ok(s == 200, f"open-licence item page -> {s}")
+    ok('href="https://creativecommons.org/licenses/by/3.0/de/" rel="nofollow noopener" target="_blank">CC BY 3.0 DE</a>' in b, "item page: licence name + URL link (nofollow noopener)")
+    ok('href="https://www.deutsche-digitale-bibliothek.de/item/OPENTEST" rel="nofollow noopener" target="_blank">source record' in b, "item page: source-record link (nofollow noopener)")
+    ok("MARCHIVUM Mannheim" in b, "item page: library name")
+    s, b = get(f"/annual-reports/pdtestco-railway-1888-{PD}"); ok('class="attrib"' not in b and "nofollow" not in b, "PD item page has no attribution block / outbound links")
+    s, b = get("/api/feed?collection=annual-report"); ok(OP in b and "CC BY 3.0 DE" in b, "feed lists the open row with its licence")
+    r, t = mcp({"query": "Optestlanz"})
+    ok("licence: CC BY 3.0 DE (https://creativecommons.org/licenses/by/3.0/de/) — MARCHIVUM Mannheim; attribution required" in t, "MCP default: open row with licence + URL + holder")
+    ok("source record: https://www.deutsche-digitale-bibliothek.de/item/OPENTEST" in t, "MCP: source record link")
+else:
+    ok(s == 404, f"open-licence row staged (old schema) -> {s} (want 404)")
+    s, b = get("/api/feed?collection=annual-report"); ok(OP not in b, "staged-open row not in feed")
+    r, t = mcp({"query": "Optestlanz"}); ok(OP not in t and t.startswith("0 annual-report"), "staged-open row not in MCP")
 print(f"{'ALL OK' if not fails else str(fails)+' FAILED'} ({A.mode})")
 sys.exit(1 if fails else 0)

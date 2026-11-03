@@ -176,6 +176,7 @@
     if (it.designer) metaBits.push(esc(it.designer));
     var src = it.source || it.source_host;
     if (src) metaBits.push('Source: '+esc(src));
+    if (it.license) metaBits.push(esc(it.license));
     var chips = "";
     if (it.country) chips += '<span class="chip chip--country">'+esc(it.country)+'</span>';
     if (it.industry) chips += '<span class="chip">'+esc(it.industry)+'</span>';

@@ -416,6 +416,18 @@ async function search(url, env, request) {
 // requires status='published' everywhere public; this JS check is the second layer. NOTE: never reference the
 // rights/hosting/image_url columns in SQL — the Worker may run before migrate_rights.sql is applied.
 function isLinkOnly(r) { return !!r && (r.hosting === "link" || r.status === "mcp-nc" || r.status === "staged-nc" || String(r.image_key || "").startsWith("link/")); }
+// Open-licence (CC BY / BY-SA / BY-ND) annual reports hosted normally but REQUIRING attribution: library name,
+// exact licence + URL, link to the source record. Only rows with a `rights` value (column from migrate_rights.sql;
+// undefined before the migration → no change for any other item). PD/CC0 rows have rights NULL.
+const OPEN_LICENSES = {
+  "CC BY 3.0 DE": "https://creativecommons.org/licenses/by/3.0/de/", "CC BY 4.0": "https://creativecommons.org/licenses/by/4.0/",
+  "CC BY-SA 3.0 DE": "https://creativecommons.org/licenses/by-sa/3.0/de/", "CC BY-SA 4.0": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "CC BY-ND 3.0 DE": "https://creativecommons.org/licenses/by-nd/3.0/de/", "CC BY-ND 4.0": "https://creativecommons.org/licenses/by-nd/4.0/",
+};
+function openLicense(r) {
+  if (!r || !r.rights || isLinkOnly(r) || !OPEN_LICENSES[r.rights]) return null;
+  return { name: r.rights, url: OPEN_LICENSES[r.rights], holder: r.rights_holder || prettySource(r.source_host), source_link: r.source_url || null };
+}
 function isPublicRow(r) { return !!r && (r.status == null || r.status === "published") && !isLinkOnly(r); }
 
 async function getItem(id, env, request) {
@@ -595,6 +607,7 @@ ul.facts{list-style:none;padding:0;margin:0 0 1.1rem;color:var(--muted);font-siz
 .fullreport{margin-top:2rem}.fullreport h2{font-size:1rem;margin:0 0 .6rem}
 .fullreport iframe{width:100%;height:680px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
 .fullreport .fr-note{color:var(--muted);font-size:.75rem;margin:.5rem 0 0}
+.attrib{font-size:.85rem;color:var(--muted);line-height:1.5;margin:.2rem 0 1rem}.attrib a{text-decoration:underline}
 footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;line-height:1.5;max-width:70ch}
 </style></head><body><div class="wrap">
 ${backLink(base, "/annual-reports", "Back to archive")}
@@ -606,6 +619,7 @@ ${backLink(base, "/annual-reports", "Back to archive")}
     ${it.description ? `<p class="desc">${escHtml(it.description)}</p>` : ""}
     <ul class="facts">${facts.map((f) => `<li>${escHtml(f)}</li>`).join("")}</ul>
     ${chips ? `<div class="chips">${chips}</div>` : ""}
+    ${it.license ? `<p class="attrib">Scan: ${escHtml(it.source || "")}${it.source_link ? ` — <a href="${escHtml(it.source_link)}" rel="nofollow noopener" target="_blank">source record ↗</a>` : ""}. Licence: <a href="${escHtml(it.license_url)}" rel="nofollow noopener" target="_blank">${escHtml(it.license)}</a>${/ND/.test(it.license) ? " (shown unaltered, resized only)" : ""}.</p>` : ""}
   </div>
 </div>
 ${arId ? `<section class="fullreport"><h2>Full report</h2><iframe src="https://archive.org/embed/${escHtml(arId)}" title="${escHtml(name)} — full report" loading="lazy" allowfullscreen></iframe><p class="fr-note">Full report embedded from the Internet Archive.</p></section>` : ""}
@@ -2299,6 +2313,8 @@ function mcpItems(rows, header, opts, sibling) {
       isReport && it.designer ? `  designer/agency: ${it.designer}` : null,
       isReport && it.industry ? `  industry: ${it.industry}` : null,
       isReport && it.country ? `  country: ${it.country}` : null,
+      isReport && it.license ? `  licence: ${it.license} (${it.license_url}) — ${it.source}; attribution required` : null,
+      isReport && it.license && it.source_link ? `  source record: ${it.source_link}` : null,
       isMuseum && it.artist ? `  artist: ${it.artist}${it.year ? " ("+it.year+")" : ""}` : null,
       isMuseum && it.type ? `  type: ${it.type}` : null,
       isMuseum && it.culture ? `  culture: ${it.culture}` : null,
@@ -2810,6 +2826,8 @@ function rowToItem(r, env) {
     item.designer = r.designer || null;
     item.industry = r.industry || null;
     item.country = r.country || null;
+    const lic = openLicense(r);
+    if (lic) { item.license = lic.name; item.license_url = lic.url; item.source = lic.holder; item.source_link = lic.source_link; }
   }
   // Museum collection: public-domain works — we credit the museum AND link to its object page.
   if (collection === "museum") {

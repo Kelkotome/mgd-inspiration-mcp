@@ -37,10 +37,12 @@ run_case() {  # $1 = with|without (migrate_rights.sql)
   $D1 --command "INSERT INTO items ($COLS) VALUES
    ('aaaaaaaaaaa2','Pdtestco Railway 1888','Serif title cover.','https://archive.org/details/pdtest','archive.org','annual/aaaaaaaaaaa2.jpg','[\"serif\",\"zzcommon\"]','[\"vintage\"]','[\"#112233\"]','published',1700000001000,'annual-report','Pdtestco Railway',1888,'','transport & transit','Germany',NULL),
    ('cccccccccc01','Nctestbank Hypotheken 1899','Blackletter title cover.','https://www.digitale-sammlungen.de/view/bsb11111111','digitale-sammlungen.de','link/cccccccccc01','[\"blackletter\",\"zzcommon\"]','[\"vintage\"]','[\"#aa0000\"]','mcp-nc',1700000002000,'annual-report','Nctestbank Hypotheken',1899,'','banking & finance','Germany',NULL),
-   ('cccccccccc02','Ncstagedwerke 1905','Staged cover.','https://onb.digital/result/ABO_TEST','onb.ac.at','link/cccccccccc02','[\"zzcommon\"]','[\"vintage\"]','[\"#00aa00\"]','staged-nc',1700000003000,'annual-report','Ncstagedwerke',1905,'','manufacturing','Austria',NULL)" >/dev/null || { echo "seed failed"; return 1; }
+   ('cccccccccc02','Ncstagedwerke 1905','Staged cover.','https://onb.digital/result/ABO_TEST','onb.ac.at','link/cccccccccc02','[\"zzcommon\"]','[\"vintage\"]','[\"#00aa00\"]','staged-nc',1700000003000,'annual-report','Ncstagedwerke',1905,'','manufacturing','Austria',NULL),
+   ('dddddddddd01','Optestlanz AG 1927','Framed serif cover.','https://www.deutsche-digitale-bibliothek.de/item/OPENTEST','deutsche-digitale-bibliothek.de','annual/dddddddddd01.jpg','[\"serif\",\"zzcommon\"]','[\"vintage\"]','[\"#c8a070\"]','$( [ $MODE = with ] && echo published || echo staged-open )',1700000004000,'annual-report','Optestlanz AG',1927,'','machinery','Germany',NULL)" >/dev/null || { echo "seed failed"; return 1; }
   if [ "$MODE" = with ]; then
     $D1 --command "UPDATE items SET rights='NoC-NC 1.0 (No Copyright – Non-Commercial Use Only)', rights_holder='Bayerische Staatsbibliothek', hosting='link', image_url='https://api.digitale-sammlungen.de/iiif/image/v2/bsb11111111_00005/full/full/0/default.jpg' WHERE id='cccccccccc01';
-      UPDATE items SET rights='NoC-NC 1.0 (No Copyright – Non-Commercial Use Only)', rights_holder='Österreichische Nationalbibliothek', hosting='link', image_url='https://iiif.onb.ac.at/images/ABO/TEST/full/full/0/default.jpg' WHERE id='cccccccccc02';" >/dev/null || return 1
+      UPDATE items SET rights='NoC-NC 1.0 (No Copyright – Non-Commercial Use Only)', rights_holder='Österreichische Nationalbibliothek', hosting='link', image_url='https://iiif.onb.ac.at/images/ABO/TEST/full/full/0/default.jpg' WHERE id='cccccccccc02';
+      UPDATE items SET rights='CC BY 3.0 DE', rights_holder='MARCHIVUM Mannheim' WHERE id='dddddddddd01';" >/dev/null || return 1
   fi
   local LOG=$TMP/dev.log
   $W dev --local --persist-to $TMP -c $CFG --port $PORT --inspector-port $IPORT --show-interactive-dev-session=false > $LOG 2>&1 & PID=$!
