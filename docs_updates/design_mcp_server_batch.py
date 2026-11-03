@@ -129,6 +129,10 @@ BATCHES = {
         ("get_frame_size", "work out the frame size to buy for a print with a mat (print + 2 × mat), the mat opening (1/8 in smaller each side) and the outside size for a frame moulding width, in inches and cm", "frame-mockup", "Frame Mockup"),
         ("calc_label_wrap", "size a bottle label, can wrap or coffee cup print: circumference, label width for a coverage %, the width seen from the front, and the cup's unrolled cone sector (radii, angle, arc lengths)", "bottle-mockup", "Bottle Mockup"),
     ]),
+    "80": (110, [   # 110 = tools/list on /mcp and /mcp/all after b80 (108 + 2), checked on a local Worker 3-Nov
+        ("make_habit_tracker", "make a printable monthly, weekly or yearly habit tracker for any month and year (week starting Monday or Sunday, 1-20 named or blank habits, minimal, dot-grid or pastel, Letter / A4 / A5) as true-size SVG pages", "habit-tracker-template", "Habit Tracker Template"),
+        ("make_badge", "make a badge or emblem (circle, shield, hexagon, ribbon, starburst, rosette) with curved top and bottom text, an icon, initials or a word in the middle, ornaments and ten colour schemes, as an SVG", "badge-maker", "Badge Maker"),
+    ]),
 }
 
 def main(b):

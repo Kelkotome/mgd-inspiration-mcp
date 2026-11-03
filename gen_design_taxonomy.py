@@ -73,6 +73,9 @@ T = {
  # batch 75 (3-Nov-2026): mazes and dungeon maps
  "make_maze": (["images", "print"], "/tools/maze-generator/", ["illustration-pattern", "graphic-print", "marketing-content"]),
  "make_dungeon": (["images", "print"], "/tools/dungeon-map-generator/", ["illustration-pattern", "graphic-print"]),
+ # batch 80 (3-Nov-2026): habit trackers, badges (categories = the b80 RULES of their pages)
+ "make_habit_tracker": (["print", "everyday"], "/tools/habit-tracker-template/", ["graphic-print", "marketing-content"]),
+ "make_badge": (["brand", "print"], "/tools/badge-maker/", ["brand", "graphic-print"]),
  # batch 79 (3-Nov-2026): picture frame sizing, bottle / can / cup label wraps (categories = the b79 RULES of their pages)
  "get_frame_size": (["print", "images"], "/tools/frame-mockup/", ["graphic-print", "photo-image", "marketing-content"]),
  "calc_label_wrap": (["print", "brand"], "/tools/bottle-mockup/", ["graphic-print", "packaging", "marketing-content"]),
@@ -107,6 +110,12 @@ RULES = [
  (r"^heightmap-generator$", ["images", "3d"], ["illustration-pattern", "industrial-product"]),
  (r"^(city-map|planet)-generator$", ["images"], ["illustration-pattern", "graphic-print"]),
  (r"^(wall|tile|road|rock|carpet|dirt|plastic|rust|snow|velvet)-texture$", ["images"], ["illustration-pattern", "graphic-print", "photo-image"]),
+ # batch 80 pages (3-Nov-2026): tablet = device UI like phone/laptop, habit tracker = everyday printable, vision board = images, rangoli / kolam = patterns, badge / seal = brand marks
+ (r"^tablet-mockup$", ["ui", "brand"], ["ui-ux-web", "marketing-content"]),
+ (r"^habit-tracker-template$", ["print", "everyday"], ["graphic-print", "marketing-content"]),
+ (r"^vision-board-maker$", ["images", "brand"], ["photo-image", "marketing-content"]),
+ (r"^(rangoli|kolam)-design-generator$", ["images"], ["illustration-pattern", "graphic-print"]),
+ (r"^(badge|seal)-maker$", ["brand", "print"], ["brand", "graphic-print"]),
  # batch 79 mockup pages (3-Nov-2026): devices are UI, stationery / apparel / signage are brand print, bottles / cans / cups are packaging, frames show photos and prints
  (r"^(phone|laptop)-mockup$", ["ui", "brand"], ["ui-ux-web", "marketing-content"]),
  (r"^(business-card|letterhead)-mockup$", ["print", "brand"], ["graphic-print", "brand", "marketing-content"]),
@@ -220,7 +229,7 @@ def main():
             pg["roles"] = sorted({r for n in pg["mcp_tools"] for r in tools[n]["roles"]})
     missing = [s for s in used_pages if s not in pages]
     if missing: sys.exit(f"MCP tool pages not on the /tools/ hub: {missing}")
-    out = {"version": "2026-11-03k", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
+    out = {"version": "2026-11-03l", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
     json.dump(out, open(OUT, "w"), indent=0, separators=(",", ":"))
     print(f"{len(tools)} MCP tools, {len(pages)} /tools/ pages → {OUT} ({os.path.getsize(OUT):,} bytes)")
 main()

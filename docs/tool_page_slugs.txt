@@ -1010,3 +1010,10 @@ bottle-mockup
 can-mockup
 coffee-cup-mockup
 signage-mockup
+tablet-mockup
+habit-tracker-template
+vision-board-maker
+rangoli-design-generator
+kolam-design-generator
+badge-maker
+seal-maker
