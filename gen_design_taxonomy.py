@@ -70,6 +70,10 @@ T = {
  "make_certificate_border": (["print", "brand"], "/tools/certificate-border/", ["graphic-print"]),
  "calc_kitchen_work_triangle": (["3d", "everyday"], "/tools/kitchen-planner/", ["industrial-product"]),
  "plan_square_foot_garden": (["everyday", "print"], "/tools/garden-planner/", ["illustration-pattern"]),
+ # batch 69 (3-Nov-2026): ribbon banners, cross-stitch sizing, mockup print areas
+ "make_ribbon_banner": (["brand", "print"], "/tools/ribbon-banner/", ["graphic-print", "type-lettering"]),
+ "calc_cross_stitch": (["print"], "/tools/cross-stitch-pattern-maker/", ["illustration-pattern"]),
+ "get_mockup_print_area": (["print", "brand"], "/tools/t-shirt-mockup/", ["graphic-print", "brand"]),
  # batch 66 (3-Nov-2026): speech bubbles, coats of arms, cassette J-cards, field of view, exposure value
  "make_speech_bubble": (["images", "typography"], "/tools/speech-bubble-maker/", ["illustration-pattern", "marketing-content"]),
  "make_coat_of_arms": (["brand", "images"], "/tools/coat-of-arms-maker/", ["illustration-pattern", "graphic-print"]),
@@ -79,6 +83,11 @@ T = {
 }
 # /tools/ pages: first matching rule wins (slug regex → categories, roles)
 RULES = [
+ # batch 69 pages without an MCP tool of their own (3-Nov-2026), ahead of the generic rules ("box-mockup" is a mockup, not a dieline)
+ (r"^(t-shirt|hoodie|tote-bag|mug)-mockup$", ["print", "brand"], ["graphic-print", "brand", "marketing-content"]),
+ (r"^(book|box)-mockup$", ["print", "brand"], ["graphic-print", "packaging", "marketing-content"]),
+ (r"^(poster|billboard)-mockup$", ["print", "brand"], ["graphic-print", "marketing-content"]),
+ (r"^(birth|graduation)-announcement-template$", ["print", "typography"], ["graphic-print"]),
  # batch 68 pages without an MCP tool (3-Nov-2026), ahead of the generic rules ("texture" pages are surfaces, "planner" pages are spaces)
  (r"^(paper|wood|marble|grunge|metal|concrete|stone)-texture$", ["images"], ["illustration-pattern", "graphic-print", "photo-image"]),
  (r"^room-planner$", ["3d", "everyday"], ["industrial-product", "marketing-content"]),
@@ -158,7 +167,7 @@ def main():
             pg["roles"] = sorted({r for n in pg["mcp_tools"] for r in tools[n]["roles"]})
     missing = [s for s in used_pages if s not in pages]
     if missing: sys.exit(f"MCP tool pages not on the /tools/ hub: {missing}")
-    out = {"version": "2026-11-03d", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
+    out = {"version": "2026-11-03e", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
     json.dump(out, open(OUT, "w"), indent=0, separators=(",", ":"))
     print(f"{len(tools)} MCP tools, {len(pages)} /tools/ pages → {OUT} ({os.path.getsize(OUT):,} bytes)")
 main()

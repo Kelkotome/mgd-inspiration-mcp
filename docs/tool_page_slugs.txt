@@ -921,3 +921,15 @@ youtube-thumbnail-maker
 youtube-thumbnail-resizer
 zalgo-text-generator
 zine-template
+t-shirt-mockup
+hoodie-mockup
+tote-bag-mockup
+mug-mockup
+book-mockup
+poster-mockup
+box-mockup
+billboard-mockup
+cross-stitch-pattern-maker
+ribbon-banner
+birth-announcement-template
+graduation-announcement-template

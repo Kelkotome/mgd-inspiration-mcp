@@ -98,6 +98,11 @@ BATCHES = {
         ("calc_kitchen_work_triangle", "check a kitchen's sink, cooktop and fridge work triangle from leg lengths or positions (with islands) against the NKBA guideline, plus the work-aisle width", "kitchen-planner", "Kitchen Planner"),
         ("plan_square_foot_garden", "split a raised bed into square-foot (or 30 cm) squares and work out plants per square and plant counts for each crop you assign", "garden-planner", "Garden Planner"),
     ]),
+    "69": (93, [   # 93 = tools/list on /mcp and /mcp/all after b69 (90 + 3), checked on a local Worker 3-Nov
+        ("make_ribbon_banner", "make a ribbon or scroll banner SVG (flat, folded, arched, wavy or double, with notched, pointed, straight or slanted ends) with the text set along the ribbon and fitted", "ribbon-banner", "Ribbon Banner"),
+        ("calc_cross_stitch", "work out a cross-stitch design's finished size on any Aida or evenweave count, the fabric to cut, strands and skeins, or the stitch count for a finished size", "cross-stitch-pattern-maker", "Cross Stitch Pattern Maker"),
+        ("get_mockup_print_area", "get the usual print area for t-shirts, hoodies, tote bags, 11 and 15 oz mug wraps, posters and billboards in inches, cm and pixels at your dpi", "t-shirt-mockup", "T-Shirt Mockup"),
+    ]),
 }
 
 def main(b):
