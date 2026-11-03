@@ -2003,7 +2003,10 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
   const tool = dispatched ? "run:" + dispatched : outer;
   const res = await inner(msg);
   const r = res && res.result;
-  await mcpEvent(env, c, { kind: "call", tool, ok: !!r && !r.isError, zero: r ? mcpZero(r) : null, ms: Date.now() - t0 });
+  const zero = r ? mcpZero(r) : null;
+  await mcpEvent(env, c, { kind: "call", tool, ok: !!r && !r.isError, zero, ms: Date.now() - t0 });
+  // 4-Nov: empty searches are logged and fed into the next content rounds, so tell the caller to come back.
+  if (zero && !r.isError) r.content[0].text += "\n\nOops, we're still building out this part of the library. Empty searches like this one are logged and we add new references every day, so please check back in 1–2 days.";
   if (r) mcpUtm(r, dispatched || tool, c.ua);
   return res;
 }
