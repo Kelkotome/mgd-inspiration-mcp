@@ -21,22 +21,25 @@ export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts"
   "music-player", "playlist", "portfolio-home", "case-study", "security-dashboard", "project-tracker", "course-dashboard", "form-wizard",
   "bank-onboarding", "product-scan", "split-view", "canvas-editor", "floor-plan", "voice-call",
   // 3-Nov-2026 round 3: interaction states (overlays on existing screens); pages/sitemap list them only once their rows are ingested
-  "toast-snackbar", "confirm-dialog", "side-drawer", "command-palette", "date-range-picker", "form-validation"];
+  "toast-snackbar", "confirm-dialog", "side-drawer", "command-palette", "date-range-picker", "form-validation",
+  // error steps for flows (round 3)
+  "auth-error", "payment-declined"];
 export const UI_SECTION_PATTERNS = ["hero", "navigation-header", "feature-grid", "bento-features", "how-it-works", "logo-cloud", "stats-band",
   "testimonials", "pricing", "comparison-table", "integrations-grid", "security-trust", "faq", "cta-banner", "about-team", "careers",
   "blog-index", "changelog", "contact-form", "footer"];
 export const UI_PATTERNS = [...UI_SCREEN_PATTERNS, ...UI_SECTION_PATTERNS];
 export const UI_STYLES = ["minimal", "editorial", "brutalist", "luxury", "playful", "corporate", "retro", "monochrome"];
-// Mirrors ui-screens/taxonomy.json "flows" (the ingester tags each step's screens with flow:<id>:<n>).
-export const UI_FLOWS = {
-  "sign-up": "Sign up and onboarding", "login-2fa": "Log in with two-factor", "password-reset": "Reset a password",
-  "checkout": "Buy a product", "upgrade-plan": "Upgrade a plan", "cancel-subscription": "Cancel a subscription",
-  "invite-teammate": "Invite a teammate", "first-run": "First run to first project", "search-to-detail": "Search and open a result",
-  "browse-photos": "Browse and open a photo", "book-a-class": "Book a class", "message-and-call": "Message a teammate and start a call",
-  "review-access": "Review team access", "post-a-photo": "Post a photo", "explore-a-place": "Explore a place on the map",
-  "see-a-doctor": "Find a doctor and have a video visit", "review-changes": "Approve a change and check its history", "play-music": "Open a playlist and play a track",
-  "open-an-account": "Open a bank account", "scan-a-product": "Scan a product and check it",
-};
+// Flows come straight from ui-screens/taxonomy.json (3-Nov-2026): steps are "pattern" or "pattern:variant", resolved per platform × style
+// against the published rows at request time, so lengthening a flow or adding error steps needs no re-ingest. "errors" marks the
+// unhappy-path steps (get_ui_flow include_errors=false drops them); "actions" are the verbs a flow covers.
+const FLOW_DEFS = UI_TAXONOMY.flows || {};
+export const UI_FLOWS = Object.fromEntries(Object.entries(FLOW_DEFS).map(([k, v]) => [k, v.name]));
+// Nominal membership of a screen in flows (pattern[:variant] → step number), used on item pages and in search answers.
+function flowsOf(pattern, variant) {
+  const key = `${pattern}${variant ? ":" + variant : ""}`, out = [];
+  for (const [id, f] of Object.entries(FLOW_DEFS)) f.steps.forEach((st, i) => { if (st === key || (!variant && st === pattern)) out.push({ id, step: i + 1 }); });
+  return out;
+}
 const ROLES = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"];
 const LABELS = { "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys", "security-trust": "Security and trust", "how-it-works": "How it works", "saas": "SaaS", "ai": "AI", "error-404": "404 error", "faq": "FAQ", "cta-banner": "CTA banner",
   "two-factor": "Two-factor code", "kanban-board": "Kanban board", "data-table": "Data table",
@@ -44,15 +47,16 @@ const LABELS = { "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys
   "in-call": "In call", "visit-summary": "Visit summary",
   "split-view": "Split view (master-detail)", "verify-identity": "Verify identity", "account-ready": "Account ready",
   "toast-snackbar": "Toast / snackbar with undo", "confirm-dialog": "Confirm dialog (destructive)", "side-drawer": "Side drawer", "command-palette": "Command palette",
-  "date-range-picker": "Date range picker", "form-validation": "Form validation errors" };
+  "date-range-picker": "Date range picker", "form-validation": "Form validation errors",
+  "auth-error": "Sign-in error", "payment-declined": "Card declined at checkout", "wrong-password": "Wrong password", "account-locked": "Account locked", "code-expired": "Code expired" };
 const label = (s) => LABELS[s] || (s || "").replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const order = (p) => { const i = UI_PATTERNS.indexOf(p); return i < 0 ? 999 : i; };
 const parseTags = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } };
 
 export function uiFields(r) {
   const tags = parseTags(r.tags);
-  const flows = tags.filter((t) => /^flow:[a-z0-9-]+:\d+$/.test(t)).map((t) => { const [, id, n] = t.split(":"); return { id, step: +n }; });
   const v = tags.find((t) => t.startsWith("variant:"));
+  const flows = flowsOf(r.category, v ? v.slice(8) : null);
   return { pattern: r.category || null, platform: r.country || null, product: r.company || null, app_category: r.industry || null,
     variant: v ? v.slice(8) : null, flows, code: `/ui/raw/${r.id}.html`, design_md: `/ui/raw/${r.id}.md`,
     // Versioned keys (ui/<id>-<v>.webp) are always uploaded with a dark twin; older unversioned keys have none.
@@ -142,6 +146,7 @@ h1{font-size:1.6rem;margin:.1rem 0 .5rem;letter-spacing:-.01em}
 .steps .step img{width:100%;height:auto;border:1px solid var(--border);border-radius:10px;display:block;background:var(--surface)}
 .steps .step div{font-size:.82rem;margin-top:.4rem}.steps .step b{display:inline-block;min-width:1.4rem;color:var(--muted)}
 .steps .arr{flex:none;align-self:center;color:var(--muted);font-size:1.4rem}
+.steps .err{font-size:.7rem;border:1px solid currentColor;border-radius:999px;padding:0 .4rem;color:#b42318}
 .tsw{display:inline-flex;gap:.3rem;align-items:center;font-size:.75rem;color:var(--muted)}.tsw b{font-weight:600;margin-right:.2rem}
 .pidx{columns:4 200px;font-size:.88rem;line-height:1.9;margin:.25rem 0 0}.pidx a{text-decoration:none}.pidx a:hover{text-decoration:underline}
 .tips{max-width:75ch;line-height:1.6;padding-left:1.2rem}.tips li{margin:.35rem 0}
@@ -298,12 +303,21 @@ document.querySelector(".filters").addEventListener("click",function(e){var b=e.
 }
 
 // ---- Flows -----------------------------------------------------------------------------------
-async function flowSteps(env, h, id, platform, style) {
-  const rows = await uiRows(env, " AND tags LIKE ? AND country=? AND style=?", [`%"flow:${id}:%`, platform, style]);
-  return rows.map((r) => h.rowToItem(r, env)).map((it) => ({ it, step: ((it.flows || []).find((f) => f.id === id) || {}).step || 0 }))
-    .sort((a, b) => a.step - b.step);
+// Steps whose screen isn't published yet are skipped (so a flow degrades to its existing steps); fewer than 2 = not available.
+async function flowSteps(env, h, id, platform, style, opts = {}) {
+  const f = FLOW_DEFS[id]; if (!f) return [];
+  const idx = await uiSearchIndex(env);
+  const byKey = idx.byKey || (idx.byKey = new Map(idx.docs.map((d) => [`${d.pattern}|${d.variant || ""}|${d.r.country}|${d.r.style}`, d.r])));
+  const errs = new Set(f.errors || []), out = [];
+  for (const st of f.steps) {
+    if (opts.noErrors && errs.has(st)) continue;
+    const [pa, v] = st.split(":");
+    const row = byKey.get(`${pa}|${v || ""}|${platform}|${style}`);
+    if (row) out.push({ it: h.rowToItem(row, env), step: out.length + 1, error: errs.has(st) });
+  }
+  return out.length >= 2 ? out : [];
 }
-const stepsHtml = (steps, base, h, platform) => `<div class="steps ${h.escHtml(platform)}">${steps.map(({ it, step }, i) => `${i ? '<span class="arr" aria-hidden="true">→</span>' : ""}<a class="step" href="${h.escHtml(uiItemPath(it, base))}"><img loading="lazy"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="Step ${step}: ${h.escHtml(label(it.pattern))}"/><div><b>${step}</b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</div></a>`).join("")}</div>`;
+const stepsHtml = (steps, base, h, platform) => `<div class="steps ${h.escHtml(platform)}">${steps.map(({ it, step, error }, i) => `${i ? '<span class="arr" aria-hidden="true">→</span>' : ""}<a class="step" href="${h.escHtml(uiItemPath(it, base))}"><img loading="lazy"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="Step ${step}: ${h.escHtml(label(it.pattern))}"/><div><b>${step}</b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}${error ? ' <span class="err">error state</span>' : ""}</div></a>`).join("")}</div>`;
 
 async function uiFlowsIndex(env, base, h) {
   const site = siteOf(env);
@@ -363,7 +377,7 @@ async function uiSitemap(env, base) {
   const site = siteOf(env);
   const rows = await uiRows(env);
   const have = new Set(rows.map((r) => r.category)); // only patterns that have screens (new patterns appear after their ingest)
-  const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...UI_PATTERNS.filter((p) => have.has(p)).map((p) => `${site}${base}/ui/${p}`), ...Object.keys(UI_FLOWS).map((id) => `${site}${base}/ui/flows/${id}`),
+  const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...UI_PATTERNS.filter((p) => have.has(p)).map((p) => `${site}${base}/ui/${p}`), ...(await availableFlows(env)).map((id) => `${site}${base}/ui/flows/${id}`),
     ...rows.map((r) => site + uiItemPath({ id: r.id, ...uiFields(r), style: r.style }, base))];
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${u}</loc></url>`).join("\n")}\n</urlset>`,
     { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
@@ -398,6 +412,7 @@ export const UI_MCP_TOOLS = [
         flow: { type: "string", description: "Which flow: an id from the list above or a plain description ('reset password', 'open a bank account'); matched server-side. list_ui_patterns lists the live flows." },
         platform: { type: "string", description: "web (default) or mobile." },
         style: { type: "string", description: "Default 'minimal'. Also: editorial, brutalist, luxury, playful, corporate, retro, monochrome." },
+        include_errors: { type: "boolean", description: "Default true: include the flow's error/unhappy-path steps (wrong password, expired code, card declined, form errors). false = happy path only." },
       },
       required: ["flow"],
     },
@@ -453,6 +468,7 @@ function diversify(ranked, limit, o) {
 
 const filt0 = (platform, pattern, style) => `${platform ? " on " + platform : ""}${pattern ? " in " + pattern : ""}${style ? " in the " + style + " style" : ""}`;
 
+async function availableFlows(env) { const fake = { rowToItem: (r) => r }; const ok = []; for (const id of Object.keys(FLOW_DEFS)) if ((await flowSteps(env, fake, id, "web", "minimal")).length) ok.push(id); return ok; }
 // Patterns that have published screens (crawlable pattern links must not point at a pattern before its screens are ingested).
 async function uiPopulated(env) { const idx = await uiSearchIndex(env); return new Set(idx.docs.map((d) => d.pattern)); }
 
@@ -534,13 +550,14 @@ export async function callUiTool(name, a, env, h) {
     if (!fr) return { content: [{ type: "text", text: `No flow matches "${a.flow || ""}". Available: ` + Object.entries(UI_FLOWS).map(([k, v]) => `${k} (${v.toLowerCase()})`).join(", ") }], isError: true };
     const id = fr.id;
     const platform = resolvePlatform(a.platform) || "web", style = resolveStyle(a.style) || "minimal";
-    const steps = await flowSteps(env, h, id, platform, style);
+    const steps = await flowSteps(env, h, id, platform, style, { noErrors: a.include_errors === false });
     if (!steps.length) return { content: [{ type: "text", text: `The ${id} flow isn't available for ${platform}/${style} yet. Browse flows at ${site}/ui/flows` }] };
-    const lines = steps.map(({ it, step }) => [`${step}. ${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""}`, `   screen_id: ${it.id}`,
+    const fd = FLOW_DEFS[id] || {}, nErr = steps.filter((s) => s.error).length;
+    const lines = steps.map(({ it, step, error }) => [`${step}. ${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""}${error ? " — ERROR STATE" : ""}`, `   screen_id: ${it.id}`,
       it.description ? `   ${it.description}` : null, `   screenshot: ${site}${it.image}`, `   page: ${site}${uiItemPath(it, "")}`].filter(Boolean).join("\n"));
     const pal = (steps[0].it.palette || []).map((hx, i) => `${ROLES[i]} ${hx}`).join(", ");
     const matched = fr.how === "exact" ? "" : `(flow "${a.flow}" → ${id}) `;
-    return { content: [{ type: "text", text: `${matched}Flow "${UI_FLOWS[id]}" — ${steps.length} steps, ${platform}, ${style} style, product ${steps[0].it.product} (fictional). All steps share one design system${pal ? " (light colour roles: " + pal + ")" : ""}; get any step's HTML + DESIGN.md with get_ui_screen_code. Page (cite this): ${site}/ui/flows/${id}?platform=${platform}&style=${style}\n${CITE}\n\n${lines.join("\n\n")}` }] };
+    return { content: [{ type: "text", text: `${matched}Flow "${UI_FLOWS[id]}" — ${steps.length} steps${nErr ? ` incl. ${nErr} error state${nErr > 1 ? "s" : ""}` : ""}, ${platform}, ${style} style, product ${steps[0].it.product} (fictional).${(fd.actions || []).length ? " Covers: " + fd.actions.join(", ") + "." : ""}${a.include_errors === false && (fd.errors || []).length ? " Error steps omitted (include_errors=false)." : ""} All steps share one design system${pal ? " (light colour roles: " + pal + ")" : ""}; get any step's HTML + DESIGN.md with get_ui_screen_code. Page (cite this): ${site}/ui/flows/${id}?platform=${platform}&style=${style}\n${CITE}\n\n${lines.join("\n\n")}` }] };
   }
   if (name === "list_ui_patterns") {
     const kind = String(a.kind || "all").toLowerCase();

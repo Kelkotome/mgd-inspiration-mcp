@@ -89,6 +89,8 @@ export const PATTERN_ALIASES = {
   "command-palette": ["command palette", "cmd k", "command menu", "quick switcher", "spotlight search", "command bar"],
   "date-range-picker": ["date range", "date range picker", "date picker", "range picker", "calendar picker", "datepicker"],
   "form-validation": ["validation", "form validation", "form errors", "inline errors", "error messages", "error state", "invalid", "error summary"],
+  "auth-error": ["login error", "sign in error", "wrong password", "incorrect password", "account locked", "locked out", "code expired", "expired code", "auth error", "failed login"],
+  "payment-declined": ["card declined", "payment declined", "payment failed", "payment error", "declined", "checkout error", "insufficient funds"],
   // website sections
   "hero": ["hero", "landing hero", "hero section", "above the fold", "landing page", "landing"],
   "navigation-header": ["navigation", "nav", "header", "navbar", "mega menu", "menu", "navigation header"],

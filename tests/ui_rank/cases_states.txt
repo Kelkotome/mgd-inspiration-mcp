@@ -14,3 +14,7 @@ form validation errors | form-validation
 inline error messages on sign up form | form-validation
 modal | confirm-dialog
 data table | side-drawer data-table | elements=drawer
+wrong password error on login | auth-error
+account locked after too many attempts | auth-error
+card declined at checkout | payment-declined
+payment failed error | payment-declined

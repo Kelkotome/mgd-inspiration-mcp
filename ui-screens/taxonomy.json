@@ -14,7 +14,8 @@
    "login",
    "sign-up",
    "forgot-password",
-   "two-factor"
+   "two-factor",
+   "auth-error"
   ],
   "onboarding": [
    "welcome",
@@ -40,7 +41,8 @@
    "cart",
    "checkout",
    "order-confirmation",
-   "invoice"
+   "invoice",
+   "payment-declined"
   ],
   "account": [
    "settings",
@@ -195,25 +197,57 @@
    "name": "Sign up and onboarding",
    "steps": [
     "sign-up",
+    "form-validation",
     "onboarding-step",
     "welcome",
     "empty-state"
+   ],
+   "errors": [
+    "form-validation"
+   ],
+   "actions": [
+    "Creating account",
+    "Fixing form errors",
+    "Onboarding",
+    "Setting up"
    ]
   },
   "login-2fa": {
    "name": "Log in with two-factor",
    "steps": [
     "login",
+    "auth-error:wrong-password",
     "two-factor",
+    "auth-error:code-expired",
     "list-view"
+   ],
+   "errors": [
+    "auth-error:wrong-password",
+    "auth-error:code-expired"
+   ],
+   "actions": [
+    "Logging in",
+    "Wrong password",
+    "Verifying",
+    "Code expired"
    ]
   },
   "password-reset": {
    "name": "Reset a password",
    "steps": [
     "login",
+    "auth-error:account-locked",
     "forgot-password",
     "success-confirmation:password-reset"
+   ],
+   "errors": [
+    "auth-error:account-locked"
+   ],
+   "actions": [
+    "Logging in",
+    "Account locked",
+    "Resetting password",
+    "Confirming"
    ]
   },
   "checkout": {
@@ -222,30 +256,65 @@
     "product-detail",
     "cart",
     "checkout",
+    "payment-declined",
     "order-confirmation"
+   ],
+   "errors": [
+    "payment-declined"
+   ],
+   "actions": [
+    "Browsing",
+    "Adding to cart",
+    "Paying",
+    "Card declined",
+    "Confirming"
    ]
   },
   "upgrade-plan": {
    "name": "Upgrade a plan",
    "steps": [
+    "settings",
     "billing-plans",
     "paywall-upgrade",
-    "success-confirmation:plan-upgraded"
+    "success-confirmation:plan-upgraded",
+    "invoice"
+   ],
+   "actions": [
+    "Settings",
+    "Comparing plans",
+    "Upgrading",
+    "Confirming",
+    "Viewing invoice"
    ]
   },
   "cancel-subscription": {
    "name": "Cancel a subscription",
    "steps": [
+    "settings",
     "billing-plans",
     "cancel-subscription",
     "success-confirmation:subscription-cancelled"
+   ],
+   "actions": [
+    "Settings",
+    "Billing",
+    "Cancelling",
+    "Confirming"
    ]
   },
   "invite-teammate": {
    "name": "Invite a teammate",
    "steps": [
+    "settings",
     "team-members",
+    "roles-permissions",
     "success-confirmation:invite-sent"
+   ],
+   "actions": [
+    "Settings",
+    "Inviting",
+    "Assigning roles",
+    "Confirming"
    ]
   },
   "first-run": {
@@ -253,14 +322,26 @@
    "steps": [
     "welcome",
     "empty-state",
-    "kanban-board"
+    "kanban-board",
+    "command-palette"
+   ],
+   "actions": [
+    "Onboarding",
+    "Creating",
+    "Navigating"
    ]
   },
   "search-to-detail": {
    "name": "Search and open a result",
    "steps": [
     "search-results",
-    "detail-view"
+    "detail-view",
+    "version-history"
+   ],
+   "actions": [
+    "Searching",
+    "Viewing details",
+    "Checking history"
    ]
   },
   "browse-photos": {
@@ -268,22 +349,38 @@
    "steps": [
     "feed",
     "image-viewer"
-   ]
+   ],
+   "actions": []
   },
   "book-a-class": {
    "name": "Book a class",
    "steps": [
+    "home",
     "class-schedule",
     "booking-details",
     "booking-confirmed"
+   ],
+   "actions": [
+    "Home",
+    "Browsing classes",
+    "Booking",
+    "Confirming"
    ]
   },
   "message-and-call": {
    "name": "Message a teammate and start a call",
    "steps": [
+    "notifications-center",
     "chat-list",
     "chat-thread",
-    "video-call"
+    "video-call",
+    "voice-call"
+   ],
+   "actions": [
+    "Notifications",
+    "Messaging",
+    "Video call",
+    "Voice call"
    ]
   },
   "review-access": {
@@ -292,36 +389,58 @@
     "team-members",
     "roles-permissions",
     "audit-log"
-   ]
+   ],
+   "actions": []
   },
   "post-a-photo": {
    "name": "Post a photo",
    "steps": [
     "feed",
     "create-post"
-   ]
+   ],
+   "actions": []
   },
   "explore-a-place": {
    "name": "Explore a place on the map",
    "steps": [
+    "feed",
     "map-view",
     "image-viewer"
+   ],
+   "actions": [
+    "Browsing",
+    "Exploring the map",
+    "Viewing a photo"
    ]
   },
   "see-a-doctor": {
    "name": "Find a doctor and have a video visit",
    "steps": [
+    "clinic-home",
     "doctor-directory",
     "telehealth-visit:waiting-room",
     "telehealth-visit:in-call",
     "telehealth-visit:visit-summary"
+   ],
+   "actions": [
+    "Clinic home",
+    "Finding a doctor",
+    "Device check",
+    "Video visit",
+    "Visit summary"
    ]
   },
   "review-changes": {
    "name": "Approve a change and check its history",
    "steps": [
+    "notifications-center",
     "approval-queue",
     "version-history"
+   ],
+   "actions": [
+    "Notifications",
+    "Approving",
+    "Checking history"
    ]
   },
   "play-music": {
@@ -329,7 +448,8 @@
    "steps": [
     "playlist",
     "music-player"
-   ]
+   ],
+   "actions": []
   },
   "open-an-account": {
    "name": "Open a bank account",
@@ -337,13 +457,59 @@
     "bank-onboarding:welcome",
     "bank-onboarding:verify-identity",
     "bank-onboarding:account-ready"
-   ]
+   ],
+   "actions": []
   },
   "scan-a-product": {
    "name": "Scan a product and check it",
    "steps": [
     "product-scan:camera",
     "product-scan:result"
+   ],
+   "actions": []
+  },
+  "manage-tasks": {
+   "name": "Open a task, delete it and undo",
+   "steps": [
+    "list-view",
+    "detail-view",
+    "toast-snackbar",
+    "kanban-board"
+   ],
+   "actions": [
+    "Browsing",
+    "Editing",
+    "Deleting",
+    "Undoing"
+   ]
+  },
+  "customer-lookup": {
+   "name": "Look up a customer and report on them",
+   "steps": [
+    "dashboard",
+    "data-table",
+    "side-drawer",
+    "analytics-charts",
+    "date-range-picker"
+   ],
+   "actions": [
+    "Browsing",
+    "Filtering",
+    "Viewing details",
+    "Reporting",
+    "Choosing dates"
+   ]
+  },
+  "delete-workspace": {
+   "name": "Delete a workspace",
+   "steps": [
+    "settings",
+    "confirm-dialog"
+   ],
+   "actions": [
+    "Settings",
+    "Deleting",
+    "Confirming"
    ]
   }
  },

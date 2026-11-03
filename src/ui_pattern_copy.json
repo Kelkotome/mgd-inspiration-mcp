@@ -2242,5 +2242,53 @@
     "Usually not: a disabled button gives no reason. Let people submit and then show clear errors."
    ]
   ]
+ },
+ "auth-error": {
+  "h1": "Login error screen examples",
+  "intro": "Sign-in fails more often than it succeeds on the first try, so the error states deserve design. These examples re-render the real sign-in and two-factor screens with their failure states: a wrong password with the attempts left, a temporarily locked account with a reset path, and an expired two-factor code with a resend action, each with an alert and the field at fault marked.",
+  "tips": [
+   "Say what happened and what to do next in the same alert: attempts left, when to retry, or a reset link.",
+   "Avoid revealing whether the email exists; “Incorrect email or password” is safer than “No account found”.",
+   "Mark the field at fault with an icon and text as well as the danger colour, and keep the typed email.",
+   "For lockouts, show when sign-in reopens and offer password reset as the way out."
+  ],
+  "faq": [
+   [
+    "What should a wrong password error say?",
+    "Keep it short and actionable: the email or password is incorrect, how many attempts remain, and a link to reset the password."
+   ],
+   [
+    "Should I lock accounts after failed logins?",
+    "A short, time-based pause after several failures slows down guessing without locking people out for good. Tell them how long it lasts."
+   ],
+   [
+    "How do I show an expired two-factor code?",
+    "Explain that the code timed out, keep the input visible and offer to resend or use a backup code."
+   ]
+  ]
+ },
+ "payment-declined": {
+  "h1": "Card declined checkout examples",
+  "intro": "When a payment fails, people need to know nothing was charged and how to finish the order. These checkout examples show a declined card: an alert in the payment section with the reason, the card field marked with an icon and message, other ways to pay still visible and the Pay button ready to retry, on web and mobile in eight styles.",
+  "tips": [
+   "Say that nothing was charged; it is the first thing people worry about.",
+   "Give the reason when you can (insufficient funds, expired card) and the next step (another card, another method).",
+   "Keep the rest of the form filled in so only the payment needs to change.",
+   "Place the error next to the payment fields, not only in a toast that disappears."
+  ],
+  "faq": [
+   [
+    "What should a card declined message say?",
+    "That the payment didn’t go through, that nothing was charged, the reason if the bank gave one, and what to do next, such as using another card."
+   ],
+   [
+    "Should the checkout form be cleared after a decline?",
+    "No. Keep contact, shipping and delivery choices so people only change the payment method."
+   ],
+   [
+    "Where should payment errors appear?",
+    "Inline in the payment section, close to the card fields, and announced to screen readers with role=alert."
+   ]
+  ]
  }
 }
