@@ -472,6 +472,11 @@ function prettySource(host) {
     "cdm22029.contentdm.oclc.org": "NovaStory (Pictou-Antigonish Regional Library)",
     "cdm17532.contentdm.oclc.org": "Edward Kremers Research Library",
     "cdm17393.contentdm.oclc.org": "Mountain Scholar",
+    // 3-Nov-2026 annual-reports r36: DDB / SLUB / SUB Hamburg / Czech Digital Library sources
+    "digital.slub-dresden.de": "SLUB Dresden",
+    "resolver.sub.uni-hamburg.de": "Staats- und Universitätsbibliothek Hamburg",
+    "deutsche-digitale-bibliothek.de": "Deutsche Digitale Bibliothek",
+    "ceskadigitalniknihovna.cz": "Czech Digital Library (ČDK)",
   };
   return map[h] || host || "source";
 }
