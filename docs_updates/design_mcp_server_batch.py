@@ -120,6 +120,11 @@ BATCHES = {
         ("make_paper_airplane_template", "make a printable paper airplane fold sheet (classic dart, glider or Nakamura lock, US Letter or A4) with every valley and mountain crease worked out by a folding simulator, numbered steps and folding instructions, as a true-size SVG", "paper-airplane-template", "Paper Airplane Template"),
         ("make_crown_template", "make a printable paper crown sized from the head circumference plus an overlap (points, jewelled, rounded, castle or tiara), split into numbered pieces with glue tabs, as true-size SVG sheets", "paper-crown-template", "Paper Crown Template"),
     ]),
+    "78": (105, [   # 105 = tools/list on /mcp and /mcp/all after b78 (102 + 3), checked on a local Worker 3-Nov
+        ("get_sign_letter_height", "work out the letter height a sign needs for a viewing distance (about 10 ft per inch to read easily, 30 ft per inch at most), or how far a given letter height reads, with the title height on standard sign sizes", "yard-sale-sign", "Yard Sale Sign"),
+        ("plan_sign_tiling", "plan how a big sign or poster (18 × 24, 24 × 36 in, A2, A1 or custom) tiles over Letter or A4 sheets: sheet count, orientation, overlap, a sheet grid and each sheet's crop", "sign-maker", "Sign Maker"),
+        ("make_sign", "make a printable out of order, do not disturb, reserved (table tent) or yard sale sign from a preset with your own lines, as an SVG at Letter, A4 or poster size", "out-of-order-sign", "Out of Order Sign"),
+    ]),
 }
 
 def main(b):

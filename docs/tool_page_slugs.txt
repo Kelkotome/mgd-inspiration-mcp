@@ -990,3 +990,10 @@ mask-template
 bunting-template
 paper-lantern-template
 envelope-liner-template
+out-of-order-sign
+do-not-disturb-sign
+reserved-sign
+yard-sale-sign
+welcome-sign-maker
+birthday-sign-maker
+desk-name-plate

@@ -73,6 +73,10 @@ T = {
  # batch 75 (3-Nov-2026): mazes and dungeon maps
  "make_maze": (["images", "print"], "/tools/maze-generator/", ["illustration-pattern", "graphic-print", "marketing-content"]),
  "make_dungeon": (["images", "print"], "/tools/dungeon-map-generator/", ["illustration-pattern", "graphic-print"]),
+ # batch 78 (3-Nov-2026): sign letter height vs reading distance, big-sign tiling, printable out of order / do not disturb / reserved / yard sale signs
+ "get_sign_letter_height": (["print", "typography"], "/tools/yard-sale-sign/", ["marketing-content"]),
+ "plan_sign_tiling": (["print", "typography"], "/tools/sign-maker/", ["marketing-content"]),
+ "make_sign": (["print", "typography"], "/tools/out-of-order-sign/", ["marketing-content"]),
  # batch 76 (3-Nov-2026): paper airplane fold sheets, paper crowns
  "make_paper_airplane_template": (["print", "3d"], "/tools/paper-airplane-template/", ["graphic-print", "illustration-pattern"]),
  "make_crown_template": (["print"], "/tools/paper-crown-template/", ["packaging", "graphic-print", "illustration-pattern"]),
@@ -100,6 +104,10 @@ RULES = [
  (r"^heightmap-generator$", ["images", "3d"], ["illustration-pattern", "industrial-product"]),
  (r"^(city-map|planet)-generator$", ["images"], ["illustration-pattern", "graphic-print"]),
  (r"^(wall|tile|road|rock|carpet|dirt|plastic|rust|snow|velvet)-texture$", ["images"], ["illustration-pattern", "graphic-print", "photo-image"]),
+ # batch 78 sign pages (3-Nov-2026): group A (the MCP tool pages take their categories from the tools) + group B welcome / birthday signs and desk name plates
+ (r"^(out-of-order|do-not-disturb|reserved|yard-sale)-sign$", ["print", "typography"], ["graphic-print", "marketing-content"]),
+ (r"^(welcome|birthday)-sign-maker$", ["print", "typography"], ["graphic-print", "marketing-content"]),
+ (r"^desk-name-plate$", ["print", "typography"], ["graphic-print", "brand"]),
  # batch 76 craft-template pages without an MCP tool of their own (3-Nov-2026): masks are illustrated cut-outs, lanterns fold into 3D, liners are patterned packaging inserts
  (r"^mask-template$", ["print", "images"], ["illustration-pattern", "graphic-print"]),
  (r"^bunting-template$", ["print"], ["graphic-print", "illustration-pattern", "marketing-content"]),
@@ -202,7 +210,7 @@ def main():
             pg["roles"] = sorted({r for n in pg["mcp_tools"] for r in tools[n]["roles"]})
     missing = [s for s in used_pages if s not in pages]
     if missing: sys.exit(f"MCP tool pages not on the /tools/ hub: {missing}")
-    out = {"version": "2026-11-03i", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
+    out = {"version": "2026-11-03j", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
     json.dump(out, open(OUT, "w"), indent=0, separators=(",", ":"))
     print(f"{len(tools)} MCP tools, {len(pages)} /tools/ pages → {OUT} ({os.path.getsize(OUT):,} bytes)")
 main()
