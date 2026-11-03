@@ -116,6 +116,10 @@ BATCHES = {
         ("make_maze", "make a seeded maze (rectangle, circle, hexagon or triangle; backtracker, Prim, Kruskal or Wilson) by size or difficulty, with optional loops and the solution path, as an SVG with dead-end and solution stats", "maze-generator", "Maze Generator"),
         ("make_dungeon", "generate a seeded dungeon map with rooms, corridors, doors (locked, secret, archway), stairs, traps and a 5 ft grid, rooms numbered by distance, with a room key, as an SVG", "dungeon-map-generator", "Dungeon Map Generator"),
     ]),
+    "76": (102, [   # 102 = tools/list on /mcp and /mcp/all after b76 (100 + 2), checked on a local Worker 3-Nov
+        ("make_paper_airplane_template", "make a printable paper airplane fold sheet (classic dart, glider or Nakamura lock, US Letter or A4) with every valley and mountain crease worked out by a folding simulator, numbered steps and folding instructions, as a true-size SVG", "paper-airplane-template", "Paper Airplane Template"),
+        ("make_crown_template", "make a printable paper crown sized from the head circumference plus an overlap (points, jewelled, rounded, castle or tiara), split into numbered pieces with glue tabs, as true-size SVG sheets", "paper-crown-template", "Paper Crown Template"),
+    ]),
 }
 
 def main(b):

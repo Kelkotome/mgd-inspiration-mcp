@@ -73,6 +73,9 @@ T = {
  # batch 75 (3-Nov-2026): mazes and dungeon maps
  "make_maze": (["images", "print"], "/tools/maze-generator/", ["illustration-pattern", "graphic-print", "marketing-content"]),
  "make_dungeon": (["images", "print"], "/tools/dungeon-map-generator/", ["illustration-pattern", "graphic-print"]),
+ # batch 76 (3-Nov-2026): paper airplane fold sheets, paper crowns
+ "make_paper_airplane_template": (["print", "3d"], "/tools/paper-airplane-template/", ["graphic-print", "illustration-pattern"]),
+ "make_crown_template": (["print"], "/tools/paper-crown-template/", ["packaging", "graphic-print", "illustration-pattern"]),
  # batch 73 (3-Nov-2026): brochure panel widths, banner specs (get_mockup_print_area also covers the b73 mockup products)
  "get_brochure_panels": (["print"], "/tools/brochure-mockup/", ["graphic-print", "marketing-content"]),
  "get_banner_spec": (["print", "brand"], "/tools/banner-mockup/", ["graphic-print", "marketing-content"]),
@@ -97,6 +100,11 @@ RULES = [
  (r"^heightmap-generator$", ["images", "3d"], ["illustration-pattern", "industrial-product"]),
  (r"^(city-map|planet)-generator$", ["images"], ["illustration-pattern", "graphic-print"]),
  (r"^(wall|tile|road|rock|carpet|dirt|plastic|rust|snow|velvet)-texture$", ["images"], ["illustration-pattern", "graphic-print", "photo-image"]),
+ # batch 76 craft-template pages without an MCP tool of their own (3-Nov-2026): masks are illustrated cut-outs, lanterns fold into 3D, liners are patterned packaging inserts
+ (r"^mask-template$", ["print", "images"], ["illustration-pattern", "graphic-print"]),
+ (r"^bunting-template$", ["print"], ["graphic-print", "illustration-pattern", "marketing-content"]),
+ (r"^paper-lantern-template$", ["print", "3d"], ["packaging", "graphic-print"]),
+ (r"^envelope-liner-template$", ["print"], ["packaging", "graphic-print", "illustration-pattern"]),
  # batch 73 mockup pages (3-Nov-2026); brochure-mockup and banner-mockup take their categories from their MCP tools
  (r"^(polo-shirt|cap)-mockup$", ["print", "brand"], ["graphic-print", "brand", "marketing-content"]),
  (r"^(canvas|magazine|flyer|brochure|notebook|sticker|banner)-mockup$", ["print", "brand"], ["graphic-print", "marketing-content"]),
@@ -194,7 +202,7 @@ def main():
             pg["roles"] = sorted({r for n in pg["mcp_tools"] for r in tools[n]["roles"]})
     missing = [s for s in used_pages if s not in pages]
     if missing: sys.exit(f"MCP tool pages not on the /tools/ hub: {missing}")
-    out = {"version": "2026-11-03h", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
+    out = {"version": "2026-11-03i", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
     json.dump(out, open(OUT, "w"), indent=0, separators=(",", ":"))
     print(f"{len(tools)} MCP tools, {len(pages)} /tools/ pages → {OUT} ({os.path.getsize(OUT):,} bytes)")
 main()

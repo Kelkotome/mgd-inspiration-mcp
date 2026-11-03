@@ -984,3 +984,9 @@ plastic-texture
 rust-texture
 snow-texture
 velvet-texture
+paper-crown-template
+paper-airplane-template
+mask-template
+bunting-template
+paper-lantern-template
+envelope-liner-template
