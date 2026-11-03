@@ -5,6 +5,7 @@
 // R2: screenshot at ui/<id>-<v>.webp (+ -dark.webp twin), code at ui/<id>/index.html, tokens at ui/<id>/DESIGN.md.
 
 import UI_COPY from "./ui_pattern_copy.json"; // per-pattern landing-page copy: { h1, intro, tips[], faq[[q,a]] }
+import { buildIndex, rankRows, resolveName, PATTERN_ALIASES } from "./ui_search.js";
 
 export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts", "login", "sign-up", "forgot-password", "two-factor",
   "welcome", "onboarding-step", "permissions-request", "home", "feed", "list-view", "detail-view", "kanban-board", "calendar",
@@ -410,6 +411,16 @@ export const UI_MCP_TOOLS = [
 const CITE = "When you mention or show these screens to the user, credit them as \"UI by Made Good Designs\" with the page link. They are original designs, free to use and adapt in any project.";
 export const isUiTool = (name) => name === "search_ui_screens" || name === "get_ui_screen_code" || name === "get_ui_flow";
 
+// All published UI rows + their search index, cached per isolate (the library is ~1.6k rows and changes only on ingest).
+let UI_IDX = null;
+async function uiSearchIndex(env) {
+  if (UI_IDX && Date.now() - UI_IDX.at < 10 * 60 * 1000) return UI_IDX.idx;
+  const rows = (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='ui'`).all()).results || [];
+  const idx = buildIndex(rows, UI_PATTERNS);
+  UI_IDX = { at: Date.now(), idx };
+  return idx;
+}
+
 // h = { mcpSearchRows, rowToItem, clampInt, site } from index.js
 export async function callUiTool(name, a, env, h) {
   const site = h.site;
@@ -421,17 +432,29 @@ export async function callUiTool(name, a, env, h) {
     const wantDark = /\b(dark|night)(\s+(mode|theme|ui))?\b/i.test(q);
     const qText = wantDark ? q.replace(/\b(dark|night)(\s+(mode|theme|ui))?\b/gi, " ").replace(/\s+/g, " ").trim() : q;
     const limit = h.clampInt(a.limit, 6, 1, 12);
-    const binds = ["published", "ui"];
-    let where = "status=? AND owner_id IS NULL AND collection=?";
-    if (a.platform) { where += " AND country=?"; binds.push(String(a.platform)); }
-    if (a.pattern) { where += " AND category=?"; binds.push(String(a.pattern)); }
-    if (a.style) { where += " AND style=?"; binds.push(String(a.style)); }
-    let r = await h.mcpSearchRows(env, where, binds, ["title", "description", "tags", "category", "style", "industry"], qText, "created_at DESC", limit);
-    let note = r.note;
-    // Filters alone already narrow the set; if the free text matches nothing inside them, show the filtered set instead of nothing.
-    if (!r.rows.length && (a.platform || a.pattern || a.style)) { r = await h.mcpSearchRows(env, where, binds, ["title"], "", "created_at DESC", limit); note = " (no text match; showing screens matching your filters)"; }
-    const hd = `${r.rows.length} UI screen(s) for "${q}"${a.platform ? ", " + a.platform : ""}${a.pattern ? ", " + a.pattern : ""}${a.style ? ", " + a.style + " style" : ""}${note}`;
-    if (!r.rows.length) return { content: [{ type: "text", text: `${hd}. Try a pattern name such as: ${UI_PATTERNS.slice(0, 12).join(", ")}… Browse all at ${site}/ui` }] };
+    const platform = a.platform === "web" || a.platform === "mobile" ? a.platform : null;
+    const style = UI_STYLES.includes(a.style) ? a.style : null;
+    const pr = a.pattern ? resolveName(a.pattern, UI_PATTERNS, PATTERN_ALIASES) : null;
+    const pattern = pr ? pr.id : null;
+    const idx = await uiSearchIndex(env);
+    const res = rankRows(qText, idx, { platform, style, pattern });
+    const filt = `${platform ? ", " + platform : ""}${pattern ? ", " + pattern : ""}${style ? ", " + style + " style" : ""}`;
+    const patNote = a.pattern && !pattern ? ` (unknown pattern "${a.pattern}" ignored; list_ui_patterns shows them all)` : pr && pr.how !== "exact" ? ` (pattern "${a.pattern}" → ${pattern})` : "";
+    const sugg = (res.suggestions || []).filter((p) => p !== pattern);
+    const suggLine = sugg.length ? ` Closest patterns: ${sugg.map((p) => `${p} (${label(p).toLowerCase()})`).join(", ")} — search again with one of them, or pass pattern="…".` : "";
+    let rows, note = patNote;
+    if (res.tier === "none" && !pattern) {
+      const unk = res.terms.filter((t) => !t.df).map((t) => t.w);
+      return { content: [{ type: "text", text: `No screen in the library matches "${q}"${filt}${unk.length ? ` (nothing about: ${unk.join(", ")})` : ""}, so none are shown rather than unrelated ones.${suggLine} Browse all at ${site}/ui` }] };
+    }
+    if (res.tier === "none") { rows = res.ranked.slice(0, limit).map((x) => x.r); note += ` (no text match inside pattern ${pattern}; showing its screens)`; }
+    else {
+      rows = res.ranked.filter((x) => res.tier === "all" || x.text > 0).slice(0, limit).map((x) => x.r);
+      if (res.tier === "partial") note += ` (no screen matches every part; closest matches, unmatched: ${res.unmatched.join(", ")})`;
+    }
+    const hd = `${rows.length} UI screen(s) for "${q}"${filt}${note}`;
+    if (!rows.length) return { content: [{ type: "text", text: `No screen in the library matches "${q}"${filt}.${suggLine} Browse all at ${site}/ui` }] };
+    const r = { rows };
     const blocks = r.rows.map((row) => {
       const it = h.rowToItem(row, env);
       const roles = (it.palette || []).map((hx, i) => `${ROLES[i]} ${hx}`).join(", ");

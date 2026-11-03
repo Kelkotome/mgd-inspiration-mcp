@@ -1,0 +1,2053 @@
+[
+ {
+  "q": "work index list of projects",
+  "args": {
+   "query": "work index list of projects"
+  },
+  "expect": [
+   "portfolio-home",
+   "project-tracker",
+   "list-view"
+  ],
+  "got": "portfolio-home",
+  "ok": true,
+  "distinct": [
+   "portfolio-home"
+  ],
+  "chars": 11960
+ },
+ {
+  "q": "weekly calendar schedule with staff",
+  "args": {
+   "query": "weekly calendar schedule with staff"
+  },
+  "expect": [
+   "calendar",
+   "class-schedule"
+  ],
+  "got": "booking-confirmed",
+  "ok": false,
+  "distinct": [
+   "booking-confirmed"
+  ],
+  "chars": 11739
+ },
+ {
+  "q": "warm premium landing hero for a food business tool",
+  "args": {
+   "query": "warm premium landing hero for a food business tool"
+  },
+  "expect": [
+   "hero"
+  ],
+  "got": "clinic-home",
+  "ok": false,
+  "distinct": [
+   "clinic-home",
+   "hero"
+  ],
+  "chars": 11533
+ },
+ {
+  "q": "success confirmation celebration friendly",
+  "args": {
+   "query": "success confirmation celebration friendly"
+  },
+  "expect": [
+   "success-confirmation",
+   "booking-confirmed",
+   "order-confirmation"
+  ],
+  "got": "booking-confirmed",
+  "ok": true,
+  "distinct": [
+   "booking-confirmed"
+  ],
+  "chars": 11750
+ },
+ {
+  "q": "stats band with colourful rounded cards and badges",
+  "args": {
+   "query": "stats band with colourful rounded cards and badges"
+  },
+  "expect": [
+   "stats-band"
+  ],
+  "got": "stats-band",
+  "ok": true,
+  "distinct": [
+   "stats-band",
+   "playlist"
+  ],
+  "chars": 10848
+ },
+ {
+  "q": "staff dashboard with task list and student table",
+  "args": {
+   "query": "staff dashboard with task list and student table"
+  },
+  "expect": [
+   "course-dashboard",
+   "dashboard",
+   "project-tracker"
+  ],
+  "got": "course-dashboard",
+  "ok": true,
+  "distinct": [
+   "course-dashboard"
+  ],
+  "chars": 11625
+ },
+ {
+  "q": "small agency services pricing packages",
+  "args": {
+   "query": "small agency services pricing packages"
+  },
+  "expect": [
+   "pricing"
+  ],
+  "got": "portfolio-home",
+  "ok": false,
+  "distinct": [
+   "portfolio-home"
+  ],
+  "chars": 11962
+ },
+ {
+  "q": "skincare routine app",
+  "args": {
+   "query": "skincare routine app"
+  },
+  "expect": [
+   "product-scan",
+   "home"
+  ],
+  "got": "product-scan",
+  "ok": true,
+  "distinct": [
+   "product-scan"
+  ],
+  "chars": 13594
+ },
+ {
+  "q": "skincare beauty app scan product result",
+  "args": {
+   "query": "skincare beauty app scan product result"
+  },
+  "expect": [
+   "product-scan"
+  ],
+  "got": "product-scan",
+  "ok": true,
+  "distinct": [
+   "product-scan"
+  ],
+  "chars": 13635
+ },
+ {
+  "q": "sitemap canvas flow diagram nodes",
+  "args": {
+   "query": "sitemap canvas flow diagram nodes"
+  },
+  "expect": [
+   "canvas-editor"
+  ],
+  "got": "canvas-editor",
+  "ok": true,
+  "distinct": [
+   "canvas-editor"
+  ],
+  "chars": 12784
+ },
+ {
+  "q": "security vulnerabilities dashboard with severity breakdown critical high medium low",
+  "args": {
+   "query": "security vulnerabilities dashboard with severity breakdown critical high medium low"
+  },
+  "expect": [
+   "security-dashboard"
+  ],
+  "got": "security-dashboard",
+  "ok": true,
+  "distinct": [
+   "security-dashboard"
+  ],
+  "chars": 11636
+ },
+ {
+  "q": "running shoes",
+  "args": {
+   "query": "running shoes"
+  },
+  "expect": [
+   "product-detail",
+   "none"
+  ],
+  "got": "none",
+  "ok": true,
+  "distinct": [],
+  "chars": 331
+ },
+ {
+  "q": "review and approve proposed changes",
+  "args": {
+   "query": "review and approve proposed changes"
+  },
+  "expect": [
+   "approval-queue",
+   "version-history"
+  ],
+  "got": "approval-queue",
+  "ok": true,
+  "distinct": [
+   "approval-queue"
+  ],
+  "chars": 11667
+ },
+ {
+  "q": "record detail page with header stats and activity",
+  "args": {
+   "query": "record detail page with header stats and activity"
+  },
+  "expect": [
+   "detail-view",
+   "project-tracker",
+   "profile"
+  ],
+  "got": "split-view",
+  "ok": false,
+  "distinct": [
+   "split-view"
+  ],
+  "chars": 12702
+ },
+ {
+  "q": "projects list with circular progress ring per row and team avatars",
+  "args": {
+   "query": "projects list with circular progress ring per row and team avatars"
+  },
+  "expect": [
+   "project-tracker",
+   "list-view"
+  ],
+  "got": "project-tracker",
+  "ok": true,
+  "distinct": [
+   "project-tracker"
+  ],
+  "chars": 11499
+ },
+ {
+  "q": "project tracker dashboard with phases progress and activity feed",
+  "args": {
+   "query": "project tracker dashboard with phases progress and activity feed"
+  },
+  "expect": [
+   "project-tracker"
+  ],
+  "got": "project-tracker",
+  "ok": true,
+  "distinct": [
+   "project-tracker"
+  ],
+  "chars": 11507
+ },
+ {
+  "q": "project catalog list and project details with compact search filter toolbar, clear primary action and readable reward terms",
+  "args": {
+   "query": "project catalog list and project details with compact search filter toolbar, clear primary action and readable reward terms"
+  },
+  "expect": [
+   "split-view",
+   "search-results",
+   "list-view",
+   "data-table",
+   "detail-view",
+   "project-tracker"
+  ],
+  "got": "portfolio-home",
+  "ok": false,
+  "distinct": [
+   "portfolio-home",
+   "split-view"
+  ],
+  "chars": 12540
+ },
+ {
+  "q": "product detail with big photo and price, mobile shopping, warm",
+  "args": {
+   "query": "product detail with big photo and price, mobile shopping, warm"
+  },
+  "expect": [
+   "product-detail"
+  ],
+  "got": "product-detail",
+  "ok": true,
+  "distinct": [
+   "product-detail"
+  ],
+  "chars": 11243
+ },
+ {
+  "q": "private members club welcome page, exclusive community",
+  "args": {
+   "query": "private members club welcome page, exclusive community"
+  },
+  "expect": [
+   "welcome",
+   "hero"
+  ],
+  "got": "telehealth-visit",
+  "ok": false,
+  "distinct": [
+   "telehealth-visit"
+  ],
+  "chars": 12279
+ },
+ {
+  "q": "pricing plans",
+  "args": {
+   "query": "pricing plans"
+  },
+  "expect": [
+   "pricing",
+   "billing-plans",
+   "paywall-upgrade"
+  ],
+  "got": "comparison-table",
+  "ok": false,
+  "distinct": [
+   "comparison-table"
+  ],
+  "chars": 10670
+ },
+ {
+  "q": "premium editorial business partnership clear process steps",
+  "args": {
+   "query": "premium editorial business partnership clear process steps"
+  },
+  "expect": [
+   "how-it-works"
+  ],
+  "got": "case-study",
+  "ok": false,
+  "distinct": [
+   "case-study"
+  ],
+  "chars": 11308
+ },
+ {
+  "q": "premium SaaS dashboard analytics sidebar stats cards light theme blue",
+  "args": {
+   "query": "premium SaaS dashboard analytics sidebar stats cards light theme blue"
+  },
+  "expect": [
+   "dashboard",
+   "analytics-charts"
+  ],
+  "got": "dashboard",
+  "ok": true,
+  "distinct": [
+   "dashboard"
+  ],
+  "chars": 10289
+ },
+ {
+  "q": "portfolio hero",
+  "args": {
+   "query": "portfolio hero"
+  },
+  "expect": [
+   "portfolio-home",
+   "hero"
+  ],
+  "got": "portfolio-home",
+  "ok": true,
+  "distinct": [
+   "portfolio-home"
+  ],
+  "chars": 11897
+ },
+ {
+  "q": "playlist",
+  "args": {
+   "query": "playlist"
+  },
+  "expect": [
+   "playlist"
+  ],
+  "got": "playlist",
+  "ok": true,
+  "distinct": [
+   "playlist"
+  ],
+  "chars": 11688
+ },
+ {
+  "q": "playful learning progress dashboard with stat cards and profile header",
+  "args": {
+   "query": "playful learning progress dashboard with stat cards and profile header"
+  },
+  "expect": [
+   "course-dashboard"
+  ],
+  "got": "course-dashboard",
+  "ok": true,
+  "distinct": [
+   "course-dashboard"
+  ],
+  "chars": 4370
+ },
+ {
+  "q": "personal developer portfolio case study",
+  "args": {
+   "query": "personal developer portfolio case study"
+  },
+  "expect": [
+   "case-study",
+   "portfolio-home"
+  ],
+  "got": "portfolio-home",
+  "ok": true,
+  "distinct": [
+   "portfolio-home",
+   "case-study"
+  ],
+  "chars": 11853
+ },
+ {
+  "q": "onboarding welcome carousel beauty skincare app with illustration, large serif headline, continue button",
+  "args": {
+   "query": "onboarding welcome carousel beauty skincare app with illustration, large serif headline, continue button"
+  },
+  "expect": [
+   "welcome",
+   "onboarding-step"
+  ],
+  "got": "product-scan",
+  "ok": false,
+  "distinct": [
+   "product-scan"
+  ],
+  "chars": 13740
+ },
+ {
+  "q": "onboarding step choose your goal, friendly, one question per screen",
+  "args": {
+   "query": "onboarding step choose your goal, friendly, one question per screen"
+  },
+  "expect": [
+   "onboarding-step"
+  ],
+  "got": "bank-onboarding",
+  "ok": false,
+  "distinct": [
+   "bank-onboarding"
+  ],
+  "chars": 12155
+ },
+ {
+  "q": "music player track list mobile",
+  "args": {
+   "query": "music player track list mobile"
+  },
+  "expect": [
+   "music-player",
+   "playlist"
+  ],
+  "got": "music-player",
+  "ok": true,
+  "distinct": [
+   "music-player"
+  ],
+  "chars": 2589
+ },
+ {
+  "q": "music audio player home screen",
+  "args": {
+   "query": "music audio player home screen"
+  },
+  "expect": [
+   "music-player",
+   "playlist"
+  ],
+  "got": "music-player",
+  "ok": true,
+  "distinct": [
+   "music-player"
+  ],
+  "chars": 12107
+ },
+ {
+  "q": "music",
+  "args": {
+   "query": "music"
+  },
+  "expect": [
+   "music-player",
+   "playlist"
+  ],
+  "got": "playlist",
+  "ok": true,
+  "distinct": [
+   "playlist"
+  ],
+  "chars": 11685
+ },
+ {
+  "q": "multi-step form wizard with summary side panel",
+  "args": {
+   "query": "multi-step form wizard with summary side panel"
+  },
+  "expect": [
+   "form-wizard"
+  ],
+  "got": "form-wizard",
+  "ok": true,
+  "distinct": [
+   "form-wizard"
+  ],
+  "chars": 11359
+ },
+ {
+  "q": "mobile feed of ideas and posts, calm, editorial",
+  "args": {
+   "query": "mobile feed of ideas and posts, calm, editorial"
+  },
+  "expect": [
+   "feed"
+  ],
+  "got": "split-view",
+  "ok": false,
+  "distinct": [
+   "split-view"
+  ],
+  "chars": 12691
+ },
+ {
+  "q": "minimal diagram workspace with clear hierarchy and inspector",
+  "args": {
+   "query": "minimal diagram workspace with clear hierarchy and inspector"
+  },
+  "expect": [
+   "canvas-editor"
+  ],
+  "got": "canvas-editor",
+  "ok": true,
+  "distinct": [
+   "canvas-editor",
+   "ai-workspace"
+  ],
+  "chars": 12235
+ },
+ {
+  "q": "master detail list with detail pane, minimal, no cards",
+  "args": {
+   "query": "master detail list with detail pane, minimal, no cards"
+  },
+  "expect": [
+   "split-view"
+  ],
+  "got": "split-view",
+  "ok": true,
+  "distinct": [
+   "split-view"
+  ],
+  "chars": 12683
+ },
+ {
+  "q": "list view of items grouped compact mobile",
+  "args": {
+   "query": "list view of items grouped compact mobile"
+  },
+  "expect": [
+   "list-view"
+  ],
+  "got": "split-view",
+  "ok": false,
+  "distinct": [
+   "split-view"
+  ],
+  "chars": 12692
+ },
+ {
+  "q": "kanban pipeline board",
+  "args": {
+   "query": "kanban pipeline board"
+  },
+  "expect": [
+   "kanban-board"
+  ],
+  "got": "kanban-board",
+  "ok": true,
+  "distinct": [
+   "kanban-board"
+  ],
+  "chars": 10698
+ },
+ {
+  "q": "kanban board full height columns",
+  "args": {
+   "query": "kanban board full height columns"
+  },
+  "expect": [
+   "kanban-board"
+  ],
+  "got": "kanban-board",
+  "ok": true,
+  "distinct": [
+   "kanban-board"
+  ],
+  "chars": 10724
+ },
+ {
+  "q": "invoice detail with payment status and line items",
+  "args": {
+   "query": "invoice detail with payment status and line items"
+  },
+  "expect": [
+   "invoice"
+  ],
+  "got": "invoice",
+  "ok": true,
+  "distinct": [
+   "invoice"
+  ],
+  "chars": 10241
+ },
+ {
+  "q": "integrations settings connected apps",
+  "args": {
+   "query": "integrations settings connected apps"
+  },
+  "expect": [
+   "integrations"
+  ],
+  "got": "integrations",
+  "ok": true,
+  "distinct": [
+   "integrations"
+  ],
+  "chars": 11129
+ },
+ {
+  "q": "integrations grid of app tiles filled with brand colours, logo, status chip, connected",
+  "args": {
+   "query": "integrations grid of app tiles filled with brand colours, logo, status chip, connected"
+  },
+  "expect": [
+   "integrations-grid",
+   "integrations"
+  ],
+  "got": "integrations-grid",
+  "ok": true,
+  "distinct": [
+   "integrations-grid"
+  ],
+  "chars": 11123
+ },
+ {
+  "q": "hero section",
+  "args": {
+   "query": "hero section"
+  },
+  "expect": [
+   "hero"
+  ],
+  "got": "hero",
+  "ok": true,
+  "distinct": [
+   "hero"
+  ],
+  "chars": 10420
+ },
+ {
+  "q": "health clinic doctor directory profile medical team contact appointment",
+  "args": {
+   "query": "health clinic doctor directory profile medical team contact appointment"
+  },
+  "expect": [
+   "doctor-directory"
+  ],
+  "got": "clinic-home",
+  "ok": false,
+  "distinct": [
+   "clinic-home"
+  ],
+  "chars": 11919
+ },
+ {
+  "q": "friendly welcome onboarding for beginners, playful warm, big button",
+  "args": {
+   "query": "friendly welcome onboarding for beginners, playful warm, big button"
+  },
+  "expect": [
+   "welcome",
+   "onboarding-step"
+  ],
+  "got": "bank-onboarding",
+  "ok": false,
+  "distinct": [
+   "bank-onboarding",
+   "welcome"
+  ],
+  "chars": 11791
+ },
+ {
+  "q": "friendly class schedule and home dashboard",
+  "args": {
+   "query": "friendly class schedule and home dashboard"
+  },
+  "expect": [
+   "class-schedule",
+   "home"
+  ],
+  "got": "course-dashboard",
+  "ok": false,
+  "distinct": [
+   "course-dashboard"
+  ],
+  "chars": 11618
+ },
+ {
+  "q": "form with sections settings list",
+  "args": {
+   "query": "form with sections settings list"
+  },
+  "expect": [
+   "settings"
+  ],
+  "got": "form-wizard",
+  "ok": false,
+  "distinct": [
+   "form-wizard"
+  ],
+  "chars": 11398
+ },
+ {
+  "q": "fintech bank account welcome screen",
+  "args": {
+   "query": "fintech bank account welcome screen"
+  },
+  "expect": [
+   "bank-onboarding"
+  ],
+  "got": "bank-onboarding",
+  "ok": true,
+  "distinct": [
+   "bank-onboarding"
+  ],
+  "chars": 12086
+ },
+ {
+  "q": "finance money account setup",
+  "args": {
+   "query": "finance money account setup"
+  },
+  "expect": [
+   "bank-onboarding"
+  ],
+  "got": "bank-onboarding",
+  "ok": true,
+  "distinct": [
+   "bank-onboarding"
+  ],
+  "chars": 12113
+ },
+ {
+  "q": "empty state first run with steps",
+  "args": {
+   "query": "empty state first run with steps"
+  },
+  "expect": [
+   "empty-state"
+  ],
+  "got": "empty-state",
+  "ok": true,
+  "distinct": [
+   "empty-state"
+  ],
+  "chars": 10763
+ },
+ {
+  "q": "editorial hero with name and two paths",
+  "args": {
+   "query": "editorial hero with name and two paths"
+  },
+  "expect": [
+   "portfolio-home",
+   "hero"
+  ],
+  "got": "portfolio-home",
+  "ok": true,
+  "distinct": [
+   "portfolio-home"
+  ],
+  "chars": 11939
+ },
+ {
+  "q": "editorial dashboard with text rows and hairlines",
+  "args": {
+   "query": "editorial dashboard with text rows and hairlines"
+  },
+  "expect": [
+   "dashboard",
+   "analytics-charts"
+  ],
+  "got": "course-dashboard",
+  "ok": false,
+  "distinct": [
+   "course-dashboard",
+   "project-tracker",
+   "security-dashboard"
+  ],
+  "chars": 11755
+ },
+ {
+  "q": "download queue list with progress and status icons",
+  "args": {
+   "query": "download queue list with progress and status icons"
+  },
+  "expect": [
+   "file-manager",
+   "list-view"
+  ],
+  "got": "playlist",
+  "ok": false,
+  "distinct": [
+   "playlist"
+  ],
+  "chars": 11796
+ },
+ {
+  "q": "donut chart and waffle unit chart breakdown with legend counts",
+  "args": {
+   "query": "donut chart and waffle unit chart breakdown with legend counts"
+  },
+  "expect": [
+   "analytics-charts",
+   "security-dashboard",
+   "dashboard"
+  ],
+  "got": "analytics-charts",
+  "ok": true,
+  "distinct": [
+   "analytics-charts"
+  ],
+  "chars": 10876
+ },
+ {
+  "q": "document detail list grouped",
+  "args": {
+   "query": "document detail list grouped"
+  },
+  "expect": [
+   "split-view",
+   "file-manager",
+   "list-view"
+  ],
+  "got": "split-view",
+  "ok": true,
+  "distinct": [
+   "split-view"
+  ],
+  "chars": 12635
+ },
+ {
+  "q": "detail page with stat tiles, main content and sticky right rail checklist",
+  "args": {
+   "query": "detail page with stat tiles, main content and sticky right rail checklist"
+  },
+  "expect": [
+   "detail-view",
+   "project-tracker"
+  ],
+  "got": "bento-features",
+  "ok": false,
+  "distinct": [
+   "bento-features"
+  ],
+  "chars": 11287
+ },
+ {
+  "q": "dense data table with live status column and sidebar",
+  "args": {
+   "query": "dense data table with live status column and sidebar"
+  },
+  "expect": [
+   "data-table"
+  ],
+  "got": "data-table",
+  "ok": true,
+  "distinct": [
+   "data-table"
+  ],
+  "chars": 10787
+ },
+ {
+  "q": "data table with logo cells, right-aligned tabular numbers, inline bars, row selection checkboxes",
+  "args": {
+   "query": "data table with logo cells, right-aligned tabular numbers, inline bars, row selection checkboxes"
+  },
+  "expect": [
+   "data-table"
+  ],
+  "got": "course-dashboard",
+  "ok": false,
+  "distinct": [
+   "course-dashboard"
+  ],
+  "chars": 11654
+ },
+ {
+  "q": "data table list with filters and status chips",
+  "args": {
+   "query": "data table list with filters and status chips"
+  },
+  "expect": [
+   "data-table"
+  ],
+  "got": "data-table",
+  "ok": true,
+  "distinct": [
+   "data-table"
+  ],
+  "chars": 10786
+ },
+ {
+  "q": "dashboard with data table and summary cards",
+  "args": {
+   "query": "dashboard with data table and summary cards"
+  },
+  "expect": [
+   "dashboard",
+   "data-table"
+  ],
+  "got": "data-table",
+  "ok": true,
+  "distinct": [
+   "data-table",
+   "course-dashboard"
+  ],
+  "chars": 11088
+ },
+ {
+  "q": "dashboard with KPI stat tiles and onboarding checklist",
+  "args": {
+   "query": "dashboard with KPI stat tiles and onboarding checklist"
+  },
+  "expect": [
+   "dashboard",
+   "project-tracker"
+  ],
+  "got": "project-tracker",
+  "ok": true,
+  "distinct": [
+   "project-tracker"
+  ],
+  "chars": 11524
+ },
+ {
+  "q": "dark settings panel with readable labels and clear hierarchy",
+  "args": {
+   "query": "dark settings panel with readable labels and clear hierarchy"
+  },
+  "expect": [
+   "settings",
+   "ai-settings"
+  ],
+  "got": "integrations",
+  "ok": false,
+  "distinct": [
+   "integrations",
+   "ai-settings",
+   "roles-permissions"
+  ],
+  "chars": 11619
+ },
+ {
+  "q": "dark security dashboard with charts and cards",
+  "args": {
+   "query": "dark security dashboard with charts and cards"
+  },
+  "expect": [
+   "security-dashboard"
+  ],
+  "got": "security-dashboard",
+  "ok": true,
+  "distinct": [
+   "security-dashboard"
+  ],
+  "chars": 11752
+ },
+ {
+  "q": "dark centered hero decorative graphics below heading",
+  "args": {
+   "query": "dark centered hero decorative graphics below heading"
+  },
+  "expect": [
+   "hero"
+  ],
+  "got": "portfolio-home",
+  "ok": false,
+  "distinct": [
+   "portfolio-home"
+  ],
+  "chars": 12245
+ },
+ {
+  "q": "dark analytics dashboard with KPI figures, sparklines and charts",
+  "args": {
+   "query": "dark analytics dashboard with KPI figures, sparklines and charts"
+  },
+  "expect": [
+   "dashboard",
+   "analytics-charts"
+  ],
+  "got": "dashboard",
+  "ok": true,
+  "distinct": [
+   "dashboard",
+   "analytics-charts"
+  ],
+  "chars": 10806
+ },
+ {
+  "q": "daily habit checklist home screen, soft, rounded, friendly",
+  "args": {
+   "query": "daily habit checklist home screen, soft, rounded, friendly"
+  },
+  "expect": [
+   "home"
+  ],
+  "got": "home",
+  "ok": true,
+  "distinct": [
+   "home"
+  ],
+  "chars": 10299
+ },
+ {
+  "q": "contact form enquiry",
+  "args": {
+   "query": "contact form enquiry"
+  },
+  "expect": [
+   "contact-form"
+  ],
+  "got": "voice-call",
+  "ok": false,
+  "distinct": [
+   "voice-call"
+  ],
+  "chars": 12101
+ },
+ {
+  "q": "comparison table of products with scores and source footnotes",
+  "args": {
+   "query": "comparison table of products with scores and source footnotes"
+  },
+  "expect": [
+   "comparison-table"
+  ],
+  "got": "security-dashboard",
+  "ok": false,
+  "distinct": [
+   "security-dashboard"
+  ],
+  "chars": 11580
+ },
+ {
+  "q": "comparison table comparing plans or products side by side with checkmarks and prices",
+  "args": {
+   "query": "comparison table comparing plans or products side by side with checkmarks and prices"
+  },
+  "expect": [
+   "comparison-table",
+   "pricing"
+  ],
+  "got": "comparison-table",
+  "ok": true,
+  "distinct": [
+   "comparison-table"
+  ],
+  "chars": 10842
+ },
+ {
+  "q": "compare versions diff before and after changes history",
+  "args": {
+   "query": "compare versions diff before and after changes history"
+  },
+  "expect": [
+   "version-history"
+  ],
+  "got": "version-history",
+  "ok": true,
+  "distinct": [
+   "version-history"
+  ],
+  "chars": 11776
+ },
+ {
+  "q": "clinic/hospital website patient homepage with medical specialties, doctor team and appointment booking",
+  "args": {
+   "query": "clinic/hospital website patient homepage with medical specialties, doctor team and appointment booking"
+  },
+  "expect": [
+   "clinic-home"
+  ],
+  "got": "clinic-home",
+  "ok": true,
+  "distinct": [
+   "clinic-home"
+  ],
+  "chars": 11952
+ },
+ {
+  "q": "changelog timeline monochrome",
+  "args": {
+   "query": "changelog timeline monochrome"
+  },
+  "expect": [
+   "changelog"
+  ],
+  "got": "changelog",
+  "ok": true,
+  "distinct": [
+   "changelog"
+  ],
+  "chars": 4025
+ },
+ {
+  "q": "camera scan",
+  "args": {
+   "query": "camera scan"
+  },
+  "expect": [
+   "product-scan"
+  ],
+  "got": "product-scan",
+  "ok": true,
+  "distinct": [
+   "product-scan"
+  ],
+  "chars": 13575
+ },
+ {
+  "q": "call in progress screen contact details",
+  "args": {
+   "query": "call in progress screen contact details"
+  },
+  "expect": [
+   "voice-call",
+   "video-call"
+  ],
+  "got": "voice-call",
+  "ok": true,
+  "distinct": [
+   "voice-call"
+  ],
+  "chars": 12115
+ },
+ {
+  "q": "billing plans current subscription usage",
+  "args": {
+   "query": "billing plans current subscription usage"
+  },
+  "expect": [
+   "billing-plans"
+  ],
+  "got": "billing-plans",
+  "ok": true,
+  "distinct": [
+   "billing-plans"
+  ],
+  "chars": 11052
+ },
+ {
+  "q": "barcode product scan result",
+  "args": {
+   "query": "barcode product scan result"
+  },
+  "expect": [
+   "product-scan"
+  ],
+  "got": "product-scan",
+  "ok": true,
+  "distinct": [
+   "product-scan"
+  ],
+  "chars": 13609
+ },
+ {
+  "q": "banking app onboarding",
+  "args": {
+   "query": "banking app onboarding"
+  },
+  "expect": [
+   "bank-onboarding"
+  ],
+  "got": "canvas-editor",
+  "ok": false,
+  "distinct": [
+   "canvas-editor"
+  ],
+  "chars": 12783
+ },
+ {
+  "q": "approval queue pending requests approve reject",
+  "args": {
+   "query": "approval queue pending requests approve reject"
+  },
+  "expect": [
+   "approval-queue"
+  ],
+  "got": "approval-queue",
+  "ok": true,
+  "distinct": [
+   "approval-queue"
+  ],
+  "chars": 11695
+ },
+ {
+  "q": "analytics report with revenue cost margin charts",
+  "args": {
+   "query": "analytics report with revenue cost margin charts"
+  },
+  "expect": [
+   "analytics-charts",
+   "dashboard"
+  ],
+  "got": "analytics-charts",
+  "ok": true,
+  "distinct": [
+   "analytics-charts"
+  ],
+  "chars": 10866
+ },
+ {
+  "q": "Telehealth doctor and patient video call with appointment details, mute camera and end call controls",
+  "args": {
+   "query": "Telehealth doctor and patient video call with appointment details, mute camera and end call controls"
+  },
+  "expect": [
+   "telehealth-visit"
+  ],
+  "got": "telehealth-visit",
+  "ok": true,
+  "distinct": [
+   "telehealth-visit"
+  ],
+  "chars": 12363
+ },
+ {
+  "q": "Professional healthcare team doctor profile directory for a clinic, easy to browse, trustworthy and human-centered.",
+  "args": {
+   "query": "Professional healthcare team doctor profile directory for a clinic, easy to browse, trustworthy and human-centered."
+  },
+  "expect": [
+   "doctor-directory"
+  ],
+  "got": "doctor-directory",
+  "ok": true,
+  "distinct": [
+   "doctor-directory"
+  ],
+  "chars": 12245
+ },
+ {
+  "q": "Interactive building floor plan navigation map with highlighted rooms and location details panel",
+  "args": {
+   "query": "Interactive building floor plan navigation map with highlighted rooms and location details panel"
+  },
+  "expect": [
+   "floor-plan"
+  ],
+  "got": "floor-plan",
+  "ok": true,
+  "distinct": [
+   "floor-plan"
+  ],
+  "chars": 12762
+ },
+ {
+  "q": "Healthcare patient virtual appointment video consultation waiting room, prepare camera microphone, select doctor, join call, visit summary",
+  "args": {
+   "query": "Healthcare patient virtual appointment video consultation waiting room, prepare camera microphone, select doctor, join call, visit summary"
+  },
+  "expect": [
+   "telehealth-visit"
+  ],
+  "got": "clinic-home",
+  "ok": false,
+  "distinct": [
+   "clinic-home"
+  ],
+  "chars": 11974
+ },
+ {
+  "q": "Distinctive, premium healthcare clinic medical team page featuring doctors, specialties, expertise and staff profiles. Professional editorial layout, patient-trust oriented.",
+  "args": {
+   "query": "Distinctive, premium healthcare clinic medical team page featuring doctors, specialties, expertise and staff profiles. Professional editorial layout, patient-trust oriented."
+  },
+  "expect": [
+   "doctor-directory",
+   "clinic-home"
+  ],
+  "got": "clinic-home",
+  "ok": true,
+  "distinct": [
+   "clinic-home"
+  ],
+  "chars": 12003
+ },
+ {
+  "q": "AI voice assistant settings panel dark",
+  "args": {
+   "query": "AI voice assistant settings panel dark"
+  },
+  "expect": [
+   "ai-settings"
+  ],
+  "got": "ai-settings",
+  "ok": true,
+  "distinct": [
+   "ai-settings"
+  ],
+  "chars": 11341
+ },
+ {
+  "q": "AI model settings with provider API keys and usage",
+  "args": {
+   "query": "AI model settings with provider API keys and usage"
+  },
+  "expect": [
+   "ai-settings",
+   "api-keys"
+  ],
+  "got": "ai-settings",
+  "ok": true,
+  "distinct": [
+   "ai-settings"
+  ],
+  "chars": 11132
+ },
+ {
+  "q": "AI generation workspace with input panel, result and next step",
+  "args": {
+   "query": "AI generation workspace with input panel, result and next step"
+  },
+  "expect": [
+   "ai-workspace"
+  ],
+  "got": "ai-workspace",
+  "ok": true,
+  "distinct": [
+   "ai-workspace"
+  ],
+  "chars": 11345
+ },
+ {
+  "q": "AI chat assistant with suggestions",
+  "args": {
+   "query": "AI chat assistant with suggestions"
+  },
+  "expect": [
+   "chat-ai-assistant"
+  ],
+  "got": "chat-ai-assistant",
+  "ok": true,
+  "distinct": [
+   "chat-ai-assistant"
+  ],
+  "chars": 10599
+ },
+ {
+  "q": "AI chat assistant with sources and follow-up suggestions",
+  "args": {
+   "query": "AI chat assistant with sources and follow-up suggestions"
+  },
+  "expect": [
+   "chat-ai-assistant"
+  ],
+  "got": "chat-ai-assistant",
+  "ok": true,
+  "distinct": [
+   "chat-ai-assistant"
+  ],
+  "chars": 10638
+ },
+ {
+  "q": "AI assistant welcome screen with suggested prompts",
+  "args": {
+   "query": "AI assistant welcome screen with suggested prompts"
+  },
+  "expect": [
+   "chat-ai-assistant"
+  ],
+  "got": "feed",
+  "ok": false,
+  "distinct": [
+   "feed"
+  ],
+  "chars": 10571
+ },
+ {
+  "q": "healthcare clinic doctor directory",
+  "args": {
+   "query": "healthcare clinic doctor directory",
+   "platform": "mobile"
+  },
+  "expect": [
+   "doctor-directory"
+  ],
+  "got": "clinic-home",
+  "ok": false,
+  "distinct": [
+   "clinic-home"
+  ],
+  "chars": 11991
+ },
+ {
+  "q": "banking app onboarding",
+  "args": {
+   "query": "banking app onboarding",
+   "platform": "mobile"
+  },
+  "expect": [
+   "bank-onboarding"
+  ],
+  "got": "canvas-editor",
+  "ok": false,
+  "distinct": [
+   "canvas-editor"
+  ],
+  "chars": 12881
+ },
+ {
+  "q": "Telehealth video call with appointment details, mute camera, end call",
+  "args": {
+   "query": "Telehealth video call with appointment details, mute camera, end call",
+   "platform": "web"
+  },
+  "expect": [
+   "telehealth-visit"
+  ],
+  "got": "telehealth-visit",
+  "ok": true,
+  "distinct": [
+   "telehealth-visit"
+  ],
+  "chars": 12319
+ },
+ {
+  "q": "small agency services pricing packages",
+  "args": {
+   "query": "small agency services pricing packages",
+   "platform": "web"
+  },
+  "expect": [
+   "pricing"
+  ],
+  "got": "portfolio-home",
+  "ok": false,
+  "distinct": [
+   "portfolio-home"
+  ],
+  "chars": 11967
+ },
+ {
+  "q": "settings with toggle switches",
+  "args": {
+   "query": "settings with toggle switches",
+   "platform": "mobile"
+  },
+  "expect": [
+   "settings"
+  ],
+  "got": "ai-settings",
+  "ok": false,
+  "distinct": [
+   "ai-settings"
+  ],
+  "chars": 11231
+ },
+ {
+  "q": "toast notification undo",
+  "args": {
+   "query": "toast notification undo"
+  },
+  "expect": [
+   "none",
+   "notifications-center",
+   "success-confirmation"
+  ],
+  "got": "canvas-editor",
+  "ok": false,
+  "distinct": [
+   "canvas-editor"
+  ],
+  "chars": 12794
+ },
+ {
+  "q": "running shoes",
+  "args": {
+   "query": "running shoes",
+   "platform": "mobile"
+  },
+  "expect": [
+   "none",
+   "product-detail"
+  ],
+  "got": "floor-plan",
+  "ok": false,
+  "distinct": [
+   "floor-plan"
+  ],
+  "chars": 12739
+ },
+ {
+  "q": "date picker range",
+  "args": {
+   "query": "date picker range"
+  },
+  "expect": [
+   "none",
+   "calendar",
+   "booking-details"
+  ],
+  "got": "analytics-charts",
+  "ok": false,
+  "distinct": [
+   "analytics-charts"
+  ],
+  "chars": 10780
+ },
+ {
+  "q": "plumber home services booking",
+  "args": {
+   "query": "plumber home services booking"
+  },
+  "expect": [
+   "none",
+   "booking-details",
+   "class-schedule"
+  ],
+  "got": "portfolio-home",
+  "ok": false,
+  "distinct": [
+   "portfolio-home"
+  ],
+  "chars": 11952
+ },
+ {
+  "q": "now-playing music screen",
+  "args": {
+   "query": "now-playing music screen"
+  },
+  "expect": [
+   "music-player"
+  ],
+  "got": "music-player",
+  "ok": true,
+  "distinct": [
+   "music-player"
+  ],
+  "chars": 12069
+ },
+ {
+  "q": "video consult with a doctor",
+  "args": {
+   "query": "video consult with a doctor"
+  },
+  "expect": [
+   "telehealth-visit"
+  ],
+  "got": "clinic-home",
+  "ok": false,
+  "distinct": [
+   "clinic-home"
+  ],
+  "chars": 11837
+ },
+ {
+  "q": "wizard",
+  "args": {
+   "query": "wizard"
+  },
+  "expect": [
+   "form-wizard"
+  ],
+  "got": "form-wizard",
+  "ok": true,
+  "distinct": [
+   "form-wizard"
+  ],
+  "chars": 11259
+ },
+ {
+  "q": "security vulnerabilities dashboard",
+  "args": {
+   "query": "security vulnerabilities dashboard"
+  },
+  "expect": [
+   "security-dashboard"
+  ],
+  "got": "security-dashboard",
+  "ok": true,
+  "distinct": [
+   "security-dashboard"
+  ],
+  "chars": 11468
+ },
+ {
+  "q": "sign in page",
+  "args": {
+   "query": "sign in page"
+  },
+  "expect": [
+   "login"
+  ],
+  "got": "clinic-home",
+  "ok": false,
+  "distinct": [
+   "clinic-home"
+  ],
+  "chars": 11787
+ },
+ {
+  "q": "log in with email and password",
+  "args": {
+   "query": "log in with email and password"
+  },
+  "expect": [
+   "login"
+  ],
+  "got": "sign-up",
+  "ok": false,
+  "distinct": [
+   "sign-up"
+  ],
+  "chars": 10718
+ },
+ {
+  "q": "create account",
+  "args": {
+   "query": "create account"
+  },
+  "expect": [
+   "sign-up"
+  ],
+  "got": "sign-up",
+  "ok": true,
+  "distinct": [
+   "sign-up"
+  ],
+  "chars": 10662
+ },
+ {
+  "q": "otp verification code",
+  "args": {
+   "query": "otp verification code"
+  },
+  "expect": [
+   "two-factor"
+  ],
+  "got": "two-factor",
+  "ok": true,
+  "distinct": [
+   "two-factor"
+  ],
+  "chars": 10765
+ },
+ {
+  "q": "reset password",
+  "args": {
+   "query": "reset password"
+  },
+  "expect": [
+   "forgot-password"
+  ],
+  "got": "success-confirmation",
+  "ok": false,
+  "distinct": [
+   "success-confirmation"
+  ],
+  "chars": 11159
+ },
+ {
+  "q": "shopping cart",
+  "args": {
+   "query": "shopping cart"
+  },
+  "expect": [
+   "cart"
+  ],
+  "got": "cart",
+  "ok": true,
+  "distinct": [
+   "cart"
+  ],
+  "chars": 10510
+ },
+ {
+  "q": "payment page",
+  "args": {
+   "query": "payment page"
+  },
+  "expect": [
+   "checkout"
+  ],
+  "got": "checkout",
+  "ok": true,
+  "distinct": [
+   "checkout"
+  ],
+  "chars": 10695
+ },
+ {
+  "q": "photo lightbox",
+  "args": {
+   "query": "photo lightbox"
+  },
+  "expect": [
+   "image-viewer"
+  ],
+  "got": "image-viewer",
+  "ok": true,
+  "distinct": [
+   "image-viewer"
+  ],
+  "chars": 10865
+ },
+ {
+  "q": "404 page",
+  "args": {
+   "query": "404 page"
+  },
+  "expect": [
+   "error-404"
+  ],
+  "got": "error-404",
+  "ok": true,
+  "distinct": [
+   "error-404"
+  ],
+  "chars": 10488
+ },
+ {
+  "q": "skeleton loader",
+  "args": {
+   "query": "skeleton loader"
+  },
+  "expect": [
+   "loading-skeleton"
+  ],
+  "got": "loading-skeleton",
+  "ok": true,
+  "distinct": [
+   "loading-skeleton"
+  ],
+  "chars": 10621
+ },
+ {
+  "q": "navbar with mega menu",
+  "args": {
+   "query": "navbar with mega menu"
+  },
+  "expect": [
+   "navigation-header"
+  ],
+  "got": "navigation-header",
+  "ok": true,
+  "distinct": [
+   "navigation-header"
+  ],
+  "chars": 10899
+ },
+ {
+  "q": "team page",
+  "args": {
+   "query": "team page"
+  },
+  "expect": [
+   "about-team"
+  ],
+  "got": "clinic-home",
+  "ok": false,
+  "distinct": [
+   "clinic-home"
+  ],
+  "chars": 11784
+ },
+ {
+  "q": "job listings",
+  "args": {
+   "query": "job listings"
+  },
+  "expect": [
+   "careers"
+  ],
+  "got": "careers",
+  "ok": true,
+  "distinct": [
+   "careers"
+  ],
+  "chars": 10457
+ },
+ {
+  "q": "customer logos",
+  "args": {
+   "query": "customer logos"
+  },
+  "expect": [
+   "logo-cloud"
+  ],
+  "got": "clinic-home",
+  "ok": false,
+  "distinct": [
+   "clinic-home"
+  ],
+  "chars": 11826
+ },
+ {
+  "q": "customer testimonials",
+  "args": {
+   "query": "customer testimonials"
+  },
+  "expect": [
+   "testimonials"
+  ],
+  "got": "testimonials",
+  "ok": true,
+  "distinct": [
+   "testimonials"
+  ],
+  "chars": 10410
+ },
+ {
+  "q": "bento grid features",
+  "args": {
+   "query": "bento grid features"
+  },
+  "expect": [
+   "bento-features"
+  ],
+  "got": "bento-features",
+  "ok": true,
+  "distinct": [
+   "bento-features"
+  ],
+  "chars": 11182
+ },
+ {
+  "q": "doctors list",
+  "args": {
+   "query": "doctors list"
+  },
+  "expect": [
+   "doctor-directory"
+  ],
+  "got": "floor-plan",
+  "ok": false,
+  "distinct": [
+   "floor-plan",
+   "canvas-editor",
+   "split-view"
+  ],
+  "chars": 12775
+ },
+ {
+  "q": "dashbord",
+  "args": {
+   "query": "dashbord"
+  },
+  "expect": [
+   "dashboard"
+  ],
+  "got": "none",
+  "ok": false,
+  "distinct": [],
+  "chars": 326
+ },
+ {
+  "q": "kanbam board",
+  "args": {
+   "query": "kanbam board"
+  },
+  "expect": [
+   "kanban-board"
+  ],
+  "got": "canvas-editor",
+  "ok": false,
+  "distinct": [
+   "canvas-editor"
+  ],
+  "chars": 12763
+ },
+ {
+  "q": "toggles",
+  "args": {
+   "query": "toggles"
+  },
+  "expect": [
+   "settings"
+  ],
+  "got": "integrations",
+  "ok": false,
+  "distinct": [
+   "integrations"
+  ],
+  "chars": 11015
+ },
+ {
+  "q": "release notes",
+  "args": {
+   "query": "release notes"
+  },
+  "expect": [
+   "changelog"
+  ],
+  "got": "changelog",
+  "ok": true,
+  "distinct": [
+   "changelog"
+  ],
+  "chars": 10749
+ },
+ {
+  "q": "open a bank account kyc",
+  "args": {
+   "query": "open a bank account kyc"
+  },
+  "expect": [
+   "bank-onboarding"
+  ],
+  "got": "bank-onboarding",
+  "ok": true,
+  "distinct": [
+   "bank-onboarding"
+  ],
+  "chars": 12723
+ },
+ {
+  "q": "desk booking office map",
+  "args": {
+   "query": "desk booking office map"
+  },
+  "expect": [
+   "floor-plan"
+  ],
+  "got": "floor-plan",
+  "ok": true,
+  "distinct": [
+   "floor-plan"
+  ],
+  "chars": 12642
+ },
+ {
+  "q": "phone call",
+  "args": {
+   "query": "phone call"
+  },
+  "expect": [
+   "voice-call"
+  ],
+  "got": "telehealth-visit",
+  "ok": false,
+  "distinct": [
+   "telehealth-visit"
+  ],
+  "chars": 12369
+ },
+ {
+  "q": "order placed thank you",
+  "args": {
+   "query": "order placed thank you"
+  },
+  "expect": [
+   "order-confirmation"
+  ],
+  "got": "order-confirmation",
+  "ok": true,
+  "distinct": [
+   "order-confirmation"
+  ],
+  "chars": 11051
+ },
+ {
+  "q": "invite teammates",
+  "args": {
+   "query": "invite teammates"
+  },
+  "expect": [
+   "team-members"
+  ],
+  "got": "bank-onboarding",
+  "ok": false,
+  "distinct": [
+   "bank-onboarding"
+  ],
+  "chars": 12078
+ },
+ {
+  "q": "roles and permissions",
+  "args": {
+   "query": "roles and permissions"
+  },
+  "expect": [
+   "roles-permissions"
+  ],
+  "got": "roles-permissions",
+  "ok": true,
+  "distinct": [
+   "roles-permissions"
+  ],
+  "chars": 11365
+ },
+ {
+  "q": "audit log",
+  "args": {
+   "query": "audit log"
+  },
+  "expect": [
+   "audit-log"
+  ],
+  "got": "audit-log",
+  "ok": true,
+  "distinct": [
+   "audit-log"
+  ],
+  "chars": 11149
+ },
+ {
+  "q": "api keys",
+  "args": {
+   "query": "api keys"
+  },
+  "expect": [
+   "api-keys"
+  ],
+  "got": "ai-settings",
+  "ok": false,
+  "distinct": [
+   "ai-settings"
+  ],
+  "chars": 11027
+ },
+ {
+  "q": "weekly planner calendar",
+  "args": {
+   "query": "weekly planner calendar"
+  },
+  "expect": [
+   "calendar"
+  ],
+  "got": "booking-confirmed",
+  "ok": false,
+  "distinct": [
+   "booking-confirmed"
+  ],
+  "chars": 11717
+ }
+]

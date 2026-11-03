@@ -18,3 +18,4 @@ public_mcp_orig.json
 docs_updates/backup-*.html
 # b60 AI local test config (tests/run_ai_local.sh)
 wrangler.ai-test.jsonc
+tests/ui_rank/.cache/

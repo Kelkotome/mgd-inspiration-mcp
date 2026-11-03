@@ -1,0 +1,137 @@
+# Regression cases for search_ui_screens ranking. One per line:
+#   query | expected patterns (any of; "none" = an honest no-match answer is also a pass) | optional args as k=v (platform, style, pattern)
+# Section A: the 89 real queries logged up to 3-Nov-2026 (ui-screens/mcp_ui_queries_2026-11-03.txt), expected pattern labelled by hand.
+work index list of projects | portfolio-home project-tracker list-view
+weekly calendar schedule with staff | calendar class-schedule
+warm premium landing hero for a food business tool | hero
+success confirmation celebration friendly | success-confirmation booking-confirmed order-confirmation
+stats band with colourful rounded cards and badges | stats-band
+staff dashboard with task list and student table | course-dashboard dashboard project-tracker
+small agency services pricing packages | pricing
+skincare routine app | product-scan home
+skincare beauty app scan product result | product-scan
+sitemap canvas flow diagram nodes | canvas-editor
+security vulnerabilities dashboard with severity breakdown critical high medium low | security-dashboard
+running shoes | product-detail none
+review and approve proposed changes | approval-queue version-history
+record detail page with header stats and activity | detail-view project-tracker profile
+projects list with circular progress ring per row and team avatars | project-tracker list-view
+project tracker dashboard with phases progress and activity feed | project-tracker
+project catalog list and project details with compact search filter toolbar, clear primary action and readable reward terms | split-view search-results list-view data-table detail-view project-tracker
+product detail with big photo and price, mobile shopping, warm | product-detail
+private members club welcome page, exclusive community | welcome hero
+pricing plans | pricing billing-plans paywall-upgrade
+premium editorial business partnership clear process steps | how-it-works
+premium SaaS dashboard analytics sidebar stats cards light theme blue | dashboard analytics-charts
+portfolio hero | portfolio-home hero
+playlist | playlist
+playful learning progress dashboard with stat cards and profile header | course-dashboard
+personal developer portfolio case study | case-study portfolio-home
+onboarding welcome carousel beauty skincare app with illustration, large serif headline, continue button | welcome onboarding-step
+onboarding step choose your goal, friendly, one question per screen | onboarding-step
+music player track list mobile | music-player playlist
+music audio player home screen | music-player playlist
+music | music-player playlist
+multi-step form wizard with summary side panel | form-wizard
+mobile feed of ideas and posts, calm, editorial | feed
+minimal diagram workspace with clear hierarchy and inspector | canvas-editor
+master detail list with detail pane, minimal, no cards | split-view
+list view of items grouped compact mobile | list-view
+kanban pipeline board | kanban-board
+kanban board full height columns | kanban-board
+invoice detail with payment status and line items | invoice
+integrations settings connected apps | integrations
+integrations grid of app tiles filled with brand colours, logo, status chip, connected | integrations-grid integrations
+hero section | hero
+health clinic doctor directory profile medical team contact appointment | doctor-directory
+friendly welcome onboarding for beginners, playful warm, big button | welcome onboarding-step
+friendly class schedule and home dashboard | class-schedule home
+form with sections settings list | settings
+fintech bank account welcome screen | bank-onboarding
+finance money account setup | bank-onboarding
+empty state first run with steps | empty-state
+editorial hero with name and two paths | portfolio-home hero
+editorial dashboard with text rows and hairlines | dashboard analytics-charts
+download queue list with progress and status icons | file-manager list-view
+donut chart and waffle unit chart breakdown with legend counts | analytics-charts security-dashboard dashboard
+document detail list grouped | split-view file-manager list-view
+detail page with stat tiles, main content and sticky right rail checklist | detail-view project-tracker
+dense data table with live status column and sidebar | data-table
+data table with logo cells, right-aligned tabular numbers, inline bars, row selection checkboxes | data-table
+data table list with filters and status chips | data-table
+dashboard with data table and summary cards | dashboard data-table
+dashboard with KPI stat tiles and onboarding checklist | dashboard project-tracker
+dark settings panel with readable labels and clear hierarchy | settings ai-settings
+dark security dashboard with charts and cards | security-dashboard
+dark centered hero decorative graphics below heading | hero
+dark analytics dashboard with KPI figures, sparklines and charts | dashboard analytics-charts
+daily habit checklist home screen, soft, rounded, friendly | home
+contact form enquiry | contact-form
+comparison table of products with scores and source footnotes | comparison-table
+comparison table comparing plans or products side by side with checkmarks and prices | comparison-table pricing
+compare versions diff before and after changes history | version-history
+clinic/hospital website patient homepage with medical specialties, doctor team and appointment booking | clinic-home
+changelog timeline monochrome | changelog
+camera scan | product-scan
+call in progress screen contact details | voice-call video-call
+billing plans current subscription usage | billing-plans
+barcode product scan result | product-scan
+banking app onboarding | bank-onboarding
+approval queue pending requests approve reject | approval-queue
+analytics report with revenue cost margin charts | analytics-charts dashboard
+Telehealth doctor and patient video call with appointment details, mute camera and end call controls | telehealth-visit
+Professional healthcare team doctor profile directory for a clinic, easy to browse, trustworthy and human-centered. | doctor-directory
+Interactive building floor plan navigation map with highlighted rooms and location details panel | floor-plan
+Healthcare patient virtual appointment video consultation waiting room, prepare camera microphone, select doctor, join call, visit summary | telehealth-visit
+Distinctive, premium healthcare clinic medical team page featuring doctors, specialties, expertise and staff profiles. Professional editorial layout, patient-trust oriented. | doctor-directory clinic-home
+AI voice assistant settings panel dark | ai-settings
+AI model settings with provider API keys and usage | ai-settings api-keys
+AI generation workspace with input panel, result and next step | ai-workspace
+AI chat assistant with suggestions | chat-ai-assistant
+AI chat assistant with sources and follow-up suggestions | chat-ai-assistant
+AI assistant welcome screen with suggested prompts | chat-ai-assistant
+# Section B: failing cases and probes from MOBBIN-MCP-SCOPE-2026-11-03.md (with the args used there)
+healthcare clinic doctor directory | doctor-directory | platform=mobile
+banking app onboarding | bank-onboarding | platform=mobile
+Telehealth video call with appointment details, mute camera, end call | telehealth-visit | platform=web
+small agency services pricing packages | pricing | platform=web
+settings with toggle switches | settings | platform=mobile
+toast notification undo | none notifications-center success-confirmation
+running shoes | none product-detail | platform=mobile
+date picker range | none calendar booking-details analytics-charts floor-plan
+plumber home services booking | none booking-details class-schedule
+now-playing music screen | music-player
+video consult with a doctor | telehealth-visit
+wizard | form-wizard
+security vulnerabilities dashboard | security-dashboard
+# Section C: everyday synonyms and typos (stemming / alias coverage)
+sign in page | login
+log in with email and password | login
+create account | sign-up
+otp verification code | two-factor
+reset password | forgot-password
+shopping cart | cart
+payment page | checkout
+photo lightbox | image-viewer
+404 page | error-404
+skeleton loader | loading-skeleton
+navbar with mega menu | navigation-header
+team page | about-team team-members
+job listings | careers
+customer logos | logo-cloud
+customer testimonials | testimonials
+bento grid features | bento-features
+doctors list | doctor-directory
+dashbord | dashboard
+kanbam board | kanban-board
+toggles | settings
+release notes | changelog
+open a bank account kyc | bank-onboarding
+desk booking office map | floor-plan
+phone call | voice-call
+order placed thank you | order-confirmation
+invite teammates | team-members
+roles and permissions | roles-permissions
+audit log | audit-log
+api keys | api-keys
+weekly planner calendar | calendar
