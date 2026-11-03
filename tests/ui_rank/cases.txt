@@ -140,3 +140,8 @@ settings | doctor-directory | pattern=doctor_directory
 board | kanban-board | pattern=kanban
 plans | pricing | pattern=pricing_table style=premium
 login | login | platform=iPhone style=minimalist
+# Section E: elements filter (HTML-derived inventory, src/ui_elements.json)
+data table | data-table | elements=checkboxes,status_chips
+projects list | project-tracker | elements=progress_circle,team_avatars
+settings | settings ai-settings | elements=toggle_switch
+dashboard | none | elements=sparklines

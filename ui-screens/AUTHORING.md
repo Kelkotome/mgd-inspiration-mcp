@@ -34,3 +34,7 @@ python3 sheet.py 'a-*' /tmp/x.png   # contact sheet → open it with the Read to
 python3 sheet.py 'a-*' /tmp/xd.png 560 --dark   # same in DARK mode (every screen ships light + dark)
 ```
 Look at every pattern in at least minimal, editorial, brutalist, playful, monochrome, on web AND mobile, then open 2–3 full-size screen.png files. Check the dark sheet too: anything hard-coded light (white panels, light text on light) is a bug — colours must come from the tokens so dark mode works. Fix: clipping/overflow, text wrapping badly, unreadable contrast, empty voids, things that look broken in brutalist (thick borders) or luxury (uppercase buttons) or editorial (serif headings).
+
+## After adding or changing patterns (MCP search)
+- `node elements.js` rebuilds `src/ui_elements.json` (element + layout inventory parsed from `out/*/index.html` plus each template's `elements`); it powers the `elements` filter of `search_ui_screens`. Commit it with the templates; it ships on the next Worker deploy (no D1 change).
+- Add words people use for a new pattern to `PATTERN_ALIASES` in `src/ui_search.js`, add a line to `tests/ui_rank/cases.txt`, and run `node --import ./tests/ui_rank/register.mjs tests/ui_rank/run.mjs` (refresh the row dump with `--refresh` after ingest).

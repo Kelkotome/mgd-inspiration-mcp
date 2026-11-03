@@ -164,7 +164,7 @@ const jacc = (a, b) => { let n = 0; for (const x of a) if (b.has(x)) n++; return
 const W = { pattern: 3, title: 2, tags: 1.5, industry: 1.2, desc: 0.6 };
 
 // Build once per row set (the Worker caches it per isolate).
-export function buildIndex(rows, patternOrder) {
+export function buildIndex(rows, patternOrder, elMap) {
   const order = new Map((patternOrder || []).map((p, i) => [p, i]));
   const pat = {}; // pattern → { tok:Set, aliases:[[tokens]], label }
   const patOf = (p) => pat[p] || (pat[p] = { tok: new Set(), all: new Set(), aliases: [] });
@@ -183,13 +183,15 @@ export function buildIndex(rows, patternOrder) {
     const d = String(r.description || "");
     const shows = (d.match(/Shows ([^]*?)\.\s+[A-Z][\w-]* style:/) || d.match(/Shows ([^]*?)\.\s/) || [])[1] || "";
     const first = d.split(/\.\s/)[0] || "";
-    const elTags = tags.filter((t) => !/^(flow|variant):/.test(t) && t !== r.country && t !== r.category);
     const variant = (tags.find((t) => t.startsWith("variant:")) || "").slice(8);
+    // Element inventory: the row's own tags + the HTML-derived inventory (src/ui_elements.json, built by ui-screens/elements.js).
+    const inv = (elMap && elMap[`${r.category}|${variant}|${r.country}`]) || null;
+    const elTags = [...new Set([...tags.filter((t) => !/^(flow|variant):/.test(t) && t !== r.country && t !== r.category && t !== r.industry), ...((inv && inv.elements) || [])])];
     const f = { pattern: patOf(r.category || "").tok, title: new Set(tokens(title + " " + variant.replace(/-/g, " "))),
       tags: new Set(elTags.flatMap((t) => tokens(t.replace(/-/g, " ")))),
       industry: new Set(tokens(`${r.industry || ""} ${r.company || ""}`)), desc: new Set(tokens(first + " " + shows)) };
     const steps = tags.filter((t) => /^flow:[a-z0-9-]+:\d+$/.test(t)).map((t) => +t.split(":")[2]);
-    return { r, f, variant, step: steps.length ? Math.min(...steps) : 0, pattern: r.category, ord: order.has(r.category) ? order.get(r.category) : 999 };
+    return { r, f, variant, els: new Set(elTags), layout: inv ? inv.layout : null, density: inv ? inv.density : null, step: steps.length ? Math.min(...steps) : 0, pattern: r.category, ord: order.has(r.category) ? order.get(r.category) : 999 };
   });
   const df = new Map();
   for (const d of docs) { const seen = new Set(patOf(d.pattern || "").all); for (const k in d.f) for (const t of d.f[k]) seen.add(t); for (const t of seen) df.set(t, (df.get(t) || 0) + 1); }
@@ -240,6 +242,7 @@ export function rankRows(q, idx, opts = {}) {
   const out = [];
   for (const d of idx.docs) {
     const r = d.r;
+    if (opts.elements && opts.elements.length && !opts.elements.every((e) => elHas(d, e))) continue;
     if (opts.platform && r.country !== opts.platform) continue;
     if (opts.style && r.style !== opts.style) continue;
     if (opts.pattern && r.category !== opts.pattern) continue;
@@ -320,3 +323,58 @@ export function resolvePlatform(v) {
   if (/^(webapp|web[\s-]?app|saas|laptop)$/.test(w)) return "web";
   return null;
 }
+
+// ---- Elements filter -------------------------------------------------------------------------
+// Words people use for a component → canonical element names in the inventory (any of them satisfies the element).
+export const ELEMENT_ALIASES = {
+  "checkbox": ["checkbox", "checkboxes", "row selection", "row checkboxes", "select rows", "tick box"],
+  "toggle": ["toggle", "toggles", "toggle switch", "switch", "switches"],
+  "progress-ring": ["progress ring", "progress circle", "circular progress", "ring", "radial progress", "donut progress", "progress-rings"],
+  "progress": ["progress bar", "progress", "progress-bar", "meter", "usage meter", "storage-meter", "usage-meter", "capacity-bar"],
+  "avatar-stack": ["avatar stack", "avatars", "team avatars", "facepile", "avatar group", "collaborators"],
+  "sparkline": ["sparkline", "sparklines", "mini chart", "trend line"],
+  "chart": ["chart", "charts", "graph", "line-chart", "bar-chart", "donut-chart", "area chart", "heatmap"],
+  "table": ["table", "data table", "grid", "rows"],
+  "badge": ["badge", "badges", "status chip", "status chips", "status badge", "status-pill", "pill", "severity-badge", "tag"],
+  "chips": ["chips", "filter chips", "filter-chips", "tags", "chip"],
+  "toast": ["toast", "snackbar", "toast notification"],
+  "modal": ["modal", "dialog", "popup", "overlay"],
+  "drawer": ["drawer", "side panel", "side-panel", "slide over", "details-panel", "detail-panel", "inspector-panel", "properties-panel"],
+  "bottom-sheet": ["bottom sheet", "sheet"],
+  "date-picker": ["date picker", "date range", "date-range", "calendar picker", "day-picker", "mini-month"],
+  "stepper": ["stepper", "steps", "progress-steps", "status-steps", "wizard steps", "step indicator"],
+  "tabs": ["tabs", "segmented control", "segmented-control", "tab"],
+  "tab-bar": ["tab bar", "bottom nav", "bottom navigation", "tabbar"],
+  "sidebar-nav": ["sidebar", "side nav", "sidebar navigation", "left nav"],
+  "search-bar": ["search bar", "search", "search field", "search input"],
+  "pagination": ["pagination", "pager"],
+  "breadcrumbs": ["breadcrumbs", "breadcrumb"],
+  "kpi-tiles": ["kpi tiles", "stat tiles", "stat cards", "kpi cards", "metrics cards", "summary cards", "kpi", "stats"],
+  "empty-illustration": ["empty state", "illustration"],
+  "timeline": ["timeline", "activity feed", "activity-feed", "history"],
+  "checklist": ["checklist", "onboarding checklist", "todo list"],
+  "dropdown": ["dropdown", "select", "menu", "combobox"],
+  "form": ["form", "inputs", "input", "fields", "text field"],
+  "avatar": ["avatar", "profile photo"],
+  "star-rating": ["rating", "stars", "star rating", "reviews"],
+  "accordion": ["accordion", "collapsible", "faq"],
+  "code-block": ["code block", "code", "code-snippet", "snippet"],
+  "map": ["map", "map-pins", "pins"],
+  "chat-bubbles": ["chat bubbles", "messages", "chat-messages", "message bubbles"],
+  "upload-dropzone": ["dropzone", "file upload", "upload", "drag and drop"],
+  "plan-cards": ["plan cards", "pricing cards", "plans"],
+  "bulk-actions": ["bulk actions", "bulk action bar", "batch actions"],
+  "video-tiles": ["video tiles", "participants grid"],
+};
+const elKey = (s) => tokens(String(s).replace(/-/g, " "), true).join(" ");
+// Resolve one requested element to the set of inventory names that satisfy it (null if unknown).
+export function resolveElement(input, idx) {
+  const k = elKey(input); if (!k) return null;
+  const vocab = idx.elVocab || (idx.elVocab = (() => { const v = new Set(); for (const d of idx.docs) for (const e of d.els) v.add(e); return v; })());
+  const out = new Set();
+  for (const [canon, al] of Object.entries(ELEMENT_ALIASES)) if (elKey(canon) === k || al.some((a) => elKey(a) === k)) { out.add(canon); al.forEach((a) => vocab.has(a) && out.add(a)); }
+  for (const v of vocab) if (elKey(v) === k) out.add(v);
+  if (!out.size) { const r = resolveName(input, [...vocab], null); if (r) out.add(r.id); }
+  return out.size ? { input: String(input), names: [...out] } : null;
+}
+export function elHas(d, e) { return e.names.some((n) => d.els.has(n)); }

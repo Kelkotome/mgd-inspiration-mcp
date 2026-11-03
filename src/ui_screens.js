@@ -5,7 +5,8 @@
 // R2: screenshot at ui/<id>-<v>.webp (+ -dark.webp twin), code at ui/<id>/index.html, tokens at ui/<id>/DESIGN.md.
 
 import UI_COPY from "./ui_pattern_copy.json"; // per-pattern landing-page copy: { h1, intro, tips[], faq[[q,a]] }
-import { buildIndex, rankRows, resolveName, resolveStyle, resolvePlatform, PATTERN_ALIASES } from "./ui_search.js";
+import { buildIndex, rankRows, resolveName, resolveStyle, resolvePlatform, resolveElement, elHas, PATTERN_ALIASES } from "./ui_search.js";
+import UI_ELEMENTS from "./ui_elements.json"; // HTML-derived element/layout inventory per pattern|variant|platform (ui-screens/elements.js)
 import UI_TAXONOMY from "../ui-screens/taxonomy.json"; // pattern groups + flow steps for list_ui_patterns
 
 export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts", "login", "sign-up", "forgot-password", "two-factor",
@@ -376,6 +377,7 @@ export const UI_MCP_TOOLS = [
         pattern: { type: "string", description: "Optional pattern filter. Free text is fine: an exact id (e.g. doctor-directory, kanban-board, pricing) or a plain name ('doctor directory', 'kanban') is matched server-side. Call list_ui_patterns for the live list; new patterns are added often." },
         style: { type: "string", description: "Optional visual style: minimal, editorial, brutalist, luxury, playful, corporate, retro or monochrome." },
         limit: { type: "integer", description: "Max distinct screens (1-12, default 6). Each result also lists its other styles.", minimum: 1, maximum: 12 },
+        elements: { type: "array", items: { type: "string" }, description: "Optional components the screen must contain (all of them), e.g. ['table', 'checkbox', 'badge'] or ['progress ring', 'avatar stack']. Plain words are fine; list_ui_patterns(kind='elements') shows the vocabulary." },
         distinct: { type: "boolean", description: "Default true: one result per screen (max 2 per pattern), other styles listed on one line. false = every style as its own result." },
       },
       required: ["query"],
@@ -414,7 +416,7 @@ export const UI_MCP_TOOLS = [
     description: "List every pattern (app screens and website sections) and multi-step flow in Made Good Designs' free UI library, live, with screen counts, variants and flow steps. Use it to pick a pattern or flow id for search_ui_screens / get_ui_flow, or to see what exists before searching.",
     inputSchema: {
       type: "object",
-      properties: { kind: { type: "string", description: "Optional: screens, sections, flows or all (default)." } },
+      properties: { kind: { type: "string", description: "Optional: screens, sections, flows, elements (component vocabulary for the elements filter) or all (default)." } },
     },
     annotations: { title: "List UI patterns", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
@@ -444,12 +446,14 @@ function diversify(ranked, limit, o) {
   return picks;
 }
 
+const filt0 = (platform, pattern, style) => `${platform ? " on " + platform : ""}${pattern ? " in " + pattern : ""}${style ? " in the " + style + " style" : ""}`;
+
 // All published UI rows + their search index, cached per isolate (the library is ~1.6k rows and changes only on ingest).
 let UI_IDX = null;
 async function uiSearchIndex(env) {
   if (UI_IDX && Date.now() - UI_IDX.at < 10 * 60 * 1000) return UI_IDX.idx;
   const rows = (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='ui'`).all()).results || [];
-  const idx = buildIndex(rows, UI_PATTERNS);
+  const idx = buildIndex(rows, UI_PATTERNS, UI_ELEMENTS);
   UI_IDX = { at: Date.now(), idx };
   return idx;
 }
@@ -469,18 +473,28 @@ export async function callUiTool(name, a, env, h) {
     const pr = a.pattern ? resolveName(a.pattern, UI_PATTERNS, PATTERN_ALIASES) : null;
     const pattern = pr ? pr.id : null;
     const idx = await uiSearchIndex(env);
-    const res = rankRows(qText, idx, { platform, style, pattern });
+    const reqEls = (Array.isArray(a.elements) ? a.elements : typeof a.elements === "string" ? a.elements.split(/[,;]/) : []).map((x) => String(x).trim()).filter(Boolean).slice(0, 8);
+    const els = reqEls.map((x) => resolveElement(x, idx)).filter(Boolean), unkEls = reqEls.filter((x) => !resolveElement(x, idx));
+    let res = rankRows(qText, idx, { platform, style, pattern, elements: els });
+    let elNote = unkEls.length ? ` (unknown element${unkEls.length > 1 ? "s" : ""} ignored: ${unkEls.join(", ")})` : "";
+    if (els.length && !res.ranked.length) { // nothing has ALL the elements: rank by how many it has, and say so
+      const all = rankRows(qText, idx, { platform, style, pattern });
+      const nHas = (x) => els.filter((e) => elHas(x.d, e)).length;
+      all.ranked = all.ranked.filter((x) => nHas(x) > 0).sort((p, q) => nHas(q) - nHas(p) || q.score - p.score);
+      if (!all.ranked.length) return { content: [{ type: "text", text: `No screen in the library has ${els.map((e) => e.input).join(" or ")}${filt0(platform, pattern, style)} yet, so none are shown. Search again without the elements filter for the closest screens, or call list_ui_patterns(kind="elements") for the components that exist. Browse all at ${site}/ui` }] };
+      res = all; elNote += ` (no screen has all of: ${els.map((e) => e.input).join(", ")}; showing screens with the most of them)`;
+    }
     const filt = `${platform ? ", " + platform : ""}${pattern ? ", " + pattern : ""}${style ? ", " + style + " style" : ""}`;
-    const patNote = (a.platform && !platform ? ` (platform "${a.platform}" not available yet; web and mobile only)` : "") + (a.style && !style ? ` (unknown style "${a.style}" ignored)` : "")
+    const patNote = elNote + (a.platform && !platform ? ` (platform "${a.platform}" not available yet; web and mobile only)` : "") + (a.style && !style ? ` (unknown style "${a.style}" ignored)` : "")
       + (a.pattern && !pattern ? ` (unknown pattern "${a.pattern}" ignored; list_ui_patterns shows them all)` : pr && pr.how !== "exact" ? ` (pattern "${a.pattern}" → ${pattern})` : "");
     const sugg = (res.suggestions || []).filter((p) => p !== pattern);
     const suggLine = sugg.length ? ` Closest patterns: ${sugg.map((p) => `${p} (${label(p).toLowerCase()})`).join(", ")} — search again with one of them, or pass pattern="…".` : "";
     let note = patNote, pool;
-    if (res.tier === "none" && !pattern) {
+    if (res.tier === "none" && !pattern && !els.length) {
       const unk = res.terms.filter((t) => !t.df).map((t) => t.w);
       return { content: [{ type: "text", text: `No screen in the library matches "${q}"${filt}${unk.length ? ` (nothing about: ${unk.join(", ")})` : ""}, so none are shown rather than unrelated ones.${suggLine} Browse all at ${site}/ui` }] };
     }
-    if (res.tier === "none") { pool = res.ranked; note += ` (no text match inside pattern ${pattern}; showing its screens)`; }
+    if (res.tier === "none") { pool = res.ranked; note += ` (no text match ${pattern ? `inside pattern ${pattern}` : "among screens with those elements"}; showing them by pattern order)`; }
     else {
       const top = res.ranked[0] ? res.ranked[0].score : 0;
       pool = res.tier === "all" ? res.ranked : res.ranked.filter((x) => x.text > 0 && x.score >= top * 0.2); // relevance floor: no filler
@@ -495,10 +509,12 @@ export async function callUiTool(name, a, env, h) {
       const roles = (it.palette || []).map((hx, j) => `${ROLE_SHORT[j]} ${hx}`).join(" ");
       const fl = flowsLine(it);
       const shows = ((it.description || "").match(/Shows ([^]*?)\.\s+[A-Z][\w-]* style:/) || (it.description || "").match(/Shows ([^]*?)\.(\s|$)/) || [])[1];
-      const els = uiShownTags(it.tags).filter((t) => t !== it.pattern && t !== it.platform && t !== it.app_category);
+      const d0 = idx.docs.find((d) => d.r.id === row.id);
+      const matchedEls = els.length && d0 ? els.map((e) => e.names.find((n) => d0.els.has(n))).filter(Boolean) : [];
       const tw = twins.length ? `  other styles (same screen, pass the screen_id): ${twins.map((t) => `${t.style} ${t.id}`).join(" · ")}` : null;
       return [`${i + 1}. ${it.title}`, `  screen_id: ${it.id} · pattern: ${it.pattern}${it.variant ? " (" + it.variant + ")" : ""} · ${it.platform} · ${it.style}${it.app_category ? " · " + it.app_category : ""}${fl ? " · flows: " + fl : ""}`,
-        shows ? `  shows: ${shows}` : (it.description ? `  ${it.description}` : null), els.length ? `  elements: ${els.join(", ")}` : null, roles ? `  colours (light): ${roles}` : null,
+        shows ? `  shows: ${shows}` : (it.description ? `  ${it.description}` : null), matchedEls.length ? `  matched elements: ${matchedEls.join(", ")}` : null,
+        d0 && d0.els.size ? `  elements: ${[...d0.els].slice(0, 18).join(", ")}${d0.layout ? ` · layout: ${d0.layout}${d0.density ? ", " + d0.density : ""}` : ""}` : null, roles ? `  colours (light): ${roles}` : null,
         wantDark && it.image_dark ? `  screenshot (dark): ${site}${it.image_dark}` : `  screenshot: ${site}${it.image}`, `  page (cite this): ${site}${uiItemPath(it, "")}`, tw].filter(Boolean).join("\n");
     });
     const darkNote = wantDark ? " Every screen ships a dark theme: its HTML switches on prefers-color-scheme or data-theme=\"dark\" on <html>, and DESIGN.md lists the dark colour tokens; light screenshots are the same URL without -dark." : " Dark screenshots: same URL ending -dark.webp.";
@@ -520,7 +536,7 @@ export async function callUiTool(name, a, env, h) {
   }
   if (name === "list_ui_patterns") {
     const kind = String(a.kind || "all").toLowerCase();
-    const want = (k) => kind === "all" || kind.startsWith(k) || !/^(screen|section|flow|app)/.test(kind);
+    const want = (k) => kind === "all" || kind.startsWith(k) || !/^(screen|section|flow|app|element)/.test(kind);
     const idx = await uiSearchIndex(env);
     const cnt = {}, vars = {};
     for (const d of idx.docs) { cnt[d.pattern] = (cnt[d.pattern] || 0) + 1; if (d.variant) (vars[d.pattern] = vars[d.pattern] || new Set()).add(d.variant); }
@@ -539,6 +555,11 @@ export async function callUiTool(name, a, env, h) {
     if (want("flow")) {
       const tf = UI_TAXONOMY.flows || {};
       out.push("", "FLOWS (ids for get_ui_flow):", ...Object.entries(UI_FLOWS).map(([k, v]) => `  ${k} — ${v}${tf[k] && tf[k].steps ? ` (${tf[k].steps.length} steps: ${tf[k].steps.join(" → ")})` : ""}`));
+    }
+    if (kind.startsWith("element")) {
+      const f = {}; for (const d of idx.docs) for (const e of d.els) f[e] = (f[e] || 0) + 1;
+      const top = Object.entries(f).filter(([, n]) => n >= 16).sort((p, q) => q[1] - p[1]);
+      return { content: [{ type: "text", text: `Elements you can require with search_ui_screens(elements=[…]) — ${top.length} components found in the screens' own HTML and specs, with screen counts (plain words like 'checkboxes' or 'progress circle' are mapped):\n${top.map(([e, n]) => `${e} (${n})`).join(", ")}` }] };
     }
     return { content: [{ type: "text", text: `Made Good Designs UI library: ${idx.docs.length} screens, ${Object.keys(cnt).length} patterns, ${Object.keys(UI_FLOWS).length} flows; every pattern in web + mobile × ${UI_STYLES.length} styles (${UI_STYLES.join(", ")}), each with HTML + DESIGN.md. Plain names work too: search_ui_screens(pattern="doctor directory"). Browse: ${site}/ui\n\n${out.join("\n").trim()}` }] };
   }

@@ -58,7 +58,7 @@ if (LIVE) {
   call = async (a) => (await callUiTool("search_ui_screens", a, env, h)).content.map((c) => c.text).join("\n");
 }
 
-const NONE_RE = /^0 UI screen\(s\)|No screen (in the library )?matches/m;
+const NONE_RE = /^0 UI screen\(s\)|No screen (in the library )?(matches|has)/m;
 const results = [];
 let pass = 0, chars = 0;
 for (const c of cases) {
