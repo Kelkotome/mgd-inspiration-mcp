@@ -125,6 +125,10 @@ BATCHES = {
         ("plan_sign_tiling", "plan how a big sign or poster (18 × 24, 24 × 36 in, A2, A1 or custom) tiles over Letter or A4 sheets: sheet count, orientation, overlap, a sheet grid and each sheet's crop", "sign-maker", "Sign Maker"),
         ("make_sign", "make a printable out of order, do not disturb, reserved (table tent) or yard sale sign from a preset with your own lines, as an SVG at Letter, A4 or poster size", "out-of-order-sign", "Out of Order Sign"),
     ]),
+    "79": (108, [   # 108 = tools/list on /mcp and /mcp/all after b79 (106 + 2; 106 = b78 105 + list_ui_patterns from a486d19), checked on a local Worker 3-Nov
+        ("get_frame_size", "work out the frame size to buy for a print with a mat (print + 2 × mat), the mat opening (1/8 in smaller each side) and the outside size for a frame moulding width, in inches and cm", "frame-mockup", "Frame Mockup"),
+        ("calc_label_wrap", "size a bottle label, can wrap or coffee cup print: circumference, label width for a coverage %, the width seen from the front, and the cup's unrolled cone sector (radii, angle, arc lengths)", "bottle-mockup", "Bottle Mockup"),
+    ]),
 }
 
 def main(b):

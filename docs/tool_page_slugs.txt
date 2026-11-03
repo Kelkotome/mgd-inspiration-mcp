@@ -997,3 +997,16 @@ yard-sale-sign
 welcome-sign-maker
 birthday-sign-maker
 desk-name-plate
+phone-mockup
+laptop-mockup
+business-card-mockup
+letterhead-mockup
+frame-mockup
+jersey-mockup
+sweatshirt-mockup
+apron-mockup
+flag-mockup
+bottle-mockup
+can-mockup
+coffee-cup-mockup
+signage-mockup

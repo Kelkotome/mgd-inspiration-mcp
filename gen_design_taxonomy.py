@@ -73,6 +73,9 @@ T = {
  # batch 75 (3-Nov-2026): mazes and dungeon maps
  "make_maze": (["images", "print"], "/tools/maze-generator/", ["illustration-pattern", "graphic-print", "marketing-content"]),
  "make_dungeon": (["images", "print"], "/tools/dungeon-map-generator/", ["illustration-pattern", "graphic-print"]),
+ # batch 79 (3-Nov-2026): picture frame sizing, bottle / can / cup label wraps (categories = the b79 RULES of their pages)
+ "get_frame_size": (["print", "images"], "/tools/frame-mockup/", ["graphic-print", "photo-image", "marketing-content"]),
+ "calc_label_wrap": (["print", "brand"], "/tools/bottle-mockup/", ["graphic-print", "packaging", "marketing-content"]),
  # batch 78 (3-Nov-2026): sign letter height vs reading distance, big-sign tiling, printable out of order / do not disturb / reserved / yard sale signs
  "get_sign_letter_height": (["print", "typography"], "/tools/yard-sale-sign/", ["marketing-content"]),
  "plan_sign_tiling": (["print", "typography"], "/tools/sign-maker/", ["marketing-content"]),
@@ -104,6 +107,13 @@ RULES = [
  (r"^heightmap-generator$", ["images", "3d"], ["illustration-pattern", "industrial-product"]),
  (r"^(city-map|planet)-generator$", ["images"], ["illustration-pattern", "graphic-print"]),
  (r"^(wall|tile|road|rock|carpet|dirt|plastic|rust|snow|velvet)-texture$", ["images"], ["illustration-pattern", "graphic-print", "photo-image"]),
+ # batch 79 mockup pages (3-Nov-2026): devices are UI, stationery / apparel / signage are brand print, bottles / cans / cups are packaging, frames show photos and prints
+ (r"^(phone|laptop)-mockup$", ["ui", "brand"], ["ui-ux-web", "marketing-content"]),
+ (r"^(business-card|letterhead)-mockup$", ["print", "brand"], ["graphic-print", "brand", "marketing-content"]),
+ (r"^frame-mockup$", ["print", "images"], ["graphic-print", "photo-image", "marketing-content"]),
+ (r"^(jersey|sweatshirt|apron|signage)-mockup$", ["print", "brand"], ["graphic-print", "brand", "marketing-content"]),
+ (r"^flag-mockup$", ["print", "brand"], ["graphic-print", "marketing-content"]),
+ (r"^(bottle|can|coffee-cup)-mockup$", ["print", "brand"], ["graphic-print", "packaging", "marketing-content"]),
  # batch 78 sign pages (3-Nov-2026): group A (the MCP tool pages take their categories from the tools) + group B welcome / birthday signs and desk name plates
  (r"^(out-of-order|do-not-disturb|reserved|yard-sale)-sign$", ["print", "typography"], ["graphic-print", "marketing-content"]),
  (r"^(welcome|birthday)-sign-maker$", ["print", "typography"], ["graphic-print", "marketing-content"]),
@@ -210,7 +220,7 @@ def main():
             pg["roles"] = sorted({r for n in pg["mcp_tools"] for r in tools[n]["roles"]})
     missing = [s for s in used_pages if s not in pages]
     if missing: sys.exit(f"MCP tool pages not on the /tools/ hub: {missing}")
-    out = {"version": "2026-11-03j", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
+    out = {"version": "2026-11-03k", "categories": CATEGORIES, "roles": ROLES, "tools": tools, "pages": pages}
     json.dump(out, open(OUT, "w"), indent=0, separators=(",", ":"))
     print(f"{len(tools)} MCP tools, {len(pages)} /tools/ pages → {OUT} ({os.path.getsize(OUT):,} bytes)")
 main()
