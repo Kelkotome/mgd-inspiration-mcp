@@ -93,6 +93,11 @@ BATCHES = {
         ("calc_field_of_view", "work out a lens's horizontal, vertical and diagonal angle of view and the frame width and height at a distance for any sensor size and focal length, or the focal length needed to frame a subject", "field-of-view-calculator", "Field of View Calculator"),
         ("calc_exposure_value", "calculate exposure value (EV and EV100) from aperture, shutter speed and ISO, solve for the missing setting, list equivalent exposures and work out ND filter shutter times", "exposure-value-calculator", "Exposure Value Calculator"),
     ]),
+    "68": (90, [   # 90 = tools/list on /mcp and /mcp/all after b68 (87 + 3), checked on a local Worker 3-Nov
+        ("make_certificate_border", "make a print-ready certificate, award or diploma border (guilloche, rosette corners, ornate rules, art deco and more) at exact Letter, A4, A5 or Legal size, with the blank writing area and seal position in mm", "certificate-border", "Certificate Border"),
+        ("calc_kitchen_work_triangle", "check a kitchen's sink, cooktop and fridge work triangle from leg lengths or positions (with islands) against the NKBA guideline, plus the work-aisle width", "kitchen-planner", "Kitchen Planner"),
+        ("plan_square_foot_garden", "split a raised bed into square-foot (or 30 cm) squares and work out plants per square and plant counts for each crop you assign", "garden-planner", "Garden Planner"),
+    ]),
 }
 
 def main(b):

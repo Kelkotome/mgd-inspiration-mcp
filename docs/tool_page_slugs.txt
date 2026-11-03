@@ -102,6 +102,7 @@ cassette-j-card-template
 cd-case-template
 celtic-knot-generator
 cent-symbol
+certificate-border
 certificate-maker
 change-gif-speed
 change-image-background
@@ -114,6 +115,7 @@ check-mark-symbol
 checkerboard-pattern-generator
 chevron-pattern-generator
 chromatic-aberration-effect
+chrome-text-generator
 cipher-decoder
 circle-crop-image
 circle-skirt-calculator
@@ -162,6 +164,7 @@ compress-pdf-to-500kb
 compress-png
 compress-video
 concept-map-maker
+concrete-texture
 cone-template
 contact-sheet-maker
 contrast-checker
@@ -177,6 +180,7 @@ crop-image
 crop-pdf
 crop-video
 crossword-maker
+crt-effect
 css-animation-generator
 css-beautifier
 css-button-generator
@@ -235,6 +239,7 @@ eisenhower-matrix
 ellipsis
 em-dash
 email-signature-generator
+emboss-effect
 emoji-copy-and-paste
 emoji-maker
 empathy-map-template
@@ -268,12 +273,15 @@ feet-to-pixels
 field-of-view-calculator
 fill-pdf-form
 find-and-replace
+fire-text-generator
 fishbone-diagram-maker
+fisheye-effect
 flac-to-mp3
 flag-maker
 flatten-pdf
 flexbox-generator
 flip-image
+floor-plan-maker
 flowchart-maker
 flyer-maker
 flyer-sizes
@@ -292,9 +300,11 @@ font-subsetter
 font-to-base64
 font-type-tester
 fractal-generator
+funeral-program-template
 funnel-chart-maker
 gallery-wall-planner
 gantt-chart-maker
+garden-planner
 gear-generator
 gematria-calculator
 gender-symbols
@@ -311,13 +321,16 @@ glassmorphism-generator
 glb-to-stl
 glitch-effect
 glitch-text-generator
+glitter-text-generator
 glow-effect
 gold-color-code
+gold-text-generator
 golden-ratio-calculator
 gothic-text-generator
 gradient-border-generator
 gradient-generator
 gradient-map
+graduation-program-template
 graffiti-generator
 grain-filter
 graph-maker
@@ -326,6 +339,7 @@ greater-than-or-equal-to-symbol
 greek-alphabet
 greek-key-pattern-generator
 greeting-card-maker
+grunge-texture
 halftone-image
 hand-size-chart
 handwriting-to-font
@@ -390,6 +404,7 @@ inches-to-pixels
 increase-video-volume
 infinity-symbol
 infographic-maker
+infrared-filter
 instagram-fonts
 interrobang
 invert-image
@@ -427,10 +442,12 @@ json-to-excel
 json-to-xml
 json-to-yaml
 jwt-decoder
+kaleidoscope-effect
 kaomoji
 katakana-chart
 kdp-cover-calculator
 kerning-game
+kitchen-planner
 knitting-chart-maker
 korean-keyboard
 label-maker
@@ -463,6 +480,7 @@ magazine-cover-maker
 magic-eraser
 make-background-transparent
 mandala-maker
+marble-texture
 marimekko-chart-maker
 markdown-editor
 markdown-to-html
@@ -480,11 +498,13 @@ merge-videos
 mermaid-editor
 mesh-gradient-generator
 meta-tag-generator
+metal-texture
 metallic-colors
 meters-to-feet
 mic-test
 micro-symbol
 mind-map-maker
+mirror-effect
 mkv-to-mp3
 mkv-to-mp4
 mm-to-cm
@@ -558,9 +578,11 @@ otf-to-ttf
 otf-to-woff
 otf-to-woff2
 outline-image
+page-borders
 paint-by-numbers
 paint-mixing-calculator
 paper-sizes
+paper-texture
 paragraph-symbol
 passphrase-generator
 passport-photo-maker
@@ -612,6 +634,7 @@ pixels-to-inches
 pixels-to-mm
 placeholder-image-generator
 plaid-pattern-generator
+playbill-template
 playing-card-template
 plus-minus-symbol
 png-converter
@@ -627,6 +650,7 @@ png-to-webp
 points-to-inches
 polaroid-frame
 polka-dot-pattern-generator
+pop-art-generator
 postcard-template
 poster-maker
 poster-sizes
@@ -654,6 +678,7 @@ quote-generator
 raci-chart-maker
 radar-chart-maker
 rainbow-colors
+rainbow-text-generator
 random-color-generator
 random-letter-generator
 random-number-generator
@@ -687,6 +712,7 @@ ringtone-maker
 risograph-effect
 robots-txt-generator
 roman-numeral-converter
+room-planner
 rotate-gif
 rotate-image
 rotate-pdf
@@ -698,6 +724,7 @@ rune-translator
 russian-keyboard
 russian-transliteration
 sankey-diagram-maker
+save-the-date-template
 scatter-plot-maker
 schedule-maker
 screen-recorder
@@ -754,6 +781,7 @@ stipple-generator
 stl-to-3mf
 stl-to-step
 stl-viewer
+stone-texture
 storyboard-template
 strikethrough-text-generator
 string-art-generator
@@ -865,6 +893,7 @@ webp-to-jpg
 webp-to-pdf
 webp-to-png
 website-color-palette-generator
+wedding-program-template
 whitespace-remover
 wide-vaporwave-text
 wireframe-tool
@@ -875,6 +904,7 @@ woff-to-woff2
 woff2-to-otf
 woff2-to-ttf
 woff2-to-woff
+wood-texture
 word-art-generator
 word-cloud-generator
 word-counter
