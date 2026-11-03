@@ -134,6 +134,11 @@
    "command-palette",
    "date-range-picker",
    "form-validation"
+  ],
+  "home-services": [
+   "pro-directory",
+   "service-booking",
+   "job-tracker"
   ]
  },
  "section_patterns": [
@@ -190,7 +195,12 @@
   "inline-errors",
   "error-summary",
   "snackbar",
-  "undo"
+  "undo",
+  "map",
+  "eta",
+  "time-slots",
+  "receipt",
+  "star-rating"
  ],
  "flows": {
   "sign-up": {
@@ -511,6 +521,37 @@
     "Deleting",
     "Confirming"
    ]
+  },
+  "book-a-pro": {
+   "name": "Book a home-services pro",
+   "steps": [
+    "pro-directory",
+    "service-booking:details",
+    "service-booking:slot-taken",
+    "job-tracker:on-the-way",
+    "job-tracker:job-done"
+   ],
+   "errors": [
+    "service-booking:slot-taken"
+   ],
+   "actions": [
+    "Finding a pro",
+    "Booking a window",
+    "Window just taken",
+    "Tracking arrival",
+    "Paying and rating"
+   ],
+   "aliases": [
+    "book a plumber",
+    "hire a plumber",
+    "book a pro",
+    "hire a pro",
+    "home services",
+    "book an electrician",
+    "book a cleaner",
+    "plumber booking",
+    "tradesperson booking"
+   ]
   }
  },
  "categories": [
@@ -525,7 +566,8 @@
   "education",
   "developer",
   "portfolio",
-  "beauty"
+  "beauty",
+  "services"
  ],
  "styles": [
   "minimal",
@@ -637,6 +679,11 @@
   ],
   "beauty": [
    "product-scan"
+  ],
+  "homeservices": [
+   "pro-directory",
+   "service-booking",
+   "job-tracker"
   ]
  }
 }

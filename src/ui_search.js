@@ -82,6 +82,10 @@ export const PATTERN_ALIASES = {
   "canvas-editor": ["canvas", "flow diagram", "sitemap", "diagram", "whiteboard", "nodes", "flowchart", "inspector"],
   "floor-plan": ["floor plan", "office map", "desk booking", "room booking", "building map", "indoor map"],
   "voice-call": ["voice call", "phone call", "call in progress", "calling", "audio call", "call"],
+  // home services (Handmere)
+  "pro-directory": ["find a pro", "pro directory", "plumber", "plumbers", "electrician", "electricians", "cleaner", "cleaners", "handyman", "tradesperson", "tradesman", "contractor", "homeservices", "service provider", "service providers", "provider list", "home repair", "find a plumber", "local pros", "marketplace"],
+  "service-booking": ["service booking", "book a service", "book a plumber", "book a pro", "arrival window", "time slot", "time slots", "appointment slot", "schedule a visit", "homeservices booking", "job request", "request a quote", "slot taken", "slot unavailable"],
+  "job-tracker": ["job tracker", "order tracking", "track order", "live tracking", "on the way", "eta", "arrival time", "driver tracking", "courier tracking", "delivery tracking", "map tracking", "pro on the way", "job done", "rate and tip", "tip", "rate your pro", "service receipt"],
   // interaction states (3-Nov-2026 round 3)
   "toast-snackbar": ["toast", "snackbar", "toast notification", "undo", "undo toast", "toast with undo", "notification toast"],
   "confirm-dialog": ["confirm dialog", "confirmation dialog", "confirm delete", "delete confirmation", "destructive", "modal", "dialog", "are you sure", "type to confirm"],
@@ -114,9 +118,9 @@ export const PATTERN_ALIASES = {
   "footer": ["footer", "site footer"],
 };
 // Words that only point at a nearby pattern (used for suggestions when nothing matches, never as matches).
-const HINTS = { homeservices: ["booking-details", "class-schedule"], shoe: ["product-detail", "cart"], sneaker: ["product-detail", "cart"], shirt: ["product-detail"], dress: ["product-detail"],
+const HINTS = { homeservices: ["pro-directory", "service-booking", "booking-details", "class-schedule"], shoe: ["product-detail", "cart"], sneaker: ["product-detail", "cart"], shirt: ["product-detail"], dress: ["product-detail"],
   jacket: ["product-detail"], furniture: ["product-detail"], grocery: ["cart", "product-detail"], food: ["product-detail", "hero"],
-  restaurant: ["booking-details", "hero"], plumber: ["booking-details", "class-schedule"], cleaning: ["booking-details"], salon: ["booking-details", "class-schedule"],
+  restaurant: ["booking-details", "hero"], plumber: ["pro-directory", "service-booking", "booking-details", "class-schedule"], cleaning: ["pro-directory", "service-booking", "booking-details"], salon: ["booking-details", "class-schedule"],
   hotel: ["booking-details", "map-view"], flight: ["booking-details", "checkout"], travel: ["map-view", "booking-details"], real: ["map-view", "detail-view"],
   estate: ["map-view", "detail-view"], property: ["map-view", "detail-view"], toast: ["success-confirmation", "notifications-center"], snackbar: ["success-confirmation", "notifications-center"],
   undo: ["success-confirmation"], modal: ["cancel-subscription", "paywall-upgrade"], dialog: ["cancel-subscription", "paywall-upgrade"], drawer: ["split-view", "detail-view"],

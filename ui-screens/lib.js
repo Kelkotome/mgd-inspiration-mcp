@@ -49,6 +49,7 @@ const FAMILIES = {
   learning: { name: "Brightpath", cat: "education", desc: "an online course platform for schools and their students", type: { web: "SaaS web app", mobile: "Mobile app" } },
   bank: { name: "Mintwell", cat: "finance", desc: "a digital bank for freelancers and small businesses", type: { web: "Online banking web app", mobile: "Mobile banking app" } },
   beauty: { name: "Dewline", cat: "beauty", desc: "a skincare routine app with an ingredient and product scanner", type: { web: "SaaS web app", mobile: "Mobile app" } },
+  homeservices: { name: "Handmere", cat: "services", desc: "on-demand plumbers, electricians and cleaners booked by arrival window", type: { web: "Marketplace web app", mobile: "Mobile app" } },
 };
 
 const ICON = {

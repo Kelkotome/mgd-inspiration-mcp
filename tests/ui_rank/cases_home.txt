@@ -1,0 +1,12 @@
+# Home-services family (Handmere, 3-Nov-2026 round 4). Valid once ui-screens/out/{pro-directory,service-booking,job-tracker}-* are ingested.
+# Pre-ingest check: node tests/ui_rank/with_pending.mjs > /tmp/rows.json && run.mjs --rows /tmp/rows.json --cases cases_home.txt
+plumber home services booking | pro-directory service-booking
+find a plumber near me | pro-directory
+electrician directory with ratings and hourly rates | pro-directory
+cleaner marketplace list with map | pro-directory
+book a plumber arrival window | service-booking
+choose a time slot for a home repair visit | service-booking
+time slot just taken error | service-booking
+track the pro on the way with eta map | job-tracker
+live tracking driver arriving | job-tracker
+rate and tip after the job | job-tracker

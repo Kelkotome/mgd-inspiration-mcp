@@ -99,7 +99,7 @@ settings with toggle switches | settings | platform=mobile
 toast notification undo | none notifications-center success-confirmation toast-snackbar
 running shoes | none product-detail | platform=mobile
 date picker range | none calendar booking-details analytics-charts floor-plan date-range-picker
-plumber home services booking | none booking-details class-schedule
+plumber home services booking | none pro-directory service-booking booking-details class-schedule
 now-playing music screen | music-player
 video consult with a doctor | telehealth-visit
 wizard | form-wizard

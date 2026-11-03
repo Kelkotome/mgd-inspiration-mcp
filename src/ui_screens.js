@@ -24,7 +24,9 @@ export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts"
   // 3-Nov-2026 round 3: interaction states (overlays on existing screens); pages/sitemap list them only once their rows are ingested
   "toast-snackbar", "confirm-dialog", "side-drawer", "command-palette", "date-range-picker", "form-validation",
   // error steps for flows (round 3)
-  "auth-error", "payment-declined"];
+  "auth-error", "payment-declined",
+  // home-services family (Handmere): real query "plumber home services booking" had no answer
+  "pro-directory", "service-booking", "job-tracker"];
 export const UI_SECTION_PATTERNS = ["hero", "navigation-header", "feature-grid", "bento-features", "how-it-works", "logo-cloud", "stats-band",
   "testimonials", "pricing", "comparison-table", "integrations-grid", "security-trust", "faq", "cta-banner", "about-team", "careers",
   "blog-index", "changelog", "contact-form", "footer"];
@@ -47,6 +49,8 @@ const LABELS = { "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys
   "ai-workspace": "AI workspace", "ai-settings": "AI settings", "telehealth-visit": "Telehealth visit", "form-wizard": "Multi-step form wizard",
   "in-call": "In call", "visit-summary": "Visit summary",
   "split-view": "Split view (master-detail)", "verify-identity": "Verify identity", "account-ready": "Account ready",
+  "pro-directory": "Find a pro (home services)", "service-booking": "Book a home-service visit", "job-tracker": "Job tracker",
+  details: "Details and arrival window", "slot-taken": "Arrival window just taken", "on-the-way": "Pro on the way", "job-done": "Job done, pay and rate",
   "toast-snackbar": "Toast / snackbar with undo", "confirm-dialog": "Confirm dialog (destructive)", "side-drawer": "Side drawer", "command-palette": "Command palette",
   "date-range-picker": "Date range picker", "form-validation": "Form validation errors",
   "auth-error": "Sign-in error", "payment-declined": "Card declined at checkout", "wrong-password": "Wrong password", "account-locked": "Account locked", "code-expired": "Code expired" };
@@ -566,7 +570,7 @@ export async function callUiTool(name, a, env, h) {
     return { content: [{ type: "text", text: `${hd}.${darkNote} ${how} ${CITE}${imgs.length ? ` Attached: screenshots of results 1-${imgs.length}, in order.` : ""}\n\n${blocks.join("\n\n")}` }, ...imgs] };
   }
   if (name === "get_ui_flow") {
-    const fr = resolveName(a.flow, Object.keys(UI_FLOWS), Object.fromEntries(Object.entries(UI_FLOWS).map(([k, v]) => [k, [v]])));
+    const fr = resolveName(a.flow, Object.keys(UI_FLOWS), Object.fromEntries(Object.entries(UI_FLOWS).map(([k, v]) => [k, [v, ...((FLOW_DEFS[k] || {}).aliases || [])]])));
     if (!fr) return { content: [{ type: "text", text: `No flow matches "${a.flow || ""}". Available: ` + Object.entries(UI_FLOWS).map(([k, v]) => `${k} (${v.toLowerCase()})`).join(", ") }], isError: true };
     const id = fr.id;
     const platform = resolvePlatform(a.platform) || "web", style = resolveStyle(a.style) || "minimal";

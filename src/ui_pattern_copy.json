@@ -2290,5 +2290,65 @@
     "Inline in the payment section, close to the card fields, and announced to screen readers with role=alert."
    ]
   ]
+ },
+ "pro-directory": {
+  "h1": "Find-a-pro directory examples (home services)",
+  "intro": "A home-services directory has to answer three questions fast: who can come, when, and what it will cost. These examples show plumbers near one address with service, day, rate and must-have filters, pro cards with licence badges, rating, jobs done and reply time, hourly rate plus call-out fee, bookable arrival windows and a map with price pins. Web and mobile, eight styles, light and dark.",
+  "tips": [
+   "Show the next bookable arrival window on every card; availability decides most bookings.",
+   "Put the full price model on the card (hourly rate plus call-out fee) so nobody is surprised at checkout.",
+   "Make trust signals specific and checkable: licensed, insured, background-checked, jobs completed.",
+   "On mobile, keep filters as chips above the list and move the map behind a toggle."
+  ],
+  "faq": [
+   [
+    "What should a service provider card show?",
+    "Name and business, rating with review count, the price model, the next available window, trust badges and one clear book action."
+   ],
+   [
+    "Should the directory include a map?",
+    "On web, yes: a map with price pins helps people judge distance and travel time. On mobile, a list first is usually faster."
+   ]
+  ]
+ },
+ "service-booking": {
+  "h1": "Home-service booking form examples",
+  "intro": "Booking a visit means describing the problem and picking an arrival window. These examples show service chips, a description with photos, a day strip, two-hour arrival windows with booked ones struck through, the address and access notes, and a summary with the call-out fee and labour estimate. The slot-taken variant shows the unhappy path: the chosen window was booked by someone else, with the next free windows suggested and the details kept.",
+  "tips": [
+   "Use arrival windows, not exact times, and say how long they are.",
+   "Ask for photos; they let the pro bring the right parts.",
+   "Keep the estimate visible next to the form, and say when payment happens.",
+   "If a slot is taken mid-booking, keep everything the person typed and suggest the nearest free windows."
+  ],
+  "faq": [
+   [
+    "How do I handle a time slot that gets taken during booking?",
+    "Show an alert naming the window that was taken, strike it through, highlight the next free windows and keep the rest of the form filled in."
+   ],
+   [
+    "Should customers pay upfront for home services?",
+    "Many services charge after the job, with an estimate shown upfront; say which clearly next to the confirm button."
+   ]
+  ]
+ },
+ "job-tracker": {
+  "h1": "Job tracker examples (pro on the way, job done)",
+  "intro": "After booking, people want to know when the pro will arrive and, afterwards, what was done and what it cost. These examples show live tracking on a map with arrival time, a progress bar, the pro with call and message buttons, the vehicle, a door code and a status timeline, then the finished job with photos, parts, a receipt against the estimate, a tip and a rating.",
+  "tips": [
+   "Lead with the arrival time in large type and keep it inside the booked window.",
+   "Show who is coming and how to recognise them (photo or initials, vehicle, plate).",
+   "A door or safety code lets the customer confirm the right person arrived.",
+   "On the receipt, compare the final total with the estimate and itemise approved parts."
+  ],
+  "faq": [
+   [
+    "What should a live tracking screen show?",
+    "Arrival time, minutes away, a map with route, who is coming with contact buttons, and a short status timeline."
+   ],
+   [
+    "When should I ask for a rating and tip?",
+    "On the job-done screen, together with the receipt and payment, while the visit is fresh."
+   ]
+  ]
  }
 }
