@@ -1024,7 +1024,8 @@ async function serveImage(key, env) {
 
 async function meHandler(request, env) {
   const user = await getUser(request, env);
-  if (user) { env.DB.prepare("UPDATE users SET last_active_at=? WHERE id=?").bind(Date.now(), user.id).run().catch(() => {}); }
+  // awaited: a fire-and-forget write is dropped once the response returns, so last_active_at never moved
+  if (user) { await env.DB.prepare("UPDATE users SET last_active_at=? WHERE id=?").bind(Date.now(), user.id).run().catch(() => {}); }
   return json({ user: user ? { id: user.id, email: user.email, name: user.name, picture: user.picture, newsletter_opt_in: !!user.newsletter_opt_in } : null }, 200, env, request);
 }
 
