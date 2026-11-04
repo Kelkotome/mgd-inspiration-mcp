@@ -667,11 +667,12 @@ async function annualSitemap(env, base) {
 }
 
 // Shared styles for the server-rendered annual hub/facet pages.
-// "← Back" for collection detail pages: returns to the previous collection view (keeps filters + scroll) when the
-// visitor came from within the collection, otherwise links to the collection home.
+// "← Back" for collection detail pages: a real link to the collection home. history.back() only when the previous page
+// was exactly that page (keeps its filters + scroll); 5-Nov-2026: was a prefix match, so /inspiration/ matched every
+// /inspiration/* referrer and "Back to inspiration" stepped back through filter pages instead of leaving.
 function backLink(base, path, label) {
   const href = `${base}${path}`;
-  return `<a class="backbtn" style="display:inline-flex;align-items:center;gap:.35em;font-size:.85rem;font-weight:600;text-decoration:none;border:1px solid #d4d4d4;background:#fff;border-radius:999px;padding:.35em .9em;margin:.25rem 0 .6rem;color:#171717" href="${escHtml(href)}" onclick="try{var r=document.referrer;if(r&&r.indexOf(location.origin+${escHtml(JSON.stringify(href))})===0&&history.length>1){history.back();return false}}catch(e){}">← ${escHtml(label)}</a>`;
+  return `<a class="backbtn" style="display:inline-flex;align-items:center;gap:.35em;font-size:.85rem;font-weight:600;text-decoration:none;border:1px solid #d4d4d4;background:#fff;border-radius:999px;padding:.35em .9em;margin:.25rem 0 .6rem;color:#171717" href="${escHtml(href)}" onclick="try{var r=document.referrer,u=r&&new URL(r),t=${escHtml(JSON.stringify(href.replace(/\/$/, "")))};if(u&&u.origin===location.origin&&u.pathname.replace(/[/]$/,&quot;&quot;)===t&&history.length>1){history.back();return false}}catch(e){}">← ${escHtml(label)}</a>`;
 }
 const ANNUAL_PAGE_CSS = `<style>
 .backbtn{display:inline-flex;align-items:center;gap:.35em;font-size:.85rem;font-weight:600;text-decoration:none;border:1px solid var(--line,rgba(127,127,127,.35));border-radius:999px;padding:.35em .9em;margin:.25rem 0 .6rem}.backbtn:hover{border-color:currentColor}

@@ -8,7 +8,8 @@ import UI_COPY from "./ui_pattern_copy.json"; // per-pattern landing-page copy: 
 import { buildIndex, rankRows, resolveName, resolveStyle, resolvePlatform, resolveElement, elHas, PATTERN_ALIASES } from "./ui_search.js";
 import UI_ELEMENTS from "./ui_elements.json"; // HTML-derived element/layout inventory per pattern|variant|platform (ui-screens/elements.js)
 import UI_TAXONOMY from "../ui-screens/taxonomy.json"; // pattern groups + flow steps for list_ui_patterns
-import { extractCopy } from "./ui_copy.js"; // copy deck (visible strings by role) for get_ui_screen_code format=copy
+import { extractCopy } from "./ui_copy.js";
+import { patternSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
 
 export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts", "login", "sign-up", "forgot-password", "two-factor",
   "welcome", "onboarding-step", "permissions-request", "home", "feed", "list-view", "detail-view", "kanban-board", "calendar",
@@ -98,19 +99,31 @@ document.addEventListener("click",function(e){var b=e.target.closest("[data-ui-t
 var t="light";try{t=localStorage.getItem("mgd-ui-shot")||"light"}catch(e){}if(t==="dark")set("dark")})();</script>`;
 // Crawlable links to every pattern page (gallery, pattern pages, flows index).
 const patternIndex = (base, h, have) => `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">Browse by pattern</h2>
-<p class="lede" style="margin:0 0 .4rem">App screens</p><div class="pidx">${UI_SCREEN_PATTERNS.filter((p) => !have || have.has(p)).map((p) => `<a href="${h.escHtml(base)}/ui/${p}">${h.escHtml(label(p))}</a>`).join("<br>")}</div>
-<p class="lede" style="margin:1rem 0 .4rem">Website sections</p><div class="pidx">${UI_SECTION_PATTERNS.filter((p) => !have || have.has(p)).map((p) => `<a href="${h.escHtml(base)}/ui/${p}">${h.escHtml(label(p))}</a>`).join("<br>")}</div>`;
+<p class="lede" style="margin:0 0 .4rem">App screens</p><div class="pidx">${UI_SCREEN_PATTERNS.filter((p) => !have || have.has(p)).map((p) => `<a href="${h.escHtml(base)}/ui/${patternSlug(p)}">${h.escHtml(label(p))}</a>`).join("<br>")}</div>
+<p class="lede" style="margin:1rem 0 .4rem">Website sections</p><div class="pidx">${UI_SECTION_PATTERNS.filter((p) => !have || have.has(p)).map((p) => `<a href="${h.escHtml(base)}/ui/${patternSlug(p)}">${h.escHtml(label(p))}</a>`).join("<br>")}</div>`;
 
 // ---- Pages -----------------------------------------------------------------------------------
 // h = helpers from index.js: { escHtml, GTAG, themeify, saveWidget, backLink, edgeCache, rowToItem }
 export async function uiRoute(path, request, env, ctx, base, h) {
-  if (path === "/ui") return h.edgeCache(request, ctx, 1800, () => uiGalleryPage(env, base, h));
+  if (path === "/ui") {
+    // Old filter URLs (/ui?group=…&pattern=…&platform=…&style=…) → their clean keyword path (301, other params kept)
+    const u = new URL(request.url), f = {}, cleanQ = {};
+    if (UI_PATTERNS.includes(u.searchParams.get("pattern"))) f.pattern = u.searchParams.get("pattern");
+    if (facetSlug("group", u.searchParams.get("group"))) f.group = u.searchParams.get("group");
+    if (["web", "mobile"].includes(u.searchParams.get("platform"))) f.platform = u.searchParams.get("platform");
+    if (UI_STYLES.includes(u.searchParams.get("style"))) f.style = u.searchParams.get("style");
+    if (Object.keys(f).length) return Response.redirect(new URL(cleanUiUrl(f, base), request.url).toString(), 301);
+    return h.edgeCache(request, ctx, 1800, () => uiGalleryPage(env, base, h, null));
+  }
   if (path === "/ui/sitemap.xml") return h.edgeCache(request, ctx, 3600, () => uiSitemap(env, base));
   if (path === "/ui/flows") return h.edgeCache(request, ctx, 1800, () => uiFlowsIndex(env, base, h));
   const fm = path.match(/^\/ui\/flows\/([a-z0-9-]+)$/);
   if (fm) return UI_FLOWS[fm[1]] ? h.edgeCache(request, ctx, 1800, () => uiFlowPage(fm[1], new URL(request.url), env, base, h)) : null;
   const pm = path.match(/^\/ui\/([a-z0-9-]+)$/);
-  if (pm && UI_PATTERNS.includes(pm[1])) return h.edgeCache(request, ctx, 1800, () => uiPatternPage(pm[1], env, base, h));
+  const hit = pm && resolveUiSlug(pm[1], UI_PATTERNS);
+  if (hit && hit.type === "old") { const u = new URL(request.url); return Response.redirect(new URL(`${base}/ui/${patternSlug(hit.pattern)}${u.search}`, request.url).toString(), 301); }
+  if (hit && hit.type === "pattern") return h.edgeCache(request, ctx, 1800, () => uiPatternPage(hit.pattern, env, base, h));
+  if (hit && hit.type === "facet") return h.edgeCache(request, ctx, 1800, () => uiGalleryPage(env, base, h, hit.facet));
   const raw = path.match(/^\/ui\/raw\/([0-9a-f]{12})\.(html|md)$/);
   if (raw) return uiRaw(raw[1], raw[2], env, base);
   if (path === "/ui/terms") return h.edgeCache(request, ctx, 3600, () => uiTermsPage(env, base, h));
@@ -118,6 +131,7 @@ export async function uiRoute(path, request, env, ctx, base, h) {
   if (m) return h.edgeCache(request, ctx, 1800, () => uiItemPage(m[1], env, base, h));
   return null;
 }
+assertSlugs(UI_PATTERNS); // fails the deploy (module load) if a slug is missing, duplicated or collides with an old pattern id
 
 async function uiRaw(id, kind, env, base) {
   const [obj, row] = await Promise.all([env.BUCKET.get(`ui/${id}/${kind === "html" ? "index.html" : "DESIGN.md"}`),
@@ -183,6 +197,7 @@ const TERMS_HREF = "/inspiration/ui/terms";
 const RIGHTS = `<footer class="rights">All screens, product names and copy are original, fictional designs by Made Good Designs; they are not screenshots of real apps. Free to use and adapt in any project, including commercial ones, with no credit needed. If you republish the screens themselves, please credit Made Good Designs with a link. <a href="${TERMS_HREF}">Terms</a></footer>`;
 // SEO lengths: titles ≤ 60 chars (first candidate that fits), meta descriptions ≤ 155 at a word boundary.
 const lcWords = (s) => s.split(" ").map((w) => (/^[A-Z0-9]{2,}$/.test(w) ? w : w.toLowerCase())).join(" "); // keep API, FAQ, CTA, 404
+const lcFirst = (t) => (/^[A-Z][a-z]/.test(t) ? t[0].toLowerCase() + t.slice(1) : t); // "Login page…" → "login page…", keeps "HTML…", "UI…"
 const fitTitle = (...c) => c.find((t) => t.length <= 60) || c[c.length - 1];
 const clip = (s, n = 155) => { s = String(s || "").replace(/\s+/g, " ").trim(); if (s.length <= n) return s; const t = s.slice(0, n - 1); return t.slice(0, t.lastIndexOf(" ")).replace(/[,;:.\-–—]$/, "") + "…"; };
 const head = (h, o) => `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -205,40 +220,88 @@ const dims = (it) => (it.width && it.height ? ` width="${+it.width}" height="${+
 const card = (it, base, h, metaHtml) => `<a class="card ${h.escHtml(it.platform)}" href="${h.escHtml(uiItemPath(it, base))}" data-platform="${h.escHtml(it.platform)}" data-pattern="${h.escHtml(it.pattern)}" data-group="${UI_GROUP_OF[it.pattern] || "tools"}" data-style="${h.escHtml(it.style)}">
 <div class="th"><img loading="lazy"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(it.title)}"/></div><div class="meta">${metaHtml}</div></a>`;
 
-async function uiGalleryPage(env, base, h) {
-  const items = (await uiRows(env)).map((r) => h.rowToItem(r, env));
-  const site = siteOf(env);
-  const have = new Set(items.map((x) => x.pattern));
-  const chips = (k, lab, vals) => `<div><b>${lab}</b>${k === "pattern" && lab !== "Screens" ? "" : `<button class="chip" data-f="${k}" data-v="" aria-pressed="true">All</button>`}${vals.map((v) => `<button class="chip" data-f="${k}" data-v="${h.escHtml(v)}" aria-pressed="false">${h.escHtml(label(v))}</button>`).join("")}</div>`;
-  const chip = (k, v, text, on) => `<button class="chip" data-f="${k}" data-v="${h.escHtml(v)}" aria-pressed="${on ? "true" : "false"}">${h.escHtml(text)}</button>`;
-  const groups = [...UI_FILTER_GROUPS, ["sections", "Website sections", UI_SECTION_PATTERNS]].map(([id, name, ps]) => [id, name, ps.filter((p) => have.has(p))]).filter((g) => g[2].length);
-  const groupChips = `<div><b>Screens</b>${chip("group", "", "All", true)}${groups.filter((g) => g[0] !== "sections").map((g) => chip("group", g[0], g[1])).join("")}</div>`
-    + (groups.some((g) => g[0] === "sections") ? `<div><b>Sections</b>${chip("group", "sections", "Website sections")}</div>` : "")
-    + groups.map(([id, name, ps]) => `<div class="sub" data-g="${id}" hidden><b></b>${chip("pattern", "", "All " + name.toLowerCase(), true)}${ps.map((p) => chip("pattern", p, label(p))).join("")}</div>`).join("");
-  const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</b> · ${h.escHtml(it.platform)} <span>· ${h.escHtml(it.style)}</span>`)).join("");
-  const nP = have.size, desc = `${items.length} original app screens and website sections across ${nP} patterns, for web and mobile in ${UI_STYLES.length} styles, plus ${Object.keys(UI_FLOWS).length} multi-step flows. Each one comes with copyable HTML and a DESIGN.md token file for AI coding agents. Free.`;
-  const body = head(h, { title: "Free UI screens with HTML code & DESIGN.md | MGD", ogTitle: "MGD UI Screens", desc, canonical: `${site}${base}/ui`,
-    image: items[0] ? site + base + items[0].image : null,
-    jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: "MGD UI Screens", url: `${site}${base}/ui`, description: desc, publisher: MGD_ORG(site), ...licenceLd(site, base) } })
-  + `${h.backLink(base, "/", "Back to inspiration")}
-<h1>UI screens</h1>
-<p class="lede">Original app screens and website sections for web and mobile, designed by Made Good Designs. Unlike screenshot libraries, every screen comes with its <b>HTML code</b> and a <b>DESIGN.md</b> with the colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>
-<div class="filters">${chips("platform", "Platform", ["web", "mobile"])}${groupChips}${chips("style", "Style", UI_STYLES)}</div>
-<p class="lede" id="count" style="margin:-.5rem 0 .5rem">${items.length} screens</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>
-<div class="grid" id="grid">${cards}</div><p style="text-align:center;margin:1.5rem 0"><button class="btn" id="more" hidden>Show more</button></p>${patternIndex(base, h, have)}${MCP_NOTE(base)}${RIGHTS}
-</div><script>
-(function(){var PAGE=48,shown=PAGE,f={platform:"",group:"",pattern:"",style:""},cards=[].slice.call(document.querySelectorAll("#grid .card")),cnt=document.getElementById("count"),more=document.getElementById("more");
-try{var q=new URLSearchParams(location.search);for(var k in f)if(q.get(k))f[k]=q.get(k)}catch(e){}
-if(f.pattern){var pc=document.querySelector('.sub .chip[data-v="'+f.pattern.replace(/[^a-z0-9-]/g,"")+'"]');if(pc)f.group=pc.closest(".sub").dataset.g}
+// Filter-chip script shared by the gallery and its facet pages. Chips are real links to the clean URL of the state they
+// select (so crawlers and no-JS visitors navigate); with JS, a chip whose state stays inside what this page rendered
+// filters in place and replaceState()s to that clean URL (no history entries, so Back leaves the page). SCOPE is the
+// facet the server applied ({k,v}) or null on /ui.
+const FILTER_JS = (base, scope, page) => `<script>
+(function(){var S=${UI_SLUG_JS()},B=${JSON.stringify(base)},SCOPE=${JSON.stringify(scope)},PAGE=${page || 0},shown=PAGE||1e9,f={platform:"",group:"",pattern:"",style:""},
+cards=[].slice.call(document.querySelectorAll("#grid .card")),cnt=document.getElementById("count"),more=document.getElementById("more"),word=cnt.dataset.word||"screen";
+if(SCOPE)f[SCOPE.k]=SCOPE.v;
+try{var q=new URLSearchParams(location.search);["platform","style"].forEach(function(k){if(q.get(k)&&!(SCOPE&&SCOPE.k===k))f[k]=q.get(k)})}catch(e){}
+function grp(p){var c=document.querySelector('.sub .chip[data-v="'+String(p).replace(/[^a-z0-9-]/g,"")+'"]');return c?c.closest(".sub").dataset.g:""}
+if(f.pattern&&!f.group)f.group=grp(f.pattern);
+function url(s){var q=new URLSearchParams(),seg="";
+if(s.pattern){seg=S.p[s.pattern]||s.pattern;if(s.platform)q.set("platform",s.platform);if(s.style)q.set("style",s.style)}
+else if(s.group&&S.f["group:"+s.group]){seg=S.f["group:"+s.group];if(s.platform)q.set("platform",s.platform);if(s.style)q.set("style",s.style)}
+else if(s.platform&&S.f["platform:"+s.platform]){seg=S.f["platform:"+s.platform];if(s.style)q.set("style",s.style)}
+else if(s.style&&S.f["style:"+s.style])seg=S.f["style:"+s.style];
+q=q.toString();return B+"/ui"+(seg?"/"+seg:"")+(q?"?"+q:"")}
+function next(b){var s={};for(var k in f)s[k]=f[k];s[b.dataset.f]=b.dataset.v;if(b.dataset.f==="group")s.pattern="";if(b.dataset.f==="pattern"&&b.dataset.v)s.group=grp(b.dataset.v);return s}
+function inside(s){return !SCOPE||s[SCOPE.k]===SCOPE.v}
 function apply(){var n=0;cards.forEach(function(c){var ok=true;for(var k in f)if(f[k]&&c.dataset[k]!==f[k])ok=false;if(ok)n++;c.style.display=ok&&n<=shown?"":"none"});
-cnt.textContent=n+" screen"+(n===1?"":"s");more.hidden=n<=shown;document.querySelectorAll(".sub").forEach(function(s){s.hidden=s.dataset.g!==f.group});
-document.querySelectorAll(".chip[data-f]").forEach(function(b){var s=b.closest(".sub");b.setAttribute("aria-pressed",String(f[b.dataset.f]===b.dataset.v&&(!s||s.dataset.g===f.group)))})}
-more.addEventListener("click",function(){shown+=PAGE*2;apply()});
-document.querySelector(".filters").addEventListener("click",function(e){var b=e.target.closest(".chip[data-f]");if(!b)return;f[b.dataset.f]=b.dataset.v;if(b.dataset.f==="group")f.pattern="";shown=PAGE;apply();
-try{var q=new URLSearchParams();for(var k in f)if(f[k])q.set(k,f[k]);history.replaceState(null,"",location.pathname+(q.toString()?"?"+q:""))}catch(e){}});apply()})();
-</script>${THEME_JS}${h.saveWidget(base)}</body></html>`;
+cnt.textContent=n+" "+word+(n===1?"":"s");if(more)more.hidden=n<=shown;document.querySelectorAll(".sub").forEach(function(s){s.hidden=s.dataset.g!==f.group});
+document.querySelectorAll(".chip[data-f]").forEach(function(b){var s=b.closest(".sub");b.setAttribute("aria-pressed",String(f[b.dataset.f]===b.dataset.v&&(!s||s.dataset.g===f.group)));
+var h=url(next(b));b.setAttribute("href",h);if(h.indexOf("?")>0)b.setAttribute("rel","nofollow");else b.removeAttribute("rel")})}
+if(more)more.addEventListener("click",function(){shown+=PAGE*2;apply()});
+document.querySelector(".filters").addEventListener("click",function(e){var b=e.target.closest(".chip[data-f]");if(!b||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;var s=next(b);if(!inside(s))return;
+e.preventDefault();f=s;shown=PAGE||1e9;apply();try{history.replaceState(null,"",url(f))}catch(e){}});apply()})();
+</script>`;
+
+// The gallery (/ui) and its clean facet pages (/ui/<group|platform|style slug>): the facet is applied server-side
+// (only matching cards are rendered) with its own title, H1, intro and self-canonical; secondary filters run in place.
+async function uiGalleryPage(env, base, h, facet) {
+  const all = (await uiRows(env)).map((r) => h.rowToItem(r, env));
+  const site = siteOf(env);
+  const have = new Set(all.map((x) => x.pattern));
+  const match = (it) => !facet || (facet.kind === "group" ? UI_GROUP_OF[it.pattern] === facet.value : facet.kind === "platform" ? it.platform === facet.value : it.style === facet.value);
+  const items = all.filter(match);
+  if (!items.length) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
+  const state = { platform: "", group: "", pattern: "", style: "" }; if (facet) state[facet.kind] = facet.value;
+  const hrefFor = (k, v) => { const s = { ...state, [k]: v }; if (k === "group") s.pattern = ""; if (k === "pattern" && v) s.group = UI_GROUP_OF[v] || ""; return cleanUiUrl(s, base); };
+  const chip = (k, v, text) => { const href = hrefFor(k, v); return `<a class="chip" data-f="${k}" data-v="${h.escHtml(v)}" href="${h.escHtml(href)}"${href.includes("?") ? ' rel="nofollow"' : ""} aria-pressed="${state[k] === v ? "true" : "false"}">${h.escHtml(text)}</a>`; };
+  const chips = (k, lab, vals) => `<div><b>${lab}</b>${chip(k, "", "All")}${vals.map((v) => chip(k, v, label(v))).join("")}</div>`;
+  const groups = [...UI_FILTER_GROUPS, ["sections", "Website sections", UI_SECTION_PATTERNS]].map(([id, name, ps]) => [id, name, ps.filter((p) => have.has(p))]).filter((g) => g[2].length);
+  const groupChips = `<div><b>Screens</b>${chip("group", "", "All")}${groups.filter((g) => g[0] !== "sections").map((g) => chip("group", g[0], g[1])).join("")}</div>`
+    + (groups.some((g) => g[0] === "sections") ? `<div><b>Sections</b>${chip("group", "sections", "Website sections")}</div>` : "")
+    + groups.map(([id, name, ps]) => `<div class="sub" data-g="${id}"${state.group === id ? "" : " hidden"}><b></b>${chip("pattern", "", "All " + name.toLowerCase())}${ps.map((p) => chip("pattern", p, label(p))).join("")}</div>`).join("");
+  const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</b> · ${h.escHtml(it.platform)} <span>· ${h.escHtml(it.style)}</span>`)).join("");
+  const nP = new Set(items.map((x) => x.pattern)).size, nS = new Set(items.map((x) => x.style)).size;
+  const word = facet && facet.kind === "group" && facet.value === "emails" ? "template" : "screen";
+  const url = facet ? `${site}${base}/ui/${facet.slug}` : `${site}${base}/ui`;
+  const desc = facet
+    ? `${items.length} free ${lcFirst(facet.h1.replace(/^Free /, ""))} across ${nP} patterns${facet.kind === "style" ? "" : ` in ${nS} styles`}, each with copyable HTML and a DESIGN.md token file (light and dark). Original designs by Made Good Designs.`
+    : `${items.length} original app screens and website sections across ${nP} patterns, for web and mobile in ${UI_STYLES.length} styles, plus ${Object.keys(UI_FLOWS).length} multi-step flows. Each one comes with copyable HTML and a DESIGN.md token file for AI coding agents. Free.`;
+  const title = facet ? facet.title : "Free UI screens with HTML code & DESIGN.md | MGD";
+  const body = head(h, { title, ogTitle: facet ? facet.h1 : "MGD UI Screens", desc, canonical: url,
+    image: items[0] ? site + base + items[0].image : null,
+    jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: facet ? facet.h1 : "MGD UI Screens", url, description: desc, publisher: MGD_ORG(site), ...licenceLd(site, base),
+      ...(facet ? { isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` }, mainEntity: { "@type": "ItemList", numberOfItems: items.length, itemListElement: items.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: site + uiItemPath(it, base) })) } } : {}) } })
+  + `${h.backLink(base, "/", "Back to inspiration")}
+${facet ? `<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(facet.h1)}</nav>` : ""}
+<h1>${h.escHtml(facet ? facet.h1 : "UI screens")}</h1>
+${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an original design by Made Good Designs with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui"><b>all ${all.length} UI screens</b></a> and <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`
+  : `<p class="lede">Original app screens and website sections for web and mobile, designed by Made Good Designs. Unlike screenshot libraries, every screen comes with its <b>HTML code</b> and a <b>DESIGN.md</b> with the colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`}
+<div class="filters">${chips("platform", "Platform", ["web", "mobile"])}${groupChips}${chips("style", "Style", UI_STYLES)}</div>
+<p class="lede" id="count" data-word="${word}" style="margin:-.5rem 0 .5rem">${items.length} ${word}s</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>
+<div class="grid" id="grid">${cards}</div><p style="text-align:center;margin:1.5rem 0"><button class="btn" id="more" hidden>Show more</button></p>${patternIndex(base, h, have)}${facetIndex(base, h, all)}${MCP_NOTE(base)}${RIGHTS}
+</div>${FILTER_JS(base, facet ? { k: facet.kind, v: facet.value } : null, 48)}${THEME_JS}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
+// Facet slugs that have at least one screen (sitemap + crawlable index).
+function uiFacetsPresent(rows) {
+  const its = rows.map((r) => ({ pattern: r.category, platform: r.country, style: r.style }));
+  const out = [];
+  for (const g of [...UI_FILTER_GROUPS.map((x) => x[0]), "sections"]) if (its.some((it) => UI_GROUP_OF[it.pattern] === g) && facetSlug("group", g)) out.push(facetSlug("group", g));
+  for (const p of ["web", "mobile"]) if (its.some((it) => it.platform === p)) out.push(facetSlug("platform", p));
+  for (const s of UI_STYLES) if (its.some((it) => it.style === s)) out.push(facetSlug("style", s));
+  return out;
+}
+const facetIndex = (base, h, all) => {
+  const link = (k, v, text) => { const s = facetSlug(k, v); return s && all.some((it) => (k === "group" ? UI_GROUP_OF[it.pattern] === v : k === "platform" ? it.platform === v : it.style === v)) ? `<a href="${h.escHtml(base)}/ui/${s}">${h.escHtml(text)}</a>` : ""; };
+  return `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">Browse by category, platform and style</h2><div class="pidx">${[...UI_FILTER_GROUPS.map(([id, name]) => link("group", id, name)), link("group", "sections", "Website sections"),
+    link("platform", "web", "Web UI"), link("platform", "mobile", "Mobile app UI"), ...UI_STYLES.map((st) => link("style", st, label(st) + " style"))].filter(Boolean).join("<br>")}</div>`;
+};
 
 async function uiItemPage(id, env, base, h) {
   const row = await env.DB.prepare(`SELECT * FROM items WHERE id=? AND status='published' AND collection='ui'`).bind(id).first();
@@ -248,8 +311,8 @@ async function uiItemPage(id, env, base, h) {
   const isSection = UI_SECTION_PATTERNS.includes(it.pattern);
   const name = `${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""} ${kindWord(it.pattern)} — ${it.platform}, ${it.style} style`;
   const related = (await uiRows(env, " AND category=? AND id<>? AND (country=? OR style=?)", [it.pattern, it.id, it.platform, it.style])).map((r) => h.rowToItem(r, env)).slice(0, 12);
-  const facts = [["Pattern", label(it.pattern), `${base}/ui/${it.pattern}`], ["Platform", label(it.platform), `${base}/ui?platform=${it.platform}`],
-    ["Style", label(it.style), `${base}/ui?style=${it.style}`], ["Product (fictional)", it.product, null], ["Category", label(it.app_category), null]];
+  const facts = [["Pattern", label(it.pattern), `${base}/ui/${patternSlug(it.pattern)}`], ["Platform", label(it.platform), cleanUiUrl({ platform: it.platform }, base)],
+    ["Style", label(it.style), cleanUiUrl({ style: it.style }, base)], ["Product (fictional)", it.product, null], ["Category", label(it.app_category), null]];
   const flows = (it.flows || []).filter((f) => UI_FLOWS[f.id]);
   const pal = (it.palette || []).slice(0, 8).map((hx, i) => `<span class="sw" style="background:${h.escHtml(hx)}" title="${ROLES[i] || ""} ${h.escHtml(hx)}"></span>`).join("");
   const tags = uiShownTags(it.tags);
@@ -273,7 +336,7 @@ dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:.3rem 1rem;margi
 .flows{font-size:.9rem;margin:0 0 1rem}.flows a{font-weight:600}
 h2{font-size:1.05rem;margin:2.25rem 0 .75rem}` })
   + `${h.backLink(base, "/ui", "Back to UI screens")}
-<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/${h.escHtml(it.pattern)}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
+<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/${h.escHtml(patternSlug(it.pattern))}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
 <div class="detail ${h.escHtml(it.platform)}">
   <div style="position:relative"><button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button><img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>
   <div><h1>${h.escHtml(name)}</h1>${it.description ? `<p class="desc">${h.escHtml(it.description)}</p>` : ""}
@@ -297,38 +360,34 @@ ${THEME_JS}${h.saveWidget(base)}</body></html>`;
 async function uiPatternPage(pattern, env, base, h) {
   const items = (await uiRows(env, " AND category=?", [pattern])).map((r) => h.rowToItem(r, env));
   if (!items.length) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
-  const site = siteOf(env), url = `${site}${base}/ui/${pattern}`, isSection = UI_SECTION_PATTERNS.includes(pattern);
+  const site = siteOf(env), url = `${site}${base}/ui/${patternSlug(pattern)}`, isSection = UI_SECTION_PATTERNS.includes(pattern);
   const c = UI_COPY[pattern] || {}, lab = label(pattern), kind = kindWord(pattern).replace("email ", "");
-  const h1 = c.h1 || `${lab} ${isSection ? "section" : UI_EMAIL_PATTERNS.includes(pattern) ? "template" : "UI"} examples`;
+  const h1 = patternH1(pattern) || c.h1 || `${lab} ${isSection ? "section" : UI_EMAIL_PATTERNS.includes(pattern) ? "template" : "UI"} examples`;
   const nStyles = new Set(items.map((x) => x.style)).size, plats = [...new Set(items.map((x) => x.platform))];
-  const desc = `${items.length} free ${lab.toLowerCase()} ${kind} examples for ${plats.join(" and ")} in ${nStyles} styles, each with HTML code and a DESIGN.md (light and dark). Original designs.`;
+  const desc = `${items.length} free ${lcFirst(h1)} for ${plats.join(" and ")} in ${nStyles} styles, each with HTML code and a DESIGN.md (light and dark). Original designs.`;
   const flows = Object.entries(UI_FLOWS).filter(([id]) => items.some((it) => (it.flows || []).some((f) => f.id === id)));
   const faq = (c.faq || []).filter((x) => Array.isArray(x) && x[0] && x[1]);
   const jsonld = [{ "@context": "https://schema.org", "@type": "CollectionPage", name: `${h1} with code`, url, description: c.intro || desc,
     isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` }, publisher: MGD_ORG(site), ...licenceLd(site, base),
     mainEntity: { "@type": "ItemList", numberOfItems: items.length, itemListElement: items.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: site + uiItemPath(it, base) })) } }];
   if (faq.length) jsonld.push({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) });
-  const chips = (k, lab2, vals) => `<div><b>${lab2}</b><button class="chip" data-f="${k}" data-v="" aria-pressed="true">All</button>${vals.map((v) => `<button class="chip" data-f="${k}" data-v="${h.escHtml(v)}" aria-pressed="false">${h.escHtml(label(v))}</button>`).join("")}</div>`;
+  const chipLink = (k, v, text) => { const href = cleanUiUrl({ pattern, [k]: v }, base); return `<a class="chip" data-f="${k}" data-v="${h.escHtml(v)}" href="${h.escHtml(href)}"${href.includes("?") ? ' rel="nofollow"' : ""} aria-pressed="${v ? "false" : "true"}">${h.escHtml(text)}</a>`; };
+  const chips = (k, lab2, vals) => `<div><b>${lab2}</b>${chipLink(k, "", "All")}${vals.map((v) => chipLink(k, v, label(v))).join("")}</div>`;
   const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.platform))}</b>${it.variant ? " · " + h.escHtml(label(it.variant)) : ""} <span>· ${h.escHtml(it.style)}</span>`)).join("");
-  const body = head(h, { title: fitTitle(`${h1} with code | MGD`, `${h1} with code`, h1), ogTitle: `${h1} with code`, desc, canonical: url,
+  const body = head(h, { title: fitTitle(`${h1} (${items.length} free, with code) | MGD`, `${h1} (${items.length} free) | MGD`, `${h1} with code | MGD`, `${h1} | MGD`, `${h1.replace(/ \(.*\)$/, "")} (${items.length} free, with code) | MGD`, `${h1.replace(/ \(.*\)$/, "")} | MGD`, h1), ogTitle: `${h1} with code`, desc, canonical: url,
     image: site + base + items[0].image, jsonld })
   + `${h.backLink(base, "/ui", "All UI screens")}
 <nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(lab)}</nav>
 <h1>${h.escHtml(h1)}</h1>
 <p class="lede">${h.escHtml(c.intro || desc)} Every example is an original design that comes with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, in light and dark. Free to use and adapt.</p>
 <div class="filters">${plats.length > 1 ? chips("platform", "Platform", plats) : ""}${chips("style", "Style", UI_STYLES.filter((x) => items.some((it) => it.style === x)))}<div>${THEME_SWITCH}</div></div>
-<p class="lede" id="count" style="margin:-.5rem 0 1rem">${items.length} examples</p>
+<p class="lede" id="count" data-word="example" style="margin:-.5rem 0 1rem">${items.length} examples</p>
 <div class="grid" id="grid">${cards}</div>
 ${flows.length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">See it in a flow</h2><p class="lede" style="margin:0">${flows.map(([id, n]) => `<a href="${h.escHtml(flowPath(id, base))}"><b>${h.escHtml(n)}</b></a>`).join(" · ")}</p>` : ""}
 ${(c.tips || []).length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">${h.escHtml(lab)} design tips</h2><ul class="tips">${c.tips.map((t) => `<li>${h.escHtml(t)}</li>`).join("")}</ul>` : ""}
 ${faq.length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .25rem">Questions</h2><div class="faq">${faq.map(([q, a]) => `<h3>${h.escHtml(q)}</h3><p>${h.escHtml(a)}</p>`).join("")}</div>` : ""}
 ${patternIndex(base, h, await uiPopulated(env))}${MCP_NOTE(base)}${RIGHTS}
-</div><script>
-(function(){var f={platform:"",style:""},cards=[].slice.call(document.querySelectorAll("#grid .card")),cnt=document.getElementById("count");
-function apply(){var n=0;cards.forEach(function(c){var ok=true;for(var k in f)if(f[k]&&c.dataset[k]!==f[k])ok=false;if(ok)n++;c.style.display=ok?"":"none"});
-cnt.textContent=n+" example"+(n===1?"":"s");document.querySelectorAll(".chip[data-f]").forEach(function(b){b.setAttribute("aria-pressed",String(f[b.dataset.f]===b.dataset.v))})}
-document.querySelector(".filters").addEventListener("click",function(e){var b=e.target.closest(".chip[data-f]");if(!b)return;f[b.dataset.f]=b.dataset.v;apply()})})();
-</script>${THEME_JS}${h.saveWidget(base)}</body></html>`;
+</div>${FILTER_JS(base, { k: "pattern", v: pattern }, 0)}${THEME_JS}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 
@@ -407,7 +466,7 @@ async function uiSitemap(env, base) {
   const site = siteOf(env);
   const rows = await uiRows(env);
   const have = new Set(rows.map((r) => r.category)); // only patterns that have screens (new patterns appear after their ingest)
-  const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...UI_PATTERNS.filter((p) => have.has(p)).map((p) => `${site}${base}/ui/${p}`), ...(await availableFlows(env)).map((id) => `${site}${base}/ui/flows/${id}`),
+  const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...UI_PATTERNS.filter((p) => have.has(p)).map((p) => `${site}${base}/ui/${patternSlug(p)}`), ...uiFacetsPresent(rows).map((slug) => `${site}${base}/ui/${slug}`), ...(await availableFlows(env)).map((id) => `${site}${base}/ui/flows/${id}`),
     ...rows.map((r) => site + uiItemPath({ id: r.id, ...uiFields(r), style: r.style }, base))];
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${u}</loc></url>`).join("\n")}\n</urlset>`,
     { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
