@@ -43,6 +43,7 @@ import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authori
 import { MOODBOARD_TOOL, callMoodboard, moodboardRoute, moodboardAdmin } from "./moodboards.js";
 import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs } from "./discovery.js";
 import { uiItemPath } from "./ui_screens.js";
+import { withIconHint, BRAND_TYPEFACE_TOOL, brandTypeface, ftsSearch } from "./search_extras.js";
 
 // Aggressive AI-training / SEO / bulk crawlers that spider the JSON read API (which is
 // meant for the SPA running in real browsers) and can burn the D1 read quota on cache
@@ -1611,7 +1612,7 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
-MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, ...MCP_TOOLS_64, ...MCP_TOOLS_65, ...MCP_TOOLS_66, ...MCP_TOOLS_68, ...MCP_TOOLS_69, ...MCP_TOOLS_72, ...MCP_TOOLS_73, ...MCP_TOOLS_75, ...MCP_TOOLS_76, ...MCP_TOOLS_78, ...MCP_TOOLS_79, ...MCP_TOOLS_80, MOODBOARD_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, ...MCP_TOOLS_64, ...MCP_TOOLS_65, ...MCP_TOOLS_66, ...MCP_TOOLS_68, ...MCP_TOOLS_69, ...MCP_TOOLS_72, ...MCP_TOOLS_73, ...MCP_TOOLS_75, ...MCP_TOOLS_76, ...MCP_TOOLS_78, ...MCP_TOOLS_79, ...MCP_TOOLS_80, MOODBOARD_TOOL, BRAND_TYPEFACE_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 extendMockupDefs(MCP_TOOLS); // batch 73: get_mockup_print_area (mcp_tools69.js) also covers canvas, magazine, flyer, brochure, notebook, polo, cap, sticker, banner, paper bag
 
 // ---- Routing guide (sent on initialize; clients load it into the model's context) — 31-Oct-2026
@@ -1628,7 +1629,7 @@ extendMockupDefs(MCP_TOOLS); // batch 73: get_mockup_print_area (mcp_tools69.js)
 // 3-Nov-2026 (b79): get_frame_size and calc_label_wrap are NOT named either (same reason).
 // 3-Nov-2026 (b80): make_habit_tracker and make_badge are NOT named either (same reason).
 const MCP_INSTRUCTIONS = "Made Good Designs: call BEFORE building or restyling UI/colours/fonts/logos\n" +
-  "search_ui_screens→get_ui_screen_code,get_ui_flow;search_design_inspiration,browse_inspiration_by_theme,search_museum_art,search_annual_reports\n" +
+  "search_ui_screens→get_ui_screen_code,get_ui_flow;search_design_inspiration,get_brand_typeface,browse_inspiration_by_theme,search_museum_art,search_annual_reports\n" +
   "generate_website_color_palette→generate_design_md,design_md_from_references;generate_shadcn_theme,generate_color_scale,generate_type_scale,export_design_tokens;check_contrast,lint_design_md,convert_color;generate_logo_concepts,generate_color_combinations,generate_slogans,make_brand_board,get_logo_placement,make_coat_of_arms,search_icons,edit_svg_path,make_speech_bubble,make_ribbon_banner,get_screen_sizes\n" +
   "get_paper_sizes,make_grid_paper,get_book_cover_size,get_mockup_print_area,make_dieline,make_paper_bag_template,make_cd_case_template,make_jcard_template,make_certificate_border,make_nutrition_label,make_storyboard,make_affinity_diagram,make_star_map,make_fantasy_map,generate_llms_txt,get_banner_spec\n" +
   "make_extruded_part,analyze_3d_model,get_print_clearance,make_box_template,make_gear,get_screw_specs,get_hand_anthropometrics,get_desk_ergonomics,calc_kitchen_work_triangle,plan_square_foot_garden,get_sheet_metal_gauge,calc_sheet_metal_bend,make_cone_pattern,make_living_hinge,optimize_cut_list,make_jigsaw_puzzle,convert_drawing_scale,make_voronoi_pattern,calc_quilt,calc_fabric_yardage,make_paper_piecing_template,calc_cross_stitch,lookup_character,fix_typography,calc_depth_of_field,calc_field_of_view,calc_exposure_value,save_moodboard\n" +
@@ -1811,10 +1812,10 @@ const MCP_DEFAULT_PROFILE = "all";
 const MCP_CORE_NAMES = ["search_ui_screens", "get_ui_screen_code", "get_ui_flow", "list_ui_patterns", "search_design_inspiration", "browse_inspiration_by_theme",
   "list_inspiration_themes", "search_museum_art", "search_annual_reports", "generate_website_color_palette", "generate_design_md",
   "design_md_from_references", "generate_logo_concepts", "generate_color_combinations", "check_contrast", "generate_shadcn_theme",
-  "search_icons", "make_brand_board", "generate_type_scale", "save_moodboard"];
+  "search_icons", "make_brand_board", "generate_type_scale", "save_moodboard", "get_brand_typeface"];
 const MCP_INSTRUCTIONS_CORE = "Made Good Designs (madegooddesigns.com): free, original design references and design tools. Call them BEFORE building or restyling UI, picking colours or fonts, or making a logo or brand: real references and tested tokens beat guessing.\n" +
   "- App screen, dashboard, form or landing section: search_ui_screens, then get_ui_screen_code (HTML + DESIGN.md). Journeys (sign-up, checkout): get_ui_flow.\n" +
-  "- Typography, branding, packaging, logo or poster references: search_design_inspiration or browse_inspiration_by_theme (themes: list_inspiration_themes).\n" +
+  "- Typography, branding, packaging, logo or poster references: search_design_inspiration or browse_inspiration_by_theme (themes: list_inspiration_themes). A brand's font: get_brand_typeface (list several brands in one call).\n" +
   "- Public-domain art: search_museum_art. Corporate design history: search_annual_reports.\n" +
   "- Design system: generate_website_color_palette, then generate_design_md, or design_md_from_references. shadcn/Tailwind: generate_shadcn_theme, generate_type_scale. Contrast: check_contrast.\n" +
   "- New brand: generate_logo_concepts, generate_color_combinations, make_brand_board. Icons: search_icons.\n" +
@@ -1971,7 +1972,7 @@ function mcpZero(result) {
   return /^0 [^\n]*result|No matches —|^0 (icons?|characters|devices|slogans|museum|annual|items?)\b|^No screen in the library (matches|has)/.test(t);
 }
 // The "we fill gaps in 1–2 days" note only makes sense for our own libraries (not third-party icon sets or Unicode).
-const MCP_LIBRARY_TOOLS = /^(search_design_inspiration|search_museum_art|search_annual_reports|search_ui_screens|browse_inspiration_by_theme|get_ui_flow|design_md_from_references)$/;
+const MCP_LIBRARY_TOOLS = /^(get_brand_typeface|search_design_inspiration|search_museum_art|search_annual_reports|search_ui_screens|browse_inspiration_by_theme|get_ui_flow|design_md_from_references)$/;
 function mcpClientTag(ua) {
   return /^Claude-User/i.test(ua) ? "claude-ai" : /^claude-code/i.test(ua) ? "claude-code" : /^Cursor/i.test(ua) ? "cursor" : /^codex/i.test(ua) ? "codex" :
     /openai-mcp|ChatGPT/i.test(ua) ? "chatgpt" : /vscode|copilot/i.test(ua) ? "vscode" : "";
@@ -2051,7 +2052,7 @@ async function mcpCallTool(params, env, ip, ua, who, listed) {
     await logMcp(env, name, a.board_id || a.title || "", ip, ua, who);
     return mcpCallToolSafe(name, () => callMoodboard(a, env, { site: MCP_SITE, ip }));
   }
-  await logMcp(env, name, a.query || a.q || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || (typeof a.colors === "string" ? a.colors.slice(0, 80) : Array.isArray(a.colors) ? a.colors.slice(0, 6).join(" ") : "") || a.preset || "", ip, ua, who);
+  await logMcp(env, name, a.query || a.q || (name === "get_brand_typeface" ? [].concat(a.brands || [], a.brand || []).map(String).join(", ").slice(0, 200) : "") || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || (typeof a.colors === "string" ? a.colors.slice(0, 80) : Array.isArray(a.colors) ? a.colors.slice(0, 6).join(" ") : "") || a.preset || "", ip, ua, who);
   const opts = who ? { ids: true } : undefined; // authenticated endpoint also shows item_id (needed by save_to_board)
   try { return mcpCite(name, mcpAddNext(name, await mcpCallToolInner(name, a, env, opts))); }
   catch (e) {
@@ -2063,13 +2064,16 @@ async function mcpCallToolSafe(name, fn) {
   try { return mcpCite(name, mcpAddNext(name, await fn())); }
   catch (e) { return { content: [{ type: "text", text: MCP_BUSY(e) }], isError: true }; }
 }
-const MCP_D1_TOOLS = new Set(["search_design_inspiration", "list_inspiration_themes", "browse_inspiration_by_theme", "search_annual_reports", "search_museum_art", "search_ui_screens", "get_ui_flow", "get_ui_screen_code"]);
+const MCP_D1_TOOLS = new Set(["get_brand_typeface", "search_design_inspiration", "list_inspiration_themes", "browse_inspiration_by_theme", "search_annual_reports", "search_museum_art", "search_ui_screens", "get_ui_flow", "get_ui_screen_code"]);
 const MCP_SIBLING = {
   design: "Nothing in the design-inspiration gallery; try search_museum_art (historical art and posters) or search_ui_screens (app and website screens).",
   "annual-report": "Nothing in the annual-report archive; try search_design_inspiration or search_museum_art.",
   museum: "Nothing in the museum collection (public-domain works, mostly before the 1930s); for modern movements such as Bauhaus or Swiss style try search_design_inspiration or search_annual_reports.",
 };
 const MCP_THEME_COUNTS = { at: 0, counts: null };
+// (A) 5-Nov: an icon request ("bold icon", "settings icons") in a library search keeps its results but leads with a pointer to
+// search_icons and up to 3 icon matches (src/search_extras.js; never throws).
+const mcpIconHinted = (q, result, env) => withIconHint(q, result, (args) => callTools48Tool("search_icons", args, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, site: MCP_SITE }));
 async function mcpCallToolInner(name, a, env, opts) {
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
@@ -2078,7 +2082,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.theme) { where += " AND themes LIKE ?"; binds.push(`%"${a.theme}"%`); }
     const r = await mcpSearchRowsRetry(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
-    return mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design);
+    return mcpIconHinted(q, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design), env);
   }
   if (name === "list_inspiration_themes") {
     // 2-Nov-2026: this scans every design row (avg 2.6 s live); counts move slowly, so memoise per isolate for 30 min.
@@ -2109,7 +2113,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     const r = await mcpSearchRowsRetry(env, where, binds, ["company", "designer", "title", "description", "tags", "industry"], q, "report_year DESC, created_at DESC", limit);
     // default = public domain only: drop any link-only row even if its status were wrong; opt-in keeps only flipped ('mcp-nc') ones
     r.rows = r.rows.filter((x) => nc ? (isPublicRow(x) || x.status === "mcp-nc") : isPublicRow(x));
-    return mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts, MCP_SIBLING["annual-report"]);
+    return mcpIconHinted(q, mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts, MCP_SIBLING["annual-report"]), env);
   }
   if (name === "search_museum_art") {
     let q = (a.query || "").toString().trim();
@@ -2124,7 +2128,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     if (theme) { where += " AND category = ?"; binds.push(theme); }
     if (a.culture) { where += " AND country LIKE ?"; binds.push(`%${a.culture.toString().trim()}%`); }
     const r = await mcpSearchRowsRetry(env, where, binds, ["title", "designer", "description", "tags", "industry"], q, "featured_rank IS NULL, featured_rank, created_at DESC", limit);
-    return mcpItems(r.rows, `${r.rows.length} museum artwork(s) for "${q}"${theme ? " in theme "+theme : ""}${r.note}${themeNote}`, opts, MCP_SIBLING.museum);
+    return mcpIconHinted(q, mcpItems(r.rows, `${r.rows.length} museum artwork(s) for "${q}"${theme ? " in theme "+theme : ""}${r.note}${themeNote}`, opts, MCP_SIBLING.museum), env);
   }
   if (name === "get_share_feedback") {
     const link = (a.link || "").toString();
@@ -2135,6 +2139,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     if (!r.ok) return { content: [{ type: "text", text: r.status === 403 ? "That link was deleted, has expired, or the key is wrong." : "Couldn't fetch feedback (HTTP " + r.status + ")." }], isError: true };
     return { content: [{ type: "text", text: await r.text() }] };
   }
+  if (name === "get_brand_typeface") return brandTypeface(a, env, MCP_SITE, mcpRetry);
   if (name === "generate_website_color_palette") return mcpWebsitePalette(a);
   if (name === "generate_design_md") return mcpDesignMd(a);
   if (isToolsTool(name)) return callToolsTool(name, a);
@@ -2296,6 +2301,9 @@ async function mcpSearchRows(env, where, binds, cols, q, order, limit) {
   const any = () => "(" + cols.map((c) => `${c} LIKE ?`).join(" OR ") + ")";
   const likes = (w) => cols.map(() => `%${w}%`);
   if (!q) return { rows: await run("", [], order, []), note: "" };
+  // (C) 5-Nov: FTS5 + bm25 first (src/search_extras.js); null (no index, unsupported column, 0 hits or any error) → the LIKE search below.
+  const fts = await ftsSearch(env, where, binds, cols, q, order, limit, MCP_STOP);
+  if (fts) return fts;
   // D1 caps LIKE patterns at ~50 bytes ("LIKE or GLOB pattern too complex"), so long queries skip the whole-phrase pass.
   const phrase = utf8Len(q) <= 40 ? await run(" AND " + any(), likes(q), order, []) : [];
   if (phrase.length >= limit) return { rows: phrase, note: "" };

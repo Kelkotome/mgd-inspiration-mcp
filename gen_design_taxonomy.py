@@ -29,6 +29,7 @@ T = {
  "generate_shadcn_theme": (["ui", "colour"], "/tools/shadcn-theme-generator/", []), "generate_design_md": (["ui"], "/tools/design-md-generator/", ["brand"]),
  "design_md_from_references": (["ui"], "/tools/design-md-generator/", ["brand"]), "lint_design_md": (["ui"], "/tools/design-md-generator/", []),
  "export_design_tokens": (["ui"], "/tools/design-tokens-generator/", []), "get_screen_sizes": (["ui", "images"], "/tools/screen-sizes/", ["motion", "marketing-content"]),
+ "get_brand_typeface": (["typography", "brand"], "/inspiration/?theme=type-specimen", ["type-lettering"]),
  "search_icons": (["ui"], "/tools/svg-icons/", ["illustration-pattern"]), "generate_llms_txt": (["ui"], "/tools/llms-txt-generator/", ["marketing-content"]),
  "generate_logo_concepts": (["brand"], "/tools/logo-maker/", []), "generate_slogans": (["brand", "text"], "/tools/slogan-generator/", []),
  "make_brand_board": (["brand", "colour"], "/tools/brand-guidelines-template/", []),
