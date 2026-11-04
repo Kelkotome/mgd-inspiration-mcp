@@ -36,7 +36,8 @@ def walk(s, fn, path="$"):
         for i, v in enumerate(s): walk(v, fn, f"{path}[{i}]")
 CORE = ["search_ui_screens", "get_ui_screen_code", "get_ui_flow", "list_ui_patterns", "search_design_inspiration", "browse_inspiration_by_theme", "list_inspiration_themes",
         "search_museum_art", "search_annual_reports", "generate_website_color_palette", "generate_design_md", "design_md_from_references",
-        "generate_logo_concepts", "generate_color_combinations", "check_contrast", "generate_shadcn_theme", "search_icons", "make_brand_board", "generate_type_scale"]
+        "generate_logo_concepts", "generate_color_combinations", "check_contrast", "generate_shadcn_theme", "search_icons", "make_brand_board", "generate_type_scale",
+        "get_brand_typeface"]  # get_brand_typeface core since 5-Nov-2026
 OLD_ROUTED = ["search_ui_screens", "get_ui_screen_code", "get_ui_flow", "search_design_inspiration", "search_museum_art", "search_annual_reports",
               "generate_website_color_palette", "generate_design_md", "generate_logo_concepts", "make_extruded_part", "make_box_template", "get_book_cover_size",
               "lookup_character", "fix_typography", "make_affinity_diagram", "get_paper_sizes", "make_grid_paper", "make_storyboard", "generate_llms_txt",
