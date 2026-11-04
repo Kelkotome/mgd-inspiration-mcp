@@ -23,7 +23,8 @@ for path in ("/inspiration/mcp", "/inspiration/mcp/core"):
     d = tools.get("get_brand_typeface")
     check(f"{path}: get_brand_typeface listed, 'Use when', < 1024 chars, readOnly", d and d["description"].startswith("Use when") and len(d["description"]) < 1024 and d["annotations"]["readOnlyHint"], d and len(d["description"]))
     ins = rpc("initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "rpc_search_n11", "version": "1"}}, path=path)["result"].get("instructions", "")
-    check(f"{path}: instructions mention get_brand_typeface ({len(ins)} chars)", "get_brand_typeface" in ins, ins[:200])
+    if path.endswith("/core"): check(f"{path}: instructions mention get_brand_typeface ({len(ins)} chars)", "get_brand_typeface" in ins, ins[:200])
+    else: check(f"{path}: instructions stay < 1500 chars ({len(ins)}; get_brand_typeface did not fit, reached via tools/list)", len(ins) < 1500, len(ins))
 
 # (B)
 r = call("get_brand_typeface", {"brand": "Supreme typeface"}); t = text(r); sc = r.get("structuredContent") or {}
