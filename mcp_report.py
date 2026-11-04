@@ -96,6 +96,25 @@ table("What people searched for (all queries)", sql(
     f"SELECT {SG} t, tool, substr(query,1,90) query, CASE WHEN ua LIKE 'Claude-User%' THEN 'claude.ai' ELSE substr(ua,1,20) END app "
     f"FROM mcp_calls WHERE {CALLS_EX} AND {W} AND query != '' AND ua NOT LIKE 'AMP-Server%' AND ua NOT LIKE 'undici%' AND ua NOT LIKE 'Go-http%' "
     f"AND ua NOT LIKE 'python-%' ORDER BY created_at DESC LIMIT 200"))
+# Next-step offers (5-Nov-2026, src/next_offer.js): the 4 library searches end with a merged palette + an offer of 3 one-call options.
+# shown = mcp_events kind='offer'; followed = the same visitor (salted ip+ua hash) called a palette / type / mood-board / DESIGN.md
+# tool within 30 min. Baseline = the 14 days before OFFER_SINCE: successful, non-empty calls of the same 4 tools (the old
+# "Next step:" line was on every one of them), same follow-up rule.
+OFFER_SINCE = int(os.environ.get("OFFER_SINCE", "0")) or 1793811929083  # deploy time of the offer (ms, set at deploy); see project_mcp_usage.md
+OFFER_TOOLS = "('search_design_inspiration','browse_inspiration_by_theme','search_museum_art','search_annual_reports')"
+FOLLOW = ("('generate_website_color_palette','design_md_from_references','generate_design_md','generate_type_scale','save_moodboard',"
+          "'run:generate_website_color_palette','run:design_md_from_references','run:generate_design_md','run:generate_type_scale','run:save_moodboard')")
+NB = NOT_BOT_CLIENT.replace(" AND visitor", " AND o.visitor")
+def _offer_q(label, where):
+    return (f"SELECT '{label}' period, COUNT(*) shown, SUM(EXISTS (SELECT 1 FROM mcp_events f WHERE f.kind='call' AND f.visitor=o.visitor "
+            f"AND f.tool IN {FOLLOW} AND f.created_at > o.created_at AND f.created_at <= o.created_at + 1800000)) followed "
+            f"FROM mcp_events o WHERE o.{BOT}{NB} AND {where}")
+_pre = _offer_q("before (old Next step line, 14 d)", f"o.kind='call' AND o.tool IN {OFFER_TOOLS} AND o.ok=1 AND COALESCE(o.zero,0)=0 "
+                f"AND o.created_at BETWEEN {OFFER_SINCE}-14*86400000 AND {OFFER_SINCE}")
+_post = _offer_q(f"after (offer, last {DAYS} d)", f"o.kind='offer' AND o.created_at >= {OFFER_SINCE} AND o.{W}")
+rows = (sql(_pre) or []) + (sql(_post) or [])
+for r in rows: r["rate_pct"] = round(100.0 * (r["followed"] or 0) / r["shown"], 1) if r["shown"] else None
+table("Next-step offers: shown, followed within 30 min by the same visitor (ip+ua) with palette/type/moodboard/design_md calls", rows)
 table("Countries (desktop clients; claude.ai shows Anthropic's servers)", sql(
     f"SELECT country, COUNT(DISTINCT visitor) visitors, COUNT(*) events {EV} AND ua NOT LIKE 'Claude-User%' GROUP BY 1 ORDER BY 2 DESC LIMIT 10"))
 print("\nVisits from MCP answers: GA4 → Reports → Acquisition → Traffic acquisition, filter Session source = 'mcp' "

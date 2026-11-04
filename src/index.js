@@ -44,6 +44,7 @@ import { MOODBOARD_TOOL, callMoodboard, moodboardRoute, moodboardAdmin } from ".
 import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs } from "./discovery.js";
 import { uiItemPath } from "./ui_screens.js";
 import { withIconHint, BRAND_TYPEFACE_TOOL, brandTypeface, ftsSearch } from "./search_extras.js";
+import { REF_FONTS, OFFER_HEAD, buildOffer } from "./next_offer.js";
 
 // Aggressive AI-training / SEO / bulk crawlers that spider the JSON read API (which is
 // meant for the SPA running in real browsers) and can burn the D1 read quota on cache
@@ -1698,12 +1699,9 @@ function mcpShape(r, structured) {
   return r;
 }
 
-// One-line "next step" hints appended to successful, non-empty results.
+// One-line "next step" hints appended to successful, non-empty results. The 4 library searches (design, theme, museum,
+// annual reports) use the next-step offer instead (src/next_offer.js via mcpOffer; 5-Nov-2026).
 const MCP_NEXT = {
-  search_design_inspiration: "Next step: to turn a reference into a design system, call generate_website_color_palette with brand_color set to a palette hex above, then generate_design_md. To keep or share picks: save_moodboard(items=[image URLs above], title=…) gives a public link.",
-  browse_inspiration_by_theme: "Next step: to turn a reference into a design system, call generate_website_color_palette with brand_color set to a palette hex above, then generate_design_md. To keep or share picks: save_moodboard(items=[image URLs above], title=…) gives a public link.",
-  search_museum_art: "Next step: search_design_inspiration finds modern design in a similar style; generate_website_color_palette(brand_color=<a palette hex above>) builds an accessible scheme from a work. To keep or share picks: save_moodboard(items=[image URLs above], title=…) gives a public link.",
-  search_annual_reports: "Next step: search_museum_art or search_design_inspiration for related references; generate_website_color_palette(brand_color=<a palette hex above>) for a scheme. To keep or share picks: save_moodboard(items=[image URLs above], title=…) gives a public link.",
   search_ui_screens: "Next step: get_ui_screen_code(screen_id=…) returns the HTML and DESIGN.md; get_ui_flow returns a whole multi-step journey. To keep or share picks: save_moodboard(items=[image URLs above], title=…) gives a public link.",
   get_ui_flow: "Next step: get_ui_screen_code(screen_id=…) returns any step's HTML and DESIGN.md.",
   get_ui_screen_code: "Next step: to re-theme it for a brand, call generate_design_md with brand_color (or colors) and use that DESIGN.md instead.",
@@ -2019,6 +2017,9 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
   const r = res && res.result;
   const zero = r ? mcpZero(r) : null;
   await mcpEvent(env, c, { kind: "call", tool, ok: !!r && !r.isError, zero, ms: Date.now() - t0 });
+  // 5-Nov: log each next-step offer shown (kind='offer'); mcp_report.py measures follow-ups by the same visitor within 30 min.
+  if (r && !r.isError && Array.isArray(r.content) && r.content.some((x) => x && x.type === "text" && typeof x.text === "string" && x.text.includes(OFFER_HEAD)))
+    await mcpEvent(env, c, { kind: "offer", tool });
   // 4-Nov: empty searches are logged and fed into the next content rounds, so tell the caller to come back.
   if (zero && !r.isError && MCP_LIBRARY_TOOLS.test(dispatched || tool)) r.content[0].text += "\n\nNothing here yet, but thanks for asking. Empty searches tell us what to add next, and we usually fill gaps within 1–2 days. Meanwhile, try a broader word or one of the suggestions above.";
   if (r) mcpUtm(r, dispatched || tool, c.ua);
@@ -2075,6 +2076,17 @@ const MCP_THEME_COUNTS = { at: 0, counts: null };
 // (A) 5-Nov: an icon request ("bold icon", "settings icons") in a library search keeps its results but leads with a pointer to
 // search_icons and up to 3 icon matches (src/search_extras.js; never throws).
 const mcpIconHinted = (q, result, env) => withIconHint(q, result, (args) => callTools48Tool("search_icons", args, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, site: MCP_SITE }));
+// 5-Nov-2026: merged palette + next-step offer (src/next_offer.js) after the results of the 4 library searches.
+// Skipped on zero results, errors, icon queries and coding-agent queries ("component", "tailwind", "react", "css", "screen"…).
+function mcpOffer(tool, q, rows, r) {
+  if (!r || r.isError || !Array.isArray(rows) || !rows.length || !Array.isArray(r.content)) return r;
+  try {
+    const o = buildOffer(tool, q, rows.filter((x) => !isLinkOnly(x)).map((x) => { const it = rowToItem(x, null); return { id: it.id, palette: it.palette, tags: it.tags, themes: it.themes }; }));
+    const last = [...r.content].reverse().find((c) => c && c.type === "text");
+    if (o && last) last.text += "\n\n" + o.text;
+  } catch (_) { /* the offer must never break a search answer */ }
+  return r;
+}
 async function mcpCallToolInner(name, a, env, opts) {
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
@@ -2083,7 +2095,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.theme) { where += " AND themes LIKE ?"; binds.push(`%"${a.theme}"%`); }
     const r = await mcpSearchRowsRetry(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
-    return mcpIconHinted(q, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design), env);
+    return mcpIconHinted(q, mcpOffer(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design)), env);
   }
   if (name === "list_inspiration_themes") {
     // 2-Nov-2026: this scans every design row (avg 2.6 s live); counts move slowly, so memoise per isolate for 30 min.
@@ -2101,7 +2113,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     const theme = (a.theme || "").toString().trim();
     const limit = clampInt(a.limit, 10, 1, 20);
     const rows = await mcpRetry(() => env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='design' AND themes LIKE ? ORDER BY created_at DESC LIMIT ?`).bind(`%"${theme}"%`, limit).all());
-    return mcpItems(rows.results || [], `${(rows.results||[]).length} item(s) in theme "${theme}"`, opts, "Try list_inspiration_themes for the themes that have items, or search_design_inspiration with a keyword.");
+    return mcpOffer(name, theme.replace(/[-_]+/g, " "), rows.results || [], mcpItems(rows.results || [], `${(rows.results||[]).length} item(s) in theme "${theme}"`, opts, "Try list_inspiration_themes for the themes that have items, or search_design_inspiration with a keyword."));
   }
   if (name === "search_annual_reports") {
     const q = (a.query || "").toString().trim();
@@ -2114,7 +2126,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     const r = await mcpSearchRowsRetry(env, where, binds, ["company", "designer", "title", "description", "tags", "industry"], q, "report_year DESC, created_at DESC", limit);
     // default = public domain only: drop any link-only row even if its status were wrong; opt-in keeps only flipped ('mcp-nc') ones
     r.rows = r.rows.filter((x) => nc ? (isPublicRow(x) || x.status === "mcp-nc") : isPublicRow(x));
-    return mcpIconHinted(q, mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts, MCP_SIBLING["annual-report"]), env);
+    return mcpIconHinted(q, mcpOffer(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts, MCP_SIBLING["annual-report"])), env);
   }
   if (name === "search_museum_art") {
     let q = (a.query || "").toString().trim();
@@ -2129,7 +2141,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     if (theme) { where += " AND category = ?"; binds.push(theme); }
     if (a.culture) { where += " AND country LIKE ?"; binds.push(`%${a.culture.toString().trim()}%`); }
     const r = await mcpSearchRowsRetry(env, where, binds, ["title", "designer", "description", "tags", "industry"], q, "featured_rank IS NULL, featured_rank, created_at DESC", limit);
-    return mcpIconHinted(q, mcpItems(r.rows, `${r.rows.length} museum artwork(s) for "${q}"${theme ? " in theme "+theme : ""}${r.note}${themeNote}`, opts, MCP_SIBLING.museum), env);
+    return mcpIconHinted(q, mcpOffer(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} museum artwork(s) for "${q}"${theme ? " in theme "+theme : ""}${r.note}${themeNote}`, opts, MCP_SIBLING.museum)), env);
   }
   if (name === "get_share_feedback") {
     const link = (a.link || "").toString();
@@ -2173,13 +2185,7 @@ async function mcpCallToolInner(name, a, env, opts) {
 
 // ---- batch 48: references → design system (31-Oct-2026). Same pooling + role maths as the Boards "design" API and the
 // /tools/moodboard-maker/ hand-off (MGDMoodboard.designFromColors, deterministic), then the spec-conformant DESIGN.md.
-const REF_FONTS = [ // tag → [heading, body] Google Fonts (OFL) suggestions; first match wins
-  [/art-?deco|deco/, ["Poiret One", "Josefin Sans"]], [/art-?nouveau|nouveau|ornament/, ["Cormorant Garamond", "Source Serif 4"]],
-  [/swiss|grid|modernis|bauhaus|helvetica|sans/, ["Inter Tight", "Inter"]], [/brutalis|mono|code|terminal/, ["Space Grotesk", "IBM Plex Mono"]],
-  [/editorial|magazine|serif|classic|book/, ["Playfair Display", "Source Serif 4"]], [/retro|vintage|70s|groovy/, ["Fraunces", "DM Sans"]],
-  [/playful|kids|hand-?drawn|fun|cartoon/, ["Baloo 2", "Nunito"]], [/luxury|elegant|fashion|premium/, ["Bodoni Moda", "Jost"]],
-  [/japan|ukiyo|woodblock/, ["Shippori Mincho", "Noto Sans JP"]], [/tech|futur|sci-?fi|cyber/, ["Space Grotesk", "Inter"]],
-];
+// REF_FONTS moved to src/next_offer.js (shared with the next-step offer, 5-Nov-2026).
 async function mcpDesignFromRefs(a, env) {
   const fail = (t) => ({ content: [{ type: "text", text: t }], isError: true });
   const ids = [...new Set((Array.isArray(a.references) ? a.references : typeof a.references === "string" ? a.references.split(/[\s,]+/) : [])
