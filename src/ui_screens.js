@@ -427,7 +427,7 @@ export const UI_MCP_TOOLS = [
   },
   {
     name: "get_ui_flow",
-    description: "Get a multi-step UI flow from Made Good Designs' free UI library as an ordered list of original screens (same product and design system throughout), for web or mobile in one of 8 styles. Each step gives the screen, its screenshot, page URL and screen_id for get_ui_screen_code. Flows: " + Object.entries(UI_FLOWS).map(([k, v]) => `${k} (${v.toLowerCase()})`).join(", ") + ".",
+    description: "Get a multi-step UI flow from Made Good Designs' free UI library as an ordered list of original screens (same product and design system throughout), for web or mobile in one of 8 styles. Each step gives the screen, its screenshot, page URL and screen_id for get_ui_screen_code. Flows (ids; plain descriptions also work, and list_ui_patterns describes each): " + Object.keys(UI_FLOWS).join(", ") + ".", // ids only: with labels it passed the 1,024-char description limit some clients apply (1,409 chars on 4-Nov)
     inputSchema: {
       type: "object",
       properties: {
