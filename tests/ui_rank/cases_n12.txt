@@ -1,0 +1,45 @@
+# 5-Nov-2026 template round (n12): industry website templates (Keyword Planner "{industry} website template / website design / landing page template").
+# query | expected patterns (any of) | optional args
+restaurant website template | restaurant-website
+restaurant landing page with menu and reservations | restaurant-website
+agency website template | agency-website
+creative agency website design | agency-website
+architecture website template | architecture-website
+architect portfolio website for a practice | architecture-website
+wedding website template | wedding-website
+wedding website with rsvp | wedding-website
+ecommerce website template | ecommerce-website
+online store homepage | ecommerce-website
+coffee shop website template | coffee-shop-website
+bakery cafe website | coffee-shop-website
+salon website template | salon-website
+hair salon booking website | salon-website
+real estate website template | real-estate-website
+real estate landing page with property search | real-estate-website
+construction website template | construction-website
+contractor website get a quote | construction-website
+law firm website template | law-firm-website
+lawyer website | law-firm-website
+dental website template | dental-website
+dentist website design | dental-website
+gym website template | gym-website
+fitness website with class timetable | gym-website
+education website template | school-website
+school website | school-website
+nonprofit website template | nonprofit-website
+charity donation website | nonprofit-website
+travel website template | travel-website
+tour operator website | travel-website
+hotel website template | hotel-website
+boutique hotel website with booking bar | hotel-website
+saas landing page template | saas-landing-page
+startup landing page | saas-landing-page
+ai website template | ai-website
+ai startup landing page | ai-website
+healthcare landing page template | clinic-home
+medical website template | clinic-home
+portfolio website | portfolio-home
+personal website template | portfolio-home
+hospital website template | clinic-home
+website footer | footer
+landing page hero section | hero

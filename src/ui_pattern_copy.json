@@ -2534,5 +2534,365 @@
     "Footnotes show how each score was measured and when, so readers can check it and you can update it when things change."
    ]
   ]
+ },
+ "restaurant-website": {
+  "h1": "Restaurant website templates",
+  "intro": "A restaurant home page has one job: get people to book, order or walk in. These templates put a reservation strip and opening hours in the first screen, then a menu with prices and dietary tags, the story, private dining, guest notes, a map and a time-slot booking form.",
+  "tips": [
+   "Show hours, address and a booking button before anything else; most visitors arrive asking “are you open, and can I get a table?”",
+   "Put the menu on the page as text, not a PDF, so it reads well on phones and can be found by search.",
+   "Mark dietary options right next to each dish.",
+   "Offer walk-in and group options so the page answers more than one kind of visit."
+  ],
+  "faq": [
+   [
+    "What should a restaurant website include?",
+    "Opening hours, address and directions, the menu as text with prices, a way to book or order, private dining or events if you offer them, and contact details."
+   ],
+   [
+    "Should a restaurant menu be a PDF?",
+    "An HTML menu is easier to read on a phone, loads faster and can be updated without redesigning a file. Keep a printable version as an extra if you need one."
+   ]
+  ]
+ },
+ "agency-website": {
+  "h1": "Agency website templates",
+  "intro": "An agency site sells with its work. These templates lead with a positioning line and a project brief button, then selected work with client and discipline, services, process, the studio, results and an enquiry form with budget and timeline.",
+  "tips": [
+   "Show three to six projects you’d happily do again, not everything you’ve ever made.",
+   "Name the services in the words clients use when they search.",
+   "Explain the process in a few steps so a first-time buyer knows what happens next.",
+   "Ask for budget range and timeline in the enquiry form to qualify leads early."
+  ],
+  "faq": [
+   [
+    "What makes a good agency website?",
+    "Clear positioning, strong selected work with context (client, problem, result), plainly named services, a visible process and an easy way to start a project."
+   ],
+   [
+    "How many projects should an agency website show?",
+    "Usually three to six case studies on the home page, each linking to a fuller write-up."
+   ]
+  ]
+ },
+ "architecture-website": {
+  "h1": "Architecture website templates",
+  "intro": "Architecture websites are judged on restraint and imagery. These templates pair a quiet type-led hero with a filterable project portfolio, the practice’s approach, service stages from feasibility to handover, the studio and an enquiry form.",
+  "tips": [
+   "Let large project images carry the page and keep text short and specific.",
+   "Filter projects by sector so clients find work like theirs.",
+   "Spell out the stages you cover so clients know where you start and stop.",
+   "Give each project its location, year and scope."
+  ],
+  "faq": [
+   [
+    "What should an architecture firm website include?",
+    "A curated project portfolio with location, year and scope, the practice’s approach, services by stage, the team and a simple way to enquire."
+   ],
+   [
+    "How should architects show projects online?",
+    "Large images with a short description, the brief and key facts, grouped by type (residential, cultural, workplace) so visitors can browse what’s relevant."
+   ]
+  ]
+ },
+ "wedding-website": {
+  "h1": "Wedding website templates",
+  "intro": "A wedding website answers guests’ questions before they ask. These templates include the date and a countdown, your story, the day’s schedule, venue and travel details, the wedding party, registry, an FAQ and an RSVP form with meal choices.",
+  "tips": [
+   "Put the date, place and RSVP deadline at the very top.",
+   "Give one schedule with times and addresses, and say what to wear.",
+   "Answer the awkward questions (kids, plus-ones, parking) in the FAQ.",
+   "Keep the RSVP short: attending, names, meal choice and dietary needs."
+  ],
+  "faq": [
+   [
+    "What should a wedding website include?",
+    "The date and venue, a schedule, travel and accommodation, dress code, registry, an FAQ and an RSVP form."
+   ],
+   [
+    "When should you send out a wedding website?",
+    "Usually with the save-the-dates, then update it with the schedule and RSVP details before invitations go out."
+   ]
+  ]
+ },
+ "ecommerce-website": {
+  "h1": "Ecommerce website templates",
+  "intro": "A store home page should move people from browsing to a product fast. These templates include an announcement bar, search and cart, a campaign hero, shop-by-category tiles, a best-sellers grid with ratings and swatches, a promo band, shipping and returns facts, reviews and a newsletter.",
+  "tips": [
+   "Make search and the cart visible on every screen size.",
+   "Lead with categories and best-sellers so first-time visitors can browse without a plan.",
+   "State shipping, returns and delivery times plainly near the top.",
+   "Keep product cards consistent: image, name, price, rating and one action."
+  ],
+  "faq": [
+   [
+    "What should an ecommerce home page include?",
+    "Search, cart, a clear hero or campaign, category navigation, best-selling products, shipping and returns information, reviews and a newsletter sign-up."
+   ],
+   [
+    "Can I use these templates with a store platform?",
+    "Yes. They are plain HTML and CSS with a DESIGN.md of tokens, so you can port the layout and styles into your store theme or a framework."
+   ]
+  ]
+ },
+ "coffee-shop-website": {
+  "h1": "Coffee shop website templates",
+  "intro": "A café site needs to answer “what’s good, where are you, are you open?” These templates show today’s bakes, a coffee menu with prices, each location with hours, catering and wholesale, the story and an order-ahead form.",
+  "tips": [
+   "Show each location with its own hours and address.",
+   "List the menu as text with prices, and mark what sells out early.",
+   "Give regulars a fast path: order ahead or pick-up times.",
+   "Use warm, specific copy about what you bake and brew."
+  ],
+  "faq": [
+   [
+    "What should a coffee shop website include?",
+    "The menu with prices, locations and opening hours, ordering or pick-up options, catering or wholesale information and a short story."
+   ],
+   [
+    "Do small cafés need a website?",
+    "A simple one-page site helps people find your hours, menu and address in search and maps, and gives you a place for catering enquiries."
+   ]
+  ]
+ },
+ "salon-website": {
+  "h1": "Salon website templates",
+  "intro": "Salon clients want to see prices, durations and who will do their hair. These templates include a booking hero, a price list by category with durations, stylists by level, looks, first-visit and consultation info, a booking widget with time slots and reviews.",
+  "tips": [
+   "Publish prices and how long each service takes.",
+   "Show stylists with their level and specialities so clients can choose.",
+   "Let people book in a few steps: service, stylist, day, time.",
+   "Explain consultations, patch tests and the cancellation policy up front."
+  ],
+  "faq": [
+   [
+    "What should a salon website include?",
+    "Services with prices and durations, the team, a gallery of work, online booking, location and hours, and policies such as cancellations."
+   ],
+   [
+    "How do salon websites get more bookings?",
+    "Make booking available from every section, keep the price list easy to scan on a phone and show real availability."
+   ]
+  ]
+ },
+ "real-estate-website": {
+  "h1": "Real estate website templates",
+  "intro": "A real estate site starts with search. These templates include a buy/rent property search, featured listings with price, beds, baths and open-house badges, neighbourhood guides, a valuation call to action and form, the agents, market figures and client notes.",
+  "tips": [
+   "Put the property search in the first screen, with buy and rent tabs.",
+   "Show the facts on every listing card: price, beds, baths, size and status.",
+   "Give sellers their own path, such as a free valuation request.",
+   "Add neighbourhood guides to help buyers who don’t know the area."
+  ],
+  "faq": [
+   [
+    "What should a real estate website include?",
+    "Property search, listings with key facts and photos, neighbourhood information, agent profiles, a valuation or contact form for sellers and recent market figures."
+   ],
+   [
+    "How do real estate websites generate leads?",
+    "With property alerts, valuation requests and viewing bookings placed next to the listings people are already browsing."
+   ]
+  ]
+ },
+ "construction-website": {
+  "h1": "Construction website templates",
+  "intro": "Builders win work on trust and clarity. These templates include a quote-request hero, services, recent projects with scope and duration, a process timeline, licensing and insurance facts, figures and a quote form with project type, budget range and start date.",
+  "tips": [
+   "Show finished projects with scope, duration and location.",
+   "Explain your process from first visit to handover.",
+   "State licences, insurance and warranties plainly.",
+   "Ask the right questions in the quote form so you can price the job."
+  ],
+  "faq": [
+   [
+    "What should a construction company website include?",
+    "Services, a project portfolio, the process, licensing and insurance details, testimonials and a quote request form."
+   ],
+   [
+    "How do I get more quote requests from my website?",
+    "Put the quote button in the header, keep the form short but specific (project type, budget, start date, postcode) and show recent local work."
+   ]
+  ]
+ },
+ "law-firm-website": {
+  "h1": "Law firm website templates",
+  "intro": "A law firm site has to feel clear and approachable. These templates include a consultation hero, practice areas, how fees work, attorney profiles, articles, client notes, a consultation request form and a disclaimer line in the footer.",
+  "tips": [
+   "Name practice areas in plain words, not just legal terms.",
+   "Explain how fees work (fixed fee, hourly, first consultation).",
+   "Show the people clients will actually work with.",
+   "Keep the contact form short and say how quickly you reply."
+  ],
+  "faq": [
+   [
+    "What should a law firm website include?",
+    "Practice areas, attorney profiles, how fees and consultations work, articles or guides, contact details and any disclaimer your jurisdiction requires."
+   ],
+   [
+    "Do law firm websites need a disclaimer?",
+    "Many jurisdictions expect one, for example that the site is not legal advice and contacting the firm does not create a client relationship. Check your local rules."
+   ]
+  ]
+ },
+ "dental-website": {
+  "h1": "Dental website templates",
+  "intro": "Patients choose a dentist on convenience and comfort. These templates include a booking hero with the next available time, services, new-patient steps, insurance and payment information, the dentists, the practice, hours and location and a booking form.",
+  "tips": [
+   "Show the next available appointment and a phone number up top.",
+   "List services plainly, including emergency visits.",
+   "Explain what happens at a first visit.",
+   "Be specific about payment options and insurance without promising outcomes."
+  ],
+  "faq": [
+   [
+    "What should a dental practice website include?",
+    "Services, online booking, new-patient information, insurance and payment options, the team, opening hours and location."
+   ],
+   [
+    "How can a dental website help nervous patients?",
+    "Calm design, real photos of the team and rooms, and a clear description of a first visit help people know what to expect."
+   ]
+  ]
+ },
+ "gym-website": {
+  "h1": "Gym website templates",
+  "intro": "A gym site should make the first visit easy. These templates include a free-trial hero, a weekly class timetable, membership options, coaches, the training floor, a beginner path, member notes and a trial booking form.",
+  "tips": [
+   "Put the timetable on the page, not behind a download.",
+   "Show membership options side by side.",
+   "Give beginners their own path and say what a first session looks like.",
+   "Introduce coaches with their focus areas."
+  ],
+  "faq": [
+   [
+    "What should a gym website include?",
+    "Class timetable, membership options, coaches, the facilities, a beginner or trial offer, location and opening hours."
+   ],
+   [
+    "How do gyms convert website visitors?",
+    "A free or low-commitment trial class, a clear timetable and honest information about what to expect on the first visit."
+   ]
+  ]
+ },
+ "school-website": {
+  "h1": "School and education website templates",
+  "intro": "A school website serves prospective families first. These templates include a visit-and-apply hero, the stages of the school, an admissions timeline with key dates, academics and co-curricular life, campus life, news and events and an open-day registration form.",
+  "tips": [
+   "Put open days and the admissions timeline where families can’t miss them.",
+   "Explain each stage of the school simply.",
+   "Show daily life: clubs, sport, arts, lunch and transport.",
+   "Keep news current; stale news signals a stale school."
+  ],
+  "faq": [
+   [
+    "What should a school website include?",
+    "Admissions information and key dates, the curriculum by stage, co-curricular activities, news and events, contact details and a way to book a visit."
+   ],
+   [
+    "How do school websites support admissions?",
+    "With clear timelines, open-day booking, fees or financial-aid information where relevant, and real stories of school life."
+   ]
+  ]
+ },
+ "nonprofit-website": {
+  "h1": "Nonprofit website templates",
+  "intro": "A nonprofit site turns interest into support. These templates include donate and volunteer calls to action, impact figures, programmes, how donations are used, volunteer shifts, events, stories and a donation form with amount options and monthly giving.",
+  "tips": [
+   "Give two clear actions: donate and volunteer.",
+   "Show what a donation pays for in concrete terms.",
+   "Report your own figures and say where they come from.",
+   "Make monthly giving an easy option in the form."
+  ],
+  "faq": [
+   [
+    "What should a nonprofit website include?",
+    "Your mission, programmes, impact, ways to give and volunteer, events, stories and registration or transparency information."
+   ],
+   [
+    "How can a nonprofit website get more donations?",
+    "Make the donate button visible everywhere, show what each amount does, keep the form short and offer monthly giving."
+   ]
+  ]
+ },
+ "travel-website": {
+  "h1": "Travel website templates",
+  "intro": "Travel sites sell a feeling and answer logistics. These templates include a trip search, featured trips with days, group size, price and difficulty, destinations, how a trip works, responsible-travel notes, traveller notes and an enquiry form.",
+  "tips": [
+   "Show trip length, group size, price and difficulty on every card.",
+   "Explain what’s included and what isn’t.",
+   "Use big scenery, but keep the facts readable on top of it.",
+   "Offer a brochure or enquiry option for people not ready to book."
+  ],
+  "faq": [
+   [
+    "What should a tour operator website include?",
+    "Trip search, trip pages with itinerary, dates and price, what’s included, how booking works, traveller reviews and contact options."
+   ],
+   [
+    "How do travel websites build trust?",
+    "Clear prices and inclusions, small-group details, named local guides, honest reviews and easy contact before booking."
+   ]
+  ]
+ },
+ "hotel-website": {
+  "h1": "Hotel website templates",
+  "intro": "A hotel home page should make availability the easiest thing to check. These templates include a booking bar, rooms and suites with rates, dining, spa and amenities, the neighbourhood, offers, guest notes and location.",
+  "tips": [
+   "Keep the date and guest booking bar visible near the top.",
+   "Show each room type with its size, view and from-rate.",
+   "Sell the place, not just the room: dining, spa and the area.",
+   "Make the address, parking and arrival details easy to find."
+  ],
+  "faq": [
+   [
+    "What should a hotel website include?",
+    "A booking bar, room types with photos and rates, amenities, dining, offers, location and directions and contact details."
+   ],
+   [
+    "How can a hotel website get more direct bookings?",
+    "Make checking availability fast, show the best rate clearly and add direct-booking perks such as flexible cancellation."
+   ]
+  ]
+ },
+ "saas-landing-page": {
+  "h1": "SaaS landing page templates",
+  "intro": "A SaaS landing page explains the product in seconds and earns a sign-up. These templates show a hero with real product UI, team-size proof, features, how it works, integrations, pricing tiers, an FAQ and a closing call to action.",
+  "tips": [
+   "Show the product in the hero, not an abstract illustration.",
+   "Lead with the problem you solve in the customer’s words.",
+   "Keep plans to three and explain who each is for.",
+   "Answer objections (setup time, data, cancellation) in the FAQ."
+  ],
+  "faq": [
+   [
+    "What should a SaaS landing page include?",
+    "A clear headline, product screenshots, key features, how it works, integrations, pricing, social proof, an FAQ and a sign-up call to action."
+   ],
+   [
+    "How long should a SaaS landing page be?",
+    "Long enough to answer the main questions a buyer has before signing up, usually seven to ten sections, with the call to action repeated."
+   ]
+  ]
+ },
+ "ai-website": {
+  "h1": "AI website templates",
+  "intro": "AI product sites need to show what the tool actually does. These templates include a hero with a prompt-box demo, use cases, how answers cite sources, data-handling facts, workflow steps, pricing, an FAQ and a waitlist or sign-up call to action.",
+  "tips": [
+   "Show a real example prompt and answer in the hero.",
+   "Explain how the product handles sources and data in plain words.",
+   "Group use cases by job, not by feature.",
+   "Avoid vague claims; specific examples persuade more."
+  ],
+  "faq": [
+   [
+    "What should an AI startup website include?",
+    "A concrete demo, use cases, how it works, data and privacy information, pricing, an FAQ and a sign-up or waitlist."
+   ],
+   [
+    "How do you build trust on an AI product website?",
+    "Show real outputs with sources, explain data handling plainly and avoid promises the product can’t keep."
+   ]
+  ]
  }
 }

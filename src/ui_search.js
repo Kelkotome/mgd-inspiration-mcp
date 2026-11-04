@@ -11,6 +11,25 @@ export const UI_STYLE_LIST = ["minimal", "editorial", "brutalist", "luxury", "pl
 
 // Curated aliases per pattern: the words people actually use for it. Matched after stemming.
 export const PATTERN_ALIASES = {
+  // 5-Nov-2026 template round (n12): industry website templates (full home pages)
+  "restaurant-website": ["restaurant website", "restaurant", "restaurant landing page", "restaurant homepage", "bistro", "pizzeria", "menu and reservations", "table booking website", "webtemplate", "restaurant webtemplate"],
+  "agency-website": ["agency website", "agency", "creative agency", "design agency", "digital agency", "design studio website", "marketing agency", "webtemplate", "agency webtemplate", "design agency webtemplate", "creative agency webtemplate"],
+  "architecture-website": ["architecture website", "architect", "architects", "architecture firm", "architecture studio", "interior design website", "interiors", "webtemplate", "architecture webtemplate", "architect webtemplate"],
+  "wedding-website": ["wedding website", "wedding", "rsvp", "save the date", "wedding rsvp", "webtemplate", "wedding webtemplate"],
+  "ecommerce-website": ["ecommerce website", "ecommerce", "online store", "store homepage", "shop homepage", "storefront", "ecommerce homepage", "ecommerce landing page", "webtemplate", "ecommerce webtemplate", "online store webtemplate", "store webtemplate", "shop webtemplate"],
+  "coffee-shop-website": ["coffee shop website", "coffee shop", "cafe", "café", "bakery", "coffee", "bakery website", "cafe website", "webtemplate", "coffee shop webtemplate", "cafe webtemplate", "bakery webtemplate"],
+  "salon-website": ["salon website", "salon", "beauty salon", "hair salon", "hairdresser", "barber", "spa website", "webtemplate", "salon webtemplate", "beauty salon webtemplate", "hair salon webtemplate"],
+  "real-estate-website": ["real estate website", "real estate", "realtor", "property listings", "estate agent", "realty", "property website", "real estate landing page", "webtemplate", "real estate webtemplate", "realtor webtemplate", "property webtemplate"],
+  "construction-website": ["construction website", "construction", "contractor", "builder", "builders", "construction company", "renovation", "webtemplate", "construction webtemplate", "contractor webtemplate", "builder webtemplate"],
+  "law-firm-website": ["law firm website", "law firm", "lawyer", "lawyers", "attorney", "legal", "solicitor", "law office", "webtemplate", "law firm webtemplate", "lawyer webtemplate", "attorney webtemplate"],
+  "dental-website": ["dental website", "dental", "dentist", "dental clinic", "dental practice", "orthodontist", "webtemplate", "dental webtemplate", "dentist webtemplate"],
+  "gym-website": ["gym website", "gym", "fitness studio", "crossfit", "personal trainer website", "fitness landing page", "gym landing page", "webtemplate", "gym webtemplate", "fitness webtemplate"],
+  "school-website": ["school website", "school", "education website", "academy", "university website", "college website", "education landing page", "kindergarten", "webtemplate", "school webtemplate", "education webtemplate", "university webtemplate", "academy webtemplate"],
+  "nonprofit-website": ["nonprofit website", "nonprofit", "non profit", "charity", "charity website", "ngo", "donation website", "foundation", "food bank", "webtemplate", "nonprofit webtemplate", "charity webtemplate"],
+  "travel-website": ["travel website", "travel agency", "tour operator", "tours", "travel landing page", "tour company", "adventure travel", "webtemplate", "travel webtemplate", "tour webtemplate"],
+  "hotel-website": ["hotel website", "hotel", "boutique hotel", "resort", "hotel landing page", "hotel homepage", "bed and breakfast", "webtemplate", "hotel webtemplate", "boutique hotel webtemplate"],
+  "saas-landing-page": ["saas landing page", "saas website", "saas", "startup landing page", "software landing page", "product landing page", "b2b landing page", "webtemplate", "saas webtemplate", "startup webtemplate", "software webtemplate"],
+  "ai-website": ["ai website", "ai landing page", "ai startup", "ai product website", "ai saas", "ai tool landing page", "webtemplate", "ai webtemplate", "ai startup webtemplate"],
   "dashboard": ["dashboard", "kpi", "kpis", "overview", "admin dashboard", "analytics dashboard", "stat tiles", "summary cards", "home dashboard"],
   "data-table": ["data table", "table", "datagrid", "data grid", "spreadsheet", "rows", "records", "customers table", "row selection"],
   "analytics-charts": ["analytics", "analytics report", "charts", "chart", "graphs", "report", "reporting", "donut chart", "revenue chart", "metrics"],
@@ -67,10 +86,10 @@ export const PATTERN_ALIASES = {
   "approval-queue": ["approval", "approve", "approval queue", "pending requests", "reject", "review queue", "requests", "approve reject"],
   "doctor-directory": ["doctor directory", "doctors", "doctor", "find a doctor", "medical team", "physicians", "care team", "doctor profile", "directory", "specialists"],
   "telehealth-visit": ["telehealth", "telemedicine", "video consultation", "video consult", "virtual visit", "virtual appointment", "waiting room", "visit summary", "consultation"],
-  "clinic-home": ["clinic", "hospital", "clinic homepage", "medical specialties", "patient homepage", "healthcare website", "medical"],
+  "clinic-home": ["clinic", "hospital", "clinic homepage", "medical specialties", "patient homepage", "healthcare website", "medical", "healthcare landing page", "medical website", "hospital website", "clinic webtemplate", "medical webtemplate", "hospital webtemplate", "doctor webtemplate"],
   "music-player": ["music player", "now playing", "nowplaying", "audio player", "music", "player", "audio", "podcast player"],
   "playlist": ["playlist", "album", "track list", "tracklist", "tracks", "songs"],
-  "portfolio-home": ["portfolio", "personal site", "work index", "personal portfolio", "selected work", "portfolio hero"],
+  "portfolio-home": ["portfolio", "personal site", "work index", "personal portfolio", "selected work", "portfolio hero", "portfolio webtemplate", "personal webtemplate", "designer webtemplate", "resume webtemplate"],
   "case-study": ["case study", "case studies", "project write up"],
   "security-dashboard": ["security dashboard", "vulnerabilities", "vulnerability", "severity", "threats", "cve", "security"],
   "project-tracker": ["project tracker", "projects", "project", "project dashboard", "phases", "milestones", "progress ring", "project status"],
@@ -160,7 +179,7 @@ const PHRASES = [[/\bsign[\s-]?in\b/g, "login"], [/\blog[\s-]?in\b/g, "login"], 
   [/\be[\s-]commerce\b/g, "ecommerce"], [/\bnow[\s-]playing\b/g, "nowplaying"], [/\bwhat'?s new\b/g, "whatsnew changelog"], [/\bcheck[\s-]out\b/g, "checkout"],
   [/\bmulti[\s-]step\b/g, "multistep"], [/\bmaster[\s-]detail\b/g, "masterdetail"], [/\bwork[\s-]?flow\b/g, "workflow"], [/\b2[\s-]?fa\b/g, "2fa"],
   [/\bone[\s-]time\b/g, "onetime"], [/\bset[\s-]?up\b/g, "setup"], [/\bdrop[\s-]?down\b/g, "dropdown"], [/\bfaq'?s\b/g, "faq"], [/\b(e-?mail)\b/g, "email"],
-  [/\bhome[\s-]services?\b/g, "homeservices"], [/\bcolou?rs?\b/g, "colour"], [/\bkpis?\b/g, "kpi"]];
+  [/\bhome[\s-]services?\b/g, "homeservices"], [/\b(?:websites?|landing[\s-]pages?|home[\s-]?pages?|site)(?:\s+(?:templates?|designs?|themes?))?(?=\s*$|\s+(?:templates?|designs?|themes?|with|for|that|in|html|code|free)\b)/g, "webtemplate"], [/\b(?:website|landing page|html) templates?\b/g, "webtemplate"], [/\bcolou?rs?\b/g, "colour"], [/\bkpis?\b/g, "kpi"]];
 const IRREG = { children: "child", people: "person", men: "man", women: "woman", analyses: "analysis", statuses: "status", buses: "bus", menus: "menu" };
 
 export function stem(w) {

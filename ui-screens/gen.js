@@ -62,7 +62,7 @@ function buildOne(pattern, platform, styleName, variant) {
     dos: st.numRule ? DM.DEFAULT_DO + "\nUse the heading serif only for page titles and marketing headlines. Set metrics, prices, plan names and table figures in the body sans with `font-variant-numeric: tabular-nums`." : undefined });
   const [w, h] = (d.size && d.size[platform]) || VIEWPORT[platform];
   const body = tpl(p, st, rnd);
-  const html = d.type === "email" ? body : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=${platform === "web" ? "device-width" : w},initial-scale=1">
+  const html = d.type === "email" ? body : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=${platform === "web" || d.type === "page" ? "device-width" : w},initial-scale=1">
 <title>${esc(fam.name)} — ${(vname || pattern).replace(/-/g, " ")} (${platform}, ${styleName}) · MGD UI screens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=${st.fonts}&display=swap" rel="stylesheet">

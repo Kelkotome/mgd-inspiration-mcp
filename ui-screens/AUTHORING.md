@@ -38,3 +38,12 @@ Look at every pattern in at least minimal, editorial, brutalist, playful, monoch
 ## After adding or changing patterns (MCP search)
 - `node elements.js` rebuilds `src/ui_elements.json` (element + layout inventory parsed from `out/*/index.html` plus each template's `elements`); it powers the `elements` filter of `search_ui_screens`. Commit it with the templates; it ships on the next Worker deploy (no D1 change).
 - Add words people use for a new pattern to `PATTERN_ALIASES` in `src/ui_search.js`, add a line to `tests/ui_rank/cases.txt`, and run `node --import ./tests/ui_rank/register.mjs tests/ui_rank/run.mjs` (refresh the row dump with `--refresh` after ingest).
+
+## Website templates (type "page", 5-Nov-2026)
+Full-length, responsive industry home pages live in `tpl/site-*.js` and use `sitekit.js` (read it and `tpl/site-restaurant.js` first).
+One HTML document per pattern, returned for BOTH web and mobile (`K.def(...)`): shot at 1440 and 390, so layout lives in a module-prefixed
+`<style>` with media queries (760 / 1024 px), not inline styles. `size` caps are 5600 (web) / 8000 (mobile) CSS px; run `trim.py` after
+`shoot.sh` and check `meta.json` viewport.h — a value equal to the cap means the page is clipped. Variants are page types (`homepage` first;
+about / pricing / contact / 404 per industry slot in as more variants). Every new page pattern needs: a family in lib.js, an entry in
+`src/ui_screens.js` UI_PAGE_PATTERNS, a slug + H1 in `src/ui_seo.js`, copy in `src/ui_pattern_copy.json`, aliases (incl. "<industry> webtemplate")
+in `src/ui_search.js`, and a line in `tests/ui_rank/cases_n12.txt`.

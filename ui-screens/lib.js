@@ -52,6 +52,23 @@ const FAMILIES = {
   // 5-Nov-2026 round: small-business admin builds asked twice for staff scheduling, time off, multi-location ops and inventory
   ops: { name: "Rosterline", cat: "operations", desc: "staff scheduling, time off, inventory and daily operations for a multi-location bakery-café", type: { web: "Operations web app", mobile: "Mobile app" } },
   homeservices: { name: "Handmere", cat: "services", desc: "on-demand plumbers, electricians and cleaners booked by arrival window", type: { web: "Marketplace web app", mobile: "Mobile app" } },
+  // 5-Nov-2026 template round (n12): industry website templates (type "page", full-length home pages). Keyword Planner:
+  // "{industry} website template" / "{industry} website design" worldwide. ecommerce/saas/ai reuse commerce/marketing/ai.
+  agency: { name: "Quarry & Kite", cat: "agency", desc: "an independent brand and digital design studio", type: { web: "Website", mobile: "Mobile website" } },
+  wedding: { name: "Noor & Callum", cat: "wedding", desc: "a couple's wedding website with schedule, travel and RSVP", type: { web: "Website", mobile: "Mobile website" } },
+  restaurant: { name: "Olive & Ember", cat: "restaurant", desc: "a wood-fired neighbourhood restaurant", type: { web: "Website", mobile: "Mobile website" } },
+  realestate: { name: "Harrow & Vale", cat: "real-estate", desc: "a residential real estate agency for buyers, sellers and renters", type: { web: "Website", mobile: "Mobile website" } },
+  construction: { name: "Ironbark Builders", cat: "construction", desc: "a general contractor for homes and small commercial builds", type: { web: "Website", mobile: "Mobile website" } },
+  dental: { name: "Fennick Dental", cat: "dental", desc: "a family and cosmetic dental practice", type: { web: "Website", mobile: "Mobile website" } },
+  lawfirm: { name: "Whitcombe Hale", cat: "legal", desc: "a law firm for families and small businesses", type: { web: "Website", mobile: "Mobile website" } },
+  travel: { name: "Driftmark Journeys", cat: "travel", desc: "a small-group tour operator", type: { web: "Website", mobile: "Mobile website" } },
+  hotel: { name: "Halcyon Quay", cat: "hospitality", desc: "a boutique harbourside hotel", type: { web: "Website", mobile: "Mobile website" } },
+  architecture: { name: "Atelier Obra", cat: "architecture", desc: "an architecture and interiors practice", type: { web: "Website", mobile: "Mobile website" } },
+  gym: { name: "Ironyard Gym", cat: "fitness", desc: "a strength and conditioning gym with classes and coaching", type: { web: "Website", mobile: "Mobile website" } },
+  salon: { name: "Studio Velour", cat: "beauty", desc: "a hair and beauty salon", type: { web: "Website", mobile: "Mobile website" } },
+  nonprofit: { name: "Commonplate", cat: "nonprofit", desc: "a community food-sharing nonprofit", type: { web: "Website", mobile: "Mobile website" } },
+  school: { name: "Alderbrook Academy", cat: "education", desc: "an independent day school for ages 4 to 18", type: { web: "Website", mobile: "Mobile website" } },
+  cafe: { name: "Kiln & Crumb", cat: "food", desc: "a bakery-café with three neighbourhood locations", type: { web: "Website", mobile: "Mobile website" } },
 };
 
 const ICON = {

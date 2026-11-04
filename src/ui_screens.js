@@ -32,11 +32,13 @@ export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts"
   "account-email", "order-email", "shift-scheduler", "leave-calendar", "time-off-request", "ops-dashboard", "inventory-stock", "savings-goal", "onboarding-carousel"];
 // Transactional emails (table-based, inline-styled HTML for email clients): pages call them "templates", not "screens".
 export const UI_EMAIL_PATTERNS = ["account-email", "order-email"];
-const kindWord = (p, plural) => UI_EMAIL_PATTERNS.includes(p) ? (plural ? "email templates" : "email template") : UI_SECTION_PATTERNS.includes(p) ? (plural ? "sections" : "section") : (plural ? "screens" : "screen");
+const kindWord = (p, plural) => UI_PAGE_PATTERNS.includes(p) ? (plural ? "templates" : "template") : UI_EMAIL_PATTERNS.includes(p) ? (plural ? "email templates" : "email template") : UI_SECTION_PATTERNS.includes(p) ? (plural ? "sections" : "section") : (plural ? "screens" : "screen");
 export const UI_SECTION_PATTERNS = ["hero", "navigation-header", "feature-grid", "bento-features", "how-it-works", "logo-cloud", "stats-band",
   "testimonials", "pricing", "comparison-table", "scored-comparison", "integrations-grid", "security-trust", "faq", "cta-banner", "about-team", "careers",
   "blog-index", "changelog", "contact-form", "footer"];
-export const UI_PATTERNS = [...UI_SCREEN_PATTERNS, ...UI_SECTION_PATTERNS];
+// Full-length, responsive website templates by industry (type "page", 5-Nov-2026 template round n12); variants are page types (homepage first).
+export const UI_PAGE_PATTERNS = ["restaurant-website", "agency-website", "architecture-website", "wedding-website", "ecommerce-website", "coffee-shop-website", "salon-website", "real-estate-website", "construction-website", "law-firm-website", "dental-website", "gym-website", "school-website", "nonprofit-website", "travel-website", "hotel-website", "saas-landing-page", "ai-website"];
+export const UI_PATTERNS = [...UI_SCREEN_PATTERNS, ...UI_SECTION_PATTERNS, ...UI_PAGE_PATTERNS];
 // Gallery filter categories (4-Nov-2026, user-picked names): taxonomy screen_patterns groups merged into 9, plus website sections.
 // 100+ flat chips were unscannable; the page now shows these first and reveals a category's screens once it is picked.
 const UI_FILTER_GROUPS = [["signin", "Sign-in & onboarding", ["auth", "onboarding", "finance"]], ["dashboards", "Dashboards", ["home", "dashboards"]],
@@ -45,7 +47,8 @@ const UI_FILTER_GROUPS = [["signin", "Sign-in & onboarding", ["auth", "onboardin
   ["industries", "Industries", ["healthcare", "booking", "home-services", "portfolio"]], ["states", "States & feedback", ["states", "interaction-states"]],
   ["emails", "Emails", ["emails"]], ["operations", "Staff & operations", ["operations"]]]
   .map(([id, name, keys]) => [id, name, keys.flatMap((k) => (UI_TAXONOMY.screen_patterns || {})[k] || [])]);
-const UI_GROUP_OF = Object.fromEntries([...UI_FILTER_GROUPS.flatMap(([id, , ps]) => ps.map((p) => [p, id])), ...UI_SECTION_PATTERNS.map((p) => [p, "sections"])]);
+const UI_PAGE_GROUP = ["websites", "Website templates", UI_PAGE_PATTERNS];
+const UI_GROUP_OF = Object.fromEntries([...UI_FILTER_GROUPS.flatMap(([id, , ps]) => ps.map((p) => [p, id])), ...UI_SECTION_PATTERNS.map((p) => [p, "sections"]), ...UI_PAGE_PATTERNS.map((p) => [p, "websites"])]);
 export const UI_STYLES = ["minimal", "editorial", "brutalist", "luxury", "playful", "corporate", "retro", "monochrome"];
 // Flows come straight from ui-screens/taxonomy.json (3-Nov-2026): steps are "pattern" or "pattern:variant", resolved per platform × style
 // against the published rows at request time, so lengthening a flow or adding error steps needs no re-ingest. "errors" marks the
@@ -72,6 +75,7 @@ const LABELS = { "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys
   "account-email": "Account email", "order-email": "Order email", "shift-scheduler": "Shift scheduler", "leave-calendar": "Leave calendar", "time-off-request": "Time-off request",
   "ops-dashboard": "Multi-location operations dashboard", "inventory-stock": "Inventory stock", "savings-goal": "Savings goal", "onboarding-carousel": "Onboarding carousel", "scored-comparison": "Scored comparison table",
   "verify-email": "Verify email", "magic-link": "Magic link sign-in", "shipping-update": "Shipping update", "low-stock": "Low stock", "receive-stock": "Receive stock", "conflict": "Conflicts with staffing", "review": "Manager review", "payment-declined": "Card declined at checkout", "wrong-password": "Wrong password", "account-locked": "Account locked", "code-expired": "Code expired" };
+Object.assign(LABELS, { homepage: "Home page", "saas-landing-page": "SaaS landing page", "ai-website": "AI website", "school-website": "School website" });
 const label = (s) => LABELS[s] || (s || "").replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const order = (p) => { const i = UI_PATTERNS.indexOf(p); return i < 0 ? 999 : i; };
 const parseTags = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } };
@@ -100,7 +104,8 @@ var t="light";try{t=localStorage.getItem("mgd-ui-shot")||"light"}catch(e){}if(t=
 // Crawlable links to every pattern page (gallery, pattern pages, flows index).
 const patternIndex = (base, h, have) => `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">Browse by pattern</h2>
 <p class="lede" style="margin:0 0 .4rem">App screens</p><div class="pidx">${UI_SCREEN_PATTERNS.filter((p) => !have || have.has(p)).map((p) => `<a href="${h.escHtml(base)}/ui/${patternSlug(p)}">${h.escHtml(label(p))}</a>`).join("<br>")}</div>
-<p class="lede" style="margin:1rem 0 .4rem">Website sections</p><div class="pidx">${UI_SECTION_PATTERNS.filter((p) => !have || have.has(p)).map((p) => `<a href="${h.escHtml(base)}/ui/${patternSlug(p)}">${h.escHtml(label(p))}</a>`).join("<br>")}</div>`;
+<p class="lede" style="margin:1rem 0 .4rem">Website sections</p><div class="pidx">${UI_SECTION_PATTERNS.filter((p) => !have || have.has(p)).map((p) => `<a href="${h.escHtml(base)}/ui/${patternSlug(p)}">${h.escHtml(label(p))}</a>`).join("<br>")}</div>${UI_PAGE_PATTERNS.some((p) => !have || have.has(p)) ? `
+<p class="lede" style="margin:1rem 0 .4rem">Website templates</p><div class="pidx">${UI_PAGE_PATTERNS.filter((p) => !have || have.has(p)).map((p) => `<a href="${h.escHtml(base)}/ui/${patternSlug(p)}">${h.escHtml(patternH1(p) || label(p))}</a>`).join("<br>")}</div>` : ""}`;
 
 // ---- Pages -----------------------------------------------------------------------------------
 // h = helpers from index.js: { escHtml, GTAG, themeify, saveWidget, backLink, edgeCache, rowToItem }
@@ -173,6 +178,7 @@ h1{font-size:1.6rem;margin:.1rem 0 .5rem;letter-spacing:-.01em}
 .card .th{aspect-ratio:16/10;background:#ececec;display:flex;justify-content:center;overflow:hidden}
 .card img{height:100%;width:100%;object-fit:cover;object-position:top}
 .card.mobile img{width:auto;object-fit:contain}
+.card.mobile.page img{width:46%;object-fit:cover;object-position:top}
 .card .meta{padding:.6rem .75rem;font-size:.82rem}.card .meta span{color:var(--muted)}
 .btn{display:inline-flex;align-items:center;gap:.4rem;font:600 .88rem var(--font);text-decoration:none;border:1px solid var(--text);background:var(--surface);color:var(--text);border-radius:8px;padding:.5rem .9rem;cursor:pointer}
 .btn.dark{background:var(--text);color:var(--bg)}
@@ -217,7 +223,7 @@ async function uiRows(env, where, binds) {
   return rows.sort((a, b) => order(a.category) - order(b.category) || (a.country === b.country ? 0 : a.country === "web" ? -1 : 1) || si(a.style) - si(b.style) || String(a.title).localeCompare(String(b.title)));
 }
 const dims = (it) => (it.width && it.height ? ` width="${+it.width}" height="${+it.height}"` : "");
-const card = (it, base, h, metaHtml) => `<a class="card ${h.escHtml(it.platform)}" href="${h.escHtml(uiItemPath(it, base))}" data-platform="${h.escHtml(it.platform)}" data-pattern="${h.escHtml(it.pattern)}" data-group="${UI_GROUP_OF[it.pattern] || "tools"}" data-style="${h.escHtml(it.style)}">
+const card = (it, base, h, metaHtml) => `<a class="card ${h.escHtml(it.platform)}${UI_PAGE_PATTERNS.includes(it.pattern) ? " page" : ""}" href="${h.escHtml(uiItemPath(it, base))}" data-platform="${h.escHtml(it.platform)}" data-pattern="${h.escHtml(it.pattern)}" data-group="${UI_GROUP_OF[it.pattern] || "tools"}" data-style="${h.escHtml(it.style)}">
 <div class="th"><img loading="lazy"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(it.title)}"/></div><div class="meta">${metaHtml}</div></a>`;
 
 // Filter-chip script shared by the gallery and its facet pages. Chips are real links to the clean URL of the state they
@@ -261,13 +267,13 @@ async function uiGalleryPage(env, base, h, facet) {
   const hrefFor = (k, v) => { const s = { ...state, [k]: v }; if (k === "group") s.pattern = ""; if (k === "pattern" && v) s.group = UI_GROUP_OF[v] || ""; return cleanUiUrl(s, base); };
   const chip = (k, v, text) => { const href = hrefFor(k, v); return `<a class="chip" data-f="${k}" data-v="${h.escHtml(v)}" href="${h.escHtml(href)}"${href.includes("?") ? ' rel="nofollow"' : ""} aria-pressed="${state[k] === v ? "true" : "false"}">${h.escHtml(text)}</a>`; };
   const chips = (k, lab, vals) => `<div><b>${lab}</b>${chip(k, "", "All")}${vals.map((v) => chip(k, v, label(v))).join("")}</div>`;
-  const groups = [...UI_FILTER_GROUPS, ["sections", "Website sections", UI_SECTION_PATTERNS]].map(([id, name, ps]) => [id, name, ps.filter((p) => have.has(p))]).filter((g) => g[2].length);
-  const groupChips = `<div><b>Screens</b>${chip("group", "", "All")}${groups.filter((g) => g[0] !== "sections").map((g) => chip("group", g[0], g[1])).join("")}</div>`
-    + (groups.some((g) => g[0] === "sections") ? `<div><b>Sections</b>${chip("group", "sections", "Website sections")}</div>` : "")
+  const groups = [...UI_FILTER_GROUPS, ["sections", "Website sections", UI_SECTION_PATTERNS], UI_PAGE_GROUP].map(([id, name, ps]) => [id, name, ps.filter((p) => have.has(p))]).filter((g) => g[2].length);
+  const groupChips = `<div><b>Screens</b>${chip("group", "", "All")}${groups.filter((g) => g[0] !== "sections" && g[0] !== "websites").map((g) => chip("group", g[0], g[1])).join("")}</div>`
+    + (groups.some((g) => g[0] === "sections" || g[0] === "websites") ? `<div><b>Websites</b>${groups.some((g) => g[0] === "websites") ? chip("group", "websites", "Website templates") : ""}${groups.some((g) => g[0] === "sections") ? chip("group", "sections", "Website sections") : ""}</div>` : "")
     + groups.map(([id, name, ps]) => `<div class="sub" data-g="${id}"${state.group === id ? "" : " hidden"}><b></b>${chip("pattern", "", "All " + name.toLowerCase())}${ps.map((p) => chip("pattern", p, label(p))).join("")}</div>`).join("");
   const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</b> · ${h.escHtml(it.platform)} <span>· ${h.escHtml(it.style)}</span>`)).join("");
   const nP = new Set(items.map((x) => x.pattern)).size, nS = new Set(items.map((x) => x.style)).size;
-  const word = facet && facet.kind === "group" && facet.value === "emails" ? "template" : "screen";
+  const word = facet && facet.kind === "group" && (facet.value === "emails" || facet.value === "websites") ? "template" : "screen";
   const url = facet ? `${site}${base}/ui/${facet.slug}` : `${site}${base}/ui`;
   const desc = facet
     ? `${items.length} free ${lcFirst(facet.h1.replace(/^Free /, ""))} across ${nP} patterns${facet.kind === "style" ? "" : ` in ${nS} styles`}, each with copyable HTML and a DESIGN.md token file (light and dark). Original designs by Made Good Designs.`
@@ -292,14 +298,14 @@ ${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an origina
 function uiFacetsPresent(rows) {
   const its = rows.map((r) => ({ pattern: r.category, platform: r.country, style: r.style }));
   const out = [];
-  for (const g of [...UI_FILTER_GROUPS.map((x) => x[0]), "sections"]) if (its.some((it) => UI_GROUP_OF[it.pattern] === g) && facetSlug("group", g)) out.push(facetSlug("group", g));
+  for (const g of [...UI_FILTER_GROUPS.map((x) => x[0]), "sections", "websites"]) if (its.some((it) => UI_GROUP_OF[it.pattern] === g) && facetSlug("group", g)) out.push(facetSlug("group", g));
   for (const p of ["web", "mobile"]) if (its.some((it) => it.platform === p)) out.push(facetSlug("platform", p));
   for (const s of UI_STYLES) if (its.some((it) => it.style === s)) out.push(facetSlug("style", s));
   return out;
 }
 const facetIndex = (base, h, all) => {
   const link = (k, v, text) => { const s = facetSlug(k, v); return s && all.some((it) => (k === "group" ? UI_GROUP_OF[it.pattern] === v : k === "platform" ? it.platform === v : it.style === v)) ? `<a href="${h.escHtml(base)}/ui/${s}">${h.escHtml(text)}</a>` : ""; };
-  return `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">Browse by category, platform and style</h2><div class="pidx">${[...UI_FILTER_GROUPS.map(([id, name]) => link("group", id, name)), link("group", "sections", "Website sections"),
+  return `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">Browse by category, platform and style</h2><div class="pidx">${[...UI_FILTER_GROUPS.map(([id, name]) => link("group", id, name)), link("group", "sections", "Website sections"), link("group", "websites", "Website templates"),
     link("platform", "web", "Web UI"), link("platform", "mobile", "Mobile app UI"), ...UI_STYLES.map((st) => link("style", st, label(st) + " style"))].filter(Boolean).join("<br>")}</div>`;
 };
 
@@ -308,7 +314,7 @@ async function uiItemPage(id, env, base, h) {
   if (!row) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
   const it = h.rowToItem(row, env), site = siteOf(env);
   const canonical = site + uiItemPath(it, base), imgAbs = site + base + it.image;
-  const isSection = UI_SECTION_PATTERNS.includes(it.pattern);
+  const isSection = UI_SECTION_PATTERNS.includes(it.pattern) || UI_PAGE_PATTERNS.includes(it.pattern), isPage = UI_PAGE_PATTERNS.includes(it.pattern);
   const name = `${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""} ${kindWord(it.pattern)} — ${it.platform}, ${it.style} style`;
   const related = (await uiRows(env, " AND category=? AND id<>? AND (country=? OR style=?)", [it.pattern, it.id, it.platform, it.style])).map((r) => h.rowToItem(r, env)).slice(0, 12);
   const facts = [["Pattern", label(it.pattern), `${base}/ui/${patternSlug(it.pattern)}`], ["Platform", label(it.platform), cleanUiUrl({ platform: it.platform }, base)],
@@ -316,9 +322,10 @@ async function uiItemPage(id, env, base, h) {
   const flows = (it.flows || []).filter((f) => UI_FLOWS[f.id]);
   const pal = (it.palette || []).slice(0, 8).map((hx, i) => `<span class="sw" style="background:${h.escHtml(hx)}" title="${ROLES[i] || ""} ${h.escHtml(hx)}"></span>`).join("");
   const tags = uiShownTags(it.tags);
-  const short = `${it.variant ? label(it.variant) : label(it.pattern)} ${kindWord(it.pattern).replace("email ", "")} (${it.platform}, ${it.style})`; // variant name leads (keeps titles ≤ 60)
+  const short = isPage ? `${label(it.pattern)}${it.variant && it.variant !== "homepage" ? " " + label(it.variant).toLowerCase() : ""} template (${it.platform}, ${it.style})`
+    : `${it.variant ? label(it.variant) : label(it.pattern)} ${kindWord(it.pattern).replace("email ", "")} (${it.platform}, ${it.style})`; // variant name leads (keeps titles ≤ 60)
   const shows = ((it.description || "").match(/Shows ([^.]+)\./) || [])[1];
-  const metaDesc = `Free ${lcWords(short).replace(/ \(/, " for " + (isSection ? "websites" : UI_EMAIL_PATTERNS.includes(it.pattern) ? "transactional email" : "apps") + " (")} with copyable HTML and a DESIGN.md of light and dark tokens.${shows ? " Shows " + shows + "." : ""}`;
+  const metaDesc = `Free ${lcWords(short).replace(/ \(/, isPage ? " (" : " for " + (isSection ? "websites" : UI_EMAIL_PATTERNS.includes(it.pattern) ? "transactional email" : "apps") + " (")} with copyable HTML and a DESIGN.md of light and dark tokens.${shows ? " Shows " + shows + "." : ""}`;
   const body = head(h, { title: fitTitle(`${short} – HTML & DESIGN.md | MGD`, `${short} – HTML & DESIGN.md`, `${short} | MGD`, short), ogTitle: name, desc: metaDesc, canonical, image: imgAbs, ogType: "article",
     jsonld: { "@context": "https://schema.org", "@type": "CreativeWork", name, url: canonical, description: it.description || undefined,
       image: { "@type": "ImageObject", contentUrl: imgAbs, ...licenceLd(site, base) }, ...licenceLd(site, base),
@@ -328,6 +335,7 @@ async function uiItemPage(id, env, base, h) {
 .detail.mobile{grid-template-columns:minmax(0,390px) 1fr}
 @media(max-width:820px){.detail,.detail.mobile{grid-template-columns:1fr}}
 .shot{width:100%;height:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface);display:block}
+.pagebox .shot{max-height:none}.pagebox>.shotscroll{max-height:82vh;overflow:auto;border-radius:12px}
 .desc{font-size:.98rem;line-height:1.55;margin:.4rem 0 1rem}
 dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:.3rem 1rem;margin:0 0 1.1rem;font-size:.9rem}dl.facts dt{color:var(--muted)}dl.facts dd{margin:0}
 .pal{display:flex;border-radius:6px;overflow:hidden;margin:0 0 1.1rem;max-width:360px}.pal .sw{flex:1;height:1.6rem}
@@ -338,7 +346,7 @@ h2{font-size:1.05rem;margin:2.25rem 0 .75rem}` })
   + `${h.backLink(base, "/ui", "Back to UI screens")}
 <nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/${h.escHtml(patternSlug(it.pattern))}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
 <div class="detail ${h.escHtml(it.platform)}">
-  <div style="position:relative"><button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button><img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>
+  <div style="position:relative"${isPage ? ' class="pagebox"' : ""}><button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button>${isPage ? '<div class="shotscroll">' : ""}<img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${isPage ? "</div>" : ""}${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>
   <div><h1>${h.escHtml(name)}</h1>${it.description ? `<p class="desc">${h.escHtml(it.description)}</p>` : ""}
     <div class="acts"><a class="btn dark" href="${h.escHtml(base + it.code)}" target="_blank" rel="noopener nofollow">Open live HTML ↗</a>
       <button class="btn" data-copy="${h.escHtml(base + it.code)}">Copy HTML</button><button class="btn" data-copy="${h.escHtml(base + it.design_md)}">Copy DESIGN.md</button>
@@ -524,10 +532,10 @@ export const UI_MCP_TOOLS = [
   },
   {
     name: "list_ui_patterns",
-    description: "List every pattern (app screens and website sections) and multi-step flow in Made Good Designs' free UI library, live, with screen counts, variants and flow steps. Use it to pick a pattern or flow id for search_ui_screens / get_ui_flow, or to see what exists before searching.",
+    description: "List every pattern (app screens, website sections and full website templates) and multi-step flow in Made Good Designs' free UI library, live, with screen counts, variants and flow steps. Use it to pick a pattern or flow id for search_ui_screens / get_ui_flow, or to see what exists before searching.",
     inputSchema: {
       type: "object",
-      properties: { kind: { type: "string", description: "Optional: screens, sections, flows, elements (component vocabulary for the elements filter) or all (default)." } },
+      properties: { kind: { type: "string", description: "Optional: screens, sections, templates (full website templates by industry), flows, elements (component vocabulary for the elements filter) or all (default)." } },
     },
     annotations: { title: "List UI patterns", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
@@ -684,10 +692,11 @@ export async function callUiTool(name, a, env, h) {
         const live = ps.filter((p) => cnt[p]); live.forEach((p) => grouped.add(p));
         if (live.length) out.push(`${g}:`, ...live.map(line));
       }
-      const rest = Object.keys(cnt).filter((p) => !grouped.has(p) && !UI_SECTION_PATTERNS.includes(p));
+      const rest = Object.keys(cnt).filter((p) => !grouped.has(p) && !UI_SECTION_PATTERNS.includes(p) && !UI_PAGE_PATTERNS.includes(p));
       if (rest.length) out.push("other:", ...rest.map(line));
     }
     if (want("section")) out.push("", "WEBSITE SECTIONS:", ...UI_SECTION_PATTERNS.filter((p) => cnt[p]).map(line));
+    if ((want("section") || kind.startsWith("page") || kind.startsWith("website") || kind.startsWith("template")) && UI_PAGE_PATTERNS.some((p) => cnt[p])) out.push("", "WEBSITE TEMPLATES (full responsive home pages by industry):", ...UI_PAGE_PATTERNS.filter((p) => cnt[p]).map(line));
     if (want("flow")) {
       const tf = UI_TAXONOMY.flows || {};
       out.push("", "FLOWS (ids for get_ui_flow):", ...Object.entries(UI_FLOWS).map(([k, v]) => `  ${k} — ${v}${tf[k] && tf[k].steps ? ` (${tf[k].steps.length} steps: ${tf[k].steps.join(" → ")})` : ""}`));

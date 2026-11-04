@@ -1,9 +1,10 @@
 {
- "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries; +6 round 2). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style. 3-Nov round 3: +6 interaction-state patterns (overlays on existing family screens). 5-Nov-2026 round (n11): +8 screen patterns (transactional emails, staff scheduling/time off, multi-location ops, inventory, savings goal, onboarding carousel) + 1 section (scored comparison); emails are type 'email' (table-based, inline-styled HTML).",
+ "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries; +6 round 2). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style. 3-Nov round 3: +6 interaction-state patterns (overlays on existing family screens). 5-Nov-2026 round (n11): +8 screen patterns (transactional emails, staff scheduling/time off, multi-location ops, inventory, savings goal, onboarding carousel) + 1 section (scored comparison); emails are type 'email' (table-based, inline-styled HTML). 5-Nov-2026 template round (n12): +18 industry website templates (type 'page': one responsive HTML document shot at 1440 and 390; variants are page types, 'homepage' first) in page_patterns.",
  "types": [
   "screen",
   "section",
   "email",
+  "page",
   "flow"
  ],
  "platforms": [
@@ -671,7 +672,19 @@
   "portfolio",
   "beauty",
   "services",
-  "operations"
+  "operations",
+  "agency",
+  "wedding",
+  "restaurant",
+  "real-estate",
+  "construction",
+  "dental",
+  "legal",
+  "hospitality",
+  "architecture",
+  "fitness",
+  "nonprofit",
+  "food"
  ],
  "styles": [
   "minimal",
@@ -800,6 +813,28 @@
    "time-off-request",
    "ops-dashboard",
    "inventory-stock"
+  ]
+ },
+ "page_patterns": {
+  "websites": [
+   "restaurant-website",
+   "agency-website",
+   "architecture-website",
+   "wedding-website",
+   "ecommerce-website",
+   "coffee-shop-website",
+   "salon-website",
+   "real-estate-website",
+   "construction-website",
+   "law-firm-website",
+   "dental-website",
+   "gym-website",
+   "school-website",
+   "nonprofit-website",
+   "travel-website",
+   "hotel-website",
+   "saas-landing-page",
+   "ai-website"
   ]
  }
 }
