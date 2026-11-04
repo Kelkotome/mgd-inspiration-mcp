@@ -207,7 +207,7 @@ async function uiGalleryPage(env, base, h) {
 (function(){var PAGE=48,shown=PAGE,f={platform:"",pattern:"",style:""},cards=[].slice.call(document.querySelectorAll("#grid .card")),cnt=document.getElementById("count"),more=document.getElementById("more");
 try{var q=new URLSearchParams(location.search);for(var k in f)if(q.get(k))f[k]=q.get(k)}catch(e){}
 function apply(){var n=0;cards.forEach(function(c){var ok=true;for(var k in f)if(f[k]&&c.dataset[k]!==f[k])ok=false;if(ok)n++;c.style.display=ok&&n<=shown?"":"none"});
-cnt.textContent=n+" screen"+(n===1?"":"s");more.hidden=n<=shown;document.querySelectorAll(".chip").forEach(function(b){b.setAttribute("aria-pressed",String(f[b.dataset.f]===b.dataset.v))})}
+cnt.textContent=n+" screen"+(n===1?"":"s");more.hidden=n<=shown;document.querySelectorAll(".chip[data-f]").forEach(function(b){b.setAttribute("aria-pressed",String(f[b.dataset.f]===b.dataset.v))})}
 more.addEventListener("click",function(){shown+=PAGE*2;apply()});
 document.querySelector(".filters").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;f[b.dataset.f]=b.dataset.v;shown=PAGE;apply();
 try{var q=new URLSearchParams();for(var k in f)if(f[k])q.set(k,f[k]);history.replaceState(null,"",location.pathname+(q.toString()?"?"+q:""))}catch(e){}});apply()})();
