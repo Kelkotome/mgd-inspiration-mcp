@@ -25,7 +25,12 @@ def sql(q, tries=4):
                            capture_output=True, text=True, env=dict(os.environ, CI="1", WRANGLER_SEND_METRICS="false"))
         # wrangler can print banners/warnings before or after the JSON ("Extra data" crash, 31-Oct-2026): decode just the JSON array.
         o = p.stdout; m = re.search(r"\[\s*\{", o)
-        if m: return json.JSONDecoder().raw_decode(o[m.start():])[0][0]["results"]
+        if m:
+            try:
+                d = json.JSONDecoder().raw_decode(o[m.start():])[0]
+                if isinstance(d, list) and d and "results" in d[0]: return d[0]["results"]
+            except ValueError: pass
+            # an error object can also start with "[{" (KeyError 'results', 4-Nov-2026 night): fall through and retry
         err = (p.stderr or o).strip()
         if i == tries - 1 or "SQLITE_ERROR" in err or "no such" in err: sys.exit(err)  # real SQL errors: don't retry
         time.sleep(3 * (i + 1))

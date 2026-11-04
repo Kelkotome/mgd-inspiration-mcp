@@ -423,15 +423,29 @@ async function searchIcons(a) {
   let idx;
   try { idx = await iconIndex(sets); } catch (e) { return err("Couldn't load the icon data from the CDN (" + str(e && e.message, 160) + ") — this is not a 'no results' answer; retry."); }
   const limit = int(a.limit, 8, 1, 24);
-  const hits = MGDIcons.search(idx, q, { sets, style: a.style || "any", limit });
-  if (!hits.length) return ok(`0 icons for "${q}" in ${sets.join(", ")}. Try a simpler word (e.g. 'trash' instead of 'remove item'), or browse: ${T}/svg-icons/`);
+  let hits = MGDIcons.search(idx, q, { sets, style: a.style || "any", limit }), via = "";
+  // 4-Nov-2026: nothing in the default sets → try Phosphor (it has e.g. boxing-glove, sneaker, towel), then the icons that
+  // match the most words ("medical cross hospital"), instead of answering 0.
+  const multi = q.split(/[^A-Za-z0-9]+/).filter(Boolean).length > 1;
+  if (!hits.length && !(Array.isArray(a.sets) && a.sets.length)) {
+    try {
+      const all = [...sets, "ph"];
+      const ph = MGDIcons.search(await iconIndex(all), q, { sets: ["ph"], style: a.style || "any", limit });
+      if (ph.length) { hits = ph; via = ` — none in ${sets.join(", ")}, so these are from Phosphor (ph, MIT)`; }
+    } catch (_) { /* Phosphor data unavailable: fall through */ }
+  }
+  if (!hits.length && multi) {
+    hits = MGDIcons.search(idx, q, { sets, style: a.style || "any", limit, partial: true });
+    if (hits.length) via = " — no icon matches every word, so these match the most of them";
+  }
+  if (!hits.length) return ok(`0 icons for "${q}" in ${sets.join(", ")}${Array.isArray(a.sets) && a.sets.length ? "" : " or ph"}. Try a simpler word (e.g. 'trash' instead of 'remove item'), or browse: ${T}/svg-icons/`);
   const size = int(a.size, 24, 8, 512), stroke = numIn(a.stroke, 2, 0.5, 4);
   const rows = hits.map((h, i) => {
     const imp = MGDIcons.importName(h.set, h.name, fw);
     const svg = (a.svg === true || (a.svg !== false && i < 4)) ? MGDIcons.toSvg(ICON_CACHE.sets[h.set], h.name, { size, stroke }) : null;
     return { set: h.set, name: h.name, style: h.style, license: MGDIcons.SETS[h.set].license, import: imp ? imp.import : null, package: imp ? imp.package : null, component: imp ? imp.component : null, note: imp ? imp.note : `No official ${fw} package for this set — paste the SVG.`, svg };
   });
-  const text = `${rows.length} icon(s) for "${q}" (${sets.join(", ")}; ${fw}). Import names are checked against the official packages — use them exactly:\n\n` +
+  const text = `${rows.length} icon(s) for "${q}" (${via ? [...new Set(rows.map((r) => r.set))].join(", ") : sets.join(", ")}; ${fw})${via}. Import names are checked against the official packages — use them exactly:\n\n` +
     rows.map((r) => `• ${r.set}/${r.name}${r.style && r.style !== "outline" ? ` (${r.style})` : ""} — ${r.license}\n  ${r.import ? "`" + r.import + "`" : r.note}${r.note && r.import ? "\n  " + r.note : ""}${r.svg ? "\n" + fence("svg", r.svg) : ""}`).join("\n\n") +
     `\n\nBrowse, recolour and download SVG/PNG: ${T}/svg-icons/#q=${encodeURIComponent(q)}`;
   return ok(text, { icons: rows });

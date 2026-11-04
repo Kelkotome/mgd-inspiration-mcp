@@ -1843,9 +1843,17 @@ const MCP_PROFILES = {}; Object.assign(MCP_PROFILES, {
 for (const P of Object.values(MCP_PROFILES)) P.names = new Set(P.tools.map((t) => t.name));
 
 // Q6 (31-Oct): a D1 error/timeout must never read as "0 results". Retry once, then the caller returns isError.
+// 4-Nov night: "D1 DB is overloaded … within a 10 second window" needs a longer wait than a 120 ms blip, so back off twice more.
 async function mcpRetry(fn) {
-  try { return await fn(); }
-  catch (e) { await new Promise((r) => setTimeout(r, 120)); return fn(); }
+  const waits = [120, 900, 2500];
+  for (let i = 0; ; i++) {
+    try { return await fn(); }
+    catch (e) {
+      const busy = /overloaded|too many resources/i.test(String((e && e.message) || e));
+      if (i >= (busy ? waits.length : 1)) throw e;
+      await new Promise((r) => setTimeout(r, waits[i]));
+    }
+  }
 }
 async function mcpSearchRowsRetry(...args) { return mcpRetry(() => mcpSearchRows(...args)); }
 const MCP_BUSY = (e) => `The search failed (database error: ${String((e && e.message) || e).slice(0, 120)}) — this is NOT a 'no results' answer. Retry the call, or shorten the query.`;
@@ -1958,8 +1966,12 @@ async function mcpEvent(env, c, e) {
 }
 function mcpZero(result) {
   const t = (result && result.content && result.content[0] && result.content[0].text) || "";
-  return /^0 [^\n]*result|No matches —/.test(t);
+  // 4-Nov night: also "0 icons for …", "0 characters match …", "No screen in the library matches …" (these were logged as
+  // successes, so the zero-result list missed e.g. search_icons "restroom" / "women").
+  return /^0 [^\n]*result|No matches —|^0 (icons?|characters|devices|slogans|museum|annual|items?)\b|^No screen in the library (matches|has)/.test(t);
 }
+// The "we fill gaps in 1–2 days" note only makes sense for our own libraries (not third-party icon sets or Unicode).
+const MCP_LIBRARY_TOOLS = /^(search_design_inspiration|search_museum_art|search_annual_reports|search_ui_screens|browse_inspiration_by_theme|get_ui_flow|design_md_from_references)$/;
 function mcpClientTag(ua) {
   return /^Claude-User/i.test(ua) ? "claude-ai" : /^claude-code/i.test(ua) ? "claude-code" : /^Cursor/i.test(ua) ? "cursor" : /^codex/i.test(ua) ? "codex" :
     /openai-mcp|ChatGPT/i.test(ua) ? "chatgpt" : /vscode|copilot/i.test(ua) ? "vscode" : "";
@@ -2006,7 +2018,7 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
   const zero = r ? mcpZero(r) : null;
   await mcpEvent(env, c, { kind: "call", tool, ok: !!r && !r.isError, zero, ms: Date.now() - t0 });
   // 4-Nov: empty searches are logged and fed into the next content rounds, so tell the caller to come back.
-  if (zero && !r.isError) r.content[0].text += "\n\nNothing here yet, but thanks for asking. Empty searches tell us what to add next, and we usually fill gaps within 1–2 days. Meanwhile, try a broader word or one of the suggestions above.";
+  if (zero && !r.isError && MCP_LIBRARY_TOOLS.test(dispatched || tool)) r.content[0].text += "\n\nNothing here yet, but thanks for asking. Empty searches tell us what to add next, and we usually fill gaps within 1–2 days. Meanwhile, try a broader word or one of the suggestions above.";
   if (r) mcpUtm(r, dispatched || tool, c.ua);
   return res;
 }
@@ -2298,15 +2310,33 @@ async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, l
   const words = [...new Set(q.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 2 && !MCP_STOP.has(w)).map((w) => cutBytes(w, 40)))].slice(0, 6);
   if (!words.length || (words.length === 1 && words[0] === q.toLowerCase())) return { rows: [], note: "" };
   const hit = words.map(any), wb = words.flatMap(likes);
-  // LIKE matches inside words ("med" → "Named", "jaw" → "Jawlensky"), so rank whole-word hits first (4-Nov-2026).
-  // GLOB pattern ≈ word + 20 bytes; D1 caps patterns at ~50 bytes, so very long words just don't get the boost.
-  // One GLOB per word over all columns joined (a GLOB per column overran D1's 100 bound-parameter limit on 5-word queries).
-  const doc = "(' ' || lower(" + cols.map((c) => `COALESCE(${c},'')`).join(" || ' ' || ") + ") || ' ')";
-  const glob = (x) => (utf8Len(x) <= 28 ? `*[^a-z0-9]${x}[^a-z0-9]*` : null);
-  const ww = words.filter(glob);
-  const whole = ww.map(() => `(CASE WHEN ${doc} GLOB ? THEN 1 ELSE 0 END)`).join(" + ");
-  const all = await run(" AND " + hit.join(" AND "), wb, ww.length ? `(${whole}) DESC, ${order}` : order, ww.map(glob));
-  if (all.length || words.length === 1) return { rows: all, note: all.length ? ` (matching all of: ${words.join(", ")})` : "" };
+  // LIKE matches inside words ("med" → "Named", "jaw" → "Jawlensky"), so whole-word hits rank first (4-Nov-2026).
+  // 4-Nov night: the whole-word test used to be a D1 GLOB over all columns joined; GLOB '*[^a-z0-9]w[^a-z0-9]*' cost ~1.3 s
+  // per search on the 60k design items and D1 answered "DB is overloaded" to a few calls a second. Now D1 only does cheap
+  // LIKEs: it returns a candidate pool (ranked by a word-start hint on the short title/tags columns), and the whole-word
+  // ranking runs here in JS on that pool. The words are letters/digits only (split above), so inlining them is safe.
+  const POOL = Math.max(200, limit * 25);
+  const wordStart = (x) => `(title LIKE '${x}%' OR title LIKE '% ${x}%' OR title LIKE '%-${x}%' OR tags LIKE '%"${x}%' OR tags LIKE '% ${x}%')`;
+  const textCols = [...new Set(["id", ...cols])].join(", ");
+  const pool = (w, wb2, ord, ob) => env.DB.prepare(`SELECT ${textCols} FROM items WHERE ${where}${w} ORDER BY ${ord} LIMIT ?`)
+    .bind(...binds, ...wb2, ...ob, POOL).all().then((r) => r.results || []);
+  const wholeRe = words.map((x) => new RegExp(`(^|[^\\p{L}\\p{N}])${x}($|[^\\p{L}\\p{N}])`, "u"));
+  const docOf = (r) => cols.map((c) => String(r[c] == null ? "" : r[c])).join(" \u0001 ").toLowerCase();
+  // Rerank the pool in JS (stable: ties keep D1's order), then fetch the full rows for the top ids only.
+  const finish = async (cands, scoreOf) => {
+    const ranked = cands.map((r, i) => ({ r, i, s: scoreOf(docOf(r)) })).sort((x, y) => y.s - x.s || x.i - y.i).slice(0, limit);
+    if (!ranked.length) return [];
+    const ids = ranked.map((x) => x.r.id);
+    const full = await env.DB.prepare(`SELECT * FROM items WHERE id IN (${ids.map(() => "?").join(",")})`).bind(...ids).all().then((r) => r.results || []);
+    const byId = new Map(full.map((r) => [r.id, r]));
+    return ids.map((id) => byId.get(id)).filter(Boolean);
+  };
+  const wsAll = words.map(wordStart).map((x) => `(CASE WHEN ${x} THEN 1 ELSE 0 END)`).join(" + ");
+  const allC = await pool(" AND " + hit.join(" AND "), wb, `(${wsAll}) DESC, ${order}`, []);
+  if (allC.length || words.length === 1) {
+    const all = await finish(allC, (d) => wholeRe.reduce((n, re) => n + (re.test(d) ? 1 : 0), 0));
+    return { rows: all, note: all.length ? ` (matching all of: ${words.join(", ")})` : "" };
+  }
   // Rank partial matches by how rare each word is (IDF), so common words like "brand" or "identity" don't decide the result.
   const cnt = await env.DB.prepare(`SELECT COUNT(*) n, ${hit.map((h, i) => `SUM(CASE WHEN ${h} THEN 1 ELSE 0 END) d${i}`).join(", ")} FROM items WHERE ${where}`)
     .bind(...wb, ...binds).first(); // SELECT-list placeholders come before the WHERE ones
@@ -2315,12 +2345,16 @@ async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, l
   const use = words.map((_, i) => i).filter((i) => df[i]);
   if (!use.length) return { rows: [], note: "" };
   const w = (i) => Math.max(1, Math.round(idf[i] * 10));
-  // A whole-word hit earns the word's full weight, a match inside another word a third of it.
-  const score = use.map((i) => (glob(words[i]) ? `(CASE WHEN ${doc} GLOB ? THEN ${w(i)} WHEN ${hit[i]} THEN ${Math.max(1, Math.round(w(i) / 3))} ELSE 0 END)`
-    : `(CASE WHEN ${hit[i]} THEN ${w(i)} ELSE 0 END)`)).join(" + ");
+  // D1 pool order = the IDF weight of every word found anywhere (as before 4-Nov), plus a small word-start bonus in
+  // title/tags as a tie-break; whole-word precision is applied in JS. (A bigger word-start weight pushed rare words that
+  // live in other columns, e.g. the artist "Klimt", out of the pool behind common tags like "gold".)
+  const third = (i) => Math.max(1, Math.round(w(i) / 3));
+  const poolScore = use.map((i) => `(CASE WHEN ${hit[i]} THEN ${w(i) * 3} + (CASE WHEN ${wordStart(words[i])} THEN 1 ELSE 0 END) ELSE 0 END)`).join(" + ");
   const ub = use.flatMap((i) => likes(words[i]));
-  const sb = use.flatMap((i) => (glob(words[i]) ? [glob(words[i])] : []).concat(likes(words[i])));
-  const some = await run(" AND (" + use.map((i) => hit[i]).join(" OR ") + ")", ub, `(${score}) DESC, ${order}`, sb);
+  const sb = use.flatMap((i) => likes(words[i]));
+  const someC = await pool(" AND (" + use.map((i) => hit[i]).join(" OR ") + ")", ub, `(${poolScore}) DESC, ${order}`, sb);
+  // JS: a whole-word hit (any column) earns the word's full weight, a match inside another word a third of it.
+  const some = await finish(someC, (d) => use.reduce((n, i) => n + (wholeRe[i].test(d) ? w(i) : d.includes(words[i]) ? third(i) : 0), 0));
   return { rows: some, note: some.length ? ` (no item matches every word; closest matches for: ${use.map((i) => words[i]).join(", ")})` : "" };
 }
 

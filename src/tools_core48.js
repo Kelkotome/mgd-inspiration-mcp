@@ -3085,9 +3085,25 @@ const G = { MGDRoles };
     'book': ['bookmark', 'library', 'reading'], 'tag': ['label', 'price-tag'], 'label': ['tag'], 'flag': ['report', 'banner'], 'award': ['trophy', 'medal', 'badge', 'certificate'],
     'social': ['share', 'users', 'network'], 'gift': ['present'], 'drag': ['grip', 'move', 'dots-six', 'hand'], 'move': ['arrows-move', 'drag', 'grip'], 'resize': ['scaling', 'arrows-diagonal', 'maximize'],
     'power': ['power', 'on', 'off', 'switch'], 'toggle': ['toggle-left', 'toggle-right', 'switch'], 'battery': ['battery'], 'bluetooth': ['bluetooth'], 'weather': ['cloud', 'sun', 'rain', 'snow', 'wind'],
+    // 4-Nov-2026 night (real MCP queries that returned 0): restrooms, people, sport, health
+    'restroom': ['toilet', 'wc', 'badge-wc', 'bath', 'man-woman'], 'restrooms': ['toilet', 'wc', 'badge-wc'], 'bathroom': ['bath', 'toilet', 'shower', 'bathtub'], 'washroom': ['toilet', 'wc', 'bath'], 'wc': ['toilet', 'badge-wc'], 'lavatory': ['toilet', 'wc'], 'loo': ['toilet'],
+    'female': ['woman', 'gender-female', 'venus'], 'male': ['man', 'gender-male', 'mars'], 'gender': ['gender-female', 'gender-male', 'man-woman', 'transgender'], 'lady': ['woman'], 'girl': ['woman'], 'boy': ['man'], 'person': ['user', 'man', 'woman'],
+    'accessibility': ['accessible', 'wheelchair', 'disability'], 'accessible': ['accessibility', 'wheelchair'], 'disabled': ['wheelchair', 'accessible', 'accessibility'], 'handicap': ['wheelchair', 'accessible'],
+    'sneaker': ['shoe', 'sport-shoe', 'sneaker'], 'trainer': ['shoe', 'sport-shoe'], 'gym': ['barbell', 'dumbbell', 'treadmill', 'weight'], 'fitness': ['barbell', 'dumbbell', 'activity', 'run'], 'workout': ['barbell', 'dumbbell'], 'referee': ['whistle', 'cards'], 'boxing': ['boxing-glove', 'karate'], 'glove': ['boxing-glove', 'mitten'],
+    'pharmacy': ['pill', 'pills', 'capsule', 'medicine', 'prescription'], 'medicine': ['pill', 'pills', 'capsule', 'vaccine', 'prescription'], 'hospital': ['building-hospital', 'hospital', 'medical-cross', 'first-aid'], 'medical': ['medical-cross', 'stethoscope', 'first-aid', 'briefcase-medical', 'hospital'], 'emergency': ['ambulance', 'siren', 'first-aid', 'urgent'], 'doctor': ['stethoscope', 'nurse', 'user-heart'], 'clinic': ['hospital', 'stethoscope', 'medical-cross'],
     'car': ['vehicle', 'auto', 'truck'], 'plane': ['airplane', 'flight', 'plane'], 'travel': ['plane', 'airplane', 'luggage', 'suitcase', 'map'], 'food': ['utensils', 'fork-knife', 'restaurant', 'chef'], 'health': ['heart-pulse', 'stethoscope', 'activity', 'first-aid']
   };
 
+  // 4-Nov-2026: plural and irregular forms ("women" found nothing although tabler/woman exists).
+  var IRREGULAR = { women: 'woman', men: 'man', people: 'user', children: 'child', feet: 'foot', teeth: 'tooth', mice: 'mouse', geese: 'goose', knives: 'knife', leaves: 'leaf', wives: 'wife', shelves: 'shelf' };
+  function singulars(w) {
+    var out = [];
+    if (IRREGULAR[w]) out.push(IRREGULAR[w]);
+    if (w.length > 4 && /ies$/.test(w)) out.push(w.slice(0, -3) + 'y');
+    if (w.length > 4 && /(ches|shes|sses|xes)$/.test(w)) out.push(w.slice(0, -2));
+    if (w.length > 3 && /s$/.test(w) && !/ss$/.test(w)) out.push(w.slice(0, -1));
+    return out;
+  }
   function words(s) { return String(s || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean); }
   function pascal(s) { return String(s).split(/[^A-Za-z0-9]+/).filter(Boolean).map(function (p) { return p.charAt(0).toUpperCase() + p.slice(1); }).join(''); }
   function setKey(json) { return json && (json.prefix || json.set); }
@@ -3164,7 +3180,18 @@ const G = { MGDRoles };
     if (best < 15 && w.length >= 3 && b.indexOf(w) >= 0) best = 15;
     return best;
   }
-  // search(index, query, {sets, style, limit}) -> [{set, name, base, score, style}]
+  function wordScore(g, w, syn) {
+    var s = termScore(g, w);
+    if (s < 30 && syn[w]) {
+      for (var j = 0; j < syn[w].length; j++) {
+        var sw = syn[w][j];
+        if (sw.indexOf('-') > 0) { if (g.base === sw || g.base.indexOf(sw + '-') === 0 || g.base.indexOf('-' + sw) >= 0) s = Math.max(s, 35 - j); }
+        else s = Math.max(s, Math.round(termScore(g, sw) * Math.max(0.3, 0.6 - j * 0.05))); // earlier synonyms rank higher
+      }
+    }
+    return s;
+  }
+  // search(index, query, {sets, style, limit, partial}) — partial: true = rank icons by how many query words they match -> [{set, name, base, score, style}]
   function search(index, query, opts) {
     opts = opts || {};
     var limit = opts.limit || 200, sets = opts.sets, style = opts.style || 'any', q = String(query || '').toLowerCase().trim();
@@ -3178,18 +3205,15 @@ const G = { MGDRoles };
       else {
         if (g.base === qJoined) score += 1000;
         else if (g.base.indexOf(qJoined) === 0 && qws.length > 1) score += 400;
+        var matched = 0;
         for (var i = 0; i < qws.length; i++) {
-          var w = qws[i], s = termScore(g, w);
-          if (s < 30 && syn[w]) {
-            for (var j = 0; j < syn[w].length; j++) {
-              var sw = syn[w][j];
-              if (sw.indexOf('-') > 0) { if (g.base === sw || g.base.indexOf(sw + '-') === 0 || g.base.indexOf('-' + sw) >= 0) s = Math.max(s, 35 - j); }
-              else s = Math.max(s, Math.round(termScore(g, sw) * Math.max(0.3, 0.6 - j * 0.05))); // earlier synonyms rank higher
-            }
-          }
-          if (!s) { score = 0; break; }
-          score += s;
+          var w = qws[i], s = wordScore(g, w, syn);
+          if (!s) { var sg = singulars(w); for (var k = 0; k < sg.length && !s; k++) s = Math.round(wordScore(g, sg[k], syn) * 0.95); }
+          if (!s) { if (!opts.partial) { score = 0; break; } continue; }
+          matched++; score += s;
         }
+        // partial mode (fallback when no icon matches every word): icons matching more of the words always rank first
+        if (opts.partial && matched) score += matched * 1000; else if (opts.partial) score = 0;
         if (score) score += Math.max(0, 12 - g.base.split('-').length * 2);
       }
       if (score > 0) out.push({ set: g.set, name: name, base: g.base, score: score, style: styleOf(g.set, parseName(g.set, name).variant) });
