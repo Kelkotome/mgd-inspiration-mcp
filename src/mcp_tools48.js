@@ -273,6 +273,15 @@ function colorScale(a) {
   return ok(parts.join("\n\n"), { palettes: p.palettes.map((x) => ({ name: x.name, input: x.input, base_step: x.base_step, steps: x.steps.map((s) => ({ step: s.step, hex: s.hex, oklch: s.oklch, contrast_white: s.contrast_white, contrast_black: s.contrast_black })) })) });
 }
 
+// Colour lists arrive as arrays, {name, hex} objects, JSON text ('["#111", ...]') or space-separated oklch()/rgb() strings (4-Nov-2026 MCP logs).
+function colorList(x, max) {
+  if (typeof x === "string" && /^\s*\[/.test(x)) { try { x = JSON.parse(x); } catch (e) { /* not JSON: parse as text */ } }
+  if (Array.isArray(x)) return x.map((c) => (c && typeof c === "object" ? c.hex || c.value || c.color || c.colour || "" : c)).map((s) => str(s, 80).trim()).filter(Boolean).slice(0, max);
+  if (typeof x !== "string") return [];
+  const toks = x.match(/#[0-9a-fA-F]{3,8}\b|[a-zA-Z]+\([^)]*\)/g);
+  return toks ? toks.map((s) => s.trim()).slice(0, max) : list(x, max);
+}
+
 function contrast(a) {
   const target = [3, 4.5, 7].includes(Number(a.target)) ? Number(a.target) : 4.5;
   const yes = (b) => (b ? "✅ pass" : "❌ fail");
@@ -293,7 +302,7 @@ function contrast(a) {
     lines.push("", `Check more pairs visually: ${T}/contrast-checker/`);
     return ok(lines.join("\n"), { ...c, fix });
   }
-  const cols = list(a.colors, 64);
+  const cols = colorList(a.colors, 64);
   if (cols.length < 2) return err("Pass foreground + background, or colors with at least 2 colours for a matrix.");
   let m;
   try { m = MGDContrast.matrix(cols); } catch (e) { return err("Couldn't read those colours: " + str(e && e.message, 200)); }

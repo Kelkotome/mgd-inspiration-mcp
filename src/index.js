@@ -2298,7 +2298,14 @@ async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, l
   const words = [...new Set(q.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 2 && !MCP_STOP.has(w)).map((w) => cutBytes(w, 40)))].slice(0, 6);
   if (!words.length || (words.length === 1 && words[0] === q.toLowerCase())) return { rows: [], note: "" };
   const hit = words.map(any), wb = words.flatMap(likes);
-  const all = await run(" AND " + hit.join(" AND "), wb, order, []);
+  // LIKE matches inside words ("med" → "Named", "jaw" → "Jawlensky"), so rank whole-word hits first (4-Nov-2026).
+  // GLOB pattern ≈ word + 20 bytes; D1 caps patterns at ~50 bytes, so very long words just don't get the boost.
+  // One GLOB per word over all columns joined (a GLOB per column overran D1's 100 bound-parameter limit on 5-word queries).
+  const doc = "(' ' || lower(" + cols.map((c) => `COALESCE(${c},'')`).join(" || ' ' || ") + ") || ' ')";
+  const glob = (x) => (utf8Len(x) <= 28 ? `*[^a-z0-9]${x}[^a-z0-9]*` : null);
+  const ww = words.filter(glob);
+  const whole = ww.map(() => `(CASE WHEN ${doc} GLOB ? THEN 1 ELSE 0 END)`).join(" + ");
+  const all = await run(" AND " + hit.join(" AND "), wb, ww.length ? `(${whole}) DESC, ${order}` : order, ww.map(glob));
   if (all.length || words.length === 1) return { rows: all, note: all.length ? ` (matching all of: ${words.join(", ")})` : "" };
   // Rank partial matches by how rare each word is (IDF), so common words like "brand" or "identity" don't decide the result.
   const cnt = await env.DB.prepare(`SELECT COUNT(*) n, ${hit.map((h, i) => `SUM(CASE WHEN ${h} THEN 1 ELSE 0 END) d${i}`).join(", ")} FROM items WHERE ${where}`)
@@ -2308,9 +2315,12 @@ async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, l
   const use = words.map((_, i) => i).filter((i) => df[i]);
   if (!use.length) return { rows: [], note: "" };
   const w = (i) => Math.max(1, Math.round(idf[i] * 10));
-  const score = use.map((i) => `(CASE WHEN ${hit[i]} THEN ${w(i)} ELSE 0 END)`).join(" + ");
+  // A whole-word hit earns the word's full weight, a match inside another word a third of it.
+  const score = use.map((i) => (glob(words[i]) ? `(CASE WHEN ${doc} GLOB ? THEN ${w(i)} WHEN ${hit[i]} THEN ${Math.max(1, Math.round(w(i) / 3))} ELSE 0 END)`
+    : `(CASE WHEN ${hit[i]} THEN ${w(i)} ELSE 0 END)`)).join(" + ");
   const ub = use.flatMap((i) => likes(words[i]));
-  const some = await run(" AND (" + use.map((i) => hit[i]).join(" OR ") + ")", ub, `(${score}) DESC, ${order}`, ub);
+  const sb = use.flatMap((i) => (glob(words[i]) ? [glob(words[i])] : []).concat(likes(words[i])));
+  const some = await run(" AND (" + use.map((i) => hit[i]).join(" OR ") + ")", ub, `(${score}) DESC, ${order}`, sb);
   return { rows: some, note: some.length ? ` (no item matches every word; closest matches for: ${use.map((i) => words[i]).join(", ")})` : "" };
 }
 
