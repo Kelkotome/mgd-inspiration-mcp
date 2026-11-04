@@ -26,9 +26,14 @@ export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts"
   // error steps for flows (round 3)
   "auth-error", "payment-declined",
   // home-services family (Handmere): real query "plumber home services booking" had no answer
-  "pro-directory", "service-booking", "job-tracker"];
+  "pro-directory", "service-booking", "job-tracker",
+  // 5-Nov-2026 round (real queries: transactional email, staff shifts/time off, multi-location ops, inventory, savings goal, skincare carousel)
+  "account-email", "order-email", "shift-scheduler", "leave-calendar", "time-off-request", "ops-dashboard", "inventory-stock", "savings-goal", "onboarding-carousel"];
+// Transactional emails (table-based, inline-styled HTML for email clients): pages call them "templates", not "screens".
+export const UI_EMAIL_PATTERNS = ["account-email", "order-email"];
+const kindWord = (p, plural) => UI_EMAIL_PATTERNS.includes(p) ? (plural ? "email templates" : "email template") : UI_SECTION_PATTERNS.includes(p) ? (plural ? "sections" : "section") : (plural ? "screens" : "screen");
 export const UI_SECTION_PATTERNS = ["hero", "navigation-header", "feature-grid", "bento-features", "how-it-works", "logo-cloud", "stats-band",
-  "testimonials", "pricing", "comparison-table", "integrations-grid", "security-trust", "faq", "cta-banner", "about-team", "careers",
+  "testimonials", "pricing", "comparison-table", "scored-comparison", "integrations-grid", "security-trust", "faq", "cta-banner", "about-team", "careers",
   "blog-index", "changelog", "contact-form", "footer"];
 export const UI_PATTERNS = [...UI_SCREEN_PATTERNS, ...UI_SECTION_PATTERNS];
 // Gallery filter categories (4-Nov-2026, user-picked names): taxonomy screen_patterns groups merged into 9, plus website sections.
@@ -36,7 +41,8 @@ export const UI_PATTERNS = [...UI_SCREEN_PATTERNS, ...UI_SECTION_PATTERNS];
 const UI_FILTER_GROUPS = [["signin", "Sign-in & onboarding", ["auth", "onboarding", "finance"]], ["dashboards", "Dashboards", ["home", "dashboards"]],
   ["data", "Lists & data", ["data", "forms"]], ["shopping", "Shopping & payments", ["commerce", "monetize"]], ["account", "Account & admin", ["account", "admin"]],
   ["messages", "Messages & media", ["messaging", "media", "music", "camera"]], ["tools", "Tools & AI", ["tools", "ai", "review"]],
-  ["industries", "Industries", ["healthcare", "booking", "home-services", "portfolio"]], ["states", "States & feedback", ["states", "interaction-states"]]]
+  ["industries", "Industries", ["healthcare", "booking", "home-services", "portfolio"]], ["states", "States & feedback", ["states", "interaction-states"]],
+  ["emails", "Emails", ["emails"]], ["operations", "Staff & operations", ["operations"]]]
   .map(([id, name, keys]) => [id, name, keys.flatMap((k) => (UI_TAXONOMY.screen_patterns || {})[k] || [])]);
 const UI_GROUP_OF = Object.fromEntries([...UI_FILTER_GROUPS.flatMap(([id, , ps]) => ps.map((p) => [p, id])), ...UI_SECTION_PATTERNS.map((p) => [p, "sections"])]);
 export const UI_STYLES = ["minimal", "editorial", "brutalist", "luxury", "playful", "corporate", "retro", "monochrome"];
@@ -61,7 +67,10 @@ const LABELS = { "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys
   details: "Details and arrival window", "slot-taken": "Arrival window just taken", "on-the-way": "Pro on the way", "job-done": "Job done, pay and rate",
   "toast-snackbar": "Toast / snackbar with undo", "confirm-dialog": "Confirm dialog (destructive)", "side-drawer": "Side drawer", "command-palette": "Command palette",
   "date-range-picker": "Date range picker", "form-validation": "Form validation errors",
-  "auth-error": "Sign-in error", "payment-declined": "Card declined at checkout", "wrong-password": "Wrong password", "account-locked": "Account locked", "code-expired": "Code expired" };
+  "auth-error": "Sign-in error",
+  "account-email": "Account email", "order-email": "Order email", "shift-scheduler": "Shift scheduler", "leave-calendar": "Leave calendar", "time-off-request": "Time-off request",
+  "ops-dashboard": "Multi-location operations dashboard", "inventory-stock": "Inventory stock", "savings-goal": "Savings goal", "onboarding-carousel": "Onboarding carousel", "scored-comparison": "Scored comparison table",
+  "verify-email": "Verify email", "magic-link": "Magic link sign-in", "shipping-update": "Shipping update", "low-stock": "Low stock", "receive-stock": "Receive stock", "conflict": "Conflicts with staffing", "review": "Manager review", "payment-declined": "Card declined at checkout", "wrong-password": "Wrong password", "account-locked": "Account locked", "code-expired": "Code expired" };
 const label = (s) => LABELS[s] || (s || "").replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const order = (p) => { const i = UI_PATTERNS.indexOf(p); return i < 0 ? 999 : i; };
 const parseTags = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } };
@@ -237,16 +246,16 @@ async function uiItemPage(id, env, base, h) {
   const it = h.rowToItem(row, env), site = siteOf(env);
   const canonical = site + uiItemPath(it, base), imgAbs = site + base + it.image;
   const isSection = UI_SECTION_PATTERNS.includes(it.pattern);
-  const name = `${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""} ${isSection ? "section" : "screen"} — ${it.platform}, ${it.style} style`;
+  const name = `${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""} ${kindWord(it.pattern)} — ${it.platform}, ${it.style} style`;
   const related = (await uiRows(env, " AND category=? AND id<>? AND (country=? OR style=?)", [it.pattern, it.id, it.platform, it.style])).map((r) => h.rowToItem(r, env)).slice(0, 12);
   const facts = [["Pattern", label(it.pattern), `${base}/ui/${it.pattern}`], ["Platform", label(it.platform), `${base}/ui?platform=${it.platform}`],
     ["Style", label(it.style), `${base}/ui?style=${it.style}`], ["Product (fictional)", it.product, null], ["Category", label(it.app_category), null]];
   const flows = (it.flows || []).filter((f) => UI_FLOWS[f.id]);
   const pal = (it.palette || []).slice(0, 8).map((hx, i) => `<span class="sw" style="background:${h.escHtml(hx)}" title="${ROLES[i] || ""} ${h.escHtml(hx)}"></span>`).join("");
   const tags = uiShownTags(it.tags);
-  const short = `${it.variant ? label(it.variant) : label(it.pattern)} ${isSection ? "section" : "screen"} (${it.platform}, ${it.style})`; // variant name leads (keeps titles ≤ 60)
+  const short = `${it.variant ? label(it.variant) : label(it.pattern)} ${kindWord(it.pattern).replace("email ", "")} (${it.platform}, ${it.style})`; // variant name leads (keeps titles ≤ 60)
   const shows = ((it.description || "").match(/Shows ([^.]+)\./) || [])[1];
-  const metaDesc = `Free ${lcWords(short).replace(/ \(/, " for " + (isSection ? "websites" : "apps") + " (")} with copyable HTML and a DESIGN.md of light and dark tokens.${shows ? " Shows " + shows + "." : ""}`;
+  const metaDesc = `Free ${lcWords(short).replace(/ \(/, " for " + (isSection ? "websites" : UI_EMAIL_PATTERNS.includes(it.pattern) ? "transactional email" : "apps") + " (")} with copyable HTML and a DESIGN.md of light and dark tokens.${shows ? " Shows " + shows + "." : ""}`;
   const body = head(h, { title: fitTitle(`${short} – HTML & DESIGN.md | MGD`, `${short} – HTML & DESIGN.md`, `${short} | MGD`, short), ogTitle: name, desc: metaDesc, canonical, image: imgAbs, ogType: "article",
     jsonld: { "@context": "https://schema.org", "@type": "CreativeWork", name, url: canonical, description: it.description || undefined,
       image: { "@type": "ImageObject", contentUrl: imgAbs, ...licenceLd(site, base) }, ...licenceLd(site, base),
@@ -276,7 +285,7 @@ h2{font-size:1.05rem;margin:2.25rem 0 .75rem}` })
     ${pal ? `<div class="pal" aria-label="Colour roles: background, surface, border, text, muted, primary, on-primary, accent">${pal}</div>` : ""}
     ${tags.length ? `<div class="tags">${tags.map((t) => `<span>${h.escHtml(t)}</span>`).join("")}</div>` : ""}
   </div></div>
-${related.length ? `<h2>More ${h.escHtml(label(it.pattern).toLowerCase())} ${isSection ? "sections" : "screens"}</h2><div class="grid">${related.map((r) => card(r, base, h, `<b>${h.escHtml(r.platform)}</b>${r.variant ? " · " + h.escHtml(label(r.variant)) : ""} <span>· ${h.escHtml(r.style)}</span>`)).join("")}</div>` : ""}
+${related.length ? `<h2>More ${h.escHtml(label(it.pattern).toLowerCase())} ${kindWord(it.pattern, true)}</h2><div class="grid">${related.map((r) => card(r, base, h, `<b>${h.escHtml(r.platform)}</b>${r.variant ? " · " + h.escHtml(label(r.variant)) : ""} <span>· ${h.escHtml(r.style)}</span>`)).join("")}</div>` : ""}
 ${MCP_NOTE(base)}${RIGHTS}
 </div><script>document.addEventListener("click",function(e){var b=e.target.closest("[data-copy]");if(!b)return;var t=b.textContent;
 fetch(b.dataset.copy).then(function(r){return r.text()}).then(function(s){return navigator.clipboard.writeText(s)}).then(function(){b.textContent="Copied ✓";setTimeout(function(){b.textContent=t},1600)},function(){b.textContent="Copy failed";setTimeout(function(){b.textContent=t},1600)})});</script>
@@ -289,8 +298,8 @@ async function uiPatternPage(pattern, env, base, h) {
   const items = (await uiRows(env, " AND category=?", [pattern])).map((r) => h.rowToItem(r, env));
   if (!items.length) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
   const site = siteOf(env), url = `${site}${base}/ui/${pattern}`, isSection = UI_SECTION_PATTERNS.includes(pattern);
-  const c = UI_COPY[pattern] || {}, lab = label(pattern), kind = isSection ? "section" : "screen";
-  const h1 = c.h1 || `${lab} ${isSection ? "section" : "UI"} examples`;
+  const c = UI_COPY[pattern] || {}, lab = label(pattern), kind = kindWord(pattern).replace("email ", "");
+  const h1 = c.h1 || `${lab} ${isSection ? "section" : UI_EMAIL_PATTERNS.includes(pattern) ? "template" : "UI"} examples`;
   const nStyles = new Set(items.map((x) => x.style)).size, plats = [...new Set(items.map((x) => x.platform))];
   const desc = `${items.length} free ${lab.toLowerCase()} ${kind} examples for ${plats.join(" and ")} in ${nStyles} styles, each with HTML code and a DESIGN.md (light and dark). Original designs.`;
   const flows = Object.entries(UI_FLOWS).filter(([id]) => items.some((it) => (it.flows || []).some((f) => f.id === id)));
@@ -408,7 +417,7 @@ async function uiSitemap(env, base) {
 export const UI_MCP_TOOLS = [
   {
     name: "search_ui_screens",
-    description: "Search Made Good Designs' free library of ORIGINAL app screens and website sections (web and mobile): dashboards, data tables, charts, login, sign-up, two-factor, onboarding, settings, profile, team members, billing, invoices, paywalls, cancel flows, kanban boards, calendars, file managers, editors, AI chat, e-commerce product/cart/checkout, photo feeds, empty/404/loading/success states, and landing-page sections (hero, features, pricing, comparison table, testimonials, FAQ, CTA, footer…), in 8 styles: minimal, editorial, brutalist, luxury, playful, corporate, retro, monochrome. Unlike screenshot libraries, every screen ships with copyable HTML and a DESIGN.md token file (colours with WCAG contrast, type, spacing, radius, shadows). Each result gives the screenshot URL, colour roles, elements, any flows it belongs to, a page URL to cite and a screen_id — pass it to get_ui_screen_code to get the code. Use when building or designing an app screen or a marketing page.",
+    description: "Search Made Good Designs' free library of ORIGINAL app screens and website sections (web and mobile): dashboards, data tables, charts, login, sign-up, two-factor, onboarding, settings, profile, team members, billing, invoices, paywalls, cancel flows, kanban boards, calendars, file managers, editors, AI chat, e-commerce product/cart/checkout, transactional emails (receipt, password reset, magic link…), shift schedules, time off, inventory, ops dashboards, photo feeds, empty/404/loading/success states, and landing-page sections (hero, features, pricing, comparison table, testimonials, FAQ, CTA, footer…), in 8 visual styles. Unlike screenshot libraries, every screen ships with copyable HTML and a DESIGN.md token file (colours with WCAG contrast, type, spacing). Each result gives the screenshot URL, colour roles, elements, any flows it belongs to, a page URL to cite and a screen_id — pass it to get_ui_screen_code to get the code. Use when building or designing an app screen or a marketing page.",
     inputSchema: {
       type: "object",
       properties: {

@@ -55,13 +55,14 @@ function buildOne(pattern, platform, styleName, variant) {
   const p = { ...fam, family: d.family, variant: variant || null };
   const slug = `${pattern}${variant ? "-" + variant : ""}-${platform}-${styleName}`, rnd = mulberry32(hashStr(slug));
   const { light, dark } = palette(d.family, styleName);
+  p.tokens = { light, dark }; p.style = styleName; // resolved colours, for templates that cannot use CSS variables (emails)
   const md = DM.build({ name: fam.name, description: fam.desc, productType: fam.type[platform], personality: st.personality,
     light, darkColors: dark, dark: true, headingFont: st.hf, bodyFont: st.bf, radius: st.radius, shadows: st.shadows, motion: "subtle",
     density: platform === "web" ? "comfortable" : "spacious", components: ["buttons", "forms", "cards", "nav", "tables", "badges"],
     dos: st.numRule ? DM.DEFAULT_DO + "\nUse the heading serif only for page titles and marketing headlines. Set metrics, prices, plan names and table figures in the body sans with `font-variant-numeric: tabular-nums`." : undefined });
   const [w, h] = (d.size && d.size[platform]) || VIEWPORT[platform];
   const body = tpl(p, st, rnd);
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=${platform === "web" ? "device-width" : w},initial-scale=1">
+  const html = d.type === "email" ? body : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=${platform === "web" ? "device-width" : w},initial-scale=1">
 <title>${esc(fam.name)} — ${(vname || pattern).replace(/-/g, " ")} (${platform}, ${styleName}) · MGD UI screens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=${st.fonts}&display=swap" rel="stylesheet">

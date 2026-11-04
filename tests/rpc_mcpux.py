@@ -6,7 +6,7 @@ Checks (intended changes only):
   * tools/list (/mcp and /mcp/all): same 64 names in the same order as the baseline; inputSchemas identical except `items: {}` added
     where an array had none; descriptions identical except search_ui_screens (trimmed under 1024); annotations identical
   * schema hygiene: no array without items, every description <= 1024 chars, names match ^[a-zA-Z0-9_-]{1,64}$
-  * /mcp/core: the 18 design tools, each byte-identical to its /mcp entry, < 35 KB, own instructions that only name core tools;
+  * /mcp/core: the 18 design tools + list_ui_patterns (core since 3-Nov-2026), each byte-identical to its /mcp entry, < 35 KB, own instructions that only name core tools;
     tools/call of a tool NOT in the core list still works there (nothing is removed, only hidden from the list)
   * prompts: the 3 old prompts unchanged + `moodboard`
   * outputs: a sample of tools returns byte-identical text/structuredContent vs the baseline (incl. D1 search tools on a shared seed)
@@ -34,7 +34,7 @@ def walk(s, fn, path="$"):
             if isinstance(v, (dict, list)): walk(v, fn, path + "." + k)
     elif isinstance(s, list):
         for i, v in enumerate(s): walk(v, fn, f"{path}[{i}]")
-CORE = ["search_ui_screens", "get_ui_screen_code", "get_ui_flow", "search_design_inspiration", "browse_inspiration_by_theme", "list_inspiration_themes",
+CORE = ["search_ui_screens", "get_ui_screen_code", "get_ui_flow", "list_ui_patterns", "search_design_inspiration", "browse_inspiration_by_theme", "list_inspiration_themes",
         "search_museum_art", "search_annual_reports", "generate_website_color_palette", "generate_design_md", "design_md_from_references",
         "generate_logo_concepts", "generate_color_combinations", "check_contrast", "generate_shadcn_theme", "search_icons", "make_brand_board", "generate_type_scale"]
 OLD_ROUTED = ["search_ui_screens", "get_ui_screen_code", "get_ui_flow", "search_design_inspiration", "search_museum_art", "search_annual_reports",
@@ -66,7 +66,7 @@ check("schema hygiene: names valid, descriptions <= 1024, every array has items"
 check("no duplicate tool names", len(by) == len(tools))
 core_l, sizes["new /mcp/core (2025-06-18)"] = rpc(args.base, "tools/list", raw=True, path="/inspiration/mcp/core"); core = core_l["result"]["tools"]
 sizes["new /mcp/core (2024-11-05)"] = rpc(args.base, "tools/list", pv="2024-11-05", raw=True, path="/inspiration/mcp/core")[1]
-check("/mcp/core lists the 18 popular tools + save_moodboard (in /mcp order) + browse_design_tools, run_design_tool", [t["name"] for t in core] == [n for n in by if n in CORE + ["save_moodboard"]] + ["browse_design_tools", "run_design_tool"], [t["name"] for t in core])
+check("/mcp/core lists the 19 popular tools + save_moodboard (in /mcp order) + browse_design_tools, run_design_tool", [t["name"] for t in core] == [n for n in by if n in CORE + ["save_moodboard"]] + ["browse_design_tools", "run_design_tool"], [t["name"] for t in core])
 check("/mcp/core entries are byte-identical to their /mcp entries", all(t == by[t["name"]] for t in core if t["name"] in by))
 check("/mcp/core tools/list < 40 KB", sizes["new /mcp/core (2025-06-18)"] < 40000, sizes["new /mcp/core (2025-06-18)"])
 cins = init(args.base, "/inspiration/mcp/core").get("instructions", "")

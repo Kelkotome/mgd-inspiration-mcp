@@ -1,8 +1,9 @@
 {
- "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries; +6 round 2). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style. 3-Nov round 3: +6 interaction-state patterns (overlays on existing family screens).",
+ "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries; +6 round 2). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style. 3-Nov round 3: +6 interaction-state patterns (overlays on existing family screens). 5-Nov-2026 round (n11): +8 screen patterns (transactional emails, staff scheduling/time off, multi-location ops, inventory, savings goal, onboarding carousel) + 1 section (scored comparison); emails are type 'email' (table-based, inline-styled HTML).",
  "types": [
   "screen",
   "section",
+  "email",
   "flow"
  ],
  "platforms": [
@@ -20,7 +21,8 @@
   "onboarding": [
    "welcome",
    "onboarding-step",
-   "permissions-request"
+   "permissions-request",
+   "onboarding-carousel"
   ],
   "home": [
    "dashboard",
@@ -116,7 +118,9 @@
   "dashboards": [
    "security-dashboard",
    "project-tracker",
-   "course-dashboard"
+   "course-dashboard",
+   "ops-dashboard",
+   "savings-goal"
   ],
   "forms": [
    "form-wizard"
@@ -139,6 +143,16 @@
    "pro-directory",
    "service-booking",
    "job-tracker"
+  ],
+  "emails": [
+   "account-email",
+   "order-email"
+  ],
+  "operations": [
+   "shift-scheduler",
+   "leave-calendar",
+   "time-off-request",
+   "inventory-stock"
   ]
  },
  "section_patterns": [
@@ -161,7 +175,8 @@
   "integrations-grid",
   "changelog",
   "careers",
-  "security-trust"
+  "security-trust",
+  "scored-comparison"
  ],
  "elements": [
   "sidebar-nav",
@@ -200,7 +215,15 @@
   "eta",
   "time-slots",
   "receipt",
-  "star-rating"
+  "star-rating",
+  "email",
+  "calendar-grid",
+  "score-bars",
+  "footnotes",
+  "carousel",
+  "page-dots",
+  "slider",
+  "legend"
  ],
  "flows": {
   "sign-up": {
@@ -208,6 +231,7 @@
    "steps": [
     "sign-up",
     "form-validation",
+    "account-email:verify-email",
     "onboarding-step",
     "welcome",
     "empty-state"
@@ -218,6 +242,7 @@
    "actions": [
     "Creating account",
     "Fixing form errors",
+    "Verifying email",
     "Onboarding",
     "Setting up"
    ]
@@ -248,6 +273,7 @@
     "login",
     "auth-error:account-locked",
     "forgot-password",
+    "account-email:password-reset",
     "success-confirmation:password-reset"
    ],
    "errors": [
@@ -257,6 +283,7 @@
     "Logging in",
     "Account locked",
     "Resetting password",
+    "Opening the reset email",
     "Confirming"
    ]
   },
@@ -267,7 +294,9 @@
     "cart",
     "checkout",
     "payment-declined",
-    "order-confirmation"
+    "order-confirmation",
+    "order-email:receipt",
+    "order-email:shipping-update"
    ],
    "errors": [
     "payment-declined"
@@ -277,7 +306,9 @@
     "Adding to cart",
     "Paying",
     "Card declined",
-    "Confirming"
+    "Confirming",
+    "Receipt email",
+    "Shipping update"
    ]
   },
   "upgrade-plan": {
@@ -552,6 +583,78 @@
     "plumber booking",
     "tradesperson booking"
    ]
+  },
+  "magic-link-login": {
+   "name": "Sign in with a magic link",
+   "steps": [
+    "login",
+    "account-email:magic-link",
+    "list-view"
+   ],
+   "actions": [
+    "Requesting a link",
+    "Opening the email",
+    "Signed in"
+   ],
+   "aliases": [
+    "magic link",
+    "passwordless login",
+    "passwordless sign in",
+    "email sign in link",
+    "sign in link"
+   ]
+  },
+  "request-time-off": {
+   "name": "Request and approve time off",
+   "steps": [
+    "shift-scheduler",
+    "time-off-request:request",
+    "time-off-request:conflict",
+    "time-off-request:review",
+    "leave-calendar"
+   ],
+   "errors": [
+    "time-off-request:conflict"
+   ],
+   "actions": [
+    "Checking the rota",
+    "Requesting leave",
+    "Short-staffed day",
+    "Manager approval",
+    "Leave on the calendar"
+   ],
+   "aliases": [
+    "time off",
+    "request time off",
+    "leave request",
+    "annual leave",
+    "pto request",
+    "holiday request",
+    "vacation request",
+    "approve leave",
+    "time off approval"
+   ]
+  },
+  "receive-stock": {
+   "name": "Spot low stock and receive a delivery",
+   "steps": [
+    "ops-dashboard",
+    "inventory-stock:low-stock",
+    "inventory-stock:receive-stock"
+   ],
+   "actions": [
+    "Seeing the alert",
+    "Checking stock",
+    "Receiving the delivery"
+   ],
+   "aliases": [
+    "low stock",
+    "restock",
+    "receive stock",
+    "inventory restock",
+    "stock delivery",
+    "goods received"
+   ]
   }
  },
  "categories": [
@@ -567,7 +670,8 @@
   "developer",
   "portfolio",
   "beauty",
-  "services"
+  "services",
+  "operations"
  ],
  "styles": [
   "minimal",
@@ -613,7 +717,8 @@
    "voice-call",
    "split-view",
    "canvas-editor",
-   "floor-plan"
+   "floor-plan",
+   "account-email"
   ],
   "finance": [
    "dashboard",
@@ -629,7 +734,8 @@
    "product-detail",
    "cart",
    "checkout",
-   "order-confirmation"
+   "order-confirmation",
+   "order-email"
   ],
   "media": [
    "feed",
@@ -652,7 +758,8 @@
    "blog-index",
    "contact-form",
    "stats-band",
-   "comparison-table"
+   "comparison-table",
+   "scored-comparison"
   ],
   "clinic": [
    "doctor-directory",
@@ -675,15 +782,24 @@
    "form-wizard"
   ],
   "bank": [
-   "bank-onboarding"
+   "bank-onboarding",
+   "savings-goal"
   ],
   "beauty": [
-   "product-scan"
+   "product-scan",
+   "onboarding-carousel"
   ],
   "homeservices": [
    "pro-directory",
    "service-booking",
    "job-tracker"
+  ],
+  "ops": [
+   "shift-scheduler",
+   "leave-calendar",
+   "time-off-request",
+   "ops-dashboard",
+   "inventory-stock"
   ]
  }
 }

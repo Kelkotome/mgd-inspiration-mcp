@@ -1,0 +1,38 @@
+# 5-Nov-2026 UI round (n11): real zero/weak queries from mcp_calls 29-Oct..4-Nov (marked R) + the requested gap patterns.
+# query | expected patterns (any of) | optional args
+comparison table of products with scores and source footnotes | scored-comparison
+check your email confirmation sent success receipt | account-email order-email
+newsletter email template | account-email order-email
+team staff schedule management with weekly shifts and roles | shift-scheduler
+inventory stock list with low stock alerts and receive stock | inventory-stock
+operations home dashboard today sales and alerts for two locations | ops-dashboard
+product inventory table with stock levels, low stock badges and restock form | inventory-stock
+month calendar with leave and time off marks for one team member | leave-calendar
+sales report with daily revenue bars, top services and staff breakdown | ops-dashboard analytics-charts
+personal finance savings goal progress dashboard with projection chart | savings-goal
+onboarding welcome carousel beauty skincare app with illustration, large serif headline, continue button | onboarding-carousel
+operational dashboard overview actionable metrics recent activity tasks table | ops-dashboard dashboard
+password reset email | account-email
+verify email address email | account-email
+magic link sign in email | account-email
+welcome email for new users | account-email
+invoice email | account-email
+order receipt email | order-email
+shipping update email with tracking | order-email
+transactional email templates | account-email order-email
+shift scheduler | shift-scheduler
+employee shift schedule week grid with open shifts | shift-scheduler
+staff rota | shift-scheduler
+time off request form | time-off-request
+leave request approval for managers | time-off-request
+approve time off request | time-off-request
+leave calendar | leave-calendar
+pto calendar for the team | leave-calendar
+multi location operations dashboard | ops-dashboard
+store locations dashboard with sales and alerts | ops-dashboard
+low stock inventory | inventory-stock
+receive stock delivery form | inventory-stock
+pricing feature comparison table with scores | scored-comparison
+plan comparison scorecard with weighted scores | scored-comparison
+savings goal tracker | savings-goal
+skincare onboarding carousel | onboarding-carousel

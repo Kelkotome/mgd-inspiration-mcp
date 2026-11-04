@@ -36,11 +36,11 @@ def fields_for(slug, flow_tags):
     d = os.path.join(OUT, slug)
     m = json.load(open(os.path.join(d, "meta.json")))
     name, shows, elements = m["name"], m["shows"], m["elements"]
-    kind = "section" if m["type"] == "section" else "screen"
-    plat = ("website" if m["platform"] == "web" else "mobile website") if kind == "section" else ("web app" if m["platform"] == "web" else "mobile app")
+    kind = "section" if m["type"] == "section" else ("template" if m["name"].lower().endswith("email") else "email template") if m["type"] == "email" else "screen"
+    plat = ("website" if m["platform"] == "web" else "mobile website") if kind == "section" else ("desktop email client" if m["platform"] == "web" else "mobile email client") if m["type"] == "email" else ("web app" if m["platform"] == "web" else "mobile app")
     title = f"{name} — {m['platform']}, {m['style']} ({m['product']})"
     desc = (f"{name} {kind} for a {plat}, designed for {m['product']}, " + ("the fictional portfolio of an independent designer. " if m['category'] == "portfolio" else f"a fictional {m['category']} product. ") +
-            f"Shows {shows}. {STYLE[m['style']]} Comes with the full HTML and a DESIGN.md with light and dark colour tokens.")
+            f"Shows {shows}. {STYLE[m['style']]} " + ("Comes with email-client-safe HTML (nested tables, inline styles, a fluid 600px layout, a bulletproof button and dark-mode overrides) and a DESIGN.md with light and dark colour tokens." if m["type"] == "email" else "Comes with the full HTML and a DESIGN.md with light and dark colour tokens."))
     roles = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"]
     tags = [m["pattern"], m["platform"], m["category"]] + [e for e in elements if e not in (m["pattern"], m["platform"])]
     tags += ([f"variant:{m['variant']}"] if m.get("variant") else []) + flow_tags.get(slug, [])

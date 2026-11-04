@@ -19,7 +19,7 @@ def content_bottom(path):
 n = 0
 for mp in sorted(glob.glob(f"out/{sys.argv[1] if len(sys.argv) > 1 else '*'}/meta.json")):
     d = os.path.dirname(mp); m = json.load(open(mp))
-    if m["type"] != "section": continue
+    if m["type"] not in ("section", "email"): continue
     shots = [p for p in (f"{d}/screen.png", f"{d}/screen-dark.png") if os.path.exists(p)]
     if not shots: continue
     h = Image.open(shots[0]).height

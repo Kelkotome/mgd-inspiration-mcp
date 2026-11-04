@@ -2,7 +2,7 @@
 #   query | expected patterns (any of; "none" = an honest no-match answer is also a pass) | optional args as k=v (platform, style, pattern)
 # Section A: the 89 real queries logged up to 3-Nov-2026 (ui-screens/mcp_ui_queries_2026-11-03.txt), expected pattern labelled by hand.
 work index list of projects | portfolio-home project-tracker list-view
-weekly calendar schedule with staff | calendar class-schedule
+weekly calendar schedule with staff | calendar class-schedule shift-scheduler
 warm premium landing hero for a food business tool | hero
 success confirmation celebration friendly | success-confirmation booking-confirmed order-confirmation
 stats band with colourful rounded cards and badges | stats-band
@@ -27,7 +27,7 @@ portfolio hero | portfolio-home hero
 playlist | playlist
 playful learning progress dashboard with stat cards and profile header | course-dashboard
 personal developer portfolio case study | case-study portfolio-home
-onboarding welcome carousel beauty skincare app with illustration, large serif headline, continue button | welcome onboarding-step
+onboarding welcome carousel beauty skincare app with illustration, large serif headline, continue button | onboarding-carousel welcome onboarding-step
 onboarding step choose your goal, friendly, one question per screen | onboarding-step
 music player track list mobile | music-player playlist
 music audio player home screen | music-player playlist
@@ -67,7 +67,7 @@ dark centered hero decorative graphics below heading | hero
 dark analytics dashboard with KPI figures, sparklines and charts | dashboard analytics-charts
 daily habit checklist home screen, soft, rounded, friendly | home
 contact form enquiry | contact-form
-comparison table of products with scores and source footnotes | comparison-table
+comparison table of products with scores and source footnotes | scored-comparison comparison-table
 comparison table comparing plans or products side by side with checkmarks and prices | comparison-table pricing
 compare versions diff before and after changes history | version-history
 clinic/hospital website patient homepage with medical specialties, doctor team and appointment booking | clinic-home

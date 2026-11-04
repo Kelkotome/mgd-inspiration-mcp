@@ -49,6 +49,8 @@ const FAMILIES = {
   learning: { name: "Brightpath", cat: "education", desc: "an online course platform for schools and their students", type: { web: "SaaS web app", mobile: "Mobile app" } },
   bank: { name: "Mintwell", cat: "finance", desc: "a digital bank for freelancers and small businesses", type: { web: "Online banking web app", mobile: "Mobile banking app" } },
   beauty: { name: "Dewline", cat: "beauty", desc: "a skincare routine app with an ingredient and product scanner", type: { web: "SaaS web app", mobile: "Mobile app" } },
+  // 5-Nov-2026 round: small-business admin builds asked twice for staff scheduling, time off, multi-location ops and inventory
+  ops: { name: "Rosterline", cat: "operations", desc: "staff scheduling, time off, inventory and daily operations for a multi-location bakery-café", type: { web: "Operations web app", mobile: "Mobile app" } },
   homeservices: { name: "Handmere", cat: "services", desc: "on-demand plumbers, electricians and cleaners booked by arrival window", type: { web: "Marketplace web app", mobile: "Mobile app" } },
 };
 

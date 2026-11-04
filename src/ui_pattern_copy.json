@@ -2350,5 +2350,189 @@
     "On the job-done screen, together with the receipt and payment, while the visit is fresh."
    ]
   ]
+ },
+ "account-email": {
+  "h1": "Transactional email templates (welcome, verify email, magic link, password reset, invoice)",
+  "intro": "Account emails are the ones people actually open: they’re waiting for them. These templates cover a welcome email with a getting-started checklist, email verification with a code, a magic-link sign-in, a password reset and a paid invoice. Each is table-based HTML with inline styles, a 600px layout that goes fluid on phones, a bulletproof button and dark-mode colours, in eight visual styles.",
+  "tips": [
+   "Put the one action in a big button near the top, and repeat it as a plain link for clients that block buttons.",
+   "Say how long a link or code is valid (15 minutes, 60 minutes, 24 hours) so people know whether to hurry.",
+   "For sign-in and reset emails, show when and from which device the request came, and what to do if it wasn’t them.",
+   "Use hidden preheader text: it’s the line that shows after the subject in the inbox."
+  ],
+  "faq": [
+   [
+    "Why are email templates built with tables?",
+    "Several widely used email clients, Outlook for Windows in particular, ignore modern CSS layout such as flexbox and grid. Nested tables with role=\"presentation\" and inline styles are the most reliable way to keep the layout intact everywhere."
+   ],
+   [
+    "Do these emails support dark mode?",
+    "Yes. Light colours are inline, and a prefers-color-scheme block (plus Outlook.com’s data-ogsc selectors) swaps in the dark tokens from the DESIGN.md. Some clients still invert colours on their own, so test in the clients your users have."
+   ],
+   [
+    "Can I use these with my email provider?",
+    "Yes. They’re plain HTML, so they work with any sending service or framework. Replace the example links and copy with your own merge fields."
+   ]
+  ]
+ },
+ "order-email": {
+  "h1": "Order receipt and shipping update email templates",
+  "intro": "After checkout, the order emails are where a store earns trust. These templates show an order receipt with product rows, totals, the shipping address and payment method, and a shipping update with a five-stage delivery tracker, arrival date and tracking number. Table-based, inline-styled HTML for email clients, in eight styles with light and dark colours.",
+  "tips": [
+   "Lead with the order number and the delivery estimate: they’re what customers look for first.",
+   "List each item with a thumbnail, variant and price so the receipt can be checked at a glance.",
+   "On shipping updates, show progress as named stages, not just a percentage.",
+   "Say what happens if nobody’s home, before they have to ask."
+  ],
+  "faq": [
+   [
+    "What should an order confirmation email include?",
+    "The order number and date, each item with quantity and price, subtotal, shipping, tax and total, the shipping address, the payment method (last four digits only), a delivery estimate and a link to view or change the order."
+   ],
+   [
+    "How do you show delivery progress in an email?",
+    "A row of table cells works everywhere: one cell per stage with a filled bar for stages already reached and a muted bar for the rest, with the current stage label in bold."
+   ]
+  ]
+ },
+ "shift-scheduler": {
+  "h1": "Staff shift scheduler UI examples",
+  "intro": "A shift scheduler has to show who works when, at a glance, and flag problems before the rota goes out. These examples show a week grid of team members against days, colour-coded shifts by role, open shifts that need cover, time off and unavailability, scheduled against contracted hours, a short-staffed warning and daily labour totals, with a mobile day view.",
+  "tips": [
+   "Keep one row per person and one column per day; put open shifts in their own row at the top.",
+   "Colour shifts by role, and always pair the colour with a text label.",
+   "Show scheduled vs contracted hours next to each name and flag overtime.",
+   "Warn on days below minimum staffing before the manager publishes."
+  ],
+  "faq": [
+   [
+    "What does a shift scheduling screen need?",
+    "A week (or day) grid, shifts with start and end times and role, open shifts, time off and availability, hours per person, daily totals, and a draft-then-publish step so staff only see the final rota."
+   ],
+   [
+    "How should time off appear on a rota?",
+    "As a hatched or muted block in the person’s row, labelled with the type (annual leave, unavailable), so it can’t be mistaken for a shift."
+   ]
+  ]
+ },
+ "leave-calendar": {
+  "h1": "Leave and time-off calendar examples",
+  "intro": "A leave calendar answers two questions: when is this person off, and who else is off then? These examples show one team member’s month with annual leave, a sick day and a half day, teammates who are also away, leave balances with progress bars and upcoming requests, on web and mobile.",
+  "tips": [
+   "Mark leave types with colour and a written label, and add a legend.",
+   "Show balances next to the calendar so people see the effect of a request.",
+   "Flag teammates who are off on the same days to make clashes obvious.",
+   "Let the view switch between one person and the whole team."
+  ],
+  "faq": [
+   [
+    "What should a time-off calendar show?",
+    "Approved and pending leave by type, today’s date, weekends, other people off on the same days, and the remaining balance for each leave type."
+   ]
+  ]
+ },
+ "time-off-request": {
+  "h1": "Time-off request and approval UI examples",
+  "intro": "Time-off requests go both ways: an employee asks, a manager decides. These examples show a request form with leave type, dates, half-day options, a note and the shifts it releases; the same form when a day would drop below minimum staffing; and a manager’s review with a coverage check and approve or decline buttons.",
+  "tips": [
+   "Show the balance before and after the request in the form, not after submitting.",
+   "Check staffing as the dates are picked and suggest a colleague who can cover.",
+   "Give the manager a per-day coverage table, not just the dates.",
+   "Make approve and decline equally easy to find, with an optional reply."
+  ],
+  "faq": [
+   [
+    "How should a leave request handle staffing conflicts?",
+    "Explain which day and shift would be short, mark the date fields, and offer a way forward, such as asking a named colleague to cover or moving the dates, rather than just blocking the request."
+   ],
+   [
+    "What does a manager need to approve time off?",
+    "Who is asking, the type and dates, the balance afterwards, the shifts affected, whether each one is covered, and any overlapping requests."
+   ]
+  ]
+ },
+ "ops-dashboard": {
+  "h1": "Multi-location operations dashboard examples",
+  "intro": "An owner running several shops needs today in one view. These examples show sales, orders, average ticket, labour cost and staff on shift for all locations, a card per location with sales against target, sales per hour by location and a needs-attention list for low stock, late clock-ins, late deliveries and offline equipment.",
+  "tips": [
+   "Lead with today’s totals, then break them down by location.",
+   "Compare each location with its own target, not with the others.",
+   "Put alerts that need a person in a short list, each with one action.",
+   "Give each location a consistent colour across cards and charts."
+  ],
+  "faq": [
+   [
+    "What KPIs belong on a retail or café operations dashboard?",
+    "Sales so far today against target, orders, average ticket, labour cost as a share of sales and staff on shift, broken down by location, plus live alerts."
+   ]
+  ]
+ },
+ "inventory-stock": {
+  "h1": "Inventory and low-stock UI examples (with receive stock form)",
+  "intro": "Inventory screens are about what to reorder and what just arrived. These examples show a low-stock table with on hand against par level, stock bars, Low, Critical, Out and On order badges, suggested order quantities and bulk purchase orders, plus a receive-delivery form with ordered against received quantities and a shortage note.",
+  "tips": [
+   "Sort by urgency and show on hand against par level, not on hand alone.",
+   "Use badges with words (Low, Out, On order), not colour alone.",
+   "When receiving stock, start every line at the ordered quantity and highlight differences.",
+   "Update counts only when the person confirms, and say so."
+  ],
+  "faq": [
+   [
+    "What is a par level?",
+    "The quantity a location wants on hand after each delivery. Items below it are flagged as low, and the difference suggests how much to reorder."
+   ]
+  ]
+ },
+ "savings-goal": {
+  "h1": "Savings goal UI examples with projection chart",
+  "intro": "A savings goal screen should show progress and when the goal will be reached. These examples show a progress ring, amount saved against the target, the month the goal is on track for, a balance chart with a dashed projection to the goal line and a faster what-if scenario, an auto-save slider and round-up toggles.",
+  "tips": [
+   "State the expected finish date in words, next to the progress.",
+   "Draw the projection as a dashed line so it can’t be mistaken for real history.",
+   "Let people try a different monthly amount and see the new date straight away.",
+   "Show other goals with simple bars to keep the focus on one."
+  ],
+  "faq": [
+   [
+    "How do you show a savings projection?",
+    "Plot the saved balance as a solid line and continue it as a dashed line at the planned monthly amount until it meets a goal line, then label the month it gets there."
+   ]
+  ]
+ },
+ "onboarding-carousel": {
+  "h1": "Onboarding carousel examples (skincare app)",
+  "intro": "An onboarding carousel gets a few seconds to explain an app. These examples show the first of three slides for a skincare app: a drawn illustration, a large display headline, a short paragraph, page dots, Skip and a Continue button, with benefit rows on the wider web layout.",
+  "tips": [
+   "One idea per slide, with a headline people can read in two seconds.",
+   "Keep Skip visible on every slide.",
+   "Show progress with dots and name the step for screen readers.",
+   "Make Continue the only filled button."
+  ],
+  "faq": [
+   [
+    "How many onboarding slides should an app have?",
+    "Usually three or fewer. Each should explain one benefit; anything else is better taught in context later."
+   ]
+  ]
+ },
+ "scored-comparison": {
+  "h1": "Scored comparison table examples (with sources)",
+  "intro": "A scored comparison goes further than checkmarks: it rates each option on weighted criteria and says how the scores were measured. These examples compare three placeholder plans with overall score rings, six weighted criteria with 0–10 bars, footnote markers and a numbered sources list, on web and mobile.",
+  "tips": [
+   "Publish the weighting next to the table so readers can judge the overall score.",
+   "Highlight the best score in each row, not just the winner overall.",
+   "Number the footnotes and keep methods short, dated and specific.",
+   "Don’t let the recommended column hide that another option scores higher."
+  ],
+  "faq": [
+   [
+    "How do you calculate a weighted score?",
+    "Multiply each criterion’s score by its weight, add the results and divide by the total weight. With weights in percent adding to 100, that’s the sum of score × weight ÷ 100."
+   ],
+   [
+    "Why add sources to a comparison table?",
+    "Footnotes show how each score was measured and when, so readers can check it and you can update it when things change."
+   ]
+  ]
  }
 }

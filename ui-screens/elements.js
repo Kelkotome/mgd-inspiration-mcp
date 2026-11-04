@@ -58,7 +58,8 @@ function main() {
     const b = html.slice(html.indexOf("<body")).replace(/<style[^]*?<\/style>|<script[^]*?<\/script>/g, "");
     const key = `${m.pattern}|${m.variant || ""}|${m.platform}`;
     const e = inv[key] || (inv[key] = { el: new Set(), layout: {}, density: {} });
-    for (const [name, t] of D) if (t(b)) e.el.add(name);
+    // emails lay out with <table role="presentation">: that is not a data table, so skip the table detector for them
+    for (const [name, t] of D) if (!(m.type === "email" && name === "table") && t(b)) e.el.add(name);
     for (const x of m.elements || []) e.el.add(x);
     const L = layout(b, m.platform), d = density(b);
     e.layout[L] = (e.layout[L] || 0) + 1; e.density[d] = (e.density[d] || 0) + 1;
