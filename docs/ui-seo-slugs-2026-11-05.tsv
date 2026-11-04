@@ -1,0 +1,135 @@
+family	id	slug	keyword	vol_ww	3mo	YoY	alternatives	H1
+pattern	navigation-header	navbar	navbar design	5400	+7%	+31%	header design 8100; website header design 4400; navigation bar design 1900	Navbar design examples
+pattern	hero	hero-section	hero section	14800	-24%	-18%	hero section design 3600; website hero section 1900; hero section examples 1000	Hero section design examples
+pattern	pricing	pricing-page	pricing page design	720	+7%	-31%	pricing table design 590; pricing section design 320; pricing page examples 260	Pricing page design examples
+pattern	login	login-page	login page design	18100	+7%	-23%	login page template 5400; login page ui 3600; login ui design 2400	Login page design examples
+pattern	sign-up	sign-up-page	sign up page design	1600	-14%	-53%	registration page design 1300; register page design 1300; sign up page examples 390	Sign up page design examples
+pattern	forgot-password	reset-password-page	reset password page design	90	-24%	-69%	forgot password ui 0; forgot password screen 0; forgot password page design 0	Forgot and reset password page examples
+pattern	two-factor	otp-ui	otp ui design	210	+21%	+15%	verification code ui 90; 2fa ui design 70; two factor authentication ui 50	OTP and two-factor verification UI examples
+pattern	dashboard	dashboard	dashboard design	40500	+0%	+14%	dashboard templates 18100; dashboard ui 14800; dashboard ui design 8100	Dashboard design examples
+pattern	data-table	data-table	data table examples	2900	+39%	-34%	data table design 1000; table design ui 880; data table ui 590	Data table design examples
+pattern	analytics-charts	analytics-dashboard	analytics dashboard	3600	-7%	-13%	analytics dashboard design 390; chart ui design 320; analytics dashboard examples 260	Analytics dashboard and chart UI examples
+pattern	footer	footer	footer design	14800	-12%	-28%	website footer design 5400; footer examples 2900; website footer examples 1600	Website footer design examples
+pattern	faq	faq-section	faq section design	880	-6%	-23%	faq design 1900; faq page design 1300; faq page examples 880	FAQ section design examples
+pattern	testimonials	testimonial-section	testimonial section design	1000	-13%	-31%	testimonial design 2900; testimonials section 880; testimonial page design 480	Testimonial section design examples
+pattern	feature-grid	features-section	features section examples	0	n/a	n/a	feature section design 70; features section design 0; feature section examples 0	Features section design examples
+pattern	bento-features	bento-grid	bento grid	22200	-13%	+40%	bento ui 2400; bento grid layout 1900; bento grid design 1600	Bento grid design examples
+pattern	cta-banner	call-to-action	call to action examples	8100	-27%	-39%	cta examples 1900; cta design 1300; cta section design 590	Call to action (CTA) section examples
+pattern	logo-cloud	logo-cloud	logo cloud	1900	+4%	+10%	logo wall design 880; logo cloud design 390; client logos section 0	Logo cloud section examples
+pattern	stats-band	stats-section	stats section	320	+7%	+32%	stats section design 50; statistics section design 10	Stats section design examples
+pattern	how-it-works	how-it-works-section	how it works section	260	-14%	-34%	how it works design 140; how it works page design 70	How it works section examples
+pattern	comparison-table	comparison-table	comparison table examples	720	+14%	-24%	comparison table design 590; pricing comparison table 390; feature comparison table 210	Pricing comparison table examples
+pattern	scored-comparison	scored-comparison-table	comparison table	9900	+33%	+16%	product comparison table 480; comparison chart design 170	Scored comparison table examples (with sources)
+pattern	about-team	about-us-page	about us page	8100	-24%	-49%	about us page design 5400; about us page examples 1600; about page design 1600	About us page design examples
+pattern	careers	careers-page	careers page examples	210	-19%	-56%	career page design 880; careers page design 0	Careers page design examples
+pattern	blog-index	blog-page	blog page design	1900	-11%	-41%	blog design 2900; blog page examples 590; blog layout design 210	Blog page design examples
+pattern	changelog	changelog	changelog examples	1900	+12%	+52%	changelog design 140; changelog page 110; changelog page design 30	Changelog page examples
+pattern	contact-form	contact-form	contact form design	3600	-14%	+41%	contact us page design 6600; contact page design 6600; contact page examples 1900	Contact form design examples
+pattern	security-trust	trust-center	trust center page	20	+60%	+0%	security page design 20; trust page design 0	Security and trust center page examples
+pattern	integrations-grid	integrations-section	integrations page	260	+1%	-12%	integrations page design 20	Integrations section examples
+pattern	integrations	integrations-ui	integrations ui	480	+20%	-10%	integrations settings page 0	Integrations settings UI examples
+pattern	checkout	checkout-page	checkout page design	1000	-10%	-41%	checkout ui 590; checkout design 320; checkout page examples 260	Checkout page design examples
+pattern	cart	shopping-cart	shopping cart design	390	+0%	-29%	cart page design 590; shopping cart ui 320; cart ui design 210	Shopping cart page design examples
+pattern	product-detail	product-page	product page design	1900	-11%	-38%	product detail page 1600; product detail page design 880; product page ui 390	Product page design examples
+pattern	order-confirmation	order-confirmation-page	order confirmation page	480	-18%	-46%	thank you page design 1900; order confirmation page design 90	Order confirmation page examples
+pattern	settings	settings-page	settings page ui	720	-13%	-28%	settings ui design 260; settings page design 260; settings screen design 40	Settings page UI examples
+pattern	profile	profile-page	profile page design	1600	-21%	-21%	profile page ui 1300; profile ui design 1000; user profile page design 140	Profile page design examples
+pattern	empty-state	empty-state	empty states	2400	-6%	-17%	empty state ui 1000; empty state design 170; empty state examples 70	Empty state design examples
+pattern	error-404	404-page	404 page	8100	-7%	-49%	404 page design 2400; 404 page examples 1000; custom 404 page 720	404 page design examples
+pattern	loading-skeleton	skeleton-loading	skeleton loading	12100	-18%	+7%	skeleton loader 12100; skeleton screen 2900; skeleton loading screen 170	Skeleton loading screen examples
+pattern	success-confirmation	success-page	success page design	90	+19%	-19%	success message design 20; success screen design 10	Success page design examples
+pattern	onboarding-step	onboarding-screens	onboarding screens	2400	-24%	-34%	onboarding ui 1300; onboarding ui design 390; app onboarding design 260	Onboarding screen design examples
+pattern	onboarding-carousel	onboarding-carousel	onboarding carousel	70	+10%	+21%	onboarding slider 10; onboarding screens examples 0	Onboarding carousel examples
+pattern	welcome	welcome-screen	app welcome screen	390	+8%	-7%	welcome page design 880; welcome screen design 110	Welcome screen design examples
+pattern	permissions-request	permission-request	permission request ui	0	n/a	n/a	push notification permission screen 0; permission screen design 0	Permission request screen examples
+pattern	home	app-home-screen	app home screen design	390	-13%	-24%	home page ui design 260; mobile app home screen 170; home screen ui design 140	App home screen design examples
+pattern	feed	social-media-feed	social media feed design	140	-19%	-47%	news feed design 90; feed ui design 70; social feed ui 40	Social media feed UI examples
+pattern	list-view	list-view	list view ui	260	+0%	+0%	todo app ui 390; to do list app design 210; to do list ui design 170	List view and to-do app UI examples
+pattern	detail-view	detail-page	detail page design	170	-29%	-47%	detail view ui 20	Detail page design examples
+pattern	kanban-board	kanban-board	kanban board template	1600	-25%	-39%	kanban ui 480; kanban board design 390; kanban board ui 320	Kanban board UI design examples
+pattern	calendar	calendar-ui	calendar ui	2900	+0%	-7%	calendar design 18100; calendar ui design 1000; calendar app design 320	Calendar UI design examples
+pattern	file-manager	file-manager-ui	file manager ui	210	+15%	-7%	file manager ui design 90; file manager design 50	File manager UI examples
+pattern	search-results	search-results-page	search results page design	140	-27%	-57%	search ui design 390; search results ui 320; search page design 170	Search results page examples
+pattern	editor-toolbar	rich-text-editor	rich text editor ui	1600	+18%	+484%	text editor ui 720; editor toolbar ui 0	Rich text editor UI examples
+pattern	chat-ai-assistant	chatbot-ui	chatbot ui	8100	-12%	-12%	ai chatbot ui 2400; ai chat ui 2400; chatbot ui design 1900	AI chatbot UI design examples
+pattern	chat-list	chat-list-ui	chat list ui	70	+8%	+42%	chat app ui design 390; chat app design 390; messaging app ui 260	Chat list UI examples
+pattern	chat-thread	chat-ui	chat ui	5400	-30%	-38%	chat interface 1600; chat ui design 1300; chat interface design 1300	Chat UI design examples
+pattern	video-call	video-call-ui	video call ui	390	-7%	-7%	video call ui design 70; video call app design 30	Video call UI examples
+pattern	image-viewer	image-lightbox	lightbox design	480	+8%	-12%	image gallery ui 170; image viewer ui 50	Image lightbox design examples
+pattern	map-view	map-ui	map ui	2900	-7%	+6%	map ui design 590; map app design 260	Map UI design examples
+pattern	video-player	video-player-ui	video player ui	880	+16%	+42%	video player ui design 210; video player design 210	Video player UI examples
+pattern	create-post	create-post-ui	create post ui	50	-20%	-29%	post creation ui 0	Create post UI examples
+pattern	class-schedule	class-schedule	fitness class schedule ui	0	n/a	n/a	schedule ui design 170; class schedule app design 0	Class schedule app UI examples
+pattern	booking-details	booking-page	booking page design	2400	+16%	-17%	booking ui design 170; booking app design 170; booking form design 90	Booking page design examples
+pattern	booking-confirmed	booking-confirmation	booking confirmation page	170	+0%	+14%	booking confirmation design 50	Booking confirmation screen examples
+pattern	notifications-center	notifications-ui	notifications ui	2400	-15%	-30%	notification ui design 720; notification center ui 140; notification page design 110	Notifications UI design examples
+pattern	team-members	user-management-ui	user management ui	480	-13%	-46%	team members page 50; team management ui 50	User and team management UI examples
+pattern	roles-permissions	roles-and-permissions	roles and permissions ui	50	+12%	-5%	permissions ui design 90; user roles ui 10	Roles and permissions UI examples
+pattern	audit-log	audit-log	audit log ui	210	+0%	+39%	activity log ui 320; activity log design 70	Audit log UI examples
+pattern	api-keys	api-keys-page	api keys page	90	+26%	-24%	api key management ui 0	API keys page design examples
+pattern	billing-plans	billing-page	billing page design	110	+16%	-14%	subscription page design 210; billing ui design 110; billing settings ui 0	Billing page design examples
+pattern	invoice	invoice-design	invoice design	6600	+6%	-19%	invoice template 246000; invoice ui design 170; invoice page design 70	Invoice design examples
+pattern	paywall-upgrade	paywall	paywall screen	880	-4%	-17%	paywall design 480; paywall examples 390; paywall ui 210	Paywall design examples
+pattern	cancel-subscription	cancel-subscription	cancel subscription flow	170	+52%	+471%	cancel subscription page 110; cancellation flow design 0	Cancel subscription page examples
+pattern	ai-workspace	ai-interface	ai interface design	390	+53%	+86%	ai ui design 2400; ai app ui design 170; ai workspace ui 10	AI interface design examples
+pattern	ai-settings	ai-settings	ai settings ui	0	n/a	n/a		AI settings UI examples
+pattern	version-history	version-history-ui	version history ui	210	+25%	+17%		Version history UI examples
+pattern	approval-queue	approval-workflow	approval workflow ui	50	-7%	-32%	approval ui design 70	Approval workflow UI examples
+pattern	doctor-directory	doctor-directory	medical app design	110	-21%	-53%	healthcare app ui 90; doctor app ui 50; doctor appointment app ui 30	Doctor directory app UI examples
+pattern	telehealth-visit	telemedicine-app	telemedicine app ui	40	+46%	+111%	telehealth ui 10; telehealth app design 10	Telemedicine app UI examples
+pattern	clinic-home	clinic-website	dental clinic website design	2400	+65%	+9%	medical website design 1000; healthcare website design 720; clinic website design 390	Clinic website design examples
+pattern	music-player	music-player-ui	music player ui	1300	+15%	+15%	music app ui 480; music player design 390; music app design 390	Music player UI design examples
+pattern	playlist	playlist-ui	playlist ui	170	+0%	-6%	playlist design 260	Playlist UI examples
+pattern	portfolio-home	portfolio-website	portfolio website	110000	-12%	-18%	portfolio website templates 18100; portfolio website examples 14800; portfolio website design 14800	Portfolio website design examples
+pattern	case-study	case-study-page	case study page design	260	-35%	-47%	case study design 2400; ux case study template 720; case study website design 480	Case study page design examples
+pattern	security-dashboard	security-dashboard	security dashboard	1600	+12%	+38%	cybersecurity dashboard 720; security dashboard ui 40	Security dashboard UI examples
+pattern	project-tracker	project-management-dashboard	project management dashboard	4400	-12%	-18%	project tracker template 2400; project management ui 320; project tracker dashboard 210	Project management dashboard examples
+pattern	course-dashboard	learning-dashboard	learning dashboard	1900	-7%	+38%	lms dashboard 1900; e learning dashboard 260; lms ui design 170	Learning dashboard (LMS) UI examples
+pattern	form-wizard	multi-step-form	multi step form	1000	-16%	-52%	stepper ui 4400; multi step form design 170; multi step form examples 110	Multi-step form design examples
+pattern	bank-onboarding	banking-app-onboarding	banking app ui	390	-13%	-34%	bank app design 260; fintech app ui 170; kyc onboarding ui 0	Banking app onboarding UI examples
+pattern	product-scan	barcode-scanner-app	barcode scanner app ui	50	+58%	-59%	scanner app ui 50	Barcode scanner app UI examples
+pattern	split-view	split-view	split view ui	880	+15%	+150%	master detail ui 110	Split view (master-detail) UI examples
+pattern	canvas-editor	canvas-editor	canvas editor ui	0	n/a	n/a	whiteboard app ui 0; diagram editor ui 0	Canvas and diagram editor UI examples
+pattern	floor-plan	desk-booking-app	desk booking app	390	-18%	-57%	desk booking ui 0	Desk booking and floor plan UI examples
+pattern	voice-call	call-screen	call screen ui	260	+7%	+32%	voice call ui 170; incoming call screen design 30	Call screen UI examples
+pattern	toast-snackbar	toast-snackbar	toast ui	5400	-7%	-19%	snackbar ui 2900; toast notification design 90; toast message design 90	Toast and snackbar UI examples
+pattern	confirm-dialog	confirmation-modal	confirmation modal	590	-13%	-42%	modal design 1000; modal ui design 590; dialog ui design 170	Confirmation modal design examples
+pattern	side-drawer	slide-out-panel	slide out panel	390	+30%	+127%	side panel ui 390; side drawer ui 320; drawer ui design 260	Slide-out panel and side drawer examples
+pattern	command-palette	command-palette	command palette	5400	-13%	-7%	command palette ui 90; command menu ui 0	Command palette UI examples
+pattern	date-range-picker	date-range-picker	date range picker	2400	-15%	-47%	date picker ui 1900; date picker design 210; date range picker design 40	Date range picker design examples
+pattern	form-validation	form-validation	form validation design	50	+40%	+91%	form error states 0; form error message design 0; error message design 0	Form validation error design examples
+pattern	auth-error	login-error	login error ui	0	n/a	n/a	login error message 0	Login error screen examples
+pattern	payment-declined	payment-failed	payment failed ui	70	-43%	-52%	payment failed page 70; payment declined screen 0	Payment failed screen examples
+pattern	pro-directory	home-services-app	home services app ui	20	+0%	-50%	home service app design 90; handyman app design 0	Home services app UI examples
+pattern	service-booking	service-booking	service booking app	390	-51%	-29%	home service booking app 50	Service booking form examples
+pattern	job-tracker	job-tracker	order tracking ui	170	-5%	-33%	delivery tracking ui 50; job tracking app ui 0	Job tracker UI examples (pro on the way, job done)
+pattern	account-email	transactional-email-templates	transactional email templates	210	+0%	-48%	email templates 40500; email template design 6600; html email templates 5400	Transactional email templates (welcome, verify, password reset)
+pattern	order-email	order-confirmation-email	order confirmation email	1300	+0%	-41%	order confirmation email template 720; receipt email template 590; ecommerce email templates 390	Order confirmation and receipt email templates
+pattern	shift-scheduler	shift-schedule	shift schedule template	1600	-13%	-42%	employee scheduling app 9900; shift scheduling app 880; shift planner ui 0	Shift schedule UI examples
+pattern	leave-calendar	leave-calendar	leave calendar	1600	+14%	-16%	holiday planner app 880; leave management ui 30	Leave calendar UI examples
+pattern	time-off-request	time-off-request-form	time off request form	2900	-18%	-38%	time off request app 40; leave request ui 20	Time-off request form examples
+pattern	ops-dashboard	operations-dashboard	operations dashboard	2400	+0%	+7%	operations dashboard examples 260; multi location dashboard 0	Operations dashboard examples
+pattern	inventory-stock	inventory-dashboard	inventory dashboard	1600	+12%	+6%	inventory management dashboard 880; inventory management ui 260; inventory app ui 70	Inventory dashboard and stock UI examples
+pattern	savings-goal	savings-goal-app	savings goal app	480	+0%	-8%	savings tracker app 480; savings app ui 20	Savings goal app UI examples
+facet	group:sections	website-sections	website sections	8100	+0%	-24%	website blocks 18100; website components 14800; landing page templates 14800	Website section templates
+facet	group:signin	authentication-ui	authentication ui	1600	-23%	+392%	onboarding ui 1300; login signup ui design 140; login and signup ui 30	Login, sign-up and onboarding UI examples
+facet	group:dashboards	dashboards-and-home-screens	dashboard design	40500	+0%	+14%	dashboard templates 18100	Dashboard and app home screen examples
+facet	group:data	lists-tables-and-forms	form design	12100	-13%	-23%	forms ui 2900; form ui design 1600; list ui design 720	List, table and form UI examples
+facet	group:shopping	ecommerce-ui	ecommerce ui	1000	-10%	-36%	ecommerce website design 9900; ecommerce app ui 590; ecommerce ui design 480	Ecommerce UI design examples
+facet	group:account	admin-panel-ui	admin panel ui	720	+6%	+39%	saas ui 1600; admin panel design 1300; saas ui design 880	Admin panel and account settings UI examples
+facet	group:messages	messaging-and-media-ui	chat app ui	880	-12%	-36%	messaging app ui 260; media app ui 0	Messaging, chat and media app UI examples
+facet	group:tools	ai-and-productivity-ui	ai app ui	140	+8%	-19%	productivity app ui 90; saas tools ui 0	AI and productivity tool UI examples
+facet	group:industries	industry-app-ui	industry app ui	0	n/a	n/a	healthcare app ui 90	Healthcare, booking and home-services app UI examples
+facet	group:states	ui-states	ui states	880	+12%	+123%	empty states 2400; feedback ui 480; ux states 210	UI states: empty, error, loading and success
+facet	group:emails	email-templates	email templates	40500	+24%	+1%	email template design 6600; html email templates 5400; free email templates 1300	Free HTML email templates
+facet	group:operations	hr-and-operations-ui	employee management ui	40	-27%	-47%	hr app ui 30; workforce management ui 0; operations app ui 0	HR and operations app UI examples
+facet	platform:mobile	mobile-app-ui	mobile app ui design	2900	+25%	+16%	mobile app design 5400; app ui design 5400; mobile ui design 2400	Mobile app UI design examples
+facet	platform:web	web-ui	web ui	12100	+0%	+0%	website templates 74000; web design examples 8100; website design inspiration 6600	Web UI design examples
+facet	style:minimal	minimal-ui	minimal ui	2900	+33%	+51%	minimalist web design 1900; minimal website design 1900; minimal ui design 880	Minimal UI design examples
+facet	style:editorial	editorial-web-design	editorial web design	590	+12%	+380%	editorial design 6600; editorial website design 590; editorial ui 170	Editorial web design examples
+facet	style:brutalist	brutalist-web-design	brutalist web design	2400	+0%	+53%	brutalist design 8100; neobrutalism 5400; brutalist website 2900	Brutalist web design examples
+facet	style:luxury	luxury-website-design	luxury website design	1300	-8%	+4%	luxury web design 1300; luxury ui 170; luxury ui design 140	Luxury website design examples
+facet	style:playful	playful-ui	playful ui	110	+8%	+70%	fun website design 320; playful website design 170; playful web design 170	Playful UI design examples
+facet	style:corporate	corporate-website-design	corporate website design	1300	-14%	-38%	corporate web design 1300; corporate ui 50; corporate ui design 30	Corporate website design examples
+facet	style:retro	retro-ui	retro ui	1600	+49%	+103%	retro website design 1300; retro web design 1300; y2k website design 720	Retro UI design examples
+facet	style:monochrome	monochrome-ui	monochrome ui	1600	-8%	-29%	black and white website design 390; monochrome website design 110; monochrome web design 110	Monochrome UI design examples
