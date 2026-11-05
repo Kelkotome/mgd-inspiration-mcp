@@ -2000,6 +2000,21 @@ function mcpUtm(result, tool, ua) {
   });
   return result;
 }
+// 5-Nov: per-visitor 24h cap on the tools that hand out the UI library's code (a "cloner" client pulled ~2,400 screens in an
+// hour). Real use is far below: the busiest normal visitor that day made 78 calls in total. Visitor = the same salted IP+UA hash
+// as mcp_events; over-cap calls are logged as "capped:<tool>" so the count (idx_mcpev_cap) stays bounded at the cap.
+// MCP_CAP_OVERRIDE (env, tests only) replaces every cap. Fails open: a D1 hiccup never blocks a call.
+const MCP_DAILY_CAP = { get_ui_screen_code: 150, get_ui_flow: 60 };
+async function mcpOverCap(env, c, name) {
+  const cap = +(env.MCP_CAP_OVERRIDE || 0) || MCP_DAILY_CAP[name];
+  if (!cap) return 0;
+  try {
+    const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM mcp_events WHERE visitor = ? AND tool IN (?, ?) AND kind = 'call' AND created_at > ?")
+      .bind(await mcpVisitor(env, c.ip, c.ua), name, "run:" + name, Date.now() - 86400000).first();
+    return r && r.n >= cap ? cap : 0;
+  } catch (_) { return 0; }
+}
+
 // One JSON-RPC message → response, with analytics. `inner(msg)` is the endpoint's own handler.
 async function mcpTracked(env, c, msg, inner, hdrs) {
   const method = msg && msg.method;
@@ -2018,6 +2033,13 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
   // run_design_tool: log the dispatched tool ("run:make_dieline") so "popular" can be re-ranked from data; UTM campaign = the real tool.
   const dispatched = outer === "run_design_tool" ? String((msg.params.arguments && msg.params.arguments.name) || "").slice(0, 55) : "";
   const tool = dispatched ? "run:" + dispatched : outer;
+  const cap = await mcpOverCap(env, c, dispatched || outer);
+  if (cap) {
+    await mcpEvent(env, c, { kind: "call", tool: "capped:" + (dispatched || outer), ok: false, ms: Date.now() - t0 });
+    return rpcOk(msg.id, { isError: true, content: [{ type: "text", text: `Daily limit reached: ${dispatched || outer} serves up to ${cap} screens per connection per 24 hours, ` +
+      "so the library stays free for everyone. It resets on a rolling 24-hour window. Meanwhile you can browse every screen at " +
+      "https://madegooddesigns.com/inspiration/ui (search_ui_screens still works)." }] });
+  }
   const res = await inner(msg);
   const r = res && res.result;
   const zero = r ? mcpZero(r) : null;
