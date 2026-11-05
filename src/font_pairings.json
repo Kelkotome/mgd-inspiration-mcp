@@ -203,6 +203,178 @@
    }
   ]
  },
+ "caslon": {
+  "font": "Caslon",
+  "page": "https://madegooddesigns.com/caslon-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Futura",
+    "body": "Caslon",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Futura is the quintessential geometric sans-serif, built from circles, triangles, and straight lines.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Caslon",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Helvetica is the most neutral sans-serif in existence.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Franklin Gothic",
+    "body": "Caslon",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Franklin Gothic is an American grotesque with a muscular, no-nonsense personality.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Caslon",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Gill Sans is a British humanist sans-serif designed by Eric Gill in 1928.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Caslon",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Montserrat is a free geometric sans-serif available on Google Fonts, making this one of the most accessible Caslon pairings for web projects.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Inter",
+    "body": "Caslon",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Inter was designed by Rasmus Andersson for screen interfaces, with a tall x-height and open apertures optimized for digital readability.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Big Caslon",
+    "body": "Caslon",
+    "group": "Display Pairings",
+    "why": "Big Caslon is a display-weight revival of Caslon\u2019s larger original punches, designed for use at sizes above 24 points.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Bodoni",
+    "body": "Caslon",
+    "group": "Display Pairings",
+    "why": "Bodoni is a modern serif with extreme thick-thin contrast, unbracketed serifs, and a vertical axis.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Caslon",
+    "group": "Serif Companion Pairings",
+    "why": "Baskerville is a transitional serif, designed by John Baskerville in the 1750s as a direct refinement of Caslon\u2019s own work.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Garamond",
+    "body": "Caslon",
+    "group": "Serif Companion Pairings",
+    "why": "Garamond and Caslon are both old-style serifs, but they come from different national traditions.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "IBM Plex Mono",
+    "body": "Caslon",
+    "group": "Monospace Pairings",
+    "why": "IBM Plex Mono is a thoughtfully designed monospace with humanist touches that keep it from feeling cold or robotic.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Courier",
+    "body": "Caslon",
+    "group": "Monospace Pairings",
+    "why": "Courier is the original typewriter face, and pairing it with Caslon creates a deliberate collision between the handcrafted and the mechanical.",
+    "heading_gf": false,
+    "body_gf": false
+   }
+  ]
+ },
+ "dm sans": {
+  "font": "DM Sans",
+  "page": "https://madegooddesigns.com/dm-sans-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Fraunces",
+    "body": "DM Sans",
+    "group": "Editorial soft-serif",
+    "why": "Fraunces is a soft-serif with old-style charm and a variable \u201cwonk\u201d axis.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "DM Sans",
+    "group": "Luxury contrast",
+    "why": "Playfair Display brings high-contrast, fashion-editorial elegance.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Sans",
+    "body": "Lora",
+    "group": "Readable long-form",
+    "why": "Lora is a balanced, moderate-contrast serif with calligraphic roots.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Sans",
+    "body": "Source Serif 4",
+    "group": "Modern rationalist",
+    "why": "Source Serif 4 is a clean, sturdy serif that mirrors DM Sans\u2019s rationalist construction.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Sans",
+    "body": "Inter",
+    "group": "Two-sans UI",
+    "why": "Inter is a UI workhorse with a taller x-height.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Space Grotesk",
+    "body": "DM Sans",
+    "group": "Techy display",
+    "why": "Space Grotesk adds quirky, techy personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Syne",
+    "body": "DM Sans",
+    "group": "Experimental brand",
+    "why": "Syne is an experimental display family with extra-bold and extended styles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Archivo Black",
+    "body": "DM Sans",
+    "group": "Poster impact",
+    "why": "Best for landing pages, events.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
  "dm serif display": {
   "font": "DM Serif Display",
   "page": "https://madegooddesigns.com/dm-serif-display-font-pairing/",
@@ -917,6 +1089,60 @@
    }
   ]
  },
+ "jost": {
+  "font": "Jost",
+  "page": "https://madegooddesigns.com/jost-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Jost",
+    "body": "Lora",
+    "group": "Editorial classic",
+    "why": "Lora is a warm, moderate-contrast serif that reads beautifully at small sizes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Jost",
+    "body": "Source Serif 4",
+    "group": "Rational long-form",
+    "why": "Source Serif 4 is a clean, rational serif that complements Jost\u2019s geometry.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Jost",
+    "body": "Bitter",
+    "group": "Grounded content",
+    "why": "Bitter is a screen-friendly slab serif. As body text it grounds Jost\u2019s airy headlines with sturdy, readable strokes, ideal for content-heavy sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Jost",
+    "body": "Inter",
+    "group": "Crisp UI",
+    "why": "Inter has a tall x-height and excellent screen legibility.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Jost",
+    "body": "Open Sans",
+    "group": "Neutral readability",
+    "why": "Open Sans is a neutral humanist sans that reads comfortably in long passages, letting geometric Jost shine in the titles without readability trade-offs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Jost",
+    "body": "Work Sans",
+    "group": "Harmonious geometric",
+    "why": "Work Sans shares some geometric DNA with Jost but has a larger x-height, making it a harmonious yet more legible body companion.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
  "lato": {
   "font": "Lato",
   "page": "https://madegooddesigns.com/lato-font-pairing/",
@@ -1014,6 +1240,178 @@
     "body": "JetBrains Mono",
     "group": "Monospace Pairings",
     "why": "JetBrains Mono is a newer monospace typeface designed specifically for developers, with increased letter height for better readability and 138 code-specific ligatures.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "lora": {
+  "font": "Lora",
+  "page": "https://madegooddesigns.com/lora-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Montserrat",
+    "body": "Lora",
+    "group": "Lora + Sans-Serif Heading Pairings",
+    "why": "Montserrat is a geometric sans-serif with even stroke widths and a wide, confident stance.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "Lora",
+    "group": "Lora + Sans-Serif Heading Pairings",
+    "why": "Inter was built for user interfaces, with a tall x-height, open apertures, and meticulous spacing optimized for screens.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "Lora",
+    "group": "Lora + Sans-Serif Heading Pairings",
+    "why": "Poppins is a geometric sans-serif with perfectly circular letter bowls and a friendly, open personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Lora",
+    "group": "Lora + Sans-Serif Heading Pairings",
+    "why": "Raleway is an elegant geometric sans-serif with distinctive letterforms, particularly its lowercase w and capital W.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Lora",
+    "group": "Lora + Sans-Serif Heading Pairings",
+    "why": "Open Sans is the quintessential neutral sans-serif.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Lora",
+    "group": "Lora + Sans-Serif Heading Pairings",
+    "why": "Roboto combines mechanical skeleton with largely geometric forms and open curves, a dual nature that mirrors Lora\u2019s own blend of structure and warmth.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Lora",
+    "group": "Lora + Display Heading Pairings",
+    "why": "Oswald is a condensed gothic sans-serif that packs maximum impact into tight horizontal spaces.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Space Grotesk",
+    "body": "Lora",
+    "group": "Lora + Display Heading Pairings",
+    "why": "Space Grotesk is a proportional sans-serif derived from Space Mono, carrying a subtle technical quality in its letter construction.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Lora",
+    "group": "Lora + Serif Companion Pairing",
+    "why": "Playfair Display is a high-contrast didone-inspired serif designed for large sizes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Fira Code",
+    "body": "Lora",
+    "group": "Lora + Monospace Pairings",
+    "why": "Fira Code is a monospaced font with programming ligatures, designed by Nikita Prokopov.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "IBM Plex Mono",
+    "body": "Lora",
+    "group": "Lora + Monospace Pairings",
+    "why": "IBM Plex Mono carries the design language of the IBM brand, clean, purposeful, and quietly authoritative.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Source Code Pro",
+    "body": "Lora",
+    "group": "Lora + Monospace Pairings",
+    "why": "Source Code Pro, designed by Paul Hunt at Adobe, is a monospaced companion to the Source family.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "manrope": {
+  "font": "Manrope",
+  "page": "https://madegooddesigns.com/manrope-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Fraunces",
+    "body": "Manrope",
+    "group": "Editorial soft-serif",
+    "why": "Fraunces is a soft, old-style serif with adjustable contrast and \u201cwonk.\u201d Used large above Manrope body text, it injects editorial character while Manrope keeps the reading experience clean and modern.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Manrope",
+    "body": "Lora",
+    "group": "Warm long-form",
+    "why": "Lora is a moderate-contrast serif with calligraphic warmth.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Manrope",
+    "group": "Luxury contrast",
+    "why": "Playfair Display supplies high-contrast, fashion-forward headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bitter",
+    "body": "Manrope",
+    "group": "Editorial slab",
+    "why": "Bitter is a slab serif designed for screens.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Manrope",
+    "body": "Inter",
+    "group": "Two-sans UI",
+    "why": "Inter is the classic UI sans with a tall x-height.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Space Grotesk",
+    "body": "Manrope",
+    "group": "Techy display",
+    "why": "Space Grotesk brings quirky, techy energy.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Clash Display",
+    "body": "Manrope",
+    "group": "Bold brand",
+    "why": "Clash Display is a bold, characterful display sans.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Manrope",
+    "group": "Romantic serif",
+    "why": "DM Serif Display offers high-contrast, romantic serif headlines that feel sophisticated against Manrope\u2019s modern body text.",
     "heading_gf": true,
     "body_gf": true
    }
@@ -1838,6 +2236,68 @@
     "body": "Roboto Mono",
     "group": "Roboto + Monospace Pairing",
     "why": "Roboto Mono was designed as a direct companion to Roboto, sharing its structural characteristics but adapted for fixed-width typesetting.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "space grotesk": {
+  "font": "Space Grotesk",
+  "page": "https://madegooddesigns.com/space-grotesk-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Space Grotesk",
+    "body": "Inter",
+    "group": "Reliable tech",
+    "why": "Inter is the ideal neutral counterpart. Its tall x-height and excellent screen legibility make clean body copy that lets Space Grotesk headlines pop.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Space Grotesk",
+    "body": "DM Sans",
+    "group": "Polished startup",
+    "why": "DM Sans is a low-contrast geometric sans that reads smoothly at small sizes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Space Grotesk",
+    "body": "IBM Plex Sans",
+    "group": "Engineering system",
+    "why": "IBM Plex Sans shares a technical sensibility with Space Grotesk but is calmer in body copy.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Space Grotesk",
+    "body": "Work Sans",
+    "group": "Neutral grounding",
+    "why": "Work Sans is a neutral, readable sans that grounds Space Grotesk headlines without competing for attention.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Space Grotesk",
+    "body": "Lora",
+    "group": "Old-meets-new",
+    "why": "Lora is a warm, moderate-contrast serif. As body text under Space Grotesk headlines it creates an appealing old-meets-new contrast for blogs and editorial sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Space Grotesk",
+    "body": "Source Serif 4",
+    "group": "Readable long-form",
+    "why": "Source Serif 4 is a clean, rational serif that complements Space Grotesk\u2019s technical feel while improving long-form readability.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Space Grotesk",
+    "body": "Space Mono",
+    "group": "Code-friendly",
+    "why": "Space Mono is Space Grotesk\u2019s monospaced sibling.",
     "heading_gf": true,
     "body_gf": true
    }
