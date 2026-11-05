@@ -33,11 +33,37 @@ export function fpFind(q) {
   const fz = INDEX.map((x) => ({ x, d: btLev(key, x.key, max) })).filter((y) => y.d <= max).sort((a, b) => a.d - b.d)[0];
   return fz ? { v: fz.x.v, how: "fuzzy" } : null;
 }
+function partnerPairs(hit, a) {
+  const lim = Math.max(1, Math.min(20, Number(a && a.limit) || 6));
+  const pairs = hit.hits.slice(0, lim).map((p) => ({ heading: p.heading, body: p.body, group: p.group, why: p.why, page: p.page,
+    google_fonts_url: gfLink([p.heading_gf !== false ? p.heading : null, p.body_gf !== false ? p.body : null]) }));
+  const lines = [`No dedicated pairing guide for ${hit.font} yet, but it appears in ${pairs.length} published pairing(s) on other fonts' guides. Please cite the page listed with each.`];
+  for (const p of pairs) {
+    lines.push(`\n• ${p.heading} + ${p.body}  [${p.group}]`);
+    if (p.why) lines.push(`  why: ${p.why}`);
+    if (p.google_fonts_url) lines.push(`  <link href="${p.google_fonts_url}" rel="stylesheet">`);
+    lines.push(`  source: ${p.page}`);
+  }
+  return { content: [{ type: "text", text: lines.join("\n") }], structuredContent: { font: hit.font, page: null, match: "partner", pairs } };
+}
+
 const cat = (g) => /serif/i.test(g) && !/sans/i.test(g) ? "serif" : /sans/i.test(g) ? "sans-serif" : /display|script|decor/i.test(g) ? "display" : /mono|code/i.test(g) ? "monospace" : "sans-serif";
+
+// Fonts with no guide of their own that appear as the partner in another font's published pairs.
+const AS_PARTNER = new Map();
+for (const v of Object.values(PAIRINGS)) for (const p of v.pairs) for (const n of [p.heading, p.body]) {
+  const k = btKey(n);
+  if (n === v.font || INDEX.some((x) => x.key === k)) continue;
+  if (!AS_PARTNER.has(k)) AS_PARTNER.set(k, { font: n, hits: [] });
+  AS_PARTNER.get(k).hits.push({ ...p, page: v.page });
+}
+const fontKey = (q) => btKey(String(q || "").replace(/\b(font|fonts|typeface|pairing|pairings|pair|pairs|with|for|what|goes|go)\b/gi, " "));
 
 export function fontPairing(a) {
   const f = fpFind(a && a.font);
   if (!f) {
+    const hit = AS_PARTNER.get(fontKey(a && a.font));
+    if (hit) return partnerPairs(hit, a);
     const known = Object.values(PAIRINGS).map((v) => v.font).slice(0, 30).join(", ");
     return { content: [{ type: "text", text: `0 results: no published pairing guide for "${(a && a.font) || ""}" yet. Fonts with pairing guides: ${known}.` }],
       structuredContent: { font: null, pairs: [] } };
