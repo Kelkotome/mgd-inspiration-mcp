@@ -1,0 +1,1846 @@
+{
+ "baskerville": {
+  "font": "Baskerville",
+  "page": "https://madegooddesigns.com/baskerville-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Baskerville",
+    "body": "Futura",
+    "group": "Geometric Sans-Serif Pairings",
+    "why": "This is the definitive classic-meets-modern pairing.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Montserrat",
+    "group": "Geometric Sans-Serif Pairings",
+    "why": "Montserrat offers a softer, more approachable take on geometric sans-serif design than Futura.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Gill Sans",
+    "group": "Geometric Sans-Serif Pairings",
+    "why": "Gill Sans, designed by Eric Gill in 1928, is a British humanist sans-serif with geometric leanings.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Helvetica",
+    "group": "Neo-Grotesque Sans-Serif Pairings",
+    "why": "Helvetica is the most widely recognized typeface in the world, and for good reason.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Akkurat",
+    "group": "Neo-Grotesque Sans-Serif Pairings",
+    "why": "Akkurat, designed by Laurenz Brunner in 2004, is a neo-grotesque that improves on Helvetica\u2019s legacy with more open apertures, better legibility at small sizes, and a subtly warmer personality.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Open Sans",
+    "group": "Humanist Sans-Serif Pairings",
+    "why": "Open Sans, designed by Steve Matteson for Google, is a humanist sans-serif optimized for legibility across screen and print.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Inter",
+    "group": "Humanist Sans-Serif Pairings",
+    "why": "Inter was designed by Rasmus Andersson specifically for computer screens, with a tall x-height and open apertures optimized for UI contexts.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Proxima Nova",
+    "group": "Humanist Sans-Serif Pairings",
+    "why": "Proxima Nova, designed by Mark Simonson, bridges the gap between geometric and humanist sans-serif design.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Bodoni",
+    "group": "Display Pairing",
+    "why": "Bodoni is the typeface of editorial drama.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Caslon",
+    "group": "Complementary Serif Pairings",
+    "why": "William Caslon\u2019s typeface predates Baskerville by roughly 30 years and represents the old-style English serif tradition.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Baskerville",
+    "body": "Garamond",
+    "group": "Complementary Serif Pairings",
+    "why": "Garamond is the quintessential old-style serif, with a diagonal stress axis, low contrast, and gentle bracketed serifs that reflect its origins in sixteenth-century French punch-cutting.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Baskerville",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Pairing",
+    "why": "IBM Plex Mono is one of the most refined monospace typefaces available.",
+    "heading_gf": false,
+    "body_gf": true
+   }
+  ]
+ },
+ "bodoni": {
+  "font": "Bodoni",
+  "page": "https://madegooddesigns.com/bodoni-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Bodoni",
+    "body": "Futura",
+    "group": "Geometric Sans-Serif Pairings",
+    "why": "This is the definitive Bodoni font pairing.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Bodoni",
+    "body": "Montserrat",
+    "group": "Geometric Sans-Serif Pairings",
+    "why": "Montserrat brings the geometric clarity of Futura but with softer, more rounded letterforms and an extensive range of weights.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Bodoni",
+    "body": "Gill Sans",
+    "group": "Geometric Sans-Serif Pairings",
+    "why": "Gill Sans occupies a space between geometric and humanist sans-serifs.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Bodoni",
+    "body": "Proxima Nova",
+    "group": "Geometric Sans-Serif Pairings",
+    "why": "Proxima Nova, designed by Mark Simonson, is a geometric-humanist hybrid that has become one of the most widely used web fonts.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Bodoni",
+    "body": "DIN",
+    "group": "Geometric Sans-Serif Pairings",
+    "why": "DIN is an industrial sans-serif originally developed for the German standards institute.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Bodoni",
+    "body": "Lato",
+    "group": "Humanist Sans-Serif Pairings",
+    "why": "Lato was designed by Lukasz Dziedzic with a dual nature in mind: it feels warm and stable in body text, but shows semi-rounded details that give it personality at larger sizes.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Bodoni",
+    "body": "Open Sans",
+    "group": "Humanist Sans-Serif Pairings",
+    "why": "Open Sans is the ultimate workhorse. Designed by Steve Matteson with open forms and a neutral, friendly appearance, it provides outstanding legibility across every screen size and resolution.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Bodoni",
+    "body": "Source Sans Pro",
+    "group": "Humanist Sans-Serif Pairings",
+    "why": "Source Sans Pro was Adobe\u2019s first open-source typeface, designed by Paul Hunt.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Bodoni",
+    "body": "Didot",
+    "group": "Display and Serif Pairings",
+    "why": "Didot is Bodoni\u2019s French cousin. Both are didone serifs with extreme contrast, but Didot\u2019s proportions are slightly more vertical and its overall feel is cooler and more Parisian.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Bodoni",
+    "body": "Garamond",
+    "group": "Display and Serif Pairings",
+    "why": "Garamond is an old-style serif with moderate contrast, gentle bracketed serifs, and classical proportions rooted in the Renaissance.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Bodoni",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Pairings",
+    "why": "IBM Plex Mono is a modern monospace with humanist proportions and excellent readability.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Bodoni",
+    "body": "Courier",
+    "group": "Monospace Pairings",
+    "why": "Courier is the typewriter font, raw, mechanical, and deliberately imperfect.",
+    "heading_gf": false,
+    "body_gf": false
+   }
+  ]
+ },
+ "dm serif display": {
+  "font": "DM Serif Display",
+  "page": "https://madegooddesigns.com/dm-serif-display-font-pairing/",
+  "pairs": [
+   {
+    "heading": "DM Serif Display",
+    "body": "DM Sans",
+    "group": "The Matched Pair",
+    "why": "DM Sans is the designed companion for DM Serif Display.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Inter",
+    "group": "Sans-Serif Body Companions",
+    "why": "Inter is a neo-grotesque sans-serif designed by Rasmus Andersson specifically for screen interfaces.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Poppins",
+    "group": "Sans-Serif Body Companions",
+    "why": "Poppins is a geometric sans-serif with perfectly circular bowls and a friendly, approachable personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Open Sans",
+    "group": "Sans-Serif Body Companions",
+    "why": "Open Sans is a humanist sans-serif designed by Steve Matteson with open forms, upright stress, and a neutral yet friendly character.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Roboto",
+    "group": "Sans-Serif Body Companions",
+    "why": "Roboto is a neo-grotesque sans-serif with a dual nature.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Lato",
+    "group": "Sans-Serif Body Companions",
+    "why": "Lato, designed by Lukasz Dziedzic, is a humanist sans-serif with semi-rounded details and a warm, stable personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Nunito Sans",
+    "group": "Sans-Serif Body Companions",
+    "why": "Nunito Sans is a rounded sans-serif with soft terminal endings and a gentle, approachable personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Montserrat",
+    "group": "Sans-Serif Contrast Pairings",
+    "why": "Montserrat is a geometric sans-serif with a bold, urban personality inspired by the signage of Buenos Aires\u2019s Montserrat neighbourhood.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Space Grotesk",
+    "group": "Sans-Serif Contrast Pairings",
+    "why": "Space Grotesk is a proportional sans-serif derived from Space Mono, with distinctive geometric letterforms and a tech-forward personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Playfair Display",
+    "group": "Display Complement",
+    "why": "Using two display serifs in a single layout might sound like a contradiction, but DM Serif Display and Playfair Display are different enough in structure to make it work.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Fira Code",
+    "group": "Monospace Companions",
+    "why": "Fira Code is a monospaced typeface with programming ligatures, designed for code editors and technical documentation.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Companions",
+    "why": "IBM Plex Mono is part of IBM\u2019s corporate type system, and it brings a level of refinement to monospaced text that most coding fonts lack.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "futura": {
+  "font": "Futura",
+  "page": "https://madegooddesigns.com/futura-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Futura",
+    "body": "Garamond",
+    "group": "Serif Body Fonts",
+    "why": "Garamond is the definitive old-style serif \u2014 Claude Garamond\u2019s 16th-century design has influenced nearly every text typeface that followed.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Futura",
+    "body": "Bodoni",
+    "group": "Serif Body Fonts",
+    "why": "This is the classic combination \u2014 arguably the most iconic Futura font pairing in design history.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Futura",
+    "body": "Baskerville",
+    "group": "Serif Body Fonts",
+    "why": "Baskerville is a transitional serif \u2014 it sits historically and stylistically between the old-style warmth of Garamond and the high contrast of Bodoni.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Futura",
+    "body": "Caslon",
+    "group": "Serif Body Fonts",
+    "why": "William Caslon\u2019s 18th-century typeface is so dependable that printers once followed the adage \u201cwhen in doubt, use Caslon.\u201d Its sturdy, slightly irregular letterforms carry a warmth and humanity that geometric Futura comp",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Futura",
+    "body": "Freight Text",
+    "group": "Serif Body Fonts",
+    "why": "Freight Text, designed by Joshua Darden, is a contemporary serif built for sustained reading.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Futura",
+    "body": "Tiempos",
+    "group": "Contemporary Serif Companions",
+    "why": "Tiempos, designed by Kris Sowersby of Klim Type Foundry, is a contemporary serif that draws on the tradition of Times New Roman but refines it for modern use.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Futura",
+    "body": "Lora",
+    "group": "Contemporary Serif Companions",
+    "why": "Lora is a free Google Font designed by Cyreal with calligraphic roots that reveal themselves in its graceful curves and moderate stroke contrast.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Futura",
+    "body": "Proxima Nova",
+    "group": "Sans-Serif Companions",
+    "why": "Proxima Nova was designed by Mark Simonson as a bridge between geometric and humanist sans-serif traditions.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Futura",
+    "body": "Inter",
+    "group": "Sans-Serif Companions",
+    "why": "Inter, designed by Rasmus Andersson, is a sans-serif built specifically for user interfaces.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Futura",
+    "body": "Bodoni",
+    "group": "Display Pairings",
+    "why": "This is the inverse of the Futura-plus-Bodoni body text pairing discussed earlier.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Futura",
+    "body": "Didot",
+    "group": "Display Pairings",
+    "why": "Didot is Bodoni\u2019s French counterpart \u2014 another Didone serif with extreme stroke contrast, but with slightly more refined, elongated proportions that give it a distinctly Parisian elegance.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Futura",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Companion",
+    "why": "IBM Plex Mono is part of IBM\u2019s open-source type family, designed by Mike Abbink and Bold Monday.",
+    "heading_gf": false,
+    "body_gf": true
+   }
+  ]
+ },
+ "garamond": {
+  "font": "Garamond",
+  "page": "https://madegooddesigns.com/garamond-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Garamond",
+    "body": "Futura",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "This is one of the most celebrated pairings in typographic history.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Garamond",
+    "body": "Montserrat",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Montserrat brings a wide, confident geometric presence to headings that contrasts sharply with Garamond\u2019s narrow, flowing body text.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Garamond",
+    "body": "Gill Sans",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Gill Sans is a humanist sans-serif, which means it already shares some of Garamond\u2019s calligraphic DNA.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Garamond",
+    "body": "Proxima Nova",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Proxima Nova occupies the middle ground between geometric and humanist sans-serifs, blending the structural clarity of Futura with the warmth of Gill Sans.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Garamond",
+    "body": "Helvetica",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Helvetica is the quintessential neo-grotesque: neutral, authoritative, and invisible in the best sense.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Garamond",
+    "body": "Inter",
+    "group": "Sans-Serif Heading Pairings",
+    "why": "Inter was designed from the ground up for screen interfaces, with a tall x-height, open apertures, and meticulous hinting.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Garamond",
+    "body": "Bodoni",
+    "group": "Display Heading Pairings",
+    "why": "Bodoni is the dramatic counterpart to Garamond\u2019s restraint.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Garamond",
+    "body": "Didot",
+    "group": "Display Heading Pairings",
+    "why": "Didot shares Bodoni\u2019s high-contrast didone classification but with a distinctly French elegance.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Garamond",
+    "body": "Caslon",
+    "group": "Complementary Serif Pairings",
+    "why": "Caslon is Garamond\u2019s English cousin. Both are old-style serifs with similar proportions, but Caslon has sturdier serifs, a slightly larger x-height, and a more robust character overall.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Garamond",
+    "body": "Baskerville",
+    "group": "Complementary Serif Pairings",
+    "why": "Baskerville is a transitional serif, sitting historically between Garamond\u2019s old-style and Bodoni\u2019s modern classification.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Garamond",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Accent Pairings",
+    "why": "IBM Plex Mono is a corporate monospace with clean, rational letterforms that reflect the precision of its origin at IBM.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Garamond",
+    "body": "Source Code Pro",
+    "group": "Monospace Accent Pairings",
+    "why": "Source Code Pro, designed by Paul D. Hunt at Adobe, was built for coding environments but works beautifully as a typographic accent in editorial design.",
+    "heading_gf": false,
+    "body_gf": true
+   }
+  ]
+ },
+ "georgia": {
+  "font": "Georgia",
+  "page": "https://madegooddesigns.com/georgia-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Georgia",
+    "body": "Verdana",
+    "group": "Classic Web Font Pairings",
+    "why": "This is the original pairing. Matthew Carter designed both Georgia and Verdana for the same Microsoft project, and it shows.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Georgia",
+    "body": "Arial",
+    "group": "Classic Web Font Pairings",
+    "why": "Arial is the most widely installed sans-serif font in the world, and while it rarely wins design awards, its neutral, unobtrusive character makes it a surprisingly effective heading companion for Georgia.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Georgia",
+    "body": "Tahoma",
+    "group": "Classic Web Font Pairings",
+    "why": "Tahoma, another Matthew Carter creation for Microsoft, is a tighter, more compact alternative to Verdana.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Georgia",
+    "body": "Trebuchet MS",
+    "group": "Classic Web Font Pairings",
+    "why": "Trebuchet MS, designed by Vincent Connare, brings a warmer, more humanist quality to the web-safe sans-serif category.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Georgia",
+    "body": "Open Sans",
+    "group": "Modern Sans-Serif Pairings",
+    "why": "Open Sans, designed by Steve Matteson, is a humanist sans-serif with friendly, open forms and excellent screen legibility.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Georgia",
+    "body": "Lato",
+    "group": "Modern Sans-Serif Pairings",
+    "why": "Lato, designed by Lukasz Dziedzic, is a sans-serif that balances warmth and stability.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Georgia",
+    "body": "Inter",
+    "group": "Modern Sans-Serif Pairings",
+    "why": "Inter, designed by Rasmus Andersson, has become the default UI typeface of the modern web.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Georgia",
+    "body": "Roboto",
+    "group": "Modern Sans-Serif Pairings",
+    "why": "Roboto, Google\u2019s signature typeface designed by Christian Robertson, combines mechanical skeleton forms with largely geometric curves.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Georgia",
+    "body": "Montserrat",
+    "group": "Display Font Pairings",
+    "why": "Montserrat\u2019s geometric precision and broad weight range make it a commanding heading font.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Georgia",
+    "body": "Oswald",
+    "group": "Display Font Pairings",
+    "why": "Oswald is a condensed gothic sans-serif reimagined for the digital age.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Georgia",
+    "body": "Consolas",
+    "group": "Monospace Pairings",
+    "why": "Consolas, designed by Luc(as) de Groot for Microsoft, is widely regarded as one of the best monospace fonts for screen use.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Georgia",
+    "body": "Source Code Pro",
+    "group": "Monospace Pairings",
+    "why": "Source Code Pro, designed by Paul D. Hunt for Adobe, is an open-source monospace typeface with excellent legibility and a broad weight range.",
+    "heading_gf": false,
+    "body_gf": true
+   }
+  ]
+ },
+ "gill sans": {
+  "font": "Gill Sans",
+  "page": "https://madegooddesigns.com/gill-sans-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Gill Sans",
+    "body": "Perpetua",
+    "group": "Serif Body Companions",
+    "why": "Perpetua was designed by the same hand \u2014 Eric Gill created both typefaces for Monotype in the late 1920s.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Baskerville",
+    "group": "Serif Body Companions",
+    "why": "Baskerville is the definitive English transitional serif \u2014 designed by John Baskerville in Birmingham in the 1750s, it represents the peak of British type design before the modern era.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Caslon",
+    "group": "Serif Body Companions",
+    "why": "Caslon is the oldest typeface in this guide, designed by William Caslon in the 1720s, and carries the old adage: \u201cWhen in doubt, use Caslon.\u201d Its warm, slightly irregular letterforms have a hand-cut quality that pairs be",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Garamond",
+    "group": "Serif Body Companions",
+    "why": "Garamond is a French old-style serif with a smaller x-height and more pronounced calligraphic influence than its English counterparts.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Plantin",
+    "group": "Serif Body Companions",
+    "why": "Plantin is a sturdy old-style serif with a robust colour on the page \u2014 thicker strokes and heavier serifs than Garamond or Caslon, designed to perform well on rougher paper stocks.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Freight Text",
+    "group": "Contemporary Serif Companions",
+    "why": "Freight Text, designed by Joshua Darden, is a contemporary serif with old-style proportions and a warm, slightly condensed character.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Sabon",
+    "group": "Contemporary Serif Companions",
+    "why": "Sabon, designed by Jan Tschichold in the 1960s, is a Garamond revival with a crucial difference: it was engineered for mechanical consistency across Monotype, Linotype, and hand-composition systems.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Bodoni",
+    "group": "Display Pairings",
+    "why": "Bodoni is a high-contrast modern serif with extreme thick-thin stroke variation, hairline serifs, and a vertical stress axis.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Playfair Display",
+    "group": "Display Pairings",
+    "why": "Playfair Display is a freely available high-contrast transitional serif inspired by the European Enlightenment, with sharp, unbracketed serifs and pronounced stroke variation.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Futura",
+    "group": "Complementary Sans-Serif",
+    "why": "Futura is the geometric sans-serif that Gill Sans was partly designed in response to \u2014 Paul Renner\u2019s 1927 Futura embodied the Bauhaus ideal of geometric purity, while Gill Sans offered a more humanist alternative rooted in British calligraphic tradition.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "Courier",
+    "group": "Monospace Companions",
+    "why": "Courier is the typewriter standard \u2014 a slab-serif monospace designed by Howard Kettler for IBM in 1955.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Gill Sans",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Companions",
+    "why": "IBM Plex Mono is a contemporary monospace typeface designed by Mike Abbink for IBM\u2019s corporate identity \u2014 which means it shares institutional DNA with Gill Sans\u2019s own history as a corporate workhorse.",
+    "heading_gf": false,
+    "body_gf": true
+   }
+  ]
+ },
+ "helvetica": {
+  "font": "Helvetica",
+  "page": "https://madegooddesigns.com/helvetica-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Helvetica",
+    "body": "Garamond",
+    "group": "Classic Serif Pairings",
+    "why": "Garamond is the old-style serif that started everything.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Caslon",
+    "group": "Classic Serif Pairings",
+    "why": "The old typesetter\u2019s adage, \u201cwhen in doubt, use Caslon,\u201d extends naturally to pairing.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Baskerville",
+    "group": "Classic Serif Pairings",
+    "why": "Baskerville is a transitional serif, sitting historically and structurally between Garamond\u2019s old-style fluidity and Bodoni\u2019s rational extremes.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Bodoni",
+    "group": "Classic Serif Pairings",
+    "why": "This is the high-drama pairing on the list.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Georgia",
+    "group": "Classic Serif Pairings",
+    "why": "Georgia is the workhorse serif of the screen.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Futura",
+    "group": "Sans-Serif Contrast Pairing",
+    "why": "Futura is a geometric sans-serif, built from perfect circles, triangles, and straight lines in the Bauhaus tradition.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Didot",
+    "group": "Display Font Pairings",
+    "why": "Didot is Bodoni\u2019s French cousin, with even more extreme stroke contrast and a distinctly Parisian elegance.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Playfair Display",
+    "group": "Display Font Pairings",
+    "why": "Playfair Display brings didone drama into the Google Fonts ecosystem, making it the accessible alternative to licensed Didot or Bodoni faces.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Abril Fatface",
+    "group": "Display Font Pairings",
+    "why": "Abril Fatface is the poster child of display type: enormous stroke contrast, heavy vertical strokes, and an unapologetically theatrical presence.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Minion",
+    "group": "Text Serif Pairings",
+    "why": "Minion, designed by Robert Slimbach for Adobe in 1990, is one of the most refined text serifs ever produced.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Helvetica",
+    "body": "Freight Text",
+    "group": "Text Serif Pairings",
+    "why": "Freight Text, designed by Joshua Darden, is a contemporary text serif with a generous x-height, sturdy serifs, and a warm, slightly informal character.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Helvetica",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Pairings",
+    "why": "IBM Plex Mono was designed by Mike Abbink in collaboration with Bold Monday as part of IBM\u2019s comprehensive corporate type system.",
+    "heading_gf": false,
+    "body_gf": true
+   }
+  ]
+ },
+ "inter": {
+  "font": "Inter",
+  "page": "https://madegooddesigns.com/inter-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Inter",
+    "body": "Lora",
+    "group": "Serif Companions",
+    "why": "Lora is a contemporary serif with brushed curves and moderate stroke contrast, designed for comfortable screen reading.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "Merriweather",
+    "group": "Serif Companions",
+    "why": "Merriweather was engineered for screen readability, with a tall x-height, open counters, and sturdy slab-influenced serifs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "Playfair Display",
+    "group": "Serif Companions",
+    "why": "Playfair Display is a high-contrast transitional serif with dramatic thick-thin stroke variation and elegant ball terminals.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "Source Serif Pro",
+    "group": "Serif Companions",
+    "why": "Source Serif Pro was designed by Frank Griesshammer at Adobe as the serif counterpart to Source Sans Pro, but it pairs even more naturally with Inter.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Inter",
+    "body": "Libre Baskerville",
+    "group": "Serif Companions",
+    "why": "Libre Baskerville is a web-optimized revival of the Baskerville tradition, with generous spacing and a tall x-height that was specifically tuned for body text on screen.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "Cormorant Garamond",
+    "group": "Display Serif Companions",
+    "why": "Cormorant Garamond is a display Garamond interpretation with high contrast, refined hairline strokes, and a distinctly elegant bearing.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "DM Serif Display",
+    "group": "Display Serif Companions",
+    "why": "DM Serif Display is a single-weight display serif with substantial visual weight and smooth, refined curves.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "Recoleta",
+    "group": "Display Serif Companions",
+    "why": "Recoleta is a soft, rounded serif inspired by the warmth of 1970s typography, with gentle curves, ball terminals, and an inherently friendly personality.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Inter",
+    "body": "Montserrat",
+    "group": "Sans-Serif Contrast Companions",
+    "why": "Montserrat is a geometric sans-serif with squared-off proportions and a confident visual weight that contrasts with Inter\u2019s humanist curves.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "Space Grotesk",
+    "group": "Sans-Serif Contrast Companions",
+    "why": "Space Grotesk is a proportional sans-serif derived from Space Mono, with distinctive geometric characteristics \u2014 a single-story \u201ca,\u201d squared terminals, and a slightly quirky personality that sets it apart from conventional grotesques.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "JetBrains Mono",
+    "group": "Monospace Companions",
+    "why": "JetBrains Mono was designed specifically for developers, with increased letter height, distinctive letter shapes to reduce ambiguity (clear distinction between \u201c1,\u201d \u201cl,\u201d and \u201cI\u201d), and optional coding ligatures.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "Fira Code",
+    "group": "Monospace Companions",
+    "why": "Fira Code is a monospace typeface extended from Fira Mono with programming ligatures that combine common character sequences (like !=, =>, and ===) into single glyphs.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "lato": {
+  "font": "Lato",
+  "page": "https://madegooddesigns.com/lato-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Lato",
+    "body": "Merriweather",
+    "group": "Serif Companions",
+    "why": "Merriweather was designed specifically for screen reading, with a large x-height, open counters, and sturdy serifs that hold up at small sizes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "Lora",
+    "group": "Serif Companions",
+    "why": "Lora is a well-balanced contemporary serif with moderate contrast and calligraphic roots.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "Playfair Display",
+    "group": "Serif Companions",
+    "why": "Playfair Display is a transitional serif with high stroke contrast, sharp serifs, and a distinctly editorial character.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "Libre Baskerville",
+    "group": "Serif Companions",
+    "why": "Libre Baskerville is a web-optimized revival of the classic Baskerville design, with generous x-height and wide letterforms tuned for screen readability.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "Crimson Text",
+    "group": "Serif Companions",
+    "why": "Crimson Text is an old-style serif inspired by the work of Jan Tschichold and Robert Slimbach.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "Montserrat",
+    "group": "Sans-Serif Companions",
+    "why": "Montserrat is a geometric sans-serif with even stroke widths, round letterforms, and a confident, contemporary personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "Open Sans",
+    "group": "Sans-Serif Companions",
+    "why": "Open Sans is a humanist sans-serif designed by Steve Matteson with neutral, friendly forms and excellent legibility at all sizes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "Roboto",
+    "group": "Sans-Serif Companions",
+    "why": "Roboto is a neo-grotesque with a dual nature \u2014 its letterforms are mostly geometric but with open curves that give it a natural reading rhythm.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "Abril Fatface",
+    "group": "Display Pairings",
+    "why": "Abril Fatface is a display serif inspired by the heavy titling faces of 19th-century advertising.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "Cormorant Garamond",
+    "group": "Display Pairings",
+    "why": "Cormorant Garamond is a display serif with roots in Claude Garamond\u2019s 16th-century designs, redrawn for modern use with higher contrast and more refined details.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "Source Code Pro",
+    "group": "Monospace Pairings",
+    "why": "Source Code Pro, designed by Paul Hunt for Adobe, is one of the most legible monospace fonts available.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lato",
+    "body": "JetBrains Mono",
+    "group": "Monospace Pairings",
+    "why": "JetBrains Mono is a newer monospace typeface designed specifically for developers, with increased letter height for better readability and 138 code-specific ligatures.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "montserrat": {
+  "font": "Montserrat",
+  "page": "https://madegooddesigns.com/montserrat-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Montserrat",
+    "body": "Merriweather",
+    "group": "Montserrat + Serif Font Pairings",
+    "why": "Merriweather was designed specifically for screen readability, with a large x-height, open counters, and sturdy serifs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Source Serif Pro",
+    "group": "Montserrat + Serif Font Pairings",
+    "why": "Source Serif Pro brings a transitional serif structure with clean, rational letterforms.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Lora",
+    "group": "Montserrat + Serif Font Pairings",
+    "why": "Lora is a well-balanced contemporary serif with roots in calligraphy.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Playfair Display",
+    "group": "Montserrat + Serif Font Pairings",
+    "why": "This pairing flips the usual convention. Instead of using Montserrat for headings and the serif for body, try Playfair Display for large headings and Montserrat for body text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Crimson Text",
+    "group": "Montserrat + Serif Font Pairings",
+    "why": "Crimson Text is an old-style serif inspired by the work of Jan Tschichold and Robert Slimbach.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Open Sans",
+    "group": "Montserrat + Sans-Serif Font Pairings",
+    "why": "Open Sans is a humanist sans-serif with open forms and a neutral, friendly appearance.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Hind",
+    "group": "Montserrat + Sans-Serif Font Pairings",
+    "why": "Hind is an underappreciated workhorse designed by the Indian Type Foundry.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Work Sans",
+    "group": "Montserrat + Sans-Serif Font Pairings",
+    "why": "Work Sans was designed by Wei Huang with early grotesque typefaces as inspiration.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Nunito Sans",
+    "group": "Montserrat + Sans-Serif Font Pairings",
+    "why": "Nunito Sans is the unrounded sibling of Nunito, offering a clean, balanced sans-serif with slightly rounded terminals that echo Montserrat\u2019s softer geometry.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Inter",
+    "group": "Montserrat + Sans-Serif Font Pairings",
+    "why": "Inter, designed by Rasmus Andersson, has become the de facto UI typeface of the modern web.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Abril Fatface",
+    "group": "Montserrat + Display Font Pairings",
+    "why": "Abril Fatface is a didone display typeface with dramatic thick-thin contrast and elegant curves.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Cormorant Garamond",
+    "group": "Montserrat + Display Font Pairings",
+    "why": "Cormorant Garamond is a display serif inspired by Claude Garamond\u2019s work but designed for large sizes on screen.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Oswald",
+    "group": "Montserrat + Display Font Pairings",
+    "why": "Oswald is a condensed gothic typeface reimagined for the digital age.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "DM Serif Display",
+    "group": "Montserrat + Display Font Pairings",
+    "why": "DM Serif Display offers a modern take on the transitional serif at display sizes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Spectral",
+    "group": "Montserrat + Display Font Pairings",
+    "why": "Spectral, designed by Production Type for Google, is one of the first font families designed specifically for responsive web typography.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "open sans": {
+  "font": "Open Sans",
+  "page": "https://madegooddesigns.com/open-sans-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Open Sans",
+    "body": "Merriweather",
+    "group": "Serif Companions",
+    "why": "Merriweather was designed by Eben Sorkin with screen readability as its primary goal, sharing the same design philosophy that guided Open Sans.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Lora",
+    "group": "Serif Companions",
+    "why": "Lora is a contemporary serif with brushed curves and calligraphic roots that introduce warmth and movement against Open Sans\u2019s even-tempered neutrality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Playfair Display",
+    "group": "Serif Companions",
+    "why": "Playfair Display is a high-contrast transitional serif with dramatic thick-thin stroke variation and sharp, unbracketed serifs inspired by the European Enlightenment.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Libre Baskerville",
+    "group": "Serif Companions",
+    "why": "Libre Baskerville is a web-optimized revival of the classic Baskerville design, with a taller x-height and wider proportions than traditional Baskerville cuts.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Source Serif Pro",
+    "group": "Serif Companions",
+    "why": "Source Serif Pro was designed by Frank Griesshammer for Adobe as the serif companion to Source Sans Pro.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Roboto",
+    "group": "Sans-Serif Companions",
+    "why": "Roboto occupies a unique position in the sans-serif spectrum.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Montserrat",
+    "group": "Sans-Serif Companions",
+    "why": "Montserrat is a geometric sans-serif inspired by the signage of the Montserrat neighborhood in Buenos Aires.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Raleway",
+    "group": "Sans-Serif Companions",
+    "why": "Raleway is an elegant geometric sans-serif originally designed as a single thin weight by Matt McInerney and later expanded into a full family.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Oswald",
+    "group": "Display Pairings",
+    "why": "Oswald is a condensed gothic sans-serif reworked by Vernon Adams for digital screens, based on the classic American gothic style.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Abril Fatface",
+    "group": "Display Pairings",
+    "why": "Abril Fatface is a display-only typeface with extreme thick-thin contrast, drawn from the heavy titling faces of 19th-century advertising posters.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "DM Serif Display",
+    "group": "Display Pairings",
+    "why": "DM Serif Display is a high-contrast serif designed for large-format use, with generous proportions, elegant curves, and sharp, refined serifs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Source Code Pro",
+    "group": "Monospace Companion",
+    "why": "Source Code Pro is a monospaced typeface designed by Paul D.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "oswald": {
+  "font": "Oswald",
+  "page": "https://madegooddesigns.com/oswald-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Oswald",
+    "body": "Lora",
+    "group": "Serif Companions",
+    "why": "Lora is a contemporary serif with moderate contrast, brushed curves, and a generous x-height that aligns well with Oswald\u2019s vertical proportions.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Merriweather",
+    "group": "Serif Companions",
+    "why": "Merriweather was designed by Eben Sorkin specifically for screen readability.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Source Serif Pro",
+    "group": "Serif Companions",
+    "why": "Source Serif Pro, designed by Frank Griesshammer for Adobe, is a transitional serif with rational, engineering-minded letterforms.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Oswald",
+    "body": "Libre Baskerville",
+    "group": "Serif Companions",
+    "why": "Libre Baskerville is a web-optimized revival of the classic Baskerville design, with a taller x-height and wider proportions than traditional Baskerville cuts.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Crimson Text",
+    "group": "Serif Companions",
+    "why": "Crimson Text is an old-style serif inspired by the work of Jan Tschichold, with a warm, bookish character and refined italics.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Open Sans",
+    "group": "Sans-Serif Companions",
+    "why": "Open Sans is a humanist sans-serif designed by Steve Matteson with open forms, a neutral personality, and exceptional screen readability.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Roboto",
+    "group": "Sans-Serif Companions",
+    "why": "Roboto is a neo-grotesque sans-serif designed by Christian Robertson for Google\u2019s Material Design system.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Lato",
+    "group": "Sans-Serif Companions",
+    "why": "Lato, designed by Lukasz Dziedzic, is a humanist sans-serif with a warm, semi-rounded personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Inter",
+    "group": "Sans-Serif Companions",
+    "why": "Inter, designed by Rasmus Andersson, is a neo-grotesque sans-serif built specifically for screen interfaces.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Playfair Display",
+    "group": "Display Contrast Pairing",
+    "why": "Playfair Display is a high-contrast transitional serif with dramatic thick-thin stroke variation, elegant hairline serifs, and wide proportions.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Source Code Pro",
+    "group": "Monospace Companions",
+    "why": "Source Code Pro, designed by Paul Hunt for Adobe, is a monospaced sans-serif with clean, rational letterforms and excellent readability at both text and display sizes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Fira Code",
+    "group": "Monospace Companions",
+    "why": "Fira Code is a monospaced font with programming ligatures \u2014 special glyphs that combine common character sequences like !=, =>, and >= into single visual symbols.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "playfair display": {
+  "font": "Playfair Display",
+  "page": "https://madegooddesigns.com/playfair-display-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Playfair Display",
+    "body": "Source Sans Pro",
+    "group": "Sans-Serif Companions",
+    "why": "Source Sans Pro, designed by Paul D. Hunt for Adobe, is a humanist sans-serif with open letterforms and a tall x-height that closely matches Playfair Display.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Lato",
+    "group": "Sans-Serif Companions",
+    "why": "Lato, designed by Lukasz Dziedzic, balances warmth and professionalism.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Open Sans",
+    "group": "Sans-Serif Companions",
+    "why": "Open Sans, designed by Steve Matteson, was optimized for screen legibility from the start.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Raleway",
+    "group": "Sans-Serif Companions",
+    "why": "Raleway is an elegant sans-serif with geometric leanings and characteristically thin strokes in its lighter weights.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Nunito Sans",
+    "group": "Sans-Serif Companions",
+    "why": "Nunito Sans brings rounded terminals and a friendly demeanor that tempers the formality of Playfair Display.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Inter",
+    "group": "Sans-Serif Companions",
+    "why": "Inter, designed by Rasmus Andersson, was purpose-built for computer screens.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Crimson Text",
+    "group": "Serif Companions for Body Text",
+    "why": "Crimson Text, designed by Sebastian Kosch, is an old-style serif with moderate contrast and slightly condensed proportions.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Libre Baskerville",
+    "group": "Serif Companions for Body Text",
+    "why": "Libre Baskerville was specifically optimized for body text on screen, which immediately distinguishes it from Playfair Display\u2019s headline orientation.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Fira Code",
+    "group": "Monospace Companions for Tech-Editorial",
+    "why": "Fira Code, an extension of Fira Mono with programming ligatures, pairs surprisingly well with Playfair Display in tech-editorial contexts.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Companions for Tech-Editorial",
+    "why": "IBM Plex Mono carries a corporate-meets-technical aesthetic that pairs cleanly with Playfair Display when the editorial tone needs to feel authoritative and data-literate.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "poppins": {
+  "font": "Poppins",
+  "page": "https://madegooddesigns.com/poppins-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Poppins",
+    "body": "Lora",
+    "group": "Serif Companions",
+    "why": "Lora is a well-balanced contemporary serif with moderate contrast and brushed curves that add warmth without fussiness.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "Merriweather",
+    "group": "Serif Companions",
+    "why": "Merriweather was designed specifically for screen readability, with a tall x-height, open counters, and slightly condensed proportions that keep lines compact without sacrificing legibility.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "Playfair Display",
+    "group": "Serif Companions",
+    "why": "Playfair Display is a high-contrast transitional serif with dramatic thick-thin stroke variation, sharp serifs, and elegant proportions inspired by the European Enlightenment.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "Crimson Text",
+    "group": "Serif Companions",
+    "why": "Crimson Text is an old-style serif inspired by the work of Jan Tschichold, with a warm, bookish character and beautiful italics.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "Source Serif Pro",
+    "group": "Serif Companions",
+    "why": "Source Serif Pro, designed by Frank Griesshammer for Adobe, is a transitional serif with clean, rational letterforms that complement Poppins\u2019s own rationality.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Poppins",
+    "body": "Inter",
+    "group": "Sans-Serif Companions",
+    "why": "Inter is a neo-grotesque sans-serif designed by Rasmus Andersson specifically for screen interfaces.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "Work Sans",
+    "group": "Sans-Serif Companions",
+    "why": "Work Sans is a grotesque sans-serif with a workhorse personality \u2014 neutral, legible, and optimized for body text on screens.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "Nunito Sans",
+    "group": "Sans-Serif Companions",
+    "why": "Nunito Sans is a close relative of Poppins \u2014 both are rounded, friendly, and geometric-leaning.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "DM Serif Display",
+    "group": "Display Pairings",
+    "why": "DM Serif Display is a high-contrast serif with generous proportions and elegant curves, designed as the serif counterpart to DM Sans.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "Abril Fatface",
+    "group": "Display Pairings",
+    "why": "Abril Fatface is a display-only typeface with extreme thick-thin contrast, inspired by the heavy titling faces of 19th-century advertising.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "Cormorant Garamond",
+    "group": "Display Pairings",
+    "why": "Cormorant Garamond is a display serif that reinterprets the classic Garamond model for modern screens, with higher contrast and more dramatic proportions than traditional Garamond cuts.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Poppins",
+    "body": "Fira Code",
+    "group": "Monospace Companion",
+    "why": "Fira Code is a monospaced font with programming ligatures, designed for code editors but increasingly used in web design for technical content, code snippets, and data displays.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "proxima nova": {
+  "font": "Proxima Nova",
+  "page": "https://madegooddesigns.com/proxima-nova-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Proxima Nova",
+    "body": "Georgia",
+    "group": "Serif Companions",
+    "why": "Georgia is the most reliable serif on the web \u2014 it was designed specifically for screen reading by Matthew Carter and ships on virtually every device.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "Merriweather",
+    "group": "Serif Companions",
+    "why": "Merriweather was designed by Eben Sorkin with screen readability as the primary goal.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "Playfair Display",
+    "group": "Serif Companions",
+    "why": "This flips the typical script \u2014 Playfair Display takes the headline role while Proxima Nova handles body text.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "Freight Text",
+    "group": "Serif Companions",
+    "why": "Freight Text, designed by Joshua Darden, is a refined transitional serif built for extended reading.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "Adelle",
+    "group": "Serif Companions",
+    "why": "Adelle, by Veronika Burian and Jos\u00e9 Scaglione of TypeTogether, is a slab serif designed explicitly for editorial use.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "Futura",
+    "group": "Sans-Serif Companions",
+    "why": "Futura is the archetypal geometric sans-serif \u2014 Paul Renner\u2019s 1927 design is all circles, triangles, and straight lines.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "Inter",
+    "group": "Sans-Serif Companions",
+    "why": "Inter, designed by Rasmus Andersson, was built specifically for user interfaces.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "Open Sans",
+    "group": "Sans-Serif Companions",
+    "why": "Open Sans, designed by Steve Matteson, is a humanist sans-serif with friendly, open letterforms.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "Canela",
+    "group": "Display Pairings",
+    "why": "Canela, designed by Miguel Reyes for Commercial Type, is a hybrid serif that merges serif and sans-serif conventions.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "Abril Fatface",
+    "group": "Display Pairings",
+    "why": "Abril Fatface is a free display serif inspired by the heavy titling faces of 19th-century advertising.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "GT Sectra",
+    "group": "Display Pairings",
+    "why": "GT Sectra, by Dominik Huber and Marc Kappeler of Grilli Type, is a contemporary serif that draws inspiration from the pointed pen rather than the broad nib.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Proxima Nova",
+    "body": "Fira Code",
+    "group": "Monospace Pairing",
+    "why": "Fira Code, based on Mozilla\u2019s Fira Mono by Nikita Prokopov, is a monospace typeface designed for programming with coding ligatures that combine common character sequences (like =>, !=, and ===) into single glyphs.",
+    "heading_gf": false,
+    "body_gf": true
+   }
+  ]
+ },
+ "raleway": {
+  "font": "Raleway",
+  "page": "https://madegooddesigns.com/raleway-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Raleway",
+    "body": "Lora",
+    "group": "Raleway + Serif Font Pairings",
+    "why": "Lora is a contemporary serif with roots in calligraphy, offering brushed curves and moderate contrast that soften Raleway\u2019s geometric coolness.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Merriweather",
+    "group": "Raleway + Serif Font Pairings",
+    "why": "Merriweather was built from the ground up for screen readability, with sturdy serifs, large counters, and a tall x-height that keeps text sharp at small sizes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Cormorant Garamond",
+    "group": "Raleway + Serif Font Pairings",
+    "why": "Cormorant Garamond is a display serif designed by Christian Thalmann, inspired by the work of Claude Garamond but reimagined for screen with higher contrast and more dramatic proportions.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Libre Baskerville",
+    "group": "Raleway + Serif Font Pairings",
+    "why": "Libre Baskerville is a web-optimized revival of the classic Baskerville design, with wider counters and slightly heavier strokes than its historical predecessor.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Crimson Text",
+    "group": "Raleway + Serif Font Pairings",
+    "why": "Crimson Text is an old-style serif with gentle bracketed serifs and a warm, literary character.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Open Sans",
+    "group": "Raleway + Sans-Serif Font Pairings",
+    "why": "Open Sans is a humanist sans-serif designed by Steve Matteson with neutral, friendly letterforms and outstanding screen legibility.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Roboto",
+    "group": "Raleway + Sans-Serif Font Pairings",
+    "why": "Roboto occupies a unique space between geometric and humanist sans-serif classifications.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Montserrat",
+    "group": "Raleway + Sans-Serif Font Pairings",
+    "why": "This is a pairing between two geometric sans-serifs that works because of how each font handles its geometry differently.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Playfair Display",
+    "group": "Raleway + Display Font Pairings",
+    "why": "Playfair Display is a high-contrast transitional serif with sharp, unbracketed serifs and dramatic thick-thin strokes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "DM Serif Display",
+    "group": "Raleway + Display Font Pairings",
+    "why": "DM Serif Display is a modern interpretation of the transitional serif style with slightly rounded details and a warm, approachable personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Abril Fatface",
+    "group": "Raleway + Display Font Pairings",
+    "why": "Abril Fatface is a didone display typeface with extreme thick-thin contrast and voluptuous curves.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Fira Code",
+    "group": "Raleway + Monospace Font Pairing",
+    "why": "Fira Code is a monospace typeface designed for programming, with coding ligatures and a technical aesthetic that pairs unexpectedly well with Raleway\u2019s refined geometry.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "roboto": {
+  "font": "Roboto",
+  "page": "https://madegooddesigns.com/roboto-font-pairing/",
+  "pairs": [
+   {
+    "heading": "Roboto",
+    "body": "Lora",
+    "group": "Roboto + Serif Companions",
+    "why": "Lora is a contemporary serif with calligraphic roots, designed by Cyreal for Google Fonts.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Merriweather",
+    "group": "Roboto + Serif Companions",
+    "why": "Merriweather was designed by Eben Sorkin with one mission: maximum readability on screens.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Playfair Display",
+    "group": "Roboto + Serif Companions",
+    "why": "Playfair Display is a high-contrast transitional serif inspired by the designs of John Baskerville and the European Enlightenment.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Crimson Text",
+    "group": "Roboto + Serif Companions",
+    "why": "Crimson Text is an old-style serif designed by Sebastian Kosch, drawing from the tradition of Garamond and Minion.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Source Serif Pro",
+    "group": "Roboto + Serif Companions",
+    "why": "Source Serif Pro was designed by Frank Griesshammer at Adobe as part of the Source family, which also includes Source Sans Pro and Source Code Pro.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Roboto",
+    "body": "Open Sans",
+    "group": "Roboto + Sans-Serif Companions",
+    "why": "Open Sans is a humanist sans-serif designed by Steve Matteson.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Montserrat",
+    "group": "Roboto + Sans-Serif Companions",
+    "why": "Montserrat is a geometric sans-serif with a completely different structural foundation from Roboto.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Raleway",
+    "group": "Roboto + Sans-Serif Companions",
+    "why": "Raleway is an elegant geometric sans-serif originally designed by Matt McInerney as a single thin weight, later expanded into a full family.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Abril Fatface",
+    "group": "Roboto + Display Pairings",
+    "why": "Abril Fatface is a didone display typeface with extreme thick-thin contrast, large rounded serifs, and an unmistakable editorial presence.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Oswald",
+    "group": "Roboto + Display Pairings",
+    "why": "Oswald is a condensed neo-grotesque reimagined by Vernon Adams for digital use.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "DM Serif Display",
+    "group": "Roboto + Display Pairings",
+    "why": "DM Serif Display is a modern transitional serif designed for display sizes by Colophon Foundry for Google.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Roboto Mono",
+    "group": "Roboto + Monospace Pairing",
+    "why": "Roboto Mono was designed as a direct companion to Roboto, sharing its structural characteristics but adapted for fixed-width typesetting.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ }
+}

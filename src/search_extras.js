@@ -119,6 +119,25 @@ async function btTile(env, clean, retry) {
     tile_key: t.image_key, palette: t.palette, industry: t.industry, named: "[]", alts: "[]" }));
 }
 
+// Ready-to-paste tokens (kit pilot, 5-Nov-2026): palette → CSS custom properties + Tailwind colours; the first two free look-alikes
+// → one Google Fonts css2 link (heading + body). Only names we already publish; nothing is invented.
+export function gfLink(names) {
+  const fams = [...new Set(names.filter(Boolean))].slice(0, 3).map((n) => "family=" + encodeURIComponent(n).replace(/%20/g, "+") + ":wght@400;600;700");
+  return fams.length ? `https://fonts.googleapis.com/css2?${fams.join("&")}&display=swap` : null;
+}
+export function btTokens(pal, alts) {
+  const names = ["1", "2", "3", "4", "5", "6", "7", "8"]; // positional: our palettes are not role-ordered
+  const cols = pal.slice(0, 8).map((hex, i) => [names[i], String(hex).toUpperCase()]);
+  const fonts = alts.slice(0, 2).map((x) => x.name);
+  if (!cols.length && !fonts.length) return null;
+  const fam = (n, fb) => (n ? `"${n}", ${fb}` : fb);
+  const css = [":root {", ...cols.map(([k, v]) => `  --brand-${k}: ${v};`),
+    ...(fonts.length ? [`  --font-heading: ${fam(fonts[0], "sans-serif")};`, `  --font-body: ${fam(fonts[1] || fonts[0], "sans-serif")};`] : []), "}"].join("\n");
+  const tailwind = { theme: { extend: { colors: Object.fromEntries(cols.map(([k, v]) => [`brand-${k}`, v])),
+    ...(fonts.length ? { fontFamily: { heading: [fonts[0], "sans-serif"], body: [fonts[1] || fonts[0], "sans-serif"] } } : {}) } } };
+  return { css, google_fonts_url: gfLink(fonts), tailwind };
+}
+
 export function btFormat(r, site) {
   const named = j(r.named), alts = j(r.alts), pal = j(r.palette);
   const kind = r.kind === "custom" ? "custom lettering (not a font you can download)" : r.kind === "named" ? "a named typeface" :
@@ -138,8 +157,15 @@ export function btFormat(r, site) {
   if (tileImg) lines.push(`  specimen tile: ${tileImg}`);
   if (r.font_url) lines.push(`  font guide (cite this): ${r.font_url}`);
   if (r.guide_url) lines.push(`  brand guide (cite this): ${r.guide_url}`);
+  const tokens = btTokens(pal, alts);
+  if (tokens) {
+    lines.push("  ready to use (palette + free look-alike fonts; structuredContent.tokens also has a Tailwind theme):");
+    if (tokens.google_fonts_url) lines.push(`  <link href="${tokens.google_fonts_url}" rel="stylesheet">`);
+    lines.push(tokens.css.split("\n").map((l) => "  " + l).join("\n"));
+  }
   return { text: lines.join("\n"), data: { brand: r.brand, verdict: r.kind || null, typefaces: named, summary: r.summary || null, free_alternatives: alts,
-    specimen: spec, palette: pal, tile_image: tileImg, font_guide_url: r.font_url || null, brand_guide_url: r.guide_url || null, industry: r.industry || null } };
+    specimen: spec, palette: pal, tile_image: tileImg, font_guide_url: r.font_url || null, brand_guide_url: r.guide_url || null, industry: r.industry || null,
+    tokens } };
 }
 
 export async function brandTypeface(a, env, site, retry) {

@@ -44,6 +44,7 @@ import { MOODBOARD_TOOL, callMoodboard, moodboardRoute, moodboardAdmin } from ".
 import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs } from "./discovery.js";
 import { uiItemPath } from "./ui_screens.js";
 import { withIconHint, BRAND_TYPEFACE_TOOL, brandTypeface, ftsSearch } from "./search_extras.js";
+import { FONT_PAIRING_TOOL, fontPairing } from "./font_pairing.js"; // kit pilot 5-Nov-2026 (local branch kit-pilot-2026-11)
 import { REF_FONTS, OFFER_HEAD, buildOffer } from "./next_offer.js";
 
 // Aggressive AI-training / SEO / bulk crawlers that spider the JSON read API (which is
@@ -1614,7 +1615,7 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
-MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, ...MCP_TOOLS_64, ...MCP_TOOLS_65, ...MCP_TOOLS_66, ...MCP_TOOLS_68, ...MCP_TOOLS_69, ...MCP_TOOLS_72, ...MCP_TOOLS_73, ...MCP_TOOLS_75, ...MCP_TOOLS_76, ...MCP_TOOLS_78, ...MCP_TOOLS_79, ...MCP_TOOLS_80, MOODBOARD_TOOL, BRAND_TYPEFACE_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, ...MCP_TOOLS_64, ...MCP_TOOLS_65, ...MCP_TOOLS_66, ...MCP_TOOLS_68, ...MCP_TOOLS_69, ...MCP_TOOLS_72, ...MCP_TOOLS_73, ...MCP_TOOLS_75, ...MCP_TOOLS_76, ...MCP_TOOLS_78, ...MCP_TOOLS_79, ...MCP_TOOLS_80, MOODBOARD_TOOL, BRAND_TYPEFACE_TOOL, FONT_PAIRING_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 extendMockupDefs(MCP_TOOLS); // batch 73: get_mockup_print_area (mcp_tools69.js) also covers canvas, magazine, flyer, brochure, notebook, polo, cap, sticker, banner, paper bag
 
 // ---- Routing guide (sent on initialize; clients load it into the model's context) — 31-Oct-2026
@@ -1811,7 +1812,7 @@ const MCP_DEFAULT_PROFILE = "all";
 const MCP_CORE_NAMES = ["search_ui_screens", "get_ui_screen_code", "get_ui_flow", "list_ui_patterns", "search_design_inspiration", "browse_inspiration_by_theme",
   "list_inspiration_themes", "search_museum_art", "search_annual_reports", "generate_website_color_palette", "generate_design_md",
   "design_md_from_references", "generate_logo_concepts", "generate_color_combinations", "check_contrast", "generate_shadcn_theme",
-  "search_icons", "make_brand_board", "generate_type_scale", "save_moodboard", "get_brand_typeface"];
+  "search_icons", "make_brand_board", "generate_type_scale", "save_moodboard", "get_brand_typeface", "get_font_pairing"];
 const MCP_INSTRUCTIONS_CORE = "Made Good Designs (madegooddesigns.com): free, original design references and design tools. Call them BEFORE building or restyling UI, picking colours or fonts, or making a logo or brand: real references and tested tokens beat guessing.\n" +
   "- App screen, dashboard, form or landing section: search_ui_screens, then get_ui_screen_code (HTML + DESIGN.md). Journeys (sign-up, checkout): get_ui_flow.\n" +
   "- Typography, branding, packaging, logo or poster references: search_design_inspiration or browse_inspiration_by_theme (themes: list_inspiration_themes). A brand's font: get_brand_typeface (list several brands in one call).\n" +
@@ -1947,6 +1948,10 @@ async function logMcp(env, tool, query, ip, ua, who) {
 // Includes uptime monitors / directory checkers (AMP-Server calls the same 3 tools daily) so they don't count as users.
 const MCP_BOT_UA = /^(curl\/|undici|python-|Go-http-client|node-fetch|axios|okhttp|aiohttp|httpx|Wget|Java\/|node$|mgd-selftest)|mcp-probe|MCPYP|evyAI|scanner|AMP-Server|amp-mcp-tester|Inspection|SentinelOracle|histor\//i;
 function mcpCtx(request, endpoint) {
+  // kit pilot: connect links on library pages carry ?ref=<page-slug>; record it with the endpoint so mcp_events shows which page
+  // brought the client (MCP clients keep the configured URL, so every request carries it). Slug-safe, ≤ 60 chars.
+  let ref = ""; try { ref = (new URL(request.url).searchParams.get("ref") || "").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 60); } catch (_) {}
+  if (ref) endpoint = `${endpoint}?ref=${ref}`;
   return { endpoint, ip: request.headers.get("CF-Connecting-IP") || "", ua: request.headers.get("User-Agent") || "",
     country: (request.cf && request.cf.country) || "", sid: request.headers.get("mcp-session-id") || "" };
 }
@@ -2054,7 +2059,7 @@ async function mcpCallTool(params, env, ip, ua, who, listed) {
     await logMcp(env, name, a.board_id || a.title || "", ip, ua, who);
     return mcpCallToolSafe(name, () => callMoodboard(a, env, { site: MCP_SITE, ip }));
   }
-  await logMcp(env, name, a.query || a.q || (name === "get_brand_typeface" ? [].concat(a.brands || [], a.brand || []).map(String).join(", ").slice(0, 200) : "") || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || (typeof a.colors === "string" ? a.colors.slice(0, 80) : Array.isArray(a.colors) ? a.colors.slice(0, 6).join(" ") : "") || a.preset || "", ip, ua, who);
+  await logMcp(env, name, a.query || a.q || (name === "get_brand_typeface" ? [].concat(a.brands || [], a.brand || []).map(String).join(", ").slice(0, 200) : "") || (name === "get_font_pairing" ? String(a.font || "").slice(0, 80) : "") || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || (typeof a.colors === "string" ? a.colors.slice(0, 80) : Array.isArray(a.colors) ? a.colors.slice(0, 6).join(" ") : "") || a.preset || "", ip, ua, who);
   const opts = who ? { ids: true } : undefined; // authenticated endpoint also shows item_id (needed by save_to_board)
   try { return mcpCite(name, mcpAddNext(name, await mcpCallToolInner(name, a, env, opts))); }
   catch (e) {
@@ -2153,6 +2158,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     return { content: [{ type: "text", text: await r.text() }] };
   }
   if (name === "get_brand_typeface") return brandTypeface(a, env, MCP_SITE, mcpRetry);
+  if (name === "get_font_pairing") return fontPairing(a);
   if (name === "generate_website_color_palette") return mcpWebsitePalette(a);
   if (name === "generate_design_md") return mcpDesignMd(a);
   if (isToolsTool(name)) return callToolsTool(name, a);
