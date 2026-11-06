@@ -696,7 +696,12 @@
   "hvac",
   "cybersecurity",
   "crm",
-  "coaching"
+  "coaching",
+  "pest-control",
+  "solar",
+  "pediatrics",
+  "orthodontics",
+  "fertility"
  ],
  "styles": [
   "minimal",
@@ -858,7 +863,15 @@
    "hvac-website",
    "cybersecurity-website",
    "crm-landing-page",
-   "coaching-website"
+   "coaching-website",
+   "pest-control-website",
+   "solar-website",
+   "ai-agent-website",
+   "preschool-website",
+   "apartment-website",
+   "pediatrics-website",
+   "orthodontics-website",
+   "fertility-website"
   ]
  }
 }

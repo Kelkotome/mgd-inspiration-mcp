@@ -49,6 +49,7 @@ about / pricing / contact / 404 per industry slot in as more variants). Every ne
 in `src/ui_search.js`, and a line in `tests/ui_rank/cases_n12.txt`.
 
 ## Niche landing pages (n13, 6-Nov-2026)
+Search note: a full page names every section, so `buildIndex` counts page templates at 0.1 in document frequency. Without that, 20 more page templates wore down words like "hero" and pushed the real hero pattern off the top. Tags on a page must not read like a design request (attack-path and audience-paths both matched "two paths"; run-log matched "running").
 Same system as the website templates, one level deeper. Each niche gets its own section order and at least two sections that only make sense for that field; it is never another template with the words swapped.
 Healthcare and finance pages: no outcome claims, percentages, patient counts, ratings, testimonials, drug names or doses, and no named certifying bodies. Credentials use generic kinds of training plus one dashed "add your details" slot, and the footer legal line says the practice is fictional and the page is general information only.
 Gates: `python3 tests/n13_lint.py <pattern>` (content) and `PW_DIR=<dir with playwright-core> node tests/n13_overflow.mjs <pattern>` (no sideways scroll at 390, 768, 1024, 1440). `bash tests/n13_local_e2e.sh <pattern>` ingests into a throwaway local Worker and checks pattern pages, raw files and the "Build this with your AI" panel; it never touches live. In zsh pass patterns as an array, or `$A` stays one word.

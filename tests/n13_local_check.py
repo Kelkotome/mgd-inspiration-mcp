@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Checks a local Worker after ingest: pattern pages, cards, item pages, raw html/md, kit panel. Usage: n13_local_check.py BASE pattern..."""
-import json, re, sys, urllib.request
+"""Checks a Worker after ingest (local, or the live base https://madegooddesigns.com/inspiration): pattern pages, cards, item pages, raw html/md, kit panel. Usage: n13_local_check.py BASE pattern..."""
+import json, re, sys, urllib.parse, urllib.request
 BASE, pats = sys.argv[1].rstrip("/"), sys.argv[2:]
 seo = open("src/ui_seo.js").read()
 def get(u):
@@ -22,7 +22,7 @@ for p in pats:
     print(p, "|", t and t[1])
     if not links: continue
     for rel in (links[0], links[-1]):
-        u = rel if rel.startswith("http") else "http://127.0.0.1:" + BASE.split(":")[2].split("/")[0] + rel
+        u = urllib.parse.urljoin(BASE + "/", rel)
         st, it = get(u)
         check(st == 200, f"item {u} {st}")
         check('class="kit"' in it or 'class="kit ' in it, f"kit panel missing {u}")

@@ -152,6 +152,14 @@ export const PATTERN_SEO = {
   "cybersecurity-website": ["cybersecurity-website-template", "Cybersecurity website templates"],
   "crm-landing-page": ["crm-landing-page-template", "CRM landing page templates"],
   "coaching-website": ["coaching-website-template", "Coaching website templates"],
+  "pest-control-website": ["pest-control-website-template", "Pest control website templates"],
+  "solar-website": ["solar-website-template", "Solar website templates"],
+  "ai-agent-website": ["ai-agent-website-template", "AI agent website templates"],
+  "preschool-website": ["preschool-website-template", "Preschool website templates"],
+  "apartment-website": ["apartment-website-template", "Apartment website templates"],
+  "pediatrics-website": ["pediatrics-website-template", "Pediatric website templates"],
+  "orthodontics-website": ["orthodontics-website-template", "Orthodontics website templates"],
+  "fertility-website": ["fertility-website-template", "Fertility clinic website templates"],
   // n13-end
 };
 

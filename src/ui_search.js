@@ -22,7 +22,7 @@ export const PATTERN_ALIASES = {
   "real-estate-website": ["real estate website", "real estate", "realtor", "property listings", "estate agent", "realty", "property website", "real estate landing page", "webtemplate", "real estate webtemplate", "realtor webtemplate", "property webtemplate"],
   "construction-website": ["construction website", "construction", "contractor", "builder", "builders", "construction company", "renovation", "webtemplate", "construction webtemplate", "contractor webtemplate", "builder webtemplate"],
   "law-firm-website": ["law firm website", "law firm", "lawyer", "lawyers", "attorney", "legal", "solicitor", "law office", "webtemplate", "law firm webtemplate", "lawyer webtemplate", "attorney webtemplate"],
-  "dental-website": ["dental website", "dental", "dentist", "dental clinic", "dental practice", "orthodontist", "webtemplate", "dental webtemplate", "dentist webtemplate"],
+  "dental-website": ["dental website", "dental", "dentist", "dental clinic", "dental practice", "webtemplate", "dental webtemplate", "dentist webtemplate"],
   "gym-website": ["gym website", "gym", "fitness studio", "crossfit", "personal trainer website", "fitness landing page", "gym landing page", "webtemplate", "gym webtemplate", "fitness webtemplate"],
   "school-website": ["school website", "school", "education website", "academy", "university website", "college website", "education landing page", "kindergarten", "webtemplate", "school webtemplate", "education webtemplate", "university webtemplate", "academy webtemplate"],
   "nonprofit-website": ["nonprofit website", "nonprofit", "non profit", "charity", "charity website", "ngo", "donation website", "foundation", "food bank", "webtemplate", "nonprofit webtemplate", "charity webtemplate"],
@@ -30,6 +30,14 @@ export const PATTERN_ALIASES = {
   "hotel-website": ["hotel website", "hotel", "boutique hotel", "resort", "hotel landing page", "hotel homepage", "bed and breakfast", "webtemplate", "hotel webtemplate", "boutique hotel webtemplate"],
   "saas-landing-page": ["saas landing page", "saas website", "saas", "startup landing page", "software landing page", "product landing page", "b2b landing page", "webtemplate", "saas webtemplate", "startup webtemplate", "software webtemplate"],
   "ai-website": ["ai website", "ai landing page", "ai startup", "ai product website", "ai saas", "ai tool landing page", "webtemplate", "ai webtemplate", "ai startup webtemplate"],
+  "pest-control-website": ["pest control website", "pest control", "exterminator", "exterminator website", "termite control", "rodent control", "bed bug treatment", "pest control company", "pest control landing page", "webtemplate", "pest control webtemplate", "exterminator webtemplate"],
+  "solar-website": ["solar website", "solar", "solar company", "solar installer", "solar panel installer", "solar panels website", "solar energy website", "home battery installer", "solar landing page", "webtemplate", "solar webtemplate", "solar company webtemplate", "solar installer webtemplate"],
+  "ai-agent-website": ["ai agent website", "ai agent", "ai agents", "ai agent landing page", "agent platform", "autonomous agent", "support agent saas", "ai agent startup", "webtemplate", "ai agent webtemplate", "ai agents webtemplate"],
+  "preschool-website": ["preschool website", "preschool", "nursery", "nursery school", "nursery school webtemplate", "nursery webtemplate", "nursery website", "daycare website", "daycare", "childcare website", "childcare", "kindergarten website", "early years", "preschool landing page", "webtemplate", "preschool webtemplate", "daycare webtemplate", "childcare webtemplate"],
+  "apartment-website": ["apartment website", "apartment community", "apartment complex website", "apartments for rent website", "multifamily website", "rental apartments", "leasing website", "apartment landing page", "webtemplate", "apartment webtemplate", "multifamily webtemplate"],
+  "pediatrics-website": ["pediatric website", "pediatrics website", "pediatrics", "pediatrician", "pediatrician website", "paediatric website", "paediatrics", "children's clinic", "childrens clinic", "kids doctor", "pediatric clinic", "pediatric landing page", "webtemplate", "pediatric webtemplate", "pediatrics webtemplate", "pediatrician webtemplate"],
+  "orthodontics-website": ["orthodontics website", "orthodontics", "orthodontist website", "orthodontist", "braces website", "clear aligners website", "braces", "orthodontic practice", "orthodontics landing page", "webtemplate", "orthodontics webtemplate", "orthodontist webtemplate", "braces webtemplate"],
+  "fertility-website": ["fertility website", "fertility clinic", "fertility clinic website", "fertility", "ivf website", "ivf clinic", "ivf", "reproductive medicine", "egg freezing clinic", "fertility landing page", "webtemplate", "fertility webtemplate", "fertility clinic webtemplate", "ivf webtemplate"],
   "medical-website": ["medical website", "medical practice", "medical practice website", "primary care", "gp surgery", "family doctor", "family medicine", "doctor website", "doctors office", "healthcare website", "healthcare landing page", "medical landing page", "clinic website", "webtemplate", "medical webtemplate", "healthcare webtemplate", "doctor webtemplate", "clinic webtemplate", "primary care webtemplate"],
   "cardiology-website": ["cardiology website", "cardiology", "cardiologist", "cardiologist website", "heart clinic", "heart center", "heart centre", "cardiac clinic", "cardiology practice", "cardiology landing page", "webtemplate", "cardiology webtemplate", "cardiologist webtemplate", "heart clinic webtemplate"],
   "dermatology-website": ["dermatology website", "dermatology", "dermatologist", "dermatologist website", "skin clinic", "skin clinic website", "dermatology clinic", "dermatology practice", "dermatology landing page", "webtemplate", "dermatology webtemplate", "dermatologist webtemplate", "skin clinic webtemplate"],
@@ -137,7 +145,7 @@ export const PATTERN_ALIASES = {
   "auth-error": ["login error", "sign in error", "wrong password", "incorrect password", "account locked", "locked out", "code expired", "expired code", "auth error", "failed login"],
   "payment-declined": ["card declined", "payment declined", "payment failed", "payment error", "declined", "checkout error", "insufficient funds"],
   // website sections
-  "hero": ["hero", "landing hero", "hero section", "above the fold", "landing page", "landing"],
+  "hero": ["centered hero", "hero", "landing hero", "hero section", "above the fold", "landing page", "landing"],
   "navigation-header": ["navigation", "nav", "header", "navbar", "mega menu", "menu", "navigation header"],
   "feature-grid": ["features", "feature grid", "feature list", "benefits", "feature section"],
   "bento-features": ["bento", "bento grid", "bento features"],
@@ -250,7 +258,7 @@ export function buildIndex(rows, patternOrder, elMap) {
     return { r, f, variant, els: new Set(elTags), layout: inv ? inv.layout : null, density: inv ? inv.density : null, step: steps.length ? Math.min(...steps) : 0, pattern: r.category, ord: order.has(r.category) ? order.get(r.category) : 999 };
   });
   const df = new Map();
-  for (const d of docs) { const seen = new Set(patOf(d.pattern || "").all); for (const k in d.f) for (const t of d.f[k]) seen.add(t); for (const t of seen) df.set(t, (df.get(t) || 0) + 1); }
+  for (const d of docs) { const seen = new Set(patOf(d.pattern || "").all); for (const k in d.f) for (const t of d.f[k]) seen.add(t); const w = d.els.has("website-template") ? 0.1 : 1; /* a full page names every section, so page templates must not wear down words like "hero" */ for (const t of seen) df.set(t, (df.get(t) || 0) + w); }
   const vocab = [...df.keys()].filter((t) => t.length >= 4 && !/\d/.test(t)).map((t) => [t, grams(t)]);
   return { docs, df, N: Math.max(1, docs.length), pat, vocab, order };
 }

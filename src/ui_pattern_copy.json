@@ -3134,5 +3134,165 @@
     "Many do because it filters enquiries and builds trust. If yours vary, publish a starting price."
    ]
   ]
+ },
+ "pest-control-website": {
+  "h1": "Pest control website templates",
+  "intro": "People search for pest control when they have just seen something. These templates start with a pest identifier, then cover what a visit involves, one-off and quarterly plans, safety for children and pets, service areas, reviews and booking.",
+  "tips": [
+   "Let people start from the pest they saw.",
+   "Explain what happens on a visit.",
+   "Show one-off and recurring plans side by side.",
+   "Be specific about preparation and safety for pets and children."
+  ],
+  "faq": [
+   [
+    "What should a pest control website include?",
+    "Pests treated, what a visit involves, one-off and recurring plans, safety guidance, service areas, reviews and booking."
+   ],
+   [
+    "How do you lay out pest control services?",
+    "Group them by pest, not by treatment method. People know what they saw, not what the treatment is called."
+   ]
+  ]
+ },
+ "solar-website": {
+  "h1": "Solar website templates",
+  "intro": "Going solar is a big decision with lots of steps. These templates include a roof and bill estimator, the install timeline from survey to switch-on, panel and battery options, financing, a service promise and a free assessment form.",
+  "tips": [
+   "Start from the visitor's roof and bill.",
+   "Show every step from survey to switch-on.",
+   "Explain panels, inverters and batteries in plain words.",
+   "Label estimates clearly and avoid promising exact savings."
+  ],
+  "faq": [
+   [
+    "What should a solar website include?",
+    "An estimate tool, how installation works, equipment options, financing, warranties and aftercare, local coverage and a way to book an assessment."
+   ],
+   [
+    "How do solar websites show savings?",
+    "Use a clearly labelled estimate based on the visitor's own bill and roof, and say what could change it."
+   ]
+  ]
+ },
+ "ai-agent-website": {
+  "h1": "AI agent website templates",
+  "intro": "AI agents are easier to trust when people can see what they do. These templates show a live-looking run log, the tools an agent can reach, human approval steps, guardrails, use cases and usage-based pricing.",
+  "tips": [
+   "Show a real run, step by step.",
+   "Say what the agent can and can't touch.",
+   "Show where a person approves or takes over.",
+   "Price by what the buyer can understand, such as resolved tasks."
+  ],
+  "faq": [
+   [
+    "What should an AI agent website include?",
+    "What the agent does, a view of it working, the tools it can use, human approval steps, guardrails, pricing and a way to try it."
+   ],
+   [
+    "How do you explain an AI agent on a landing page?",
+    "Show one complete task from start to finish rather than describing the technology."
+   ]
+  ]
+ },
+ "preschool-website": {
+  "h1": "Preschool website templates",
+  "intro": "Parents choosing a preschool want to picture their child's day. These templates walk through a day at preschool, rooms by age, how settling in works, fees and sessions, staff, safeguarding, and a tour booking form.",
+  "tips": [
+   "Show a real day, hour by hour.",
+   "Explain how settling in works.",
+   "Publish sessions, fees and term dates.",
+   "Make booking a visit the main action."
+  ],
+  "faq": [
+   [
+    "What should a preschool website include?",
+    "Ages and rooms, a typical day, sessions and fees, staff, safeguarding and policies, meals, term dates and a way to book a visit."
+   ],
+   [
+    "How do you help parents choose a preschool online?",
+    "Show a typical day, the people who will look after their child and how settling in works. Then make booking a visit easy."
+   ]
+  ]
+ },
+ "apartment-website": {
+  "h1": "Apartment website templates",
+  "intro": "Renters want floor plans, prices and availability. These templates include a floor plan browser, available homes with move-in dates, amenities, the neighbourhood, a tour scheduler, a resident login and an application path.",
+  "tips": [
+   "Lead with floor plans, prices and availability.",
+   "Show real move-in dates.",
+   "Make scheduling a tour take seconds.",
+   "Give current residents their own login path."
+  ],
+  "faq": [
+   [
+    "What should an apartment website include?",
+    "Floor plans, prices, availability, amenities, the neighbourhood, a tour scheduler, an application path and a resident login."
+   ],
+   [
+    "How do you show availability on an apartment website?",
+    "List homes with floor plan, floor, price and move-in date so renters can compare without calling."
+   ]
+  ]
+ },
+ "pediatrics-website": {
+  "h1": "Pediatric website templates",
+  "intro": "Parents visit a pediatric site tired and in a hurry. These templates include a sick-today route, a well-child visit schedule by age, a first visit guide, separate waiting areas, a parent portal, general topics and a booking form.",
+  "tips": [
+   "Put the sick-today route first.",
+   "Lay out well-child visits by age.",
+   "Explain separate waiting areas and same-day slots.",
+   "Keep health topics general and clinician reviewed."
+  ],
+  "faq": [
+   [
+    "What should a pediatric website include?",
+    "Same-day sick visits, well-child visits by age, a first visit guide, the clinicians, after-hours routing, a parent portal and booking."
+   ],
+   [
+    "How is a pediatric website different from a general medical site?",
+    "The reader is a parent, so it is organised around a child's age and how urgent today's problem feels."
+   ]
+  ]
+ },
+ "orthodontics-website": {
+  "h1": "Orthodontics website templates",
+  "intro": "Orthodontic care runs over many months, so people want to see the whole road. These templates compare braces and clear aligners, map the treatment timeline, explain the free consult, show payment plans and include teen and adult paths.",
+  "tips": [
+   "Compare braces and clear aligners side by side.",
+   "Map treatment from consult to retainers.",
+   "Speak separately to parents and adults.",
+   "Show how payment plans work."
+  ],
+  "faq": [
+   [
+    "What should an orthodontics website include?",
+    "Treatment options, how a consultation works, the treatment journey, payment plans, the team, and separate information for parents, teens and adults."
+   ],
+   [
+    "How do you present treatment length on an orthodontic site?",
+    "Give general ranges and say the orthodontist will confirm a plan at the consultation."
+   ]
+  ]
+ },
+ "fertility-website": {
+  "h1": "Fertility clinic website templates",
+  "intro": "People reach a fertility clinic after a long road. These calm templates lay out a first consultation, the care pathway, treatments in plain words, transparent costs, support for individuals and couples, and a private enquiry form.",
+  "tips": [
+   "Write gently and avoid promises.",
+   "Lay out the care pathway step by step.",
+   "Publish costs, including what isn't included.",
+   "Offer a private way to ask a first question."
+  ],
+  "faq": [
+   [
+    "What should a fertility clinic website include?",
+    "What happens at a first consultation, tests and treatments, a transparent cost guide, the team, emotional support and a private way to enquire."
+   ],
+   [
+    "Can a fertility website publish success rates?",
+    "Rules differ by country and figures need careful context. Check your regulator's guidance. These templates do not include any."
+   ]
+  ]
  }
 }
