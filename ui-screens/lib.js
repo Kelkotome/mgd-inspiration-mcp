@@ -69,6 +69,27 @@ const FAMILIES = {
   nonprofit: { name: "Commonplate", cat: "nonprofit", desc: "a community food-sharing nonprofit", type: { web: "Website", mobile: "Mobile website" } },
   school: { name: "Alderbrook Academy", cat: "education", desc: "an independent day school for ages 4 to 18", type: { web: "Website", mobile: "Mobile website" } },
   cafe: { name: "Kiln & Crumb", cat: "food", desc: "a bakery-café with three neighbourhood locations", type: { web: "Website", mobile: "Mobile website" } },
+  // 6-Nov-2026 template round (n13): niche and subspeciality landing pages (type "page"). All names are invented and were web-searched for collisions.
+  medical: { name: "Marrowfield Medical", cat: "medical", desc: "a multi-doctor primary care practice", type: { web: "Website", mobile: "Mobile website" } },
+  cardiology: { name: "Quillon Heart", cat: "cardiology", desc: "an outpatient cardiology practice taking patient bookings and clinician referrals", type: { web: "Website", mobile: "Mobile website" } },
+  dermatology: { name: "Sorrel Lane Dermatology", cat: "dermatology", desc: "a medical and cosmetic dermatology clinic", type: { web: "Website", mobile: "Mobile website" } },
+  therapist: { name: "Thistlewick Counselling", cat: "mental-health", desc: "a small private counselling and psychotherapy practice", type: { web: "Website", mobile: "Mobile website" } },
+  physio: { name: "Kestrelgate Physio", cat: "physical-therapy", desc: "a physical therapy and sports rehab clinic", type: { web: "Website", mobile: "Mobile website" } },
+  vet: { name: "Bramblecote Vets", cat: "veterinary", desc: "a neighbourhood veterinary practice for dogs, cats and small pets", type: { web: "Website", mobile: "Mobile website" } },
+  advisor: { name: "Lindqvale Planning", cat: "financial-planning", desc: "a fee-only financial planning firm", type: { web: "Website", mobile: "Mobile website" } },
+  cleaning: { name: "Spruceway Cleaning", cat: "cleaning", desc: "a home and office cleaning service", type: { web: "Website", mobile: "Mobile website" } },
+  hvac: { name: "Northdraft Heating & Cooling", cat: "hvac", desc: "a local heating, cooling and air quality contractor", type: { web: "Website", mobile: "Mobile website" } },
+  secsite: { name: "Wardline", cat: "cybersecurity", desc: "cloud security monitoring for engineering teams", type: { web: "Marketing website", mobile: "Marketing website" } },
+  crmsite: { name: "Pipeloom", cat: "crm", desc: "a sales CRM for small B2B teams", type: { web: "Marketing website", mobile: "Marketing website" } },
+  coach: { name: "Tallowmere Coaching", cat: "coaching", desc: "a one-person leadership and career coaching practice", type: { web: "Website", mobile: "Mobile website" } },
+  pest: { name: "Mothwell Pest Control", cat: "pest-control", desc: "a local home and commercial pest control company", type: { web: "Website", mobile: "Mobile website" } },
+  solar: { name: "Sunrake Solar", cat: "solar", desc: "a residential solar and battery installer", type: { web: "Website", mobile: "Mobile website" } },
+  agentsite: { name: "Oarlock", cat: "ai", desc: "AI agents that handle customer support and back-office tasks", type: { web: "Marketing website", mobile: "Marketing website" } },
+  preschool: { name: "Puddlewick Preschool", cat: "education", desc: "a play-based preschool for ages 2 to 5", type: { web: "Website", mobile: "Mobile website" } },
+  apartment: { name: "Cinderyard Residences", cat: "real-estate", desc: "a rental apartment community", type: { web: "Website", mobile: "Mobile website" } },
+  pediatrics: { name: "Wrenfold Children's Clinic", cat: "pediatrics", desc: "a family paediatric practice", type: { web: "Website", mobile: "Mobile website" } },
+  ortho: { name: "Wraybrook Orthodontics", cat: "orthodontics", desc: "an orthodontic practice for children, teens and adults", type: { web: "Website", mobile: "Mobile website" } },
+  fertility: { name: "Moonfern Fertility", cat: "fertility", desc: "an outpatient fertility clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 
 const ICON = {

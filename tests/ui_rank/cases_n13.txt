@@ -1,0 +1,41 @@
+# 6-Nov-2026 template round (n13): niche and subspeciality templates (Keyword Planner notes: docs/kp-n13/).
+# query | expected patterns (any of) | optional args
+medical website template | medical-website
+healthcare landing page template | medical-website
+medical practice website with patient portal | medical-website
+family doctor website | medical-website
+cardiology website template | cardiology-website
+cardiologist website | cardiology-website
+heart clinic landing page | cardiology-website
+dermatology website template | dermatology-website
+dermatologist website | dermatology-website
+skin clinic website template | dermatology-website
+therapist website template | therapist-website
+counseling website for a private practice | therapist-website
+mental health website template | therapist-website
+psychologist website | therapist-website
+physical therapy website template | physical-therapy-website
+physiotherapy website template | physical-therapy-website
+physio clinic website | physical-therapy-website
+veterinary website template | veterinary-website
+vet clinic website | veterinary-website
+animal hospital landing page | veterinary-website
+financial advisor website template | financial-advisor-website
+financial planner landing page | financial-advisor-website
+wealth management website | financial-advisor-website
+cleaning service website template | cleaning-service-website
+house cleaning website with instant quote | cleaning-service-website
+cleaning company landing page | cleaning-service-website
+hvac website template | hvac-website
+heating and cooling company website | hvac-website
+hvac landing page | hvac-website
+ac repair website | hvac-website
+cybersecurity website template | cybersecurity-website
+cyber security landing page | cybersecurity-website
+cloud security startup website | cybersecurity-website
+crm landing page template | crm-landing-page
+sales crm website | crm-landing-page
+crm saas landing page | crm-landing-page
+coaching website template | coaching-website
+life coach website | coaching-website
+executive coach landing page | coaching-website

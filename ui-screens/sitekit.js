@@ -66,6 +66,11 @@ textarea.sk-input{height:auto;min-height:110px;padding:12px 14px;white-space:nor
   .sk-split{gap:40px}
   .sk-links{gap:20px}
 }
+/* tablets: the link row plus two nav buttons overflowed at 768 px, so the phone menu takes over below 960 px */
+@media (max-width:960px){
+  .sk-links,.sk-navend{display:none}
+  .sk-menu{display:block}
+}
 @media (max-width:760px){
   body{font-size:15px}
   .sk-wrap{padding:0 20px}

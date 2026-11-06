@@ -36,8 +36,8 @@ saas landing page template | saas-landing-page
 startup landing page | saas-landing-page
 ai website template | ai-website
 ai startup landing page | ai-website
-healthcare landing page template | clinic-home
-medical website template | clinic-home
+healthcare landing page template | medical-website clinic-home
+medical website template | medical-website clinic-home
 portfolio website | portfolio-home
 personal website template | portfolio-home
 hospital website template | clinic-home

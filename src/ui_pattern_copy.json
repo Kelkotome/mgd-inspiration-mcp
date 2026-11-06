@@ -2894,5 +2894,245 @@
     "Show real outputs with sources, explain data handling plainly and avoid promises the product can’t keep."
    ]
   ]
+ },
+ "medical-website": {
+  "h1": "Medical website templates",
+  "intro": "Patients come to a medical website to get something done. These templates open with a task panel for booking, prescriptions and results, then cover a clinician directory, new patient registration, a portal sign-in, opening hours, after-hours routing and general health topics.",
+  "tips": [
+   "Put the common tasks first: book, repeat prescription, test results.",
+   "Say where to go when the practice is closed.",
+   "Let people filter clinicians by what they need.",
+   "Keep health articles general and have a clinician review them."
+  ],
+  "faq": [
+   [
+    "What should a medical practice website include?",
+    "Ways to book, request prescriptions and see results, clinician profiles, registration steps for new patients, opening hours, after-hours routing, payment information and accessibility details."
+   ],
+   [
+    "Can I use sample medical copy on a real site?",
+    "Use it as a starting point only. Replace the sample practice, people and text with your own, and have a qualified clinician review anything health related before it goes live."
+   ]
+  ]
+ },
+ "cardiology-website": {
+  "h1": "Cardiology website templates",
+  "intro": "A cardiology site serves two audiences: patients and the clinicians who refer them. These templates include separate paths for each, a referral pathway, a tests and procedures table, a list of what the practice sees, cardiologist profiles and a booking form.",
+  "tips": [
+   "Give referring clinicians their own clear route and phone line.",
+   "Explain each test in plain words: what it is, how long it takes, how to prepare.",
+   "Show emergency guidance near the top of the page.",
+   "List your real registrations and accreditation yourself, never sample ones."
+  ],
+  "faq": [
+   [
+    "What should a cardiology website include?",
+    "Conditions seen, tests and procedures, a referral route for clinicians, how to prepare for a first appointment, cardiologist profiles, locations and emergency guidance."
+   ],
+   [
+    "Why does a cardiology site need a referral section?",
+    "Many patients arrive through another clinician, so a clear referral route with the details you need and a direct contact saves time for both practices."
+   ]
+  ]
+ },
+ "dermatology-website": {
+  "h1": "Dermatology website templates",
+  "intro": "Dermatology clinics often run medical and cosmetic services side by side. These templates keep both clear, with a skin check journey, a secure photo enquiry, a conditions grid, cosmetic treatments with guide prices, clinician bios and a booking form.",
+  "tips": [
+   "Separate medical care from cosmetic treatments so people find the right one.",
+   "Explain what a skin check involves and how results are shared.",
+   "Say how photos are stored if you accept them online.",
+   "Check your local rules on advertising cosmetic treatments."
+  ],
+  "faq": [
+   [
+    "What should a dermatology website include?",
+    "Conditions treated, medical and cosmetic services, what a skin check involves, prices for self-pay treatments, clinician profiles and how to book."
+   ],
+   [
+    "Can a dermatology website show before and after photos?",
+    "It depends on where you practise. Many places restrict them, so check your local rules. These templates do not use them."
+   ]
+  ]
+ },
+ "therapist-website": {
+  "h1": "Therapist website templates",
+  "intro": "Someone reading a therapist's website is deciding whether to reach out. These quiet, text-led templates cover who the practice is for, the first session, fees and sliding-scale places, confidentiality, an FAQ, a crisis note and a very short enquiry form.",
+  "tips": [
+   "Write in the first person and keep it plain.",
+   "Publish your fees and cancellation policy.",
+   "Say who you may not be the right fit for, and where they can go instead.",
+   "Include a crisis note and make the enquiry form short."
+  ],
+  "faq": [
+   [
+    "What should a therapist website include?",
+    "Who you work with, how you work, fees and session length, what the first session is like, confidentiality, a crisis note and an easy way to get in touch."
+   ],
+   [
+    "Should a therapist publish fees online?",
+    "Many do, because it saves people an awkward first call. If you offer reduced-fee places, say so plainly."
+   ]
+  ]
+ },
+ "physical-therapy-website": {
+  "h1": "Physical therapy website templates",
+  "intro": "People look up a physical therapist because something hurts. These templates start there, with a body map that links to conditions by area, then cover a first course of care, programmes, a class timetable, prices, clinicians and a booking form.",
+  "tips": [
+   "Let people start from where it hurts.",
+   "Explain what a first session looks like and what to wear.",
+   "Say whether a referral is needed where you practise.",
+   "Show session length and self-pay prices."
+  ],
+  "faq": [
+   [
+    "What should a physical therapy website include?",
+    "Conditions by body area, what happens in a first session, programmes, session length and prices, clinician profiles, location and online booking."
+   ],
+   [
+    "Do physical therapy patients need a referral?",
+    "It varies by country, region and insurance plan, so state the rule that applies to your clinic."
+   ]
+  ]
+ },
+ "veterinary-website": {
+  "h1": "Veterinary website templates",
+  "intro": "Pet owners want to know you see their animal and what to do when it can't wait. These templates include a patient picker by species, a wellness plan table, a new pet checklist, out-of-hours routing, the vet and nurse team and a booking form with pet details.",
+  "tips": [
+   "Show which animals you see, including small pets.",
+   "Put out-of-hours routing where it is easy to find.",
+   "Lay out wellness plans in a simple table.",
+   "Ask for pet name, species and age in the booking form."
+  ],
+  "faq": [
+   [
+    "What should a veterinary website include?",
+    "Species seen, services, urgent and out-of-hours routing, wellness plans, the vet and nurse team, prescription requests, opening hours and booking."
+   ],
+   [
+    "How do you present pet wellness plans?",
+    "A short table by life stage with the monthly price and what each plan includes works well, so owners can compare at a glance."
+   ]
+  ]
+ },
+ "financial-advisor-website": {
+  "h1": "Financial advisor website templates",
+  "intro": "Choosing a financial advisor comes down to fit and clear fees. These templates are built around booking an intro call, with planning by life stage, a plain fee table, what the first 90 days look like, a sample plan, how conflicts are handled and an FAQ.",
+  "tips": [
+   "Publish how you are paid in plain words.",
+   "Speak to life stages, not products.",
+   "Show what the client actually receives.",
+   "Have compliance review the page and never imply returns."
+  ],
+  "faq": [
+   [
+    "What should a financial advisor website include?",
+    "Who you work with, how you are paid, your planning process, what clients receive, adviser profiles, any required disclosures and an easy way to book a call."
+   ],
+   [
+    "What disclosures does a financial advisor website need?",
+    "It depends on your regulator and country. Check the wording with your compliance contact before publishing."
+   ]
+  ]
+ },
+ "cleaning-service-website": {
+  "h1": "Cleaning service website templates",
+  "intro": "Cleaning customers want a price and a date. These templates lead with an instant quote card, then show a room-by-room checklist for standard, deep and move-out cleans, recurring plans, what happens on the day, areas served, reviews and booking.",
+  "tips": [
+   "Put a quote form in the hero.",
+   "Spell out what each type of clean includes.",
+   "Say how keys and access work.",
+   "List the areas you serve so local visitors know you cover them."
+  ],
+  "faq": [
+   [
+    "What should a cleaning service website include?",
+    "A quick quote, what's included in each clean, recurring plan prices, areas served, how access works, reviews and booking."
+   ],
+   [
+    "How do you price cleaning on a website?",
+    "Most sites estimate from home size, bathrooms, frequency and extras, then confirm the final price after the first visit."
+   ]
+  ]
+ },
+ "hvac-website": {
+  "h1": "HVAC website templates",
+  "intro": "When the heat is out, people want someone on the way. These templates include a 24/7 emergency bar, a symptom picker, today's arrival windows, a service area check, repair, install and replacement options, a maintenance plan table and booking.",
+  "tips": [
+   "Keep the phone number and emergency bar at the top.",
+   "Let people start from the problem, not the service name.",
+   "Show arrival windows and your service area.",
+   "Lay out maintenance plans in a simple table."
+  ],
+  "faq": [
+   [
+    "What should an HVAC website include?",
+    "A visible phone number, emergency service details, repair and installation services, service area, maintenance plans, financing, reviews and booking."
+   ],
+   [
+    "How do you lay out HVAC services?",
+    "Start from what the customer is noticing, such as no heat or a strange noise, then route to repair, tune-up or replacement."
+   ]
+  ]
+ },
+ "cybersecurity-website": {
+  "h1": "Cybersecurity website templates",
+  "intro": "Security buyers want to see the product and how it runs. These templates open with a coded findings console, then cover what gets scanned, a triage workflow, audit evidence, how deployment works, security of the product itself, pricing and a demo request.",
+  "tips": [
+   "Show the product early, with realistic findings.",
+   "Use real engineering language, not fear.",
+   "Explain deployment and permissions plainly.",
+   "Only claim certifications you actually hold."
+  ],
+  "faq": [
+   [
+    "What should a cybersecurity website include?",
+    "What the product covers, sample findings, how it deploys, integrations, how you secure your own product, pricing and a way to request a demo."
+   ],
+   [
+    "How do you build trust on a security website?",
+    "Show how the product works, explain the access it needs and publish your own security practices. Specifics do more than scary statistics."
+   ]
+  ]
+ },
+ "crm-landing-page": {
+  "h1": "CRM landing page templates",
+  "intro": "A CRM page has one job: show a team what their pipeline would look like. These templates include a coded pipeline board, a spreadsheet import mock, follow-up reminders, a forecast view, a rule builder, per-seat pricing, a comparison and an FAQ.",
+  "tips": [
+   "Show the pipeline in the first screen.",
+   "Make switching from spreadsheets look easy.",
+   "Keep per-seat pricing simple.",
+   "End with one clear call to action."
+  ],
+  "faq": [
+   [
+    "What should a CRM landing page include?",
+    "A view of the product, the problem it replaces, key features, import or migration help, pricing, customer proof, an FAQ and one main call to action."
+   ],
+   [
+    "How do you show a CRM on a landing page?",
+    "A real-looking pipeline board in the hero works well, because visitors see their own work in it straight away."
+   ]
+  ]
+ },
+ "coaching-website": {
+  "h1": "Coaching website templates",
+  "intro": "People hire a coach they trust, so these personal-brand templates lead with the person. They include a comparison of coaching, mentoring, therapy and consulting, an engagement map with packages, a sample session, a discovery call calendar, essays and an FAQ.",
+  "tips": [
+   "Say clearly who you coach and who you don't.",
+   "Explain how coaching differs from therapy and consulting.",
+   "Show packages and prices.",
+   "Offer a free discovery call and make no income promises."
+  ],
+  "faq": [
+   [
+    "What should a coaching website include?",
+    "Who you work with, your method, packages and prices, what a session is like, client notes, and a way to book a discovery call."
+   ],
+   [
+    "Should coaches publish prices?",
+    "Many do because it filters enquiries and builds trust. If yours vary, publish a starting price."
+   ]
+  ]
  }
 }

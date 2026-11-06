@@ -139,6 +139,20 @@ export const PATTERN_SEO = {
   "hotel-website": ["hotel-website-template", "Hotel website templates"],
   "saas-landing-page": ["saas-landing-page-template", "SaaS landing page templates"],
   "ai-website": ["ai-website-template", "AI website templates"],
+  // 6-Nov-2026 template round (n13): niche and subspeciality landing pages. Volumes: docs/kp-n13/.
+  "medical-website": ["medical-website-template", "Medical website templates"],
+  "cardiology-website": ["cardiology-website-template", "Cardiology website templates"],
+  "dermatology-website": ["dermatology-website-template", "Dermatology website templates"],
+  "therapist-website": ["therapist-website-template", "Therapist website templates"],
+  "physical-therapy-website": ["physical-therapy-website-template", "Physical therapy website templates"],
+  "veterinary-website": ["veterinary-website-template", "Veterinary website templates"],
+  "financial-advisor-website": ["financial-advisor-website-template", "Financial advisor website templates"],
+  "cleaning-service-website": ["cleaning-service-website-template", "Cleaning service website templates"],
+  "hvac-website": ["hvac-website-template", "HVAC website templates"],
+  "cybersecurity-website": ["cybersecurity-website-template", "Cybersecurity website templates"],
+  "crm-landing-page": ["crm-landing-page-template", "CRM landing page templates"],
+  "coaching-website": ["coaching-website-template", "Coaching website templates"],
+  // n13-end
 };
 
 // Gallery facets (group / platform / style) rendered by the gallery page with that facet applied server-side.

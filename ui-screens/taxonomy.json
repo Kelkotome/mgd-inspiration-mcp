@@ -684,7 +684,19 @@
   "architecture",
   "fitness",
   "nonprofit",
-  "food"
+  "food",
+  "medical",
+  "cardiology",
+  "dermatology",
+  "mental-health",
+  "physical-therapy",
+  "veterinary",
+  "financial-planning",
+  "cleaning",
+  "hvac",
+  "cybersecurity",
+  "crm",
+  "coaching"
  ],
  "styles": [
   "minimal",
@@ -834,7 +846,19 @@
    "travel-website",
    "hotel-website",
    "saas-landing-page",
-   "ai-website"
+   "ai-website",
+   "medical-website",
+   "cardiology-website",
+   "dermatology-website",
+   "therapist-website",
+   "physical-therapy-website",
+   "veterinary-website",
+   "financial-advisor-website",
+   "cleaning-service-website",
+   "hvac-website",
+   "cybersecurity-website",
+   "crm-landing-page",
+   "coaching-website"
   ]
  }
 }

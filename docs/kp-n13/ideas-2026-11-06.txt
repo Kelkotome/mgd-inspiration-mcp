@@ -1,0 +1,631 @@
+      880  MEDIUM   $  7.40  medical website template
+      880  MEDIUM   $  7.40  medical website design templates
+      880  LOW      $  0.90  hospital website templates
+      880  MEDIUM   $  7.40  medical website theme
+      880  MEDIUM   $  7.40  medical web design templates
+      880  MEDIUM   $  7.40  medical web template
+      880  LOW      $  0.90  hospital web templates
+      880  MEDIUM   $  7.40  medical site template
+      880  MEDIUM   $  7.40  template website medical
+      480  LOW      $  2.49  doctor website templates
+      480  LOW      $  2.49  doctor site template
+      480  LOW      $  2.49  doctor web template
+      480  LOW      $  2.49  doctor website theme
+      480  LOW      $  4.17  wordpress themes for medical websites
+      390  MEDIUM   $  3.55  healthcare website templates
+      390  MEDIUM   $  3.55  health care website template
+      390  MEDIUM   $  3.55  healthcare website design templates
+      390  MEDIUM   $  3.55  healthcare templates website
+      320  MEDIUM   $  2.89  medical clinic website template
+      320  MEDIUM   $  2.89  clinic website templates
+      210  LOW      $ 11.77  medical website templates free
+      170  MEDIUM   $  4.81  health website template
+      170  LOW      $  5.93  medical landing page
+      170  LOW      $  9.57  hospital website templates free download
+      170  LOW      $  9.57  hospital template free download
+      110  LOW      $  8.45  healthcare landing page
+      110  LOW      $  8.45  health care landing page
+       90  LOW      $  0.00  health insurance template
+       90  LOW      $  2.35  hospital landing page
+       70  LOW      $  2.55  doctor website templates free
+       70  LOW      $  5.24  medical website templates free download
+       70  LOW      $  0.56  medicine website template
+       70  LOW      $  2.91  free hospital website templates
+       50  LOW      $  7.40  medical billing website templates
+       50  LOW      $  2.33  medical equipment website templates
+       50  LOW      $  7.78  healthcare website templates free download
+       50  MEDIUM   $  2.52  dermatologist website templates
+       50  LOW      $  1.91  clinic website template free
+       50  LOW      $  0.00  medical store template
+       40  LOW      $  4.07  plastic surgery website template
+       40  LOW      $  0.11  medical html template
+       40  LOW      $  3.61  doctor portfolio website templates
+       40  LOW      $  0.00  free medical website templates download html and css
+       40  LOW      $  0.00  herbal website templates
+       40  LOW      $  0.85  hospital website themes
+       40  LOW      $  3.70  medical shop website template
+       40  LOW      $  3.70  medical store website template
+       30  LOW      $  0.00  healthcare templates free download
+       20  LOW      $  4.83  gynecologist website templates
+       20  LOW      $  0.00  medical landing page templates free
+       20  LOW      $  0.00  free healthcare website templates
+       20  LOW      $  0.00  orthopedic website templates
+       20  MEDIUM   $  0.00  landing page healthcare
+       20  LOW      $  0.00  bootstrap medical templates
+       20  LOW      $  2.30  clinic website template free download
+       20  LOW      $  0.92  doctor clinic website template
+       20  LOW      $  0.84  doctor profile website template
+       20  LOW      $  0.00  doctor website template free download
+       20  LOW      $  0.00  hospital html template free download
+       20  LOW      $  0.00  hospital management system bootstrap template free download
+       20  LOW      $  0.00  hospital website templates free download bootstrap
+       20  LOW      $  2.30  medical clinic website template free download
+       20  LOW      $  0.00  medical shop template
+       20  LOW      $  2.07  medical tourism website templates
+       10  LOW      $  0.00  medical spa website templates
+       10  HIGH     $ 28.24  squarespace medical template
+       10  HIGH     $  0.00  medical practice website templates
+       10  HIGH     $  0.00  best medical website templates
+       10  LOW      $  0.00  doctor office website template
+       10  MEDIUM   $  0.00  medical landing page examples
+       10  UNSPECIFIED $  0.00  best wordpress theme for medical website
+       10  LOW      $  0.00  best healthcare landing pages
+       10  HIGH     $  0.00  medical supply website templates
+       10  MEDIUM   $  0.00  medical company website template
+       10  LOW      $  0.00  one page medical website template
+       10  LOW      $  0.00  medical landing page templates
+       10  LOW      $  0.00  medical office website template
+       10  LOW      $  0.34  medical laboratory website templates
+       10  MEDIUM   $  0.00  medical center website template
+       10  MEDIUM   $  0.00  online doctor consultation website templates
+       10  UNSPECIFIED $  0.00  online doctor website template
+       10  HIGH     $  7.71  wordpress theme for doctor website
+       10  LOW      $  0.00  medical services website templates
+       10  LOW      $  0.00  medical products website templates
+       10  MEDIUM   $  0.00  wix medical templates
+       10  LOW      $  0.00  best hospital website templates
+       10  MEDIUM   $  0.00  best medical landing pages
+       10  LOW      $  0.00  bootstrap clinic template
+       10  LOW      $  0.00  bootstrap medical templates free
+       10  LOW      $  0.00  bootstrap medical website templates free download
+       10  LOW      $  0.00  cardiologist website templates
+       10  MEDIUM   $  0.00  cosmetic surgery website templates
+       10  UNSPECIFIED $  0.00  doctor bootstrap template free download
+       10  LOW      $  0.00  doctor html template free download
+       10  LOW      $  0.00  doctor personal website templates
+       10  LOW      $  0.00  doctor personal website templates free
+       10  HIGH     $  0.00  elementor doctor template
+       10  UNSPECIFIED $  0.00  free bootstrap medical templates
+       10  UNSPECIFIED $  0.00  free css medical templates
+       10  LOW      $  0.00  free css template for hospital management system
+       10  LOW      $  0.00  free css templates hospital management system
+       10  LOW      $  0.00  free health website templates
+       10  LOW      $  0.00  free html template for hospital website
+       10  UNSPECIFIED $  0.00  free html templates for hospital management system
+       10  UNSPECIFIED $  0.00  free html templates for medical websites
+       10  LOW      $  0.00  free medical html template
+       10  UNSPECIFIED $  0.00  free medical laboratory website template
+       10  UNSPECIFIED $  0.00  free medical website templates full
+       10  UNSPECIFIED $  0.00  free template for hospital management system
+       10  UNSPECIFIED $  0.00  free website templates for hospital management system
+       10  MEDIUM   $  0.00  free wordpress theme for doctor website
+       10  LOW      $  0.00  health care html template
+       10  LOW      $  0.00  health care html template free download
+       10  LOW      $  0.00  health html template
+       10  LOW      $  0.00  health insurance landing page template
+       10  UNSPECIFIED $  0.00  health landing page templates
+       10  LOW      $  0.00  health website templates free download
+       10  HIGH     $  0.00  healthcare landing page template
+       10  LOW      $  0.00  healthcare website theme
+       10  LOW      $  0.00  hospital bootstrap templates
+       10  LOW      $  0.00  hospital bootstrap templates free download
+       10  UNSPECIFIED $  0.00  hospital management html template free
+       10  LOW      $  0.00  hospital management system html css template free download
+       10  LOW      $  0.00  hospital management system website templates free download
+       10  LOW      $  0.00  hospital management website template free download
+       10  UNSPECIFIED $  0.00  hospital responsive website templates free download
+       10  LOW      $  0.00  hospital website templates bootstrap
+       10  UNSPECIFIED $  0.00  hospital website templates html
+       10  LOW      $  0.00  html5 medical templates free
+       10  LOW      $  0.00  medical css templates
+       10  MEDIUM   $  9.32  medical ecommerce website templates
+       10  LOW      $  0.00  medical ecommerce website templates free download
+       10  UNSPECIFIED $  0.00  medical ecommerce wordpress theme
+       10  LOW      $  0.00  medical education website templates
+       10  UNSPECIFIED $  0.00  medical equipment html template free
+       10  LOW      $  0.00  medical equipment website templates free
+       10  UNSPECIFIED $  0.00  medical html template free download
+       10  LOW      $  0.34  medical lab website template
+       10  LOW      $  0.00  medical responsive website template
+       10  UNSPECIFIED $  0.00  medical shop website template free download
+       10  LOW      $  0.00  medical store template free download
+       10  LOW      $  0.00  medical store website templates free download
+       10  UNSPECIFIED $  0.00  medical template themeforest
+       10  UNSPECIFIED $  0.00  medical theme html
+       10  UNSPECIFIED $  0.00  medical tourism website templates free
+       10  LOW      $  0.00  medical website free templates
+       10  LOW      $  0.00  medical website html template
+       10  LOW      $  0.00  medical website templates bootstrap
+       10  UNSPECIFIED $  0.00  medical website templates psd free download
+       10  LOW      $  0.00  medical website templates themeforest
+       10  LOW      $  0.00  medical website templates wordpress
+       10  LOW      $  0.00  medicine website template free
+       10  LOW      $  0.00  medicine website templates free download
+       10  UNSPECIFIED $  0.00  online medical store template free download
+       10  UNSPECIFIED $  0.00  online medical store website template
+       10  UNSPECIFIED $  0.00  orthopedic surgeon website templates
+       10  LOW      $  0.00  pathology laboratory website templates free download
+       10  MEDIUM   $  0.00  physician website template
+       10  UNSPECIFIED $  0.00  responsive hospital website templates
+       10  LOW      $  0.00  surgical website templates
+        0  UNSPECIFIED $  0.00  free hospital website templates download html and css
+    3,600  MEDIUM   $ 28.84  therapist website
+    3,600  MEDIUM   $ 28.84  therapeutic websites
+    2,400  LOW      $  8.95  psychologist websites
+    1,600  LOW      $  7.16  family therapy website
+      880  MEDIUM   $ 29.94  therapy sites
+      880  MEDIUM   $ 22.81  7cups online therapy
+      720  MEDIUM   $  3.91  counsellor website
+      720  LOW      $  5.38  mental health chat sites
+      480  MEDIUM   $ 38.61  best therapy websites
+      480  MEDIUM   $ 38.61  best therapy sites
+      480  LOW      $  4.45  family therapy site
+      480  MEDIUM   $ 38.61  good therapy website
+      480  MEDIUM   $ 38.61  great therapist websites
+      320  MEDIUM   $ 35.62  online therapy sites
+      320  MEDIUM   $ 35.62  online therapy websites
+      320  MEDIUM   $ 11.33  art therapist online
+      320  LOW      $  4.49  cognitive behavioral therapy website
+      260  MEDIUM   $  8.68  psychotherapist websites
+      210  HIGH     $ 36.17  website to find therapist
+      210  LOW      $  9.27  art therapy websites
+      140  LOW      $ 27.16  mental health website design
+      140  MEDIUM   $ 77.04  online licensed therapist
+      140  MEDIUM   $ 77.04  licensed therapist online
+      140  HIGH     $ 29.97  find a therapist website
+      140  MEDIUM   $ 12.42  therapy websites free
+      140  MEDIUM   $ 12.42  free therapy sites
+      110  HIGH     $ 31.51  therapist finder website
+      110  MEDIUM   $ 49.60  best website to find a therapist
+      110  HIGH     $ 38.06  website to find a therapist
+       90  LOW      $ 27.06  squarespace therapist website
+       70  MEDIUM   $ 52.55  best online therapy sites
+       70  MEDIUM   $ 52.55  good online therapy sites
+       70  HIGH     $ 35.04  psychology today website for therapists
+       70  MEDIUM   $  3.98  best psychologist websites
+       70  LOW      $ 22.48  man therapy website
+       50  MEDIUM   $ 17.15  private practice therapist websites
+       50  MEDIUM   $ 49.36  best websites to find therapists
+       50  MEDIUM   $ 13.46  online counselling websites
+       50  MEDIUM   $ 71.08  reddit best online therapy
+       50  LOW      $  4.43  acceptance and commitment therapy website
+       50  MEDIUM   $  1.11  site therapy
+       50  LOW      $ 14.58  terry real website
+       40  MEDIUM   $ 75.98  top rated online therapy
+       40  MEDIUM   $  9.67  best psychotherapy websites
+       40  MEDIUM   $ 14.74  websites like therapist aid
+       40  HIGH     $  6.53  marriage counseling websites
+       40  HIGH     $ 24.20  black therapist website
+       40  HIGH     $  6.53  marriage counseling sites
+       30  MEDIUM   $ 58.47  website design for mental health professionals
+       30  MEDIUM   $ 24.54  online therapy english
+       30  MEDIUM   $ 43.50  psychiatry website design
+       30  MEDIUM   $ 42.52  squarespace for therapists
+       30  HIGH     $ 19.96  top therapy websites
+       30  HIGH     $ 29.95  therapist finding website
+       30  HIGH     $ 31.10  therapist search website
+       30  MEDIUM   $ 35.92  best websites for counselors
+       30  LOW      $ 24.64  wix therapist website
+       20  MEDIUM   $ 22.68  best mental health website design
+       20  MEDIUM   $ 42.89  best online therapy websites
+       20  HIGH     $ 40.73  therapist search sites
+       20  MEDIUM   $ 18.79  therapist listing sites
+       20  HIGH     $ 36.86  websites for finding therapists
+       20  HIGH     $ 41.28  sites to find therapists
+       20  MEDIUM   $ 16.55  sites like therapist aid
+       20  MEDIUM   $ 13.39  find a psychologist website
+       20  LOW      $  7.07  dialectical behavior therapy website
+       20  MEDIUM   $  5.90  bacp website find a therapist
+       20  MEDIUM   $ 11.93  psychology today website find a therapist
+       20  LOW      $  0.00  kati morton website
+       10  LOW      $  0.00  top online therapy sites
+       10  MEDIUM   $ 40.94  online phone therapy
+       10  LOW      $  0.00  best therapist websites 2022
+       10  HIGH     $ 10.38  best squarespace therapist websites
+       10  HIGH     $ 46.09  online counseling sites
+       10  LOW      $  0.00  best therapy websites 2022
+       10  MEDIUM   $ 29.57  therapy today website
+       10  MEDIUM   $101.48  best online therapy sites for therapists
+       10  UNSPECIFIED $  0.00  betterhelp therapy page
+       10  HIGH     $ 43.98  best online counseling sites
+       10  MEDIUM   $ 19.20  free online therapy websites
+       10  HIGH     $  0.00  best sites for finding a therapist
+       10  MEDIUM   $  6.73  free online therapy sites
+       10  HIGH     $ 13.08  top 10 online therapy sites
+       10  LOW      $  0.00  family therapy official website
+       10  LOW      $  8.31  free counseling websites
+       10  MEDIUM   $ 44.73  beautiful therapist websites
+       10  LOW      $  8.31  free counselling sites
+       10  LOW      $  0.00  psychologist personal website
+       10  UNSPECIFIED $  0.00  blah therapy chat
+       10  MEDIUM   $  8.91  american association of christian counselors website
+       10  HIGH     $  0.00  best online counseling websites
+       10  UNSPECIFIED $  0.00  best therapist websites 2021
+       10  LOW      $  0.00  custom websites for therapists
+       10  UNSPECIFIED $  0.00  kati morton therapist website
+       10  HIGH     $ 19.00  squarespace websites for therapists
+       10  LOW      $  8.13  stan tatkin website
+       10  UNSPECIFIED $  0.00  taraji p henson therapist website
+       10  UNSPECIFIED $  0.00  wordpress websites for therapists
+        0  UNSPECIFIED $  0.00  therapy page betterhelp
+        0  UNSPECIFIED $  0.00  best therapist websites 2020
+    2,400  HIGH     $  1.55  dermatology website
+    2,400  HIGH     $  1.55  dermatology sites
+    2,400  HIGH     $  1.55  derm website
+    2,400  HIGH     $  1.55  derm site
+      210  LOW      $  4.12  cardio website
+      210  LOW      $  4.12  cardiovascular websites
+      110  LOW      $  3.49  cardiology website
+       90  MEDIUM   $  7.04  best dermatology websites
+       90  LOW      $  6.74  american academy of dermatology website
+       40  MEDIUM   $  5.59  advanced dermatology website
+       30  LOW      $  5.43  dermatology website for doctors
+       30  LOW      $  0.44  skin doctor website
+       20  LOW      $  0.00  bad website dermatology
+       20  LOW      $  6.66  dermatology information websites
+       10  HIGH     $  1.19  skin doctor online appointment
+       10  MEDIUM   $ 10.39  advaderm com
+       10  LOW      $  0.00  altman dermatology website
+       10  MEDIUM   $  1.92  best cardiology websites
+       10  UNSPECIFIED $  0.00  derm assist website
+       10  MEDIUM   $ 10.27  dermatology diagnosis website
+       10  UNSPECIFIED $  0.00  dermatology specialist group website
+       10  LOW      $  8.39  dermatology website skin conditions
+       10  LOW      $  0.00  dr sites dermatologist
+       10  UNSPECIFIED $  0.00  farmer dermatology website
+       10  UNSPECIFIED $  0.00  google derm assist website
+       10  LOW      $  0.00  tri city cardiology website
+       10  UNSPECIFIED $  0.00  trokhan dermatology website
+       10  LOW      $  0.00  wederm patient portal
+        0  UNSPECIFIED $  0.00  dr sandra lee dermatologist website
+    1,300  LOW      $ 16.95  plumbing website design
+    1,300  LOW      $ 16.95  web design for plumbers
+    1,300  LOW      $ 16.95  web design plumbers
+      260  HIGH     $ 11.38  hvac website template
+      260  HIGH     $ 11.38  hvac web templates
+       50  MEDIUM   $ 18.52  best plumbing websites design
+       50  MEDIUM   $  3.20  air conditioning website template
+       50  LOW      $  0.00  plumber web design company
+       30  LOW      $  0.00  heating and cooling website template
+       20  LOW      $  0.00  ac repair website templates free download
+       10  MEDIUM   $ 26.45  free hvac website templates
+       10  HIGH     $  0.00  air conditioning website template free
+       10  MEDIUM   $  0.00  ac repair website template
+       10  LOW      $  0.00  air conditioner service website templates free download
+       10  MEDIUM   $  0.00  air conditioner website templates free download
+       10  UNSPECIFIED $  0.00  air conditioning company website template
+       10  UNSPECIFIED $  0.00  free heating and air conditioning website templates
+    2,900  LOW      $ 72.45  law firm website design
+    2,900  LOW      $ 72.45  law firm web design
+    2,900  LOW      $ 72.45  law firm website development
+    2,900  LOW      $ 72.45  law office website design
+    2,900  LOW      $ 72.45  law office web design
+    2,900  LOW      $ 72.45  website development for law firms
+    1,900  LOW      $ 63.90  lawyer website design
+    1,900  LOW      $ 63.90  attorney website design
+    1,900  LOW      $ 63.90  web design for lawyers
+    1,900  LOW      $ 63.90  attorney web design
+    1,900  LOW      $ 63.90  lawyer website development
+    1,900  LOW      $ 63.90  lawyer site design
+    1,900  LOW      $ 63.90  website development for lawyers
+    1,300  LOW      $ 19.40  law firm web
+      720  LOW      $ 28.79  cool law firm websites
+      720  LOW      $ 28.79  best websites for law firms
+      720  LOW      $ 28.79  good law firm websites
+      720  LOW      $ 14.30  law firm designs
+      390  LOW      $ 65.78  legal website design
+      390  LOW      $ 65.78  legal web design
+      390  LOW      $ 65.78  web design legal
+      260  MEDIUM   $133.56  law firm website design companies
+      260  LOW      $ 51.12  best law firm website design
+      260  LOW      $ 51.12  top law firm website design
+      260  LOW      $ 92.11  attorney website developer
+      260  LOW      $ 51.12  best law firm web design
+      260  MEDIUM   $133.56  law firm website design agency
+      260  LOW      $ 51.12  good law firm website design
+      260  LOW      $ 92.11  lawyer website redesign
+      210  LOW      $  0.00  attorney website designer
+      210  LOW      $  0.00  lawyer website designers
+      210  LOW      $  0.00  attorney web designer
+      210  LOW      $  4.45  law firm web page
+      170  MEDIUM   $ 51.12  best website design for attorneys
+      170  MEDIUM   $ 51.12  best lawyer website design
+      170  LOW      $  0.00  website development for attorneys
+      170  LOW      $  0.00  attorney web development
+      170  LOW      $  0.00  web development for lawyers
+      140  LOW      $112.47  best law firm website design companies
+      140  LOW      $ 38.34  law firm website developer
+      140  MEDIUM   $ 83.14  law firm web designers
+      140  LOW      $ 51.12  law firm website design services
+      140  LOW      $ 38.34  law firm web design companies
+      140  MEDIUM   $ 83.14  web designer law firms
+      110  LOW      $ 70.93  small law firm website design
+      110  LOW      $ 54.06  law firm web design agency
+      110  LOW      $ 70.93  small law firm web design
+       90  LOW      $ 98.41  law firm website designers
+       90  LOW      $ 23.38  law firm website examples
+       90  LOW      $  0.00  legal website development
+       90  LOW      $ 25.70  solicitors website design
+       90  LOW      $ 25.70  solicitor web design
+       90  LOW      $  0.00  website design for family lawyer
+       70  LOW      $ 17.40  law firm website design cost
+       70  LOW      $  0.00  legal website designer
+       70  LOW      $ 35.06  best legal website design
+       70  LOW      $1156.83  family law attorney website design
+       70  LOW      $  0.00  law firm web development
+       70  LOW      $  8.50  modern law firm website design
+       70  LOW      $ 35.06  best legal web design
+       70  LOW      $  0.00  legal web designer
+       50  LOW      $ 10.34  modern law firm websites
+       50  LOW      $ 20.64  website design for solicitors
+       50  LOW      $216.07  custom law firm website design
+       50  LOW      $  0.00  design for law firms
+       50  LOW      $  0.00  design law firm
+       40  MEDIUM   $  9.75  personal injury website
+       40  LOW      $ 38.34  best personal injury attorney websites
+       40  LOW      $  0.00  custom attorney website design
+       40  LOW      $  0.00  custom lawyer web design
+       40  LOW      $  0.00  custom lawyer website design
+       40  LOW      $  0.00  design attorneys
+       40  LOW      $  0.00  design for lawyers
+       40  LOW      $  0.00  immigration lawyer website design
+       40  LOW      $ 92.11  law firm web design services
+       30  LOW      $ 33.40  personal injury lawyer website
+       30  LOW      $ 33.40  personal injury attorney website
+       30  MEDIUM   $  9.36  beautiful law firm websites
+       30  LOW      $ 10.22  firm website design
+       30  LOW      $  0.00  affordable lawyer website design
+       30  LOW      $  0.00  custom web design for lawyers
+       30  UNSPECIFIED $  0.00  law firm mobile website design
+       30  UNSPECIFIED $  0.00  responsive web design law firm
+       20  MEDIUM   $ 28.54  best personal injury websites
+       20  LOW      $  0.00  solo law firm website design
+       20  LOW      $  0.00  innovative law firm websites
+       20  MEDIUM   $ 31.87  boutique law firm websites
+       20  LOW      $  0.00  attorneys and law firm web design
+       20  LOW      $  0.00  barrister website design
+       20  MEDIUM   $  6.57  best lawyer web design
+       20  UNSPECIFIED $  0.00  business law attorney website design
+       20  LOW      $  0.00  family law lawyer website design
+       20  LOW      $  0.00  law firm website redesign
+       20  LOW      $  0.00  lawyer website design companies
+       20  LOW      $  0.00  solo attorney website design
+       20  LOW      $ 27.75  website design agency for law firms
+       10  HIGH     $  0.00  justia law firm website design
+       10  UNSPECIFIED $  0.00  findlaw website design
+       10  LOW      $  0.00  law firm web sites
+       10  UNSPECIFIED $  0.00  personal injury attorney website design
+       10  UNSPECIFIED $  0.00  custom law firm websites
+       10  LOW      $  0.00  best law firm web sites
+       10  UNSPECIFIED $  0.00  best law firm website developers
+       10  HIGH     $  0.00  website design agency for lawyers
+       10  UNSPECIFIED $  0.00  webdesign firm
+       10  LOW      $  0.00  lawyer website developer
+       10  LOW      $  0.00  affordable law firm website design
+       10  LOW      $  0.00  attorney web design services
+       10  LOW      $  0.00  best law firm design
+       10  UNSPECIFIED $  0.00  best law firm website design 2018
+       10  HIGH     $ 16.33  best personal injury law firm websites
+       10  LOW      $  0.00  business law lawyer website design
+       10  UNSPECIFIED $  0.00  cheap law firm website design
+       10  LOW      $  0.00  cool law firm website
+       10  LOW      $  0.00  criminal defense attorney website design
+       10  LOW      $  0.00  criminal defense law firm web design
+       10  LOW      $  0.00  divorce lawyer web design
+       10  LOW      $  0.00  family law firm website design
+       10  LOW      $  0.00  immigration law web design
+       10  LOW      $  0.00  lawyer landing page design
+       10  UNSPECIFIED $  0.00  lawyer web design firm
+       10  UNSPECIFIED $  0.00  lawyer website design examples
+       10  LOW      $  0.00  legal web design firm
+       10  LOW      $  0.00  legal web design services
+       10  UNSPECIFIED $  0.00  mobile websites for law firms
+       10  LOW      $  0.00  personal injury law firm websites
+       10  LOW      $  0.00  responsive website design for attorneys
+       10  LOW      $  0.00  responsive website design for law firms
+       10  UNSPECIFIED $  0.00  responsive website design for lawyers
+       10  UNSPECIFIED $  0.00  web design company for lawyers
+       10  UNSPECIFIED $  0.00  website design and marketing for small law firms
+        0  UNSPECIFIED $  0.00  ada website design firm
+        0  UNSPECIFIED $  0.00  freelance law firm web designers
+        0  UNSPECIFIED $  0.00  injurylawfirm renunganhariankatolik web id
+        0  UNSPECIFIED $  0.00  injurylawyer renunganhariankatolik web id
+        0  UNSPECIFIED $  0.00  outstanding website accident lawyer will make
+        0  UNSPECIFIED $  0.00  semi accident law firm website
+        0  UNSPECIFIED $  0.00  trucking accident lawyers website
+      880  MEDIUM   $ 12.85  certified financial planner website
+      880  MEDIUM   $ 12.85  certified financial planner websites
+      590  LOW      $ 21.87  financial advisor website
+      590  LOW      $ 21.87  financial advisor sites
+      480  LOW      $ 12.74  accounting website design
+      320  MEDIUM   $ 13.67  financial planning website
+      320  MEDIUM   $ 12.39  martin lewis financial advisor website
+      210  LOW      $ 20.44  advisor websites
+      210  LOW      $ 20.69  accounting firm website design
+      210  LOW      $ 17.66  web design for accountants
+      210  LOW      $ 20.69  accounting firm web design
+      210  LOW      $ 10.13  certified financial planner official website
+      210  LOW      $ 20.69  web design for accounting firms
+      110  MEDIUM   $  8.90  financial advice website
+      110  MEDIUM   $  8.90  financial advice sites
+       90  MEDIUM   $ 19.17  best financial advisor websites
+       90  LOW      $ 18.09  lpl website
+       70  MEDIUM   $ 50.19  cpa website design
+       70  MEDIUM   $  9.36  financial consultant website
+       70  LOW      $ 15.61  financial advisor landing page
+       70  MEDIUM   $ 50.19  cpa web design
+       70  LOW      $  2.44  website design for chartered accountants
+       70  LOW      $  0.00  michelle singletary website
+       50  MEDIUM   $ 47.28  bookkeeping website design
+       50  MEDIUM   $ 10.49  best wealth management websites
+       50  MEDIUM   $ 10.11  best financial advice website
+       50  MEDIUM   $ 10.11  best financial advice sites
+       50  MEDIUM   $  9.61  investment advice website
+       40  MEDIUM   $  8.57  best accounting website design
+       40  MEDIUM   $  9.31  best website for investment advice
+       40  MEDIUM   $  8.43  money advice websites
+       40  LOW      $ 19.17  wells fargo advisors website
+       30  MEDIUM   $ 16.04  best financial planning websites
+       30  MEDIUM   $ 10.32  investment advisor website
+       30  LOW      $  7.98  american funds advisor site
+       20  MEDIUM   $ 30.67  ric edelman website
+       20  LOW      $  0.00  cpa website builder
+       20  LOW      $  0.00  accounting website builder
+       20  MEDIUM   $ 23.37  great financial advisor websites
+       20  MEDIUM   $ 23.37  best investment advisor websites
+       20  LOW      $  0.00  accounting firm website development
+       20  LOW      $ 23.95  website designers for accountants
+       20  LOW      $ 37.98  accounting website development
+       20  MEDIUM   $ 23.37  best financial advisor sites
+       20  MEDIUM   $ 23.37  good financial advisor websites
+       20  LOW      $ 14.63  independent financial advisor website
+       20  MEDIUM   $  0.00  independent ria websites
+       20  LOW      $  1.36  mutual fund advisor website
+       10  LOW      $  0.00  best website builder for accountants
+       10  LOW      $  0.00  best accounting firm website design
+       10  MEDIUM   $  0.00  website design for cpa firms
+       10  LOW      $  0.00  bookkeeping website builder
+       10  MEDIUM   $ 25.56  best cpa website design
+       10  HIGH     $  0.00  financial advisor website providers
+       10  MEDIUM   $ 13.22  top financial advisor websites
+       10  MEDIUM   $  0.00  broadridge advisor websites
+       10  MEDIUM   $  0.00  best advisor websites
+       10  MEDIUM   $  0.00  top wealth management websites
+       10  MEDIUM   $ 39.39  napfa website
+       10  LOW      $  0.00  fidelity adviser site
+       10  HIGH     $  0.00  best websites for financial advice
+       10  UNSPECIFIED $  0.00  accounting firm website design firm
+       10  UNSPECIFIED $  0.00  advisor websites com
+       10  UNSPECIFIED $  0.00  advisor websites cost
+       10  LOW      $  0.00  american funds financial advisor site
+       10  UNSPECIFIED $  0.00  best financial advisor websites 2020
+       10  UNSPECIFIED $  0.00  cpa firm website development
+       10  LOW      $  0.00  cpa website design firm
+       10  HIGH     $  0.00  cpa website development
+       10  UNSPECIFIED $  0.00  custom financial advisor websites
+       10  LOW      $  0.00  edelman financial engines website
+       10  UNSPECIFIED $  0.00  financial advisor website companies
+       10  UNSPECIFIED $  0.00  financial advisor website platform
+       10  UNSPECIFIED $  0.00  registered investment advisor websites
+       10  UNSPECIFIED $  0.00  top financial planning websites
+       10  HIGH     $  0.00  web design by yell accountant
+       10  UNSPECIFIED $  0.00  webdesign for accountants
+       10  UNSPECIFIED $  0.00  website services for financial advisors
+        0  UNSPECIFIED $  0.00  best financial advisor websites 2022
+        0  UNSPECIFIED $  0.00  best financial advisor websites 2021
+        0  UNSPECIFIED $  0.00  bookkeeping website design firm
+    8,100  LOW      $  6.33  saas landing page
+    8,100  LOW      $  6.33  saaslandingpage
+    8,100  LOW      $  6.33  landing page for saas
+    8,100  LOW      $  6.33  landing pages for saas
+      590  MEDIUM   $  8.73  best saas landing pages
+      480  LOW      $  3.46  saas landing page design
+      390  LOW      $  5.38  saas landing page examples
+      320  LOW      $  8.93  saas landing
+      210  LOW      $  4.99  saas landing page inspiration
+      170  LOW      $  6.95  fintech landing page
+       90  MEDIUM   $  9.94  b2b saas landing pages
+       90  LOW      $  8.23  saas product landing page
+       70  LOW      $  0.00  saas landing page figma
+       70  MEDIUM   $  8.88  saaslandingpage com
+       50  MEDIUM   $ 12.25  high converting saas landing page
+       50  LOW      $  4.16  figma saas landing page
+       30  MEDIUM   $  8.83  top saas landing pages
+       30  LOW      $  3.60  best saas landing page examples
+       30  LOW      $  1.93  fintech landing
+       30  MEDIUM   $  4.55  great saas landing pages
+       30  LOW      $  0.00  saas landing page com
+       20  LOW      $  0.00  webflow saas landing page
+       20  MEDIUM   $  5.03  best fintech landing pages
+       20  LOW      $  5.98  fintech landing page template
+       20  LOW      $  0.00  tailwind saas landing page
+       20  LOW      $  0.00  free saas landing page
+       10  UNSPECIFIED $  0.00  best saas landing pages 2022
+       10  LOW      $  0.00  basic saas landing page
+       10  LOW      $  0.00  bulkit saas landing pages
+       10  LOW      $  0.00  landrick themeforest
+       10  MEDIUM   $  0.00  wordpress saas landing page
+        0  UNSPECIFIED $  0.00  best saas landing pages 2021
+    5,400  LOW      $ 10.17  museum website design
+    5,400  LOW      $ 10.17  web design museum
+      880  MEDIUM   $  8.33  church website template
+      880  MEDIUM   $  8.33  church website design templates
+      880  MEDIUM   $  8.33  church web templates
+      880  MEDIUM   $  8.33  christian church website template
+      880  MEDIUM   $  8.33  church site templates
+      480  HIGH     $  5.26  wordpress church themes
+      480  HIGH     $  5.26  church website templates wordpress
+      480  HIGH     $  5.26  wordpress templates for churches
+      480  HIGH     $  5.26  church wp theme
+      480  HIGH     $  5.26  church website wordpress theme
+      390  LOW      $ 12.43  sample church websites
+      320  LOW      $  7.00  free church website templates
+      320  LOW      $  7.00  free church website templates designs
+      260  LOW      $  6.16  church website templates free download
+      260  LOW      $  6.16  christian church website templates free download
+      140  LOW      $  4.36  free church website templates wordpress
+      140  LOW      $  4.36  free wordpress church themes
+      140  LOW      $  4.36  template wordpress church free
+      140  LOW      $  4.36  wordpress church templates free
+       90  HIGH     $  7.98  wix church templates
+       90  HIGH     $  8.12  squarespace church templates
+       90  HIGH     $  8.12  squarespace church website templates
+       90  HIGH     $  7.98  wix church website templates
+       70  LOW      $  3.14  religious website templates
+       70  LOW      $  3.14  religious web templates
+       50  HIGH     $  5.96  best wordpress church themes
+       30  HIGH     $ 18.76  ministry website templates
+       30  MEDIUM   $ 24.27  best church website templates
+       30  MEDIUM   $  4.98  church website themes
+       30  MEDIUM   $  5.80  christian website templates
+       20  LOW      $ 12.01  best museum website design
+       20  LOW      $  0.00  webflow church template
+       20  LOW      $  0.00  design museum website
+       20  LOW      $  0.00  religious website templates free download
+       20  LOW      $  0.00  responsive church website templates free download
+       20  LOW      $  0.00  free religious website templates download html and css
+       20  LOW      $  3.89  catholic church website templates
+       20  LOW      $  3.89  catholic website template
+       20  LOW      $  0.00  web design museum org
+       10  HIGH     $ 10.07  best squarespace templates for churches
+       10  HIGH     $  0.00  church squarespace templates
+       10  HIGH     $  0.00  best squarespace template for churches
+       10  MEDIUM   $  0.00  simple church website templates
+       10  LOW      $  0.00  best free church website templates
+       10  HIGH     $  0.00  elementor church templates
+       10  LOW      $  0.00  church website wix
+       10  LOW      $  0.00  free religious website templates
+       10  LOW      $  0.00  free christian website templates
+       10  LOW      $  0.00  church website templates html
+       10  MEDIUM   $  0.00  church html template
+       10  UNSPECIFIED $  0.00  church html templates free download
+       10  MEDIUM   $  0.00  best church wordpress themes free
+       10  MEDIUM   $  0.00  best wix templates for churches
+       10  LOW      $  0.00  bootstrap church website templates free download
+       10  LOW      $  0.00  church bootstrap template
+       10  UNSPECIFIED $  0.00  church website multi pages templates free download
+       10  UNSPECIFIED $  0.00  church websites using wix
+       10  UNSPECIFIED $  0.00  divi church template
+       10  LOW      $  0.00  free bootstrap church website templates
+       10  LOW      $  0.00  free church html website templates
+       10  UNSPECIFIED $  0.00  free church website templates for dreamweaver
+       10  LOW      $  0.00  free html5 church website templates
+       10  UNSPECIFIED $  0.00  god website templates free download
+       10  LOW      $  0.00  moca website design
+       10  HIGH     $  0.00  modern church website template
+       10  LOW      $  0.00  native church multi purpose wordpress theme
+       10  UNSPECIFIED $  0.00  responsive church website templates
+       10  LOW      $  0.00  wordpress church templates free download
+       10  LOW      $  0.00  wordpress religious themes free
+        0  UNSPECIFIED $  0.00  free church website templates 2020
+        0  UNSPECIFIED $  0.00  roman catholic church website templates
