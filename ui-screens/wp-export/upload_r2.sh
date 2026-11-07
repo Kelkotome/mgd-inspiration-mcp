@@ -6,4 +6,4 @@ cd "$(dirname "$0")/../.."; BUCKET=$(python3 -c "import re;print(re.search(r'\"b
 cd "$R" && find tpl -type f | sort | while read -r f; do case "$f" in *.zip) ct=application/zip;; *) ct=image/webp;; esac
   cmd=(npx wrangler r2 object put "$BUCKET/$f" --file "$R/$f" --content-type "$ct" --remote)
   if [ -n "$DRY" ]; then echo "${cmd[*]}"; else (cd ../../.. && "${cmd[@]}" >/dev/null) || { echo "FAILED $f"; exit 1; }; fi
-  n=$((n+1)); done; echo done
+  n=$((n+1)); done || { echo "upload stopped: not every file reached R2"; exit 1; }; echo done   # the loop runs in a pipe subshell, so its exit 1 must be passed on (7-Nov-2026: a failed put used to print done and exit 0)
