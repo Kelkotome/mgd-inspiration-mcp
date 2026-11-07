@@ -6,7 +6,13 @@ import { INDUSTRIES, PLATFORMS, NICHES, MIN_DESIGNS, nicheById, nicheOfPattern, 
 
 // Approved by the user on 7-Nov-2026 (Option A: GPL for themes only, HTML templates keep their current terms). export.mjs writes the same sentence into each readme.
 export const WP_LICENCE = "Theme code and patterns: GPL-2.0-or-later. Bundled fonts: SIL Open Font License 1.1. Illustrations: original, included under the same GPL terms.";
-const DISCLOSE = "Names, people, addresses, phone numbers and timings in every template are fictional samples to replace. The templates are designs, not medical advice, and they do not make a site compliant with any health, privacy or advertising rule.";
+// Per industry. Healthcare's sentence is the approved 7-Nov-2026 text, unchanged. Real estate is new copy (option 1 of the options in deploy-bundle-2026-11-07/real-estate.md).
+const DISCLOSES = {
+  healthcare: "Names, people, addresses, phone numbers and timings in every template are fictional samples to replace. The templates are designs, not medical advice, and they do not make a site compliant with any health, privacy or advertising rule.",
+  "real-estate": "Names, people, addresses, phone numbers, listings, prices and fees in every template are fictional samples to replace. The templates are designs, not legal or financial advice, and they do not make a site compliant with any fair housing, licensing or advertising rule.",
+};
+const discloseFor = (ids) => [...new Set(ids)].map((i) => DISCLOSES[i]).filter(Boolean).join(" ");
+const DISCLOSE_ALL = () => discloseFor(platformIndustries().map((i) => i.id));
 const FORM_NOTE = "Forms are static sample markup. They do not send anything until you connect a form plugin.";
 
 const zipUrl = (d, base) => `${base}/ui/download/wordpress/${d.theme.slug}.zip`;
@@ -56,7 +62,7 @@ ${wp.length ? `<h2 class="s">Also for WordPress</h2><p class="lede" style="margi
 ${app ? `<h2 class="s">App and portal screens</h2><p class="lede" style="margin:0">${app}</p>` : ""}
 <h2 class="s">What each sub-niche covers</h2><ul class="plain">${niches.map((n) => `<li><b>${h.escHtml(n.label)}.</b> ${h.escHtml(((TPL_COPY.niches || {})[n.id] || {}).intro || "")}</li>`).join("")}</ul>
 <h2 class="s">What every template includes</h2><ul class="plain"><li>A full, responsive one-page home page written for that sub-niche.</li><li>HTML code and a DESIGN.md of colour, type and spacing tokens, in light and dark.</li><li>Original inline illustrations. No stock photos and no third-party images.</li></ul>
-<h2 class="s">Before you use one</h2><p class="lede">${h.escHtml(DISCLOSE)}</p>${mdAlt(h, base, ind.hub)}${x.MCP_NOTE(base)}${x.RIGHTS}</div>${h.saveWidget(base)}</body></html>`;
+<h2 class="s">Before you use one</h2><p class="lede">${h.escHtml(discloseFor([ind.id]))}</p>${mdAlt(h, base, ind.hub)}${x.MCP_NOTE(base)}${x.RIGHTS}</div>${h.saveWidget(base)}</body></html>`;
   return x.page(h, body);
 }
 
@@ -83,7 +89,7 @@ export async function platformPage(env, base, h, x) {
   const body = x.head(h, { title: x.fitTitle(`Free WordPress block themes (${t.designs}, tested) | MGD`, `Free WordPress block themes | MGD`), desc, canonical: url, jsonld, css: LOCAL_CSS, md: `${url}.md` })
   + `${h.backLink(base, "/ui", "All UI screens")}${crumbNav(h, base, crumbs)}<h1>${h.escHtml(pl.h1)}</h1><p class="lede">${h.escHtml(desc)} ${h.escHtml(TEST_LINE())}</p>
 ${inds.map((i) => `<h2 class="s"><a href="${h.escHtml(base)}/ui/${h.escHtml(wpIndustryPath(i.id))}">${h.escHtml(i.label)}</a></h2><p class="lede" style="margin:0">${industryNiches(i.id, true).map((n) => `<a href="${h.escHtml(base)}/ui/${h.escHtml(wpNichePath(n))}">${h.escHtml(n.label)}</a>`).join(" · ")}</p>`).join("")}
-<h2 class="s">Licence</h2><p class="lede">${h.escHtml(WP_LICENCE)}</p><h2 class="s">Before you use one</h2><p class="lede">${h.escHtml(DISCLOSE)} ${h.escHtml(FORM_NOTE)}</p>${mdAlt(h, base, pl.hub)}${x.MCP_NOTE(base)}</div>${h.saveWidget(base)}</body></html>`;
+<h2 class="s">Licence</h2><p class="lede">${h.escHtml(WP_LICENCE)}</p><h2 class="s">Before you use one</h2><p class="lede">${h.escHtml(DISCLOSE_ALL())} ${h.escHtml(FORM_NOTE)}</p>${mdAlt(h, base, pl.hub)}${x.MCP_NOTE(base)}</div>${h.saveWidget(base)}</body></html>`;
   return x.page(h, body);
 }
 
@@ -96,7 +102,7 @@ export async function platformIndustryPage(ind, env, base, h, x) {
   + `${h.backLink(base, "/ui", "All UI screens")}${crumbNav(h, base, crumbs)}<h1>${h.escHtml(h1)}</h1><p class="lede">${h.escHtml(desc)} ${h.escHtml(TEST_LINE())}</p>
 <div class="tg">${niches.map((n) => nicheCard(n, img[n.pattern] && img[n.pattern].image, `${base}/ui/${wpNichePath(n)}`, h, base, `${count(liveThemes(n).length, "theme")}`)).join("")}</div>
 <p class="lede"><b>Also as HTML:</b> <a href="${h.escHtml(base)}/ui/${h.escHtml(ind.hub)}">${h.escHtml(ind.h1)}</a>.</p>
-<h2 class="s">Licence</h2><p class="lede">${h.escHtml(WP_LICENCE)}</p><h2 class="s">Before you use one</h2><p class="lede">${h.escHtml(DISCLOSE)} ${h.escHtml(FORM_NOTE)}</p>${mdAlt(h, base, rel)}${x.MCP_NOTE(base)}</div>${h.saveWidget(base)}</body></html>`;
+<h2 class="s">Licence</h2><p class="lede">${h.escHtml(WP_LICENCE)}</p><h2 class="s">Before you use one</h2><p class="lede">${h.escHtml(discloseFor([ind.id]))} ${h.escHtml(FORM_NOTE)}</p>${mdAlt(h, base, rel)}${x.MCP_NOTE(base)}</div>${h.saveWidget(base)}</body></html>`;
   return x.page(h, body);
 }
 
@@ -109,7 +115,7 @@ export async function platformNichePage(n, env, base, h, x) {
   + `${h.backLink(base, "/ui", "All UI screens")}${crumbNav(h, base, crumbs)}<h1>${h.escHtml(h1)}</h1><p class="lede">${h.escHtml(desc)} ${h.escHtml(c.intro || "")}</p>${styleChips(ds, h)}<p class="lede" id="tcount">${ds.length} themes</p><div class="tg" id="tgrid">${ds.map((d) => themeCard(n, d, h, base)).join("")}</div>
 <p class="lede"><b>Also as HTML:</b> <a href="${h.escHtml(base)}/ui/${h.escHtml(ind.hub)}/${h.escHtml(n.htmlSeg)}">${h.escHtml(n.label)} website templates</a>. <b>More in ${h.escHtml(ind.label)}:</b> <a href="${h.escHtml(base)}/ui/${h.escHtml(wpIndustryPath(ind.id))}">${h.escHtml(ind.label)} WordPress themes</a>.</p>
 ${n.services && n.services.length ? `<h2 class="s">Written for ${h.escHtml(n.label.toLowerCase())}</h2><p class="lede">Sample services in every theme: ${h.escHtml(niceList(n.services))}.</p>` : ""}<h2 class="s">What each theme includes</h2><ul class="plain"><li>Templates for the front page, blog, posts, pages, archives, search and 404, with a header and footer part.</li><li>Every section as a block pattern you can insert elsewhere.</li><li>Eight style variations in Appearance, Editor, Styles.</li><li>Bundled fonts, so nothing loads from a font service.</li></ul>
-<h2 class="s">How they were tested</h2><p class="lede">${h.escHtml(TEST_LINE())}</p><h2 class="s">Licence</h2><p class="lede">${h.escHtml(WP_LICENCE)}</p><h2 class="s">Before you use one</h2><p class="lede">${h.escHtml(DISCLOSE)} ${h.escHtml(FORM_NOTE)}</p>${mdAlt(h, base, rel)}${x.MCP_NOTE(base)}</div>${STYLE_FILTER_JS}${h.saveWidget(base)}</body></html>`;
+<h2 class="s">How they were tested</h2><p class="lede">${h.escHtml(TEST_LINE())}</p><h2 class="s">Licence</h2><p class="lede">${h.escHtml(WP_LICENCE)}</p><h2 class="s">Before you use one</h2><p class="lede">${h.escHtml(discloseFor([n.industry]))} ${h.escHtml(FORM_NOTE)}</p>${mdAlt(h, base, rel)}${x.MCP_NOTE(base)}</div>${STYLE_FILTER_JS}${h.saveWidget(base)}</body></html>`;
   return x.page(h, body);
 }
 
@@ -127,7 +133,7 @@ export async function themePage(n, d, env, base, h, x) {
 <div class="shots"><img loading="lazy" src="${h.escHtml(shot(d, 1280, base))}" alt="${h.escHtml(t.name)} front page at 1280 px, rendered by WordPress"/><img loading="lazy" src="${h.escHtml(shot(d, 390, base))}" alt="${h.escHtml(t.name)} front page at 390 px, rendered by WordPress"/></div>
 <table class="facts"><tbody>${facts.map(([k, v]) => `<tr><th scope="row">${h.escHtml(k)}</th><td>${h.escHtml(v)}</td></tr>`).join("")}</tbody></table>
 <h2 class="s">Install</h2><ol class="plain"><li>In WordPress, go to Appearance, Themes, Add New Theme, Upload Theme.</li><li>Upload the zip, click Install Now, then Activate.</li><li>Set your Site Title in Settings, General. The header shows it.</li><li>Edit text, colours and fonts in Appearance, Editor.</li></ol>
-<h2 class="s">Licence</h2><p class="lede">${h.escHtml(WP_LICENCE)}</p><h2 class="s">Before you use it</h2><p class="lede">${h.escHtml(DISCLOSE)} ${h.escHtml(FORM_NOTE)}</p>
+<h2 class="s">Licence</h2><p class="lede">${h.escHtml(WP_LICENCE)}</p><h2 class="s">Before you use it</h2><p class="lede">${h.escHtml(discloseFor([n.industry]))} ${h.escHtml(FORM_NOTE)}</p>
 <h2 class="s">Other ${h.escHtml(n.label.toLowerCase())} themes</h2><p class="lede">${liveThemes(n).filter((o) => o !== d).map((o) => `<a href="${h.escHtml(base)}/ui/${h.escHtml(themePath(n, o))}">${h.escHtml(o.theme.name)}</a>`).join(" · ")}</p>${mdAlt(h, base, rel)}${x.MCP_NOTE(base)}</div>${h.saveWidget(base)}</body></html>`;
   return x.page(h, body);
 }
@@ -135,6 +141,7 @@ export async function themePage(n, d, env, base, h, x) {
 // Raw Markdown twins, for assistants. Same facts as the page; the canonical stays on the page.
 export function treeMd(hit, site, base) {
   const u = (rel) => `${site}${base}/ui/${rel}`, m = catalogMeta();
+  const indOf = hit.ind ? [hit.ind.id] : hit.n ? [hit.n.industry] : platformIndustries().map((i) => i.id), DISCLOSE = discloseFor(indOf);
   const std = `Licence: ${WP_LICENCE}\n\n${DISCLOSE} ${FORM_NOTE}`;
   const themeLine = (n, d) => `- **${d.theme.name}**: ${d.about}. Page: ${u(themePath(n, d))} Download: ${site}${zipUrl(d, base)}`;
   if (hit.type === "industry") { const ns = industryNiches(hit.ind.id), t = totals(ns); return { rel: hit.ind.hub, md: `# ${hit.ind.h1}\n\n${t.designs} free one-page templates across ${t.niches} sub-niches, each a distinct layout with HTML code and a DESIGN.md.\n\n## Sub-niches\n${ns.map((n) => `- [${n.label}](${u(`${hit.ind.hub}/${n.htmlSeg}`)}): ${liveDesigns(n).length} designs. ${(TPL_COPY.niches[n.id] || {}).intro || ""}`).join("\n")}\n\nWordPress themes: ${u(wpIndustryPath(hit.ind.id))}\n\n${DISCLOSE}\n` }; }
@@ -156,19 +163,22 @@ export async function themeDownload(slug, kind, env, site, base) {
 
 // ---- MCP ----------------------------------------------------------------------------------------------------------------------------
 // Most specific phrase first: "animal hospital" before "hospital", "mental health" before "medical".
-const ALIASES = [["veterinary", /\b(veterinar\w*|vets?|animal (hospital|clinic)|pet clinic)\b/], ["mental-health", /\b(mental health|psychiatr\w*|behavioural health|behavioral health)\b/], ["therapist", /\b(therapists?|counsell?(ors?|ing)|psychotherapist|psychologists?)\b/], ["physical-therapy", /\b(physical therapy|physical therapist|physio\w*|sports rehab|rehab clinic)\b/],
+const ALIASES = [["vacation-rental", /\b(vacation rentals?|holiday (lets?|rentals?|cottages?|homes?)|short[- ]term rentals?|cabin rentals?|direct booking)\b/], ["property-management", /\b(property manage\w*|letting agents?|lettings|rental management|landlord services)\b/],
+  ["commercial-real-estate", /\b(commercial (real estate|property|properties)|office (space|leasing)|retail space|industrial (units?|property)|warehouse space)\b/], ["luxury-real-estate", /\b(luxury (real estate|homes?|propert\w*|realtors?)|high[- ]end (real estate|homes?))\b/], ["home-builder", /\b(home ?builders?|house ?builders?|new[- ]homes?|new[- ]build)\b/],
+  ["real-estate-agent", /\b(real estate agents?|realtors?|independent agents?|solo agents?)\b/], ["apartment", /\b(apartments?|multifamily|apartment (complex|community)|leasing office)\b/], ["real-estate", /\b(real estate|realty|estate agents?|estate agency|property (listings?|websites?)|brokerage)\b/],
+  ["veterinary", /\b(veterinar\w*|vets?|animal (hospital|clinic)|pet clinic)\b/], ["mental-health", /\b(mental health|psychiatr\w*|behavioural health|behavioral health)\b/], ["therapist", /\b(therapists?|counsell?(ors?|ing)|psychotherapist|psychologists?)\b/], ["physical-therapy", /\b(physical therapy|physical therapist|physio\w*|sports rehab|rehab clinic)\b/],
   ["orthodontics", /\b(orthodont\w*|braces)\b/], ["dental", /\b(dental|dentists?|dentistry)\b/], ["cardiology", /\b(cardiolog\w*|heart (clinic|doctor|practice))\b/], ["dermatology", /\b(dermatolog\w*|skin clinic)\b/], ["pediatrics", /\b(p(a)?ediatric\w*|children'?s (clinic|doctor))\b/], ["fertility", /\b(fertility|ivf)\b/], ["optometry", /\b(optometr\w*|opticians?|eye (clinic|care|doctor)|eyecare)\b/], ["pharmacy", /\b(pharmac\w*|drugstore|chemist)\b/], ["hospital", /\bhospitals?\b/], ["medical", /\b(medical (practice|clinic|office|center|centre)|primary care|family (doctor|practice)|gp (practice|surgery)|doctors?( office)?|medical)\b/]];
 const OTHER_PLATFORMS = /\b(shopify|magento|joomla|wix|squarespace|webflow|drupal|woocommerce|ghost)\b/;
 export function tplAnswer({ q, platform }, site) {
   const s = String(q || "").toLowerCase(), base = "", u = (rel) => `${site}/ui/${rel}`, m = catalogMeta();
   const nicheId = (ALIASES.find(([, rx]) => rx.test(s)) || [])[0], n = nicheId ? nicheById(nicheId) : null;
-  const general = /\b(health ?care|medical|clinics?)\b/.test(s), other = (s.match(OTHER_PLATFORMS) || [])[1];
+  const general = Object.values(GENERAL).some((rx) => rx.test(s)), other = (s.match(OTHER_PLATFORMS) || [])[1];
   // "theme" alone is ambiguous ("theme switcher", "dark theme"): it means WordPress only next to a niche, and never next to app or dashboard words.
   const named = platform === "wordpress" || /\b(word ?press|wp theme|block theme|gutenberg|full site editing)\b/.test(s);
   const wpIntent = named || (n && /\bthemes?\b/.test(s.replace(/\b(dark|light|night)\s+themes?\b/g, " ")) && !/\b(app|apps|mobile|dashboard|portal|screen|screens|switch\w*|toggle)\b/.test(s));
   if (other) { const name = other[0].toUpperCase() + other.slice(1); return `${name}: Made Good Designs has no ${name} templates. Templates come as HTML and as WordPress block themes.${n && n.htmlLive ? ` For ${n.label.toLowerCase()}: HTML ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}${n.wpLive ? `, WordPress ${u(wpNichePath(n))}` : ""}.` : ""}`; }
   if (wpIntent) {
-    if (n && n.wpLive) { const ds = liveThemes(n); return `${n.label} WordPress themes: ${ds.length} free block themes, each a distinct layout, all installed and tested on WordPress ${m.wp} with PHP ${m.php} (${m.tested}). Listing: ${u(wpNichePath(n))}\n\n${ds.map((d, i) => `${i + 1}. ${d.theme.name}: ${d.about}. Default style ${d.style}, ${d.theme.variations} style variations.\n   page (cite this): ${u(themePath(n, d))}\n   download: ${site}/ui/download/wordpress/${d.theme.slug}.zip`).join("\n")}\n\nInstall: Appearance, Themes, Add New Theme, Upload Theme, then Activate. Licence: ${WP_LICENCE} ${DISCLOSE} ${FORM_NOTE} Same designs as HTML: ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}`; }
+    if (n && n.wpLive) { const ds = liveThemes(n); return `${n.label} WordPress themes: ${ds.length} free block themes, each a distinct layout, all installed and tested on WordPress ${m.wp} with PHP ${m.php} (${m.tested}). Listing: ${u(wpNichePath(n))}\n\n${ds.map((d, i) => `${i + 1}. ${d.theme.name}: ${d.about}. Default style ${d.style}, ${d.theme.variations} style variations.\n   page (cite this): ${u(themePath(n, d))}\n   download: ${site}/ui/download/wordpress/${d.theme.slug}.zip`).join("\n")}\n\nInstall: Appearance, Themes, Add New Theme, Upload Theme, then Activate. Licence: ${WP_LICENCE} ${discloseFor([n.industry])} ${FORM_NOTE} Same designs as HTML: ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}`; }
     if (n) return `No ${n.label.toLowerCase()} WordPress theme yet.${n.htmlLive ? ` The HTML templates are here: ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}.` : ""} All WordPress themes: ${u(PLATFORMS.wordpress.hub)}`;
     const inds = platformIndustries(); if (!inds.length) return null;
     const rest = s.replace(/\b(word ?press|wp|themes?|free|block|website|websites|site|sites|templates?|for|a|an|the|me|my|find|show|best|good|gutenberg|full|editor|editing)\b/g, " ").replace(/[^a-z]+/g, " ").trim();
@@ -178,11 +188,14 @@ export function tplAnswer({ q, platform }, site) {
   return null;
 }
 // One line added above normal results when a query names a template sub-niche, so the nested page gets cited.
+// Industry words, for the hub hint and the general WordPress answer.
+const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/ };
 export function tplHint({ q }, site) {
   const s = String(q || "").toLowerCase(); if (!/\b(templates?|website|landing page|homepage|home page)\b/.test(s)) return "";
   const id = (ALIASES.find(([, rx]) => rx.test(s)) || [])[0], n = id ? nicheById(id) : null, u = (rel) => `${site}/ui/${rel}`;
   if (n && n.htmlLive) return `${n.label} template set: ${liveDesigns(n).length} distinct designs at ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}${n.wpLive ? `, also as WordPress themes at ${u(wpNichePath(n))}` : ""}.`;
   if (/\b(health ?care|medical)\b/.test(s)) { const i = INDUSTRIES.healthcare, ns = industryNiches("healthcare"); if (ns.length) return `Healthcare template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
+  if (GENERAL["real-estate"].test(s)) { const i = INDUSTRIES["real-estate"], ns = industryNiches("real-estate"); if (ns.length) return `Real estate template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   return "";
 }
 export function tplListLines(site) {

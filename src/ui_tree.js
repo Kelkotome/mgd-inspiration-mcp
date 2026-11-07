@@ -42,6 +42,21 @@ export const INDUSTRIES = {
     // app and portal screens, not page templates: linked from the hub, their URLs stay flat
     appPatterns: ["clinic-home", "doctor-directory", "telehealth-visit"],
   },
+  // 7-Nov-2026 second industry. Demand: "real estate website template" 2,900/mo, "real estate wordpress theme" 1,600/mo (Keyword Planner, worldwide).
+  "real-estate": {
+    id: "real-estate", label: "Real estate", hub: "real-estate-website-templates", seg: "real-estate", h1: "Real estate website templates",
+    niches: [
+      ["real-estate", "real-estate-website", "Real estate agency", "real-estate-agency-website-template", "real-estate-agency"],
+      ["real-estate-agent", "real-estate-agent-website", "Real estate agent", "real-estate-agent-website-template", "real-estate-agent"],
+      ["apartment", "apartment-website", "Apartment community", "apartment-website-template", "apartment"],
+      ["property-management", "property-management-website", "Property management", "property-management-website-template", "property-management"],
+      ["luxury-real-estate", "luxury-real-estate-website", "Luxury real estate", "luxury-real-estate-website-template", "luxury"],
+      ["commercial-real-estate", "commercial-real-estate-website", "Commercial real estate", "commercial-real-estate-website-template", "commercial"],
+      ["vacation-rental", "vacation-rental-website", "Vacation rental", "vacation-rental-website-template", "vacation-rental"],
+      ["home-builder", "home-builder-website", "Home builder", "home-builder-website-template", "home-builder"],
+    ],
+    appPatterns: [],
+  },
 };
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };

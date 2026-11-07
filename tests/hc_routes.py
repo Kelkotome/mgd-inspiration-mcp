@@ -5,7 +5,9 @@ usage: hc_routes.py http://127.0.0.1:8873/inspiration"""
 import json, re, sys, urllib.request, urllib.error, os
 BASE = sys.argv[1].rstrip("/"); ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 cat = json.load(open(f"{ROOT}/src/tpl_catalog.json")); tree = open(f"{ROOT}/src/ui_tree.js").read(); seo = open(f"{ROOT}/src/ui_seo.js").read()
-NICHES = re.findall(r'\["([a-z-]+)", "([a-z-]+-website)", "[^"]+", "([a-z-]+-website-template)", "([a-z-]+)"\]', tree); HUB = "healthcare-website-templates"; WP = "wordpress-themes"
+# IND=real-estate tests the second industry (7-Nov-2026); default healthcare. The niche rows are read from that industry's block in ui_tree.js.
+IND = os.environ.get("IND", "healthcare"); blk = tree.split(f'"{IND}": {{' if IND != "healthcare" else "healthcare: {", 1)[1].split("appPatterns", 1)[0]
+NICHES = re.findall(r'\["([a-z-]+)", "([a-z-]+-website)", "[^"]+", "([a-z-]+-website-template)", "([a-z-]+)"\]', blk); HUB = f"{IND}-website-templates"; WP = "wordpress-themes"; ISEG = IND
 class NoRedir(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *a): return None
 op = urllib.request.build_opener(NoRedir)
@@ -29,11 +31,11 @@ for nid, pat, htmlSeg, seg in NICHES:
     for old, want in [(f"/ui/{htmlSeg}", nest), (f"/ui/{pat}", nest), (f"/ui/{htmlSeg}/", nest), (f"/ui/{pat}/", nest), (f"{nest}/", nest), (f"/ui?pattern={pat}", nest), (f"/ui/{htmlSeg}?style=minimal", nest + "?style=minimal"), (f"/ui?pattern={pat}&platform=web&style=luxury", nest + "?device=web&style=luxury")]:
         one_hop(old, want)
     s, h, b = text(nest); ck(s == 200, f"{nest} {s}"); ck(f'rel="canonical" href="{BASE}{nest}"' in b or f'href="{BASE}{nest}" rel="canonical"' in b or re.search(r'rel="canonical" href="[^"]*' + re.escape(nest) + '"', b), f"{nest} canonical"); ck('"BreadcrumbList"' in b, f"{nest} crumbs")
-    ck(f"/ui/{WP}/healthcare/{seg}" in b, f"{nest} cross-link to WordPress"); ck("distinct designs" in b, f"{nest} designs block"); g = b.split("distinct designs", 1)[-1].split("Every screen", 1)[0]; ck(len(re.findall(r'class="card page"', g)) == len([d for d in n["designs"] if d["distinct"]]), f"{nest} shows every design")
+    ck(f"/ui/{WP}/{ISEG}/{seg}" in b, f"{nest} cross-link to WordPress"); ck("distinct designs" in b, f"{nest} designs block"); g = b.split("distinct designs", 1)[-1].split("Every screen", 1)[0]; ck(len(re.findall(r'class="card page"', g)) == len([d for d in n["designs"] if d["distinct"]]), f"{nest} shows every design")
     # filters stay on the page and canonicalise to it
     s, h, b = text(nest + "?style=minimal&device=web"); ck(s == 200 and re.search(r'rel="canonical" href="[^"]*' + re.escape(nest) + '"', b), f"{nest} filter canonical")
-    s, h, b = text(f"{nest}.md"); ck(s == 200 and "text/markdown" in h.get("Content-Type", "") and nest in h.get("Link", ""), f"{nest}.md"); ck(f"/ui/{WP}/healthcare/{seg}" in b, f"{nest}.md nested link")
-    wp = f"/ui/{WP}/healthcare/{seg}"; s, h, b = text(wp); ck(s == 200, f"{wp} {s}"); ck(re.search(r'rel="canonical" href="[^"]*' + re.escape(wp) + '"', b), f"{wp} canonical"); ck('"BreadcrumbList"' in b, f"{wp} crumbs"); ck(nest in b, f"{wp} back to HTML")
+    s, h, b = text(f"{nest}.md"); ck(s == 200 and "text/markdown" in h.get("Content-Type", "") and nest in h.get("Link", ""), f"{nest}.md"); ck(f"/ui/{WP}/{ISEG}/{seg}" in b, f"{nest}.md nested link")
+    wp = f"/ui/{WP}/{ISEG}/{seg}"; s, h, b = text(wp); ck(s == 200, f"{wp} {s}"); ck(re.search(r'rel="canonical" href="[^"]*' + re.escape(wp) + '"', b), f"{wp} canonical"); ck('"BreadcrumbList"' in b, f"{wp} crumbs"); ck(nest in b, f"{wp} back to HTML")
     ck(len(re.findall(r'class="card page" data-style', b)) == len([d for d in n["designs"] if d.get("theme")]), f"{wp} theme cards")
     s, h, b = text(wp + "?style=minimal"); ck(s == 200 and re.search(r'rel="canonical" href="[^"]*' + re.escape(wp) + '"', b), f"{wp} filter canonical")
     s, h, m = text(wp + ".md"); ck(s == 200 and "download/wordpress" in m, f"{wp}.md")
@@ -42,7 +44,7 @@ for nid, pat, htmlSeg, seg in NICHES:
         t = d["theme"]["slug"]; ip = f"{wp}/{t}"; s, h, b = text(ip); ck(s == 200, f"{ip} {s}"); ck(f"/ui/download/wordpress/{t}.zip" in b, f"{ip} download link"); ck("Upload Theme" in b, f"{ip} install steps"); ck('"SoftwareSourceCode"' in b, f"{ip} ld")
         s, h, m = text(ip + ".md"); ck(s == 200 and t in m, f"{ip}.md")
         s, h, bp = text(f"/ui/download/wordpress/{t}.blueprint.json"); ck(s == 200 and any(x["step"] == "installTheme" for x in json.loads(bp)["steps"]), f"{t} blueprint")
-for p in [f"/ui/{HUB}", f"/ui/{WP}", f"/ui/{WP}/healthcare", "/ui", "/ui/website-templates"]:
+for p in [f"/ui/{HUB}", f"/ui/{WP}", f"/ui/{WP}/{ISEG}", "/ui", "/ui/website-templates"]:
     s, h, b = text(p); ck(s == 200, f"{p} {s}")
     for nid, pat, htmlSeg, seg in NICHES:
         ck(f'/ui/{htmlSeg}"' not in b, f"{p} has flat link to {htmlSeg}")
@@ -60,16 +62,16 @@ for nid, n in cat["niches"].items():
             got += 1; ck(hashlib.sha256(b).hexdigest() == th["sha256"], f"{th['slug']} zip hash"); ck(h.get("Content-Type") == "application/zip", f"{th['slug']} zip type"); ck(f"{th['slug']}.zip" in h.get("Content-Disposition", ""), f"{th['slug']} filename")
             s2, h2, _ = get(f"/img/tpl/wordpress/{th['slug']}/{th['version']}/shot-1280.webp"); ck(s2 == 200 and h2.get("Content-Type") == "image/webp", f"{th['slug']} screenshot {s2} {h2.get('Content-Type')}")
 ck(got >= 1, "no zip served from the local bucket"); print("zips served and hash-checked:", got)
-for bad in [f"/ui/{HUB}/nope-website-template", f"/ui/{WP}/healthcare/nope", f"/ui/{WP}/retail", f"/ui/{WP}/healthcare/cardiology/nope", f"/ui/{HUB}.md/x", "/ui/download/wordpress/nope.zip"]:
+for bad in [f"/ui/{HUB}/nope-website-template", f"/ui/{WP}/{ISEG}/nope", f"/ui/{WP}/retail", f"/ui/{WP}/{ISEG}/{NICHES[0][3]}/nope", f"/ui/{HUB}.md/x", "/ui/download/wordpress/nope.zip"]:
     s, _, _ = get(bad); ck(s == 404, f"{bad} should be 404, got {s}")
 s, h, b = text("/ui/sitemap.xml"); urls = re.findall(r"<loc>([^<]+)</loc>", b); ck(len(urls) == len(set(urls)), "sitemap duplicates")
 paths = [u.split("/inspiration", 1)[-1] for u in urls]
 for nest in hits: ck(nest in paths, f"sitemap misses {nest}")
-for nid, pat, htmlSeg, seg in NICHES: ck(f"/ui/{htmlSeg}" not in paths, f"sitemap has flat {htmlSeg}"); ck(f"/ui/{WP}/healthcare/{seg}" in paths, f"sitemap misses WP {seg}")
+for nid, pat, htmlSeg, seg in NICHES: ck(f"/ui/{htmlSeg}" not in paths, f"sitemap has flat {htmlSeg}"); ck(f"/ui/{WP}/{ISEG}/{seg}" in paths, f"sitemap misses WP {seg}")
 s, h, b = text("/ui/chatbot-ui"); ck(s == 200, "flat pattern still flat")
 s, h, b = text("/ui/chat-ai-assistant"); ck(s == 301, "old flat id still one hop")
 s, h, b = text("/ui/chat-ai-assistant/"); ck(s == 301 and (h.get("Location") or "").endswith("/ui/chatbot-ui"), "old flat id with slash one hop")
 # item URLs do not move
-s, h, b = text(f"/ui/{HUB}/cardiology-website-template"); m = re.search(r'href="[^"]*(/ui/cardiology-website-[a-z-]+-[0-9a-f]{12})"', b); ck(bool(m), "item link on niche page")
-if m: s, _, ib = text(m.group(1)); ck(s == 200 and f"{HUB}/cardiology-website-template" in ib, "item page links nested pattern"); ck("Also for WordPress" in ib, "item page sibling")
+IT = NICHES[0]; s, h, b = text(f"/ui/{HUB}/{IT[2]}"); m = re.search(r'href="[^"]*(/ui/' + IT[1] + r'-[a-z-]+-[0-9a-f]{12})"', b); ck(bool(m), "item link on niche page")
+if m: s, _, ib = text(m.group(1)); ck(s == 200 and f"{HUB}/{IT[2]}" in ib, "item page links nested pattern"); ck("Also for WordPress" in ib, "item page sibling")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)

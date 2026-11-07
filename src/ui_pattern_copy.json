@@ -2676,8 +2676,8 @@
   ]
  },
  "real-estate-website": {
-  "h1": "Real estate website templates",
-  "intro": "A real estate site starts with search. These templates include a buy/rent property search, featured listings with price, beds, baths and open-house badges, neighbourhood guides, a valuation call to action and form, the agents, market figures and client notes.",
+  "h1": "Real estate agency website templates",
+  "intro": "A real estate agency site starts with search. These templates include a buy and rent property search, listing cards with price, beds, baths and status, a map of the areas covered, a valuation request for sellers, landlord services, fees in plain words and the agents.",
   "tips": [
    "Put the property search in the first screen, with buy and rent tabs.",
    "Show the facts on every listing card: price, beds, baths, size and status.",
@@ -3216,7 +3216,7 @@
   ]
  },
  "apartment-website": {
-  "h1": "Apartment website templates",
+  "h1": "Apartment community website templates",
   "intro": "Renters want floor plans, prices and availability. These templates include a floor plan browser, available homes with move-in dates, amenities, the neighbourhood, a tour scheduler, a resident login and an application path.",
   "tips": [
    "Lead with floor plans, prices and availability.",
@@ -3372,6 +3372,126 @@
    [
     "Can a pharmacy site take repeat orders online?",
     "The templates show the layout only. The form is sample markup, and a real ordering system needs a secure, compliant service behind it."
+   ]
+  ]
+ },
+ "real-estate-agent-website": {
+  "h1": "Real estate agent website templates",
+  "intro": "A solo agent's site sells the agent as much as the homes. These templates include current listings, a featured home with room sizes, how buying and selling with one agent works, the small team behind the agent, fees and a way to book a call.",
+  "tips": [
+   "Put your current listings and a way to book a call on the first screen.",
+   "Show who does what: you, your transaction coordinator, your photographer.",
+   "Explain your fee and what it covers in one table.",
+   "Add your real licence number yourself, never a sample one."
+  ],
+  "faq": [
+   [
+    "What should a real estate agent website include?",
+    "Current listings, a short bio, how you work with buyers and sellers, your fee, the areas you cover, your licence details and a contact or booking form."
+   ],
+   [
+    "Can a solo agent use the word Realtor on a site?",
+    "Only members of the trade association that owns the mark may use it, and the rules for how it is written are strict. These templates say real estate agent."
+   ]
+  ]
+ },
+ "property-management-website": {
+  "h1": "Property management website templates",
+  "intro": "A property management site has two audiences: owners who want a rental looked after, and tenants who need to pay rent or report a repair. These templates give each their own path, with management plans and fees, available rentals and an emergency repair line.",
+  "tips": [
+   "Give tenants a clear way to report a repair and an emergency line near the top.",
+   "Show management plans and fees in one table.",
+   "List the rentals you have available now, with monthly rent and move-in date.",
+   "Say what owners receive each month, such as a statement and inspection photos."
+  ],
+  "faq": [
+   [
+    "What should a property management website include?",
+    "Services for owners, plans and fees, available rentals, a tenant section for rent and repairs, an emergency line, the team and contact details."
+   ],
+   [
+    "Should tenants and owners share one page?",
+    "They can, if each has its own clearly labelled section. Tenants usually need the repair line and payment details; owners need fees and reporting."
+   ]
+  ]
+ },
+ "luxury-real-estate-website": {
+  "h1": "Luxury real estate website templates",
+  "intro": "A luxury agency site is quieter: fewer homes, larger pictures and more about how viewings and discreet sales work. These templates include a featured estate with a floor plan, listings with price on request, private viewing steps and a seller section.",
+  "tips": [
+   "Describe concrete features, such as plot size, views and outbuildings, rather than superlatives.",
+   "Explain how private viewings and identity checks work before anyone asks.",
+   "Allow price on request where a seller wants it.",
+   "Keep a separate, discreet path for sellers."
+  ],
+  "faq": [
+   [
+    "What should a luxury real estate website include?",
+    "A small set of homes with large images, a featured property with room sizes, how private viewings work, the team, the areas covered and a confidential contact form."
+   ],
+   [
+    "How do luxury sites handle homes that are not publicly listed?",
+    "Usually with a register-your-interest form and a note that some homes are shown only to qualified buyers."
+   ]
+  ]
+ },
+ "commercial-real-estate-website": {
+  "h1": "Commercial real estate website templates",
+  "intro": "A commercial property site is about space, terms and use. These templates include available offices, shops and industrial units with size, rent per sq ft and use, a featured building with floor areas, lease terms explained, and a section for landlords and investors.",
+  "tips": [
+   "Show rent per sq ft, size and use on every listing.",
+   "Explain lease terms such as service charge and break clauses in plain words.",
+   "Separate occupier and landlord paths.",
+   "Add your real licence and regulatory details yourself."
+  ],
+  "faq": [
+   [
+    "What should a commercial real estate website include?",
+    "Available spaces with size, rent and use, a building or unit feature, services for occupiers and landlords, lease terms explained, the team and offices."
+   ],
+   [
+    "How should commercial listings show price?",
+    "As rent per sq ft per year for leases, or a sale price for freeholds, with service charge stated separately."
+   ]
+  ]
+ },
+ "vacation-rental-website": {
+  "h1": "Vacation rental website templates",
+  "intro": "A direct-booking holiday rental site needs the stays, the dates and the terms. These templates include stays with sleeps, bedrooms and a price per night, a featured stay with its rooms, how booking and check-in work, house rules and a section for owners.",
+  "tips": [
+   "Show sleeps, bedrooms and a from-price on every stay.",
+   "Put booking terms, deposit and cancellation in one table.",
+   "Tell guests how check-in works before they book.",
+   "Describe step-free features exactly instead of making a general accessibility claim."
+  ],
+  "faq": [
+   [
+    "What should a vacation rental website include?",
+    "Stays with photos and key facts, availability or a booking path, booking terms, check-in instructions, house rules, the local area and contact details."
+   ],
+   [
+    "Why book direct on a holiday rental site?",
+    "Guests deal with the owner or manager directly. The site should still state the deposit, cancellation terms and how payment is taken."
+   ]
+  ]
+ },
+ "home-builder-website": {
+  "h1": "Home builder website templates",
+  "intro": "A new-home builder site sells plans and places. These templates include home plans and move-in-ready homes across communities, a featured plan with room sizes, how building a new home works, standard and upgrade options, and a path for buyers who have a home to sell.",
+  "tips": [
+   "Show from-prices, beds, baths and size on every plan.",
+   "Explain the build stages and when buyers visit the site.",
+   "Separate standard specification from upgrades.",
+   "Point to the contract for warranty details instead of summarising them."
+  ],
+  "faq": [
+   [
+    "What should a home builder website include?",
+    "Communities, home plans and move-in-ready homes, a plan with room sizes, the build process, standard and upgrade options, sales centre hours and contact details."
+   ],
+   [
+    "Should a builder list prices?",
+    "Yes, as from-prices, with a note on what is included and that final prices depend on the plot and options."
    ]
   ]
  }

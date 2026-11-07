@@ -131,7 +131,7 @@ export const PATTERN_SEO = {
   "ecommerce-website": ["ecommerce-website-template", "Ecommerce website templates"],
   "coffee-shop-website": ["coffee-shop-website-template", "Coffee shop website templates"],
   "salon-website": ["salon-website-template", "Salon website templates"],
-  "real-estate-website": ["real-estate-website-template", "Real estate website templates"],
+  "real-estate-website": ["real-estate-website-template", "Real estate agency website templates"],
   "construction-website": ["construction-website-template", "Construction website templates"],
   "law-firm-website": ["law-firm-website-template", "Law firm website templates"],
   "dental-website": ["dental-website-template", "Dental website templates"],
@@ -159,7 +159,7 @@ export const PATTERN_SEO = {
   "solar-website": ["solar-website-template", "Solar website templates"],
   "ai-agent-website": ["ai-agent-website-template", "AI agent website templates"],
   "preschool-website": ["preschool-website-template", "Preschool website templates"],
-  "apartment-website": ["apartment-website-template", "Apartment website templates"],
+  "apartment-website": ["apartment-website-template", "Apartment community website templates"],
   "pediatrics-website": ["pediatrics-website-template", "Pediatric website templates"],
   "orthodontics-website": ["orthodontics-website-template", "Orthodontics website templates"],
   "fertility-website": ["fertility-website-template", "Fertility clinic website templates"],
@@ -169,6 +169,13 @@ export const PATTERN_SEO = {
   "mental-health-website": ["mental-health-website-template", "Mental health clinic website templates"],
   "optometry-website": ["optometry-website-template", "Optometry website templates"],
   "pharmacy-website": ["pharmacy-website-template", "Pharmacy website templates"],
+  // 7-Nov-2026 real estate: new niches. These only ever live under the industry hub.
+  "real-estate-agent-website": ["real-estate-agent-website-template", "Real estate agent website templates"],
+  "property-management-website": ["property-management-website-template", "Property management website templates"],
+  "luxury-real-estate-website": ["luxury-real-estate-website-template", "Luxury real estate website templates"],
+  "commercial-real-estate-website": ["commercial-real-estate-website-template", "Commercial real estate website templates"],
+  "vacation-rental-website": ["vacation-rental-website-template", "Vacation rental website templates"],
+  "home-builder-website": ["home-builder-website-template", "Home builder website templates"],
 };
 
 // Gallery facets (group / platform / style) rendered by the gallery page with that facet applied server-side.

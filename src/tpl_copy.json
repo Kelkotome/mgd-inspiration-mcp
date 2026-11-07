@@ -1,6 +1,7 @@
 {
  "industries": {
-  "healthcare": { "intro": "Sub-niches cover general practice, hospitals, specialist clinics, dental and eye care, mental health, rehabilitation, pharmacy and veterinary care. Every site includes a safety line where the niche needs one, clear ways to book or refer, and sample copy written for that kind of practice." }
+  "healthcare": { "intro": "Sub-niches cover general practice, hospitals, specialist clinics, dental and eye care, mental health, rehabilitation, pharmacy and veterinary care. Every site includes a safety line where the niche needs one, clear ways to book or refer, and sample copy written for that kind of practice." },
+  "real-estate": { "intro": "Sub-niches cover agencies, solo agents, apartment communities, property managers, luxury and commercial agencies, holiday rentals and new-home builders. Property layouts include a search with a map of numbered listings and a featured home with a floor plan, and every site has sample copy written for that kind of business." }
  },
  "niches": {
   "medical": { "intro": "For a family or general practice: registration, repeat prescriptions, test results and how to get an urgent appointment, written for patients who want a practical answer." },
@@ -16,6 +17,14 @@
   "physical-therapy": { "intro": "For a physical therapy and rehab clinic: assessments, sports rehab, pelvic health and classes, with a route for surgeons and doctors who send patients." },
   "optometry": { "intro": "For an independent eye care practice: eye tests, children's vision, contact lenses and frame fitting, with what to do about sudden changes in vision." },
   "pharmacy": { "intro": "For a community pharmacy: repeat prescriptions, medicine reviews, vaccinations, minor ailment advice and travel health, with branch hours and when to see a doctor instead." },
-  "veterinary": { "intro": "For a small animal vet: consultations, vaccinations, neutering, dental care and repeat prescriptions, with new pet registration and an out-of-hours line." }
+  "veterinary": { "intro": "For a small animal vet: consultations, vaccinations, neutering, dental care and repeat prescriptions, with new pet registration and an out-of-hours line." },
+  "real-estate": { "intro": "For a residential agency: homes to buy and rent, valuations for sellers, lettings and management for landlords, fees in plain words and a payment-fraud warning." },
+  "real-estate-agent": { "intro": "For a solo agent with a small team: current listings, how buying and selling with one agent works, the agent's fee and a way to book a call." },
+  "apartment": { "intro": "For a rental apartment community: floor plans with rents, available homes and move-in dates, fees and pet terms, tours and a path for current residents." },
+  "property-management": { "intro": "For a residential property manager: plans and fees for owners, available rentals, and a tenant section for rent, repairs and the emergency line." },
+  "luxury-real-estate": { "intro": "For a boutique agency of high-value homes: a featured estate with a floor plan, price on request, private viewings with identity checks and discreet sales." },
+  "commercial-real-estate": { "intro": "For a commercial agency: offices, shops and industrial units with size, rent per sq ft and use, lease terms explained and a path for landlords and investors." },
+  "vacation-rental": { "intro": "For a small holiday rental company: stays with sleeps and nightly prices, booking terms, check-in steps, house rules and a path for owners." },
+  "home-builder": { "intro": "For a new-home builder: communities, home plans and move-in-ready homes, the build process, standard and upgrade options, and sales centre hours." }
  }
 }
