@@ -11,8 +11,9 @@ const prev = fs.existsSync(out) ? JSON.parse(fs.readFileSync(out, "utf8")) : { n
 const VERSION = "1.0.0"; let wp = null, php = null, tested = null;
 for (const d of designs()) {
   const n = (niches[d.niche] ||= { designs: [], services: [] }), dd = distinct[d.niche]; if (!dd) throw new Error("no distinct result for " + d.niche);
-  const r = res[d.slug], rep = JSON.parse(fs.readFileSync(path.join(OUT_WP, `${d.slug}.report.json`), "utf8")), zip = path.join(OUT_WP, `${d.slug}.zip`);
+  const r = res[d.slug], rep = d.noTheme ? null : JSON.parse(fs.readFileSync(path.join(OUT_WP, `${d.slug}.report.json`), "utf8")), zip = path.join(OUT_WP, `${d.slug}.zip`);
   const entry = { variant: d.variant, layout: d.layout, layoutName: d.layout === "signature" ? "Signature" : LAYOUTS[d.layout].name, about: d.layout === "signature" ? "the layout built for this niche alone" : d.about, style: d.style, distinct: dd.distinctIds.includes(d.variant) };
+  if (d.noTheme) { n.designs.push(entry); continue; } // HTML design only, by decision (themes.mjs NO_THEME)
   if (!r) seen.untested.push(d.slug); else if (!r.pass) seen.fail.push(`${d.slug}: ${r.fails.slice(0, 2).join(" ; ")}`);
   if (r?.pass) {
     seen.pass.push(d.slug); wp = r.wp; php = r.php; tested = r.t.slice(0, 10); const buf = fs.readFileSync(zip);

@@ -5,7 +5,7 @@ const arg = (k) => { const i = process.argv.indexOf(k); return i > -1 ? process.
 const only = arg("--only")?.split(","), slugs = arg("--slugs")?.split(","), zips = arg("--zips");
 const cache = path.join(os.homedir(), "Library/Caches/ms-playwright"); const chr = fs.readdirSync(cache).find((d) => /^chromium-\d/.test(d));
 const exe = path.join(cache, chr, fs.readdirSync(path.join(cache, chr)).find((d) => d.startsWith("chrome")), "Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing");
-const list = designs().filter((d) => (!only || only.includes(d.niche)) && (!slugs || slugs.includes(d.slug)));
+const list = designs().filter((d) => !d.noTheme && (!only || only.includes(d.niche)) && (!slugs || slugs.includes(d.slug)));
 fs.mkdirSync(OUT_WP, { recursive: true }); const shots = path.join(OUT_WP, "_shots"); fs.mkdirSync(shots, { recursive: true });
 const b = await chromium.launch({ executablePath: exe }); const summary = [];
 for (const d of list) {
