@@ -53,7 +53,7 @@ skincare routine morning evening | skincare-routine
 photo editor layers panel | image-editor
 slash command menu | document-editor
 wysiwyg editor | document-editor
-sales pipeline crm | sales-pipeline
+sales pipeline crm | sales-pipeline crm-landing-page
 deal pipeline board | sales-pipeline
 sprint backlog planning | sprint-board
 scrum board | sprint-board

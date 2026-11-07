@@ -626,8 +626,24 @@ function diversify(ranked, limit, o) {
     }
     if (r.country === g.row.country && g.twins.length < 7 && !g.twins.some((t) => t.style === r.style)) g.twins.push({ style: r.style, id: r.id });
   }
+  // 8-Nov-2026 (mcp-gap-r1): when fewer distinct screens than `limit` clear the relevance floor, fill the free slots with the
+  // OTHER device's version of the screens already picked (web and mobile are separate layouts with their own screen_id; before,
+  // the mobile ids were not listed at all). Same rows, same floor, so nothing less relevant gets in. Off = the 3-Nov behaviour.
+  if (UI_FILL_OTHER_DEVICE && o.distinct && !o.byPlatform && picks.length < limit) {
+    const have = new Set(picks.map((g) => `${g.row.category}|${parseTags(g.row.tags).find((t) => t.startsWith("variant:")) || ""}|${g.row.country}`));
+    const extra = new Map();
+    for (const x of ranked) {
+      const r = x.r, v = parseTags(r.tags).find((t) => t.startsWith("variant:")) || "", key = `${r.category}|${v}|${r.country}`, base = `${r.category}|${v}|`;
+      if (have.has(key) || !picks.some((g) => `${g.row.category}|${parseTags(g.row.tags).find((t) => t.startsWith("variant:")) || ""}|` === base)) continue;
+      let g = extra.get(key);
+      if (!g) { if (picks.length + extra.size >= limit) continue; g = { row: r, twins: [] }; extra.set(key, g); continue; }
+      if (g.twins.length < 7 && !g.twins.some((t) => t.style === r.style)) g.twins.push({ style: r.style, id: r.id });
+    }
+    picks.push(...extra.values());
+  }
   return picks;
 }
+export const UI_FILL_OTHER_DEVICE = true;
 
 const filt0 = (platform, pattern, style) => `${platform ? " on " + platform : ""}${pattern ? " in " + pattern : ""}${style ? " in the " + style + " style" : ""}`;
 

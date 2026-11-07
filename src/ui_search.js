@@ -245,7 +245,7 @@ const STOP = new Set(["the", "and", "for", "with", "from", "that", "this", "are"
   "mobile", "ios", "iphone", "android", "desktop", "tablet", "responsive", "style", "styled", "theme", "themed", "mode", "light", "dark", "night",
   // tone words: describe a look, not a screen (styles are their own filter)
   "clean", "modern", "simple", "beautiful", "nice", "premium", "warm", "friendly", "calm", "soft", "rounded", "big", "large", "small", "clear", "readable",
-  "distinctive", "professional", "trustworthy", "human", "centered", "centred", "easy", "browse", "sleek", "elegant", "bold", "colourful", "colorful", "cute",
+  "accessible", "accessibility", "distinctive", "professional", "trustworthy", "human", "centered", "centred", "easy", "browse", "sleek", "elegant", "bold", "colourful", "colorful", "cute",
   "fun", "serious", "oriented", "focused", "compact", "dense", "full", "height", "high", "quality", "best", "good", "great", "new", "blue", "green",
   "red", "purple", "orange", "black", "white", "pink", "yellow", "grey", "gray", "vibrant", "pastel", "neutral", "subtle", "exclusive", "decorative", "graphics",
   "hierarchy", "minimalist", "contemporary", "trendy", "polished", "pretty", "lovely", "creative", "unique", "stunning", "awesome", "fresh", "sophisticated"]);

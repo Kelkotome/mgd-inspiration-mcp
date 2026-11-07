@@ -8,7 +8,7 @@ success confirmation celebration friendly | success-confirmation booking-confirm
 stats band with colourful rounded cards and badges | stats-band
 staff dashboard with task list and student table | course-dashboard dashboard project-tracker
 small agency services pricing packages | pricing
-skincare routine app | product-scan home
+skincare routine app | product-scan home skincare-routine
 skincare beauty app scan product result | product-scan
 sitemap canvas flow diagram nodes | canvas-editor
 security vulnerabilities dashboard with severity breakdown critical high medium low | security-dashboard
@@ -16,7 +16,7 @@ running shoes | product-detail none
 review and approve proposed changes | approval-queue version-history
 record detail page with header stats and activity | detail-view project-tracker profile
 projects list with circular progress ring per row and team avatars | project-tracker list-view
-project tracker dashboard with phases progress and activity feed | project-tracker
+project tracker dashboard with phases progress and activity feed | project-tracker project-timeline
 project catalog list and project details with compact search filter toolbar, clear primary action and readable reward terms | split-view search-results list-view data-table detail-view project-tracker
 product detail with big photo and price, mobile shopping, warm | product-detail
 private members club welcome page, exclusive community | welcome hero
@@ -65,11 +65,11 @@ dark settings panel with readable labels and clear hierarchy | settings ai-setti
 dark security dashboard with charts and cards | security-dashboard
 dark centered hero decorative graphics below heading | hero
 dark analytics dashboard with KPI figures, sparklines and charts | dashboard analytics-charts
-daily habit checklist home screen, soft, rounded, friendly | home
+daily habit checklist home screen, soft, rounded, friendly | home habit-tracker
 contact form enquiry | contact-form
 comparison table of products with scores and source footnotes | scored-comparison comparison-table
 comparison table comparing plans or products side by side with checkmarks and prices | comparison-table pricing
-compare versions diff before and after changes history | version-history
+compare versions diff before and after changes history | version-history diff-viewer
 clinic/hospital website patient homepage with medical specialties, doctor team and appointment booking | clinic-home
 changelog timeline monochrome | changelog
 camera scan | product-scan
@@ -85,7 +85,7 @@ Interactive building floor plan navigation map with highlighted rooms and locati
 Healthcare patient virtual appointment video consultation waiting room, prepare camera microphone, select doctor, join call, visit summary | telehealth-visit
 Distinctive, premium healthcare clinic medical team page featuring doctors, specialties, expertise and staff profiles. Professional editorial layout, patient-trust oriented. | doctor-directory clinic-home
 AI voice assistant settings panel dark | ai-settings
-AI model settings with provider API keys and usage | ai-settings api-keys
+AI model settings with provider API keys and usage | ai-settings api-keys model-providers
 AI generation workspace with input panel, result and next step | ai-workspace
 AI chat assistant with suggestions | chat-ai-assistant
 AI chat assistant with sources and follow-up suggestions | chat-ai-assistant
@@ -125,7 +125,7 @@ doctors list | doctor-directory
 dashbord | dashboard
 kanbam board | kanban-board
 toggles | settings toggle-switch
-release notes | changelog
+release notes | changelog release-notes
 open a bank account kyc | bank-onboarding
 desk booking office map | floor-plan
 phone call | voice-call
