@@ -18,7 +18,7 @@ module.exports = {
     ] },
   index: { h2: "Where we let and sell", lede: "Each district has an agent who knows the buildings, the landlords and the recent lettings.",
     items: ["Canal Quay", "Northgate", "Fieldside Park", "Market Cross", "Ironbridge Wharf", "Southmead", "Kiln Street", "Harbour Gate", "Ashworth Trading Estate", "Fenwick Road", "Old Exchange", "Riverside Business Park"] },
-  listings: { eyebrow: "Available now", h2: "Spaces on the market", lede: "Sample listings. Rents, addresses and details are fictional and only show how a listing card works.",
+  listings: { search: { where: "Area", hint: "Canal Quay", type: "Use", options: ["Office", "Retail", "Warehouse", "Investment"] }, eyebrow: "Available now", h2: "Spaces on the market", lede: "Sample listings. Rents, addresses and details are fictional and only show how a listing card works.",
     items: [
       { kind: "tower", t: "Floor 6, Exchange House", area: "Old Exchange", price: "$38 per sq ft per year", specs: ["6,200 sq ft", "Office", "8 parking spaces"], tag: "To let" },
       { kind: "flat", t: "Suite 2B, 14 Kiln Street", area: "Market Cross", price: "$29 per sq ft per year", specs: ["1,150 sq ft", "Office", "Bike store"], tag: "Fitted" },

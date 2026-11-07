@@ -22,6 +22,8 @@ A niche is one file, `hc/content/<niche>.js`. `node gen_hc.js --only <niche>` po
 | visit | h2, lede, email (`.example` domain), formTitle, formButton, formNote, locations: exactly 2 of { n, addr, hours, phone } |
 | cta | h2, lede |
 | footer | blurb, legal |
+| listings | property layouts only (`listing`, `showcase`): eyebrow, h2, lede, optional search { where, hint, type, options }, items: exactly 6 of { kind, t, area, price, specs (3 strings), tag }. `kind` is house, townhouse, flat, tower, cabin, villa, plot or shop. |
+| feature | property layouts only: eyebrow, t, lede, price, rooms: exactly 5 of [name, size]. |
 | notice | names the business as fictional, and for health says "general information" and "not medical advice" |
 
 Add a new industry by adding a family to `lib.js`, a motif to `GLYPH`, and content files. No layout code changes.

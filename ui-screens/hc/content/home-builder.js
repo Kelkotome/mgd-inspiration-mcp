@@ -18,7 +18,7 @@ module.exports = {
     ] },
   index: { h2: "What you can choose", lede: "Options vary by plan and plot. Your sales adviser shows what applies to the home you like.",
     items: ["Single-storey plans", "Two-storey plans", "Townhouses", "Villas", "Corner plots", "Garden plots", "Extra bedroom option", "Home office option", "Kitchen upgrades", "Flooring choices", "Solar panel option", "EV charger point", "Covered patio"] },
-  listings: { eyebrow: "Plans and homes", h2: "Available now", lede: "Sample plans and homes. Prices, plots and details are fictional and only show how a listing card works.",
+  listings: { search: { where: "Community", hint: "Orchard Rise", type: "Show", options: ["Home plans", "Move-in ready", "Plots"] }, eyebrow: "Plans and homes", h2: "Available now", lede: "Sample plans and homes. Prices, plots and details are fictional and only show how a listing card works.",
     items: [
       { kind: "house", t: "The Alder plan", area: "Orchard Rise", price: "From $489,000", specs: ["4 bed", "3 bath", "2,240 sq ft"], tag: "Show home" },
       { kind: "townhouse", t: "The Rowan plan", area: "Hazel Fen", price: "From $372,000", specs: ["3 bed", "2 bath", "1,560 sq ft"], tag: "New phase" },

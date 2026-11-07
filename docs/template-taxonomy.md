@@ -8,7 +8,7 @@ Applies to website templates under `/inspiration/ui/`. Healthcare is the pilot (
 |---|---|---|
 | Platform | HTML, WordPress | Path: `/ui/wordpress-themes/...`. HTML is the default and has no path segment of its own |
 | Type | one-page, website, landing page | Filter. A chip appears only when a page has more than one value |
-| Industry | Healthcare | Path |
+| Industry | Healthcare, Real estate | Path |
 | Sub-niche | Cardiology, Dental... | Path, under its industry |
 
 Web and mobile are the **Device** filter, renamed so that Platform is free. The database column stays `country`, and `?platform=web|mobile` still works.
@@ -62,6 +62,27 @@ Healthcare is the industry parent. Sub-niches sit flat under it, so `medical` is
 
 `clinic-home`, `doctor-directory` and `telehealth-visit` are app and portal screens, not page templates. They stay flat, and the hub links to them.
 
+## Real estate tree (7-Nov-2026, second industry)
+
+Hub `real-estate-website-templates`, WordPress segment `real-estate`. Chosen on demand ("real estate website template" 2,900/mo, "real estate wordpress theme" 1,600/mo, landing page 260, HTML 170; runner-up restaurant) and fit (two hand-built n12/n13 homepages already live: Harrow & Vale and Cinderyard Residences).
+
+| Sub-niche | id | Pattern | HTML segment | WordPress segment | Layouts |
+|---|---|---|---|---|---|
+| Real estate agency | real-estate | real-estate-website | real-estate-agency-website-template | real-estate-agency | signature (HTML only), listing, showcase, atlas, ledger, band, folio |
+| Real estate agent | real-estate-agent | real-estate-agent-website | real-estate-agent-website-template | real-estate-agent | listing, showcase, folio, bento, concierge, atlas |
+| Apartment community | apartment | apartment-website | apartment-website-template | apartment | signature, listing, showcase, folio, bento, concierge |
+| Property management | property-management | property-management-website | property-management-website-template | property-management | listing, showcase, ledger, concierge, band, atlas |
+| Luxury real estate | luxury-real-estate | luxury-real-estate-website | luxury-real-estate-website-template | luxury | listing, showcase, folio, concierge, ledger, band |
+| Commercial real estate | commercial-real-estate | commercial-real-estate-website | commercial-real-estate-website-template | commercial | listing, showcase, ledger, atlas, folio, bento |
+| Vacation rental | vacation-rental | vacation-rental-website | vacation-rental-website-template | vacation-rental | listing, showcase, bento, folio, band, concierge |
+| Home builder | home-builder | home-builder-website | home-builder-website-template | home-builder | listing, showcase, atlas, band, bento, ledger |
+
+**Property layouts.** `listing` (search panel, area chips, listing cards beside a sticky map with numbered pins) and `showcase` (full-width drawing with an intro card, floor plan with room sizes, listing mosaic, dark close) exist only for content with `listings` and `feature` (schema in `ui-screens/hc/README.md`). Each real estate niche has both, so 2 of its 6 layouts are not shared with healthcare. The other 4 are shared across industries, as before.
+
+**Signature without a theme.** The hand-built Harrow & Vale homepage has invented client notes, sales counts and no fictional notice, so it is shown as an HTML design but is not exported as a theme. The agency page has 7 HTML designs and 6 themes.
+
+**Words.** No page uses "Realtor" (a trademark); search aliases still map "realtor" to the agent niche. Copy follows fair-housing wording (homes and services, never ideal residents), checked by `tests/re_lint.py`.
+
 ## Adding an industry
 
 1. Add a family per niche to `ui-screens/lib.js`, and a motif to `GLYPH` in `ui-screens/hc/engine.js` if needed.
@@ -90,6 +111,6 @@ node ui-screens/wp-export/build_catalog.mjs distinct.json src/tpl_catalog.json  
 
 `ui-screens/wp-export/export.mjs` converts a template's HTML into a block theme: `theme.json`, templates, header and footer parts, one pattern per section, eight style variations plus dark, bundled fonts, `readme.txt`, `screenshot.png`. Real blocks are used wherever a block can hold the markup. Custom HTML is kept for forms, plus some decoration and tables with cell attributes, and each theme's report counts them. The header uses `core/navigation`, which collapses to an overlay menu under 960 px. Text-only sections and layouts are real groups, so they edit in the Site Editor.
 
-Theme slug: `mgd-<niche>-<layout>`. Layout ids: `signature` (the hand-built homepage, variant `homepage`), `atlas`, `folio`, `ledger`, `bento`, `band`, `concierge`.
+Theme slug: `mgd-<niche>-<layout>`. Layout ids: `signature` (the hand-built homepage, variant `homepage`), `atlas`, `folio`, `ledger`, `bento`, `band`, `concierge`, and for property content `listing`, `showcase`.
 
 R2 keys: `tpl/wordpress/<slug>/<version>/{theme.zip,shot-1280.webp,shot-390.webp}`. A new version means a new prefix, so caches and old links stay valid until the catalog changes.

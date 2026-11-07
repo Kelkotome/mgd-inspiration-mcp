@@ -18,7 +18,7 @@ module.exports = {
     ] },
   index: { h2: "In the building", lede: "Shared spaces on the roof, the ground floor and the basement, open to every resident.",
     items: ["Roof terrace with gas grills", "Dog run", "Raised garden beds", "Staffed lobby hours", "Parcel lockers", "Cold storage for grocery deliveries", "Shared workroom", "Fitness room", "Elevators to every floor", "Recycling room on each level", "Garage parking", "Car charging bays", "Bike room with repair stand", "Storage lockers"] },
-  listings: { eyebrow: "Available homes", h2: "Open to rent now and soon", lede: "Sample availability. Unit numbers, rents and dates are fictional and only show how an availability card works.",
+  listings: { search: { where: "Move in by", hint: "Any date", type: "Home", options: ["Studio", "1 bed", "2 bed", "3 bed"] }, eyebrow: "Available homes", h2: "Open to rent now and soon", lede: "Sample availability. Unit numbers, rents and dates are fictional and only show how an availability card works.",
     items: [
       { kind: "flat", t: "Home 203, Ember studio", area: "Level 2", price: "$1,640 a month", specs: ["Studio", "1 bath", "485 sq ft"], tag: "Available now" },
       { kind: "flat", t: "Home 206, Hearth", area: "Level 2", price: "$2,060 a month", specs: ["1 bed", "1 bath", "690 sq ft"], tag: "Available now" },
