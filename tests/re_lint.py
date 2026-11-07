@@ -3,7 +3,7 @@
 real estate brands and portals, and the Realtor trademark. Percentages are allowed only inside fee and terms tables.
 Usage: python3 tests/re_lint.py [niche ...]   Exit 1 on any failure."""
 import glob, html, os, re, sys
-HERE = os.path.dirname(os.path.abspath(__file__)); OUT = os.path.join(HERE, "..", "ui-screens", "out-hc")
+HERE = os.path.dirname(os.path.abspath(__file__)); OUT = os.environ.get("RE_LINT_OUT") or os.path.join(HERE, "..", "ui-screens", "out-hc")  # RE_LINT_OUT=ui-screens/out for the hand-built agency page
 sys.path.insert(0, os.path.join(HERE, "..", "ui-screens"))
 src = open(os.path.join(HERE, "n13_lint.py"), encoding="utf-8").read(); ns = {}
 for name in ("REAL", "CLAIMS", "GEN", "DOMAIN"): ns[name] = eval(re.search(rf'^{name} = (r".*")\s*$', src, re.M).group(1))

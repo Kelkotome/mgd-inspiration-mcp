@@ -1,6 +1,7 @@
 /* Real estate website template (Harrow & Vale — fictional residential agency for buyers, sellers and renters). Full responsive
    home page: nav, hero with a buy/rent property search over a street photo, featured listings, neighbourhood guides (mosaic),
-   market figures with a price chart, sell-with-us valuation form, agents, client notes, footer.
+   market panel (labelled sample figures) with a price chart, sell-with-us valuation form, agents, footer with the fictional notice.
+   No testimonials or invented sales counts (removed 7-Nov-2026: the page is live, and the agency is fictional).
    Property "photos" are inline SVG in fixed natural tones. */
 const { ic, esc } = require("../lib");
 const K = require("../sitekit");
@@ -154,7 +155,7 @@ const HOODS = [
   ["modern", "Westhill", "Larger plots and newer homes near the ridge trail.", [["Median", "$890k"], ["Schools", "4 nearby"]]],
   ["detached", "Hollins Park", "Quiet closes around the park and tennis club.", [["Median", "$1.04m"], ["Schools", "3 nearby"]]],
 ];
-const AGENTS = [["Rosa Delgado", "Sales · Eastbrook & Old Town", "64 homes sold in 2025"], ["Callum Reid", "Sales · Westhill & Hollins Park", "Valuations lead"], ["Amara Nwosu", "Lettings & property management", "212 tenancies managed"], ["Yusuf Karim", "New homes & first-time buyers", "Speaks Turkish and Arabic"]];
+const AGENTS = [["Rosa Delgado", "Sales · Eastbrook & Old Town", "Runs Saturday viewings"], ["Callum Reid", "Sales · Westhill & Hollins Park", "Valuations lead"], ["Amara Nwosu", "Lettings & property management", "Tenancies and repairs"], ["Yusuf Karim", "New homes & first-time buyers", "Speaks Turkish and Arabic"]];
 
 const web = (p, st, rnd) => K.page(st, `${K.nav(p, ["Buy", "Rent", "Sell", "Neighbourhoods", "Agents"], "Book a valuation", "Saved homes")}
 <main>
@@ -163,7 +164,7 @@ const web = (p, st, rnd) => K.page(st, `${K.nav(p, ["Buy", "Rent", "Sell", "Neig
     <div class="sk-stack" style="gap:16px"><span class="sk-eyebrow">Homes to buy & rent across five neighbourhoods</span>
       <h1 class="sk-h1">Find the street you’ll want to come home to</h1>
       <p class="sk-lede">${esc(p.name)} lists, lets and sells homes from Old Town terraces to new builds on the ridge. Local agents, honest asking prices and viewings that fit around work.</p></div>
-    <div class="hv-proof">${[["148", "homes listed today"], ["31 days", "average time to offer"], ["9", "local agents"]].map(([v, l]) => `<div><div class="num">${v}</div><span>${l}</span></div>`).join("")}</div>
+    <div class="hv-proof">${[["5", "neighbourhoods covered"], ["7 days", "a week for viewings"], ["Free", "written valuations"]].map(([v, l]) => `<div><div class="num">${v}</div><span>${l}</span></div>`).join("")}</div>
   </div>
   <div class="sk-photo hv-shot">${street()}</div>
   <form class="card hv-search" aria-label="Search properties">
@@ -185,7 +186,7 @@ const web = (p, st, rnd) => K.page(st, `${K.nav(p, ["Buy", "Rent", "Sell", "Neig
   <div class="sk-g4 sk-rail">${LISTINGS.slice(0, 4).map(([k, pr, addr, bd, ba, sq, badges, note], i) => `<article class="card hv-list"><div class="sk-photo">${house(k, i, `${addr} exterior`)}<div class="hv-badges">${badges.map((b, j) => `<span class="${j === 0 && i % 2 === 0 ? "hot" : ""}">${esc(b)}</span>`).join("")}</div><span class="hv-save" aria-label="Save home">${ic("heart", 16)}</span></div>
     <div class="hv-body"><div class="num hv-price">${pr}</div><h3 class="sk-h3" style="font-size:calc(17px * var(--hs))">${esc(addr)}</h3><p class="muted" style="font-size:13px">${esc(note)}</p>
     <div class="hv-specs"><span><b>${bd}</b> beds</span><span><b>${ba}</b> bath${ba > 1 ? "s" : ""}</span><span><b>${sq}</b> sq ft</span></div></div></article>`).join("")}</div>
-  <div class="sk-row" style="margin-top:32px"><a class="btn primary sk-btn-lg" href="#">View all 148 homes</a><a class="btn sk-btn-lg" href="#">${ic("pin", 16)} Search on a map</a></div>
+  <div class="sk-row" style="margin-top:32px"><a class="btn primary sk-btn-lg" href="#">View all homes</a><a class="btn sk-btn-lg" href="#">${ic("pin", 16)} Search on a map</a></div>
 </div></section>
 
 <section class="sk-sec sk-alt sk-tight" id="neighbourhoods"><div class="sk-wrap">
@@ -194,11 +195,11 @@ const web = (p, st, rnd) => K.page(st, `${K.nav(p, ["Buy", "Rent", "Sell", "Neig
 </div></section>
 
 <section class="sk-sec sk-tight"><div class="sk-wrap hv-market">
-  <div class="sk-stack" style="gap:18px"><span class="sk-eyebrow">Local market · October 2026</span><h2 class="sk-h2">What’s happening with prices</h2>
-    <p class="muted">Figures from our own sales and lettings across the five neighbourhoods we cover, updated on the first of each month.</p>
-    <div class="hv-stats" style="width:100%">${[["$674k", "Median sale price", "+4.1% on last year"], ["31", "Days to accepted offer", "6 fewer than spring"], ["98.2%", "Sale price vs asking", "Across 86 sales"], ["$2,240", "Median monthly rent", "+2.6% on last year"]].map(([v, l, d]) => `<div><div class="num">${v}</div><small>${l}</small><span class="hv-delta">${d}</span></div>`).join("")}</div>
+  <div class="sk-stack" style="gap:18px"><span class="sk-eyebrow">Local market · sample figures</span><h2 class="sk-h2">What’s happening with prices</h2>
+    <p class="muted">Sample figures that show how a market panel works. Replace them with your own sales and lettings data, and say where they come from and when they were updated.</p>
+    <div class="hv-stats" style="width:100%">${[["$674k", "Median sale price", "Sample"], ["31", "Days to accepted offer", "Sample"], ["86", "Sales in the period", "Sample"], ["$2,240", "Median monthly rent", "Sample"]].map(([v, l, d]) => `<div><div class="num">${v}</div><small>${l}</small><span class="hv-delta">${d}</span></div>`).join("")}</div>
   </div>
-  <figure class="card hv-chart"><figcaption class="sk-row" style="justify-content:space-between;margin-bottom:12px"><b>Median sale price, last 12 months</b><span class="badge">All property types</span></figcaption>${chart(rnd)}</figure>
+  <figure class="card hv-chart"><figcaption class="sk-row" style="justify-content:space-between;margin-bottom:12px"><b>Median sale price, last 12 months</b><span class="badge">Sample data</span></figcaption>${chart(rnd)}</figure>
 </div></section>
 
 <section class="sk-sec sk-tight" id="sell"><div class="sk-wrap">
@@ -224,15 +225,11 @@ const web = (p, st, rnd) => K.page(st, `${K.nav(p, ["Buy", "Rent", "Sell", "Neig
   <div class="sk-g4 sk-rail">${AGENTS.map(([n, r, f], i) => `<article class="card hv-agent"><div class="sk-photo">${face(i, `Portrait of ${n}`)}</div><div><h3 class="sk-h3" style="font-size:calc(18px * var(--hs))">${esc(n)}</h3><span class="muted">${esc(r)}</span><span>${esc(f)}</span><div class="sk-row"><a class="btn" href="#">${ic("phone", 14)} Call</a><a class="btn" href="#">${ic("mail", 14)} Email</a></div></div></article>`).join("")}</div>
 </div></section>
 
-<section class="sk-sec sk-alt sk-tight"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Client notes</span><h2 class="sk-h2">From recent movers</h2></div></div>
-  <div class="sk-g3 sk-rail">${[["Rosa priced our terrace from the three sales on our road, not a guess. We had four viewings the first Saturday.", "Helen M.", "Sold in Eastbrook"], ["As first-time buyers we had a hundred questions. Yusuf answered every one and came to the survey with us.", "Tom & Ade", "Bought in Riverside"], ["Amara’s team handles the boiler service and inspections, and the rent arrives on the 1st. That’s all I wanted.", "Grace L.", "Landlord, two flats"]].map(([q, n, r]) => `<figure class="card hv-note"><div class="stars" aria-label="5 out of 5">${ic("star", 15).repeat(5)}</div><q>${esc(q)}</q><figcaption><b>${esc(n)}</b> · <span class="muted" style="font-size:13px">${esc(r)}</span></figcaption></figure>`).join("")}</div>
-</div></section>
 </main>
-${K.footer(p, "Residential sales, lettings and property management across Eastbrook, Riverside, Old Town, Westhill and Ashby Vale.", [["Offices", ["22 Station Parade, Eastbrook", "Mon–Fri 9–6, Sat 9–4", "Viewings 7 days"]], ["Contact", ["(555) 018-4400", "hello@harrowvale.example", "lettings@harrowvale.example"]], ["Explore", ["Buy", "Rent", "Sold prices", "Landlord services"]]])}`, CSS);
+${K.footer(p, "Residential sales, lettings and property management across Eastbrook, Riverside, Old Town, Westhill and Ashby Vale.", [["Offices", ["22 Station Parade, Eastbrook", "Mon–Fri 9–6, Sat 9–4", "Viewings 7 days"]], ["Contact", ["(555) 018-4400", "hello@harrowvale.example", "lettings@harrowvale.example"]], ["Explore", ["Buy", "Rent", "Sold prices", "Landlord services"]]], `Fictional agency created for this template. Listings, prices and market figures are sample content. © 2026 ${p.name}.`)}`, CSS);
 
 module.exports = {
   "real-estate-website": K.def("realestate", "Real estate website",
-    "a full real estate agency home page: navigation with saved homes and book-a-valuation, a hero with a street photo and a buy/rent/sold-prices property search (location, price range, bedrooms) with popular searches and agency figures, featured listing cards with price, address, beds/baths/sq ft and badges like New, Open house and For rent, a neighbourhood guide mosaic with median prices and commute times, local market figures with a 12-month median price chart, a sell-with-us valuation section with steps and a request form, agent cards with call and email, client notes and a footer",
-    ["navigation-header", "hero", "search-form", "tabs", "property-listings", "cards", "badges", "neighbourhood-guides", "stats", "chart", "valuation-form", "steps", "team", "testimonials", "footer", "real-estate"], web),
+    "a full real estate agency home page: navigation with saved homes and book-a-valuation, a hero with a street photo and a buy/rent/sold-prices property search (location, price range, bedrooms) with popular searches and agency figures, featured listing cards with price, address, beds/baths/sq ft and badges like New, Open house and For rent, a neighbourhood guide mosaic with median prices and commute times, a local market panel with labelled sample figures and a 12-month median price chart, a sell-with-us valuation section with steps and a request form, agent cards with call and email, and a footer with the fictional notice",
+    ["navigation-header", "hero", "search-form", "tabs", "property-listings", "cards", "badges", "neighbourhood-guides", "stats", "chart", "valuation-form", "steps", "team", "footer", "real-estate"], web),
 };

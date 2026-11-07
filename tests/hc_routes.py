@@ -77,4 +77,8 @@ LAY = re.compile(r"-website-(atlas|folio|ledger|bento|band|concierge|listing|sho
 if gen: s, _, ib = text(gen[0]); ck(s == 200 and f"{HUB}/{IT[2]}" in ib, "item page links nested pattern"); ck("Also for WordPress" in ib, f"item page sibling ({gen[0]})")
 # a signature with no theme (themes.mjs NO_THEME: real-estate) must not claim a WordPress sibling
 if sig and IND == "real-estate": s, _, ib = text(sig[0]); ck(s == 200 and "Also for WordPress" not in ib, "signature item has no WordPress sibling")
+# the live Harrow & Vale page, fixed 7-Nov-2026: fictional notice, no invented testimonials or sales counts
+if sig and IND == "real-estate":
+    s, _, rb = text(f"/ui/raw/{sig[0][-12:]}.html"); ck(s == 200 and "Fictional agency created for this template" in rb, "agency signature carries the fictional notice")
+    ck(not re.search(r"Helen M\.|homes sold in 2025|tenancies managed|From recent movers|on last year", rb), "agency signature has no invented testimonials or figures")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)

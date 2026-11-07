@@ -27,8 +27,8 @@ curl -s -o /dev/null -w "worker %{http_code}\n" http://127.0.0.1:$PORT/inspirati
 RC=0; cd ui-screens
 python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out out-hc --workers ${IND2_WORKERS:-2} | tail -1 || RC=1
 python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out "$HCW/ui-screens/out-hc" --workers ${IND2_WORKERS:-2} | tail -1 || RC=1   # healthcare rows, read only
-# existing homepage sets, as they are live today, so old URLs and sibling cards have rows: skip with HC_SKIP_MAIN=1
-for n in cardiology medical dental dermatology therapist physical-therapy veterinary pediatrics orthodontics fertility real-estate apartment; do [ -z "${HC_SKIP_MAIN:-}" ] && python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out "$MAIN" --only "$n-website-homepage-*" --workers ${IND2_WORKERS:-2} | tail -1; done
+# existing homepage sets, as they are live today (real-estate: this branch's fixed set in ui-screens/out when built), so old URLs and sibling cards have rows: skip with HC_SKIP_MAIN=1
+for n in cardiology medical dental dermatology therapist physical-therapy veterinary pediatrics orthodontics fertility real-estate apartment; do SRC="$MAIN"; [ -d "$ROOT/ui-screens/out/$n-website-homepage-web-corporate" ] && SRC="$ROOT/ui-screens/out"; [ -z "${HC_SKIP_MAIN:-}" ] && python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out "$SRC" --only "$n-website-homepage-*" --workers ${IND2_WORKERS:-2} | tail -1; done
 python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out "$MAIN" --only "chat-ai*-web-minimal*" --workers 2 | tail -1
 cd ..
 python3 tests/hc_routes.py http://127.0.0.1:$PORT/inspiration || RC=1
