@@ -49,6 +49,7 @@ def fields_for(slug, flow_tags):
         if not os.path.isfile(p): return None
         im = Image.open(p).convert("RGB")
         if m["type"] == "page" and m["platform"] == "web" and im.width > 1440: im = im.resize((1440, round(im.height * 1440 / im.width)), Image.LANCZOS)  # full-length pages: 1x web keeps the image light
+        if im.height > 16383: im = im.resize((round(im.width * 16383 / im.height), 16383), Image.LANCZOS)  # WebP limit; long 2x phone pages (property layouts)
         buf = io.BytesIO(); im.save(buf, "WEBP", quality=84, method=6); return buf.getvalue()
     return {"collection": "ui", "skip_enrich": "1", "upsert": "1", "title": title, "description": desc, "style": m["style"],
             "themes": json.dumps([m["style"]]), "tags": json.dumps(tags), "palette": json.dumps([m["tokens"]["light"][r] for r in roles]),

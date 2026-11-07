@@ -72,6 +72,9 @@ s, h, b = text("/ui/chatbot-ui"); ck(s == 200, "flat pattern still flat")
 s, h, b = text("/ui/chat-ai-assistant"); ck(s == 301, "old flat id still one hop")
 s, h, b = text("/ui/chat-ai-assistant/"); ck(s == 301 and (h.get("Location") or "").endswith("/ui/chatbot-ui"), "old flat id with slash one hop")
 # item URLs do not move
-IT = NICHES[0]; s, h, b = text(f"/ui/{HUB}/{IT[2]}"); m = re.search(r'href="[^"]*(/ui/' + IT[1] + r'-[a-z-]+-[0-9a-f]{12})"', b); ck(bool(m), "item link on niche page")
-if m: s, _, ib = text(m.group(1)); ck(s == 200 and f"{HUB}/{IT[2]}" in ib, "item page links nested pattern"); ck("Also for WordPress" in ib, "item page sibling")
+IT = NICHES[0]; s, h, b = text(f"/ui/{HUB}/{IT[2]}"); items = re.findall(r'href="[^"]*(/ui/' + IT[1] + r'-[a-z-]+-[0-9a-f]{12})"', b); ck(bool(items), "item link on niche page")
+LAY = re.compile(r"-website-(atlas|folio|ledger|bento|band|concierge|listing|showcase)-"); gen = [x for x in items if LAY.search(x)]; sig = [x for x in items if not LAY.search(x)]  # signature rows have no layout segment
+if gen: s, _, ib = text(gen[0]); ck(s == 200 and f"{HUB}/{IT[2]}" in ib, "item page links nested pattern"); ck("Also for WordPress" in ib, f"item page sibling ({gen[0]})")
+# a signature with no theme (themes.mjs NO_THEME: real-estate) must not claim a WordPress sibling
+if sig and IND == "real-estate": s, _, ib = text(sig[0]); ck(s == 200 and "Also for WordPress" not in ib, "signature item has no WordPress sibling")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)

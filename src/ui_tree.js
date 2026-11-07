@@ -69,6 +69,7 @@ export const NICHES = Object.values(INDUSTRIES).flatMap((ind) => ind.niches.map(
 }));
 export const nicheById = (id) => NICHES.find((n) => n.id === id);
 export const nicheOfPattern = (p) => NICHES.find((n) => n.pattern === p && n.htmlLive) || null;
+export const nicheOfFlatSeg = (seg) => NICHES.find((n) => n.htmlSeg === seg && n.htmlLive) || null;
 export const liveDesigns = (n) => distinct(n);
 export const liveThemes = (n) => themed(n);
 export const industryNiches = (ind, wp) => NICHES.filter((n) => n.industry === ind && (wp ? n.wpLive : n.htmlLive));

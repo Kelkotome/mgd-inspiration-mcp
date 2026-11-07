@@ -57,7 +57,7 @@ for (const c of niches) {
       fs.writeFileSync(path.join(dir, "DESIGN.md"), md);
       const name = `${fam.cat === c.niche ? c.niche[0].toUpperCase() + c.niche.slice(1).replace(/-/g, " ") : fam.name} website, ${L.name} layout`, shows = `a full home page for ${c.kind}: ${L.about}`;
       fs.writeFileSync(path.join(dir, "meta.json"), JSON.stringify({ slug, type: "page", pattern: c.pattern, variant: lid, platform, style: L.style, family: c.family, category: fam.cat, product: fam.name, name, shows,
-        elements: ["website-template", "landing-page", "responsive", "faq", "navigation-header", "footer"], viewport: { w: platform === "web" ? 1440 : 390, h: platform === "web" ? 6400 : 8400 }, tokens: { light, dark }, fonts: { heading: st.hf, body: st.bf }, layout: lid, niche: c.niche }, null, 2));
+        elements: ["website-template", "landing-page", "responsive", "faq", "navigation-header", "footer"], viewport: { w: platform === "web" ? 1440 : 390, h: platform === "web" ? 6400 : (LAYOUTS[lid].needs === "listings" ? 11200 : 8400) } /* property layouts run to ~10,700 px on a phone; 8400 cut off the footer and its fictional notice */, tokens: { light, dark }, fonts: { heading: st.hf, body: st.bf }, layout: lid, niche: c.niche }, null, 2));
       n++;
     }
   }

@@ -10,7 +10,7 @@ open("wrangler.ind2.jsonc", "w").write(src[:i] + '"routes": []' + src[j:])
 PY
 for p in $PORT $INSP; do lsof -ti tcp:$p -sTCP:LISTEN >/dev/null 2>&1 && { echo "refusing: port $p is in use by a process this script did not start"; rm -f "$CFG"; exit 2; }; done
 [ -e .admin_token ] && { echo "refusing: .admin_token exists here"; exit 2; }; echo local-admin-test > .admin_token
-cleanup() { [ -n "${DEVPID:-}" ] && { pkill -P "$DEVPID" 2>/dev/null; kill "$DEVPID" 2>/dev/null; sleep 1; lsof -ti tcp:$PORT -ti tcp:$INSP -sTCP:LISTEN 2>/dev/null | xargs kill 2>/dev/null; }; rm -f "$CFG" .admin_token; rm -rf "$T"; }  # ports are killed only if this script started the Worker (it refused to start on a busy port)
+cleanup() { [ -n "${DEVPID:-}" ] && { pkill -P "$DEVPID" 2>/dev/null; kill "$DEVPID" 2>/dev/null; sleep 1; lsof -ti tcp:$PORT -ti tcp:$INSP -sTCP:LISTEN 2>/dev/null | xargs kill 2>/dev/null; }; rm -f "$CFG" .admin_token; cp "$T/dev.log" "${SCRATCH:-$ROOT}/ind2-last-dev.log" 2>/dev/null; rm -rf "$T"; }  # ports are killed only if this script started the Worker (it refused to start on a busy port)
 trap cleanup EXIT
 D1() { "$W" d1 execute mgd-inspiration --local -c "$CFG" --persist-to "$T/state" "$@" >>"$T/setup.log" 2>&1; }
 D1 --file=./schema.sql || { tail -5 "$T/setup.log"; exit 1; }
@@ -25,10 +25,10 @@ DEVPID=$!
 for i in $(seq 1 90); do curl -s -o /dev/null http://127.0.0.1:$PORT/inspiration/ui && break; sleep 1; done
 curl -s -o /dev/null -w "worker %{http_code}\n" http://127.0.0.1:$PORT/inspiration/ui
 RC=0; cd ui-screens
-python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out out-hc --workers 4 | tail -1 || RC=1
-python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out "$HCW/ui-screens/out-hc" --workers 4 | tail -1 || RC=1   # healthcare rows, read only
+python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out out-hc --workers ${IND2_WORKERS:-2} | tail -1 || RC=1
+python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out "$HCW/ui-screens/out-hc" --workers ${IND2_WORKERS:-2} | tail -1 || RC=1   # healthcare rows, read only
 # existing homepage sets, as they are live today, so old URLs and sibling cards have rows: skip with HC_SKIP_MAIN=1
-for n in cardiology medical dental dermatology therapist physical-therapy veterinary pediatrics orthodontics fertility real-estate apartment; do [ -z "${HC_SKIP_MAIN:-}" ] && python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out "$MAIN" --only "$n-website-homepage-*" --workers 4 | tail -1; done
+for n in cardiology medical dental dermatology therapist physical-therapy veterinary pediatrics orthodontics fertility real-estate apartment; do [ -z "${HC_SKIP_MAIN:-}" ] && python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out "$MAIN" --only "$n-website-homepage-*" --workers ${IND2_WORKERS:-2} | tail -1; done
 python3 ingest.py --base http://127.0.0.1:$PORT/inspiration --out "$MAIN" --only "chat-ai*-web-minimal*" --workers 2 | tail -1
 cd ..
 python3 tests/hc_routes.py http://127.0.0.1:$PORT/inspiration || RC=1

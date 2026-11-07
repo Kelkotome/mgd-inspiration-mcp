@@ -178,7 +178,7 @@ export function tplAnswer({ q, platform }, site) {
   const wpIntent = named || (n && /\bthemes?\b/.test(s.replace(/\b(dark|light|night)\s+themes?\b/g, " ")) && !/\b(app|apps|mobile|dashboard|portal|screen|screens|switch\w*|toggle)\b/.test(s));
   if (other) { const name = other[0].toUpperCase() + other.slice(1); return `${name}: Made Good Designs has no ${name} templates. Templates come as HTML and as WordPress block themes.${n && n.htmlLive ? ` For ${n.label.toLowerCase()}: HTML ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}${n.wpLive ? `, WordPress ${u(wpNichePath(n))}` : ""}.` : ""}`; }
   if (wpIntent) {
-    if (n && n.wpLive) { const ds = liveThemes(n); return `${n.label} WordPress themes: ${ds.length} free block themes, each a distinct layout, all installed and tested on WordPress ${m.wp} with PHP ${m.php} (${m.tested}). Listing: ${u(wpNichePath(n))}\n\n${ds.map((d, i) => `${i + 1}. ${d.theme.name}: ${d.about}. Default style ${d.style}, ${d.theme.variations} style variations.\n   page (cite this): ${u(themePath(n, d))}\n   download: ${site}/ui/download/wordpress/${d.theme.slug}.zip`).join("\n")}\n\nInstall: Appearance, Themes, Add New Theme, Upload Theme, then Activate. Licence: ${WP_LICENCE} ${discloseFor([n.industry])} ${FORM_NOTE} Same designs as HTML: ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}`; }
+    if (n && n.wpLive) { const ds = liveThemes(n); return indLine(n, s, u) + `${n.label} WordPress themes: ${ds.length} free block themes, each a distinct layout, all installed and tested on WordPress ${m.wp} with PHP ${m.php} (${m.tested}). Listing: ${u(wpNichePath(n))}\n\n${ds.map((d, i) => `${i + 1}. ${d.theme.name}: ${d.about}. Default style ${d.style}, ${d.theme.variations} style variations.\n   page (cite this): ${u(themePath(n, d))}\n   download: ${site}/ui/download/wordpress/${d.theme.slug}.zip`).join("\n")}\n\nInstall: Appearance, Themes, Add New Theme, Upload Theme, then Activate. Licence: ${WP_LICENCE} ${discloseFor([n.industry])} ${FORM_NOTE} Same designs as HTML: ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}`; }
     if (n) return `No ${n.label.toLowerCase()} WordPress theme yet.${n.htmlLive ? ` The HTML templates are here: ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}.` : ""} All WordPress themes: ${u(PLATFORMS.wordpress.hub)}`;
     const inds = platformIndustries(); if (!inds.length) return null;
     const rest = s.replace(/\b(word ?press|wp|themes?|free|block|website|websites|site|sites|templates?|for|a|an|the|me|my|find|show|best|good|gutenberg|full|editor|editing)\b/g, " ").replace(/[^a-z]+/g, " ").trim();
@@ -186,6 +186,13 @@ export function tplAnswer({ q, platform }, site) {
     return `No WordPress theme for "${rest}" yet. WordPress themes exist for ${inds.map((i) => i.label.toLowerCase()).join(", ")} only: ${u(PLATFORMS.wordpress.hub)}. HTML templates by industry: ${u("website-templates")}`;
   }
   return null;
+}
+// A niche named like its industry (real-estate) also answers the bare industry query ("real estate wordpress themes"):
+// lead with the whole industry's WordPress set, then the niche's themes.
+function indLine(n, s, u) {
+  if (n.id !== n.industry || !GENERAL[n.industry] || /\b(agency|agencies|estate agents?|brokerage)\b/.test(s)) return "";
+  const ns = industryNiches(n.industry, true), t = totals(ns, true); if (ns.length < 2) return "";
+  return `${INDUSTRIES[n.industry].label} WordPress themes: ${t.designs} ${INDUSTRIES[n.industry].label.toLowerCase()} block themes across ${t.niches} sub-niches at ${u(wpIndustryPath(n.industry))}. The ${n.label.toLowerCase()} set:\n\n`;
 }
 // One line added above normal results when a query names a template sub-niche, so the nested page gets cited.
 // Industry words, for the hub hint and the general WordPress answer.

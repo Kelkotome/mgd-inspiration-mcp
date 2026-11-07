@@ -10,7 +10,7 @@ import UI_ELEMENTS from "./ui_elements.json"; // HTML-derived element/layout inv
 import UI_TAXONOMY from "../ui-screens/taxonomy.json"; // pattern groups + flow steps for list_ui_patterns
 import { extractCopy } from "./ui_copy.js";
 import { parseDesignMd, uiKitPanel, UI_KIT_CSS, UI_KIT_JS } from "./ui_kit.js";
-import { resolveTree, treePaths, assertTree, nicheOfPattern, MIN_DESIGNS, PLATFORMS, liveDesigns } from "./ui_tree.js";
+import { resolveTree, treePaths, assertTree, nicheOfPattern, nicheOfFlatSeg, MIN_DESIGNS, PLATFORMS, liveDesigns } from "./ui_tree.js";
 import { industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
 import { patternSlug, flatSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
 
@@ -144,6 +144,9 @@ export async function uiRoute(path, request, env, ctx, base, h) {
   }
   const pm = path.match(/^\/ui\/([a-z0-9-]+)$/);
   const hit = pm && resolveUiSlug(pm[1], UI_PATTERNS);
+  // a nested niche's own segment typed flat (/ui/real-estate-agency-website-template, never live flat): one hop to its nested page
+  const flatSeg = !hit && pm && nicheOfFlatSeg(pm[1]);
+  if (flatSeg) { const u = new URL(request.url); return Response.redirect(new URL(`${base}/ui/${patternSlug(flatSeg.pattern)}${u.search}`, request.url).toString(), 301); }
   if (hit && hit.type === "old") { const u = new URL(request.url); return Response.redirect(new URL(`${base}/ui/${patternSlug(hit.pattern)}${u.search}`, request.url).toString(), 301); }
   if (hit && hit.type === "pattern") return h.edgeCache(request, ctx, 1800, () => uiPatternPage(hit.pattern, env, base, h));
   if (hit && hit.type === "facet") return h.edgeCache(request, ctx, 1800, () => uiGalleryPage(env, base, h, hit.facet));
@@ -156,7 +159,7 @@ export async function uiRoute(path, request, env, ctx, base, h) {
 }
 // Where an old flat path now lives (trailing-slash redirects use this too, so old URLs reach the page in one hop). null when it has not moved.
 const uiX = () => ({ uiRows, uiItemPath: (it, base) => uiItemPath(it, base), head, page, siteOf, fitTitle, MGD_ORG, licenceLd, patternSlug, label, MCP_NOTE, RIGHTS });
-export function uiMovedPath(rel) { const hit = resolveUiSlug(rel, UI_PATTERNS); return hit && hit.type === "old" ? patternSlug(hit.pattern) : null; }
+export function uiMovedPath(rel) { const hit = resolveUiSlug(rel, UI_PATTERNS); if (hit && hit.type === "old") return patternSlug(hit.pattern); const fs = !hit && nicheOfFlatSeg(rel); return fs ? patternSlug(fs.pattern) : null; }
 assertTree();
 assertSlugs(UI_PATTERNS); // fails the deploy (module load) if a slug is missing, duplicated or collides with an old pattern id
 
