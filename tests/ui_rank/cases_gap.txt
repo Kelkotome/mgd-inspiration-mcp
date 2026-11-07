@@ -1,0 +1,93 @@
+# mcp-gap-r1 (8-Nov-2026): real search_ui_screens queries that got 1-2 screens on 7-Nov (first block) + gap phrasings and guards.
+# Valid once the out-gap screens are in the row dump (with_pending.mjs, UI_OUTS=ui-screens/out-gap) or ingested.
+music | music-player music-home
+music audio player home screen | music-home music-player
+music player now playing | music-player play-queue
+music player track list mobile | music-player playlist album-page
+playlist | playlist
+playlist of sessions with cover art | playlist music-home
+inventory or product stock table with low stock alerts and restock | inventory-stock purchase-order
+inventory stock list with low stock alerts and receive stock | inventory-stock
+product inventory table with stock levels, low stock badges and restock form | inventory-stock purchase-order
+receive stock count quantities expected vs counted | stock-count inventory-stock
+billing plans current subscription usage | billing-plans subscription-billing
+pricing table quantity tiers | usage-pricing pricing
+payment dark | checkout payment-methods
+image editor canvas with toolbar | image-editor canvas-editor
+creative studio image editor canvas with tools panel, bold colourful | image-editor canvas-editor
+editor preview toolbar | editor-toolbar document-editor image-editor
+rich text editor document toolbar | editor-toolbar document-editor
+kanban board full height columns | kanban-board sprint-board
+kanban pipeline board | kanban-board sales-pipeline
+project tracker dashboard with phases progress and activity feed | project-tracker project-timeline
+course dashboard streak | course-dashboard habit-tracker language-lesson
+gamified language learning lesson with streak and progress | language-lesson
+daily habit checklist home screen, soft, rounded, friendly | habit-tracker home
+approval queue pending requests approve reject | approval-queue approval-request
+compare versions diff before and after changes history | version-history diff-viewer
+changelog timeline monochrome | changelog release-notes
+barcode product scan result | product-scan barcode-scanner
+camera scan | product-scan barcode-scanner
+skincare beauty app scan product result | product-scan
+skincare routine app | skincare-routine
+social photo feed with stories | feed story-viewer
+create photo post | create-post post-composer
+destructive confirm dialog | confirm-dialog delete-confirm
+success confirmation celebration friendly | success-confirmation celebration
+milestone achieved celebration success state | celebration success-confirmation
+integrations settings connected apps | integrations integration-connect
+ai model settings with provider api keys and usage | ai-settings model-providers
+ranking leaderboard table | leaderboard
+leaderboard list left aligned names | leaderboard
+# gap phrasings (new patterns should win)
+album page with track list | album-page
+artist profile popular tracks | album-page
+up next queue | play-queue
+synced lyrics screen | play-queue
+music library | music-home
+story viewer | story-viewer
+photo post comments | photo-post
+photo filters before posting | post-composer
+barcode scanner viewfinder | barcode-scanner
+skincare routine morning evening | skincare-routine
+photo editor layers panel | image-editor
+slash command menu | document-editor
+wysiwyg editor | document-editor
+sales pipeline crm | sales-pipeline
+deal pipeline board | sales-pipeline
+sprint backlog planning | sprint-board
+scrum board | sprint-board
+gantt chart | project-timeline
+project roadmap timeline | project-timeline
+purchase approval request | approval-request
+access request approve | approval-request
+side by side diff | diff-viewer
+release notes whats new | release-notes changelog
+stocktake count sheet | stock-count
+count variance review | stock-count
+purchase orders list | purchase-order
+billing page subscription | subscription-billing billing-plans
+tiered pricing calculator | usage-pricing
+seat based pricing | usage-pricing
+add credit card form | payment-methods
+saved payment methods | payment-methods
+habit tracker streaks | habit-tracker
+streak calendar | habit-tracker
+language learning lesson | language-lesson
+weekly league leaderboard | leaderboard
+type to confirm delete project | delete-confirm confirm-dialog
+bulk delete files dialog | delete-confirm
+achievement unlocked badge | celebration
+confetti success | celebration
+connect app permissions consent | integration-connect
+oauth consent screen | integration-connect
+ai model providers api keys | model-providers ai-settings
+model usage spend limits | model-providers
+# guards: existing patterns keep their queries
+now playing | music-player play-queue
+kanban board | kanban-board
+version history | version-history
+pricing page | pricing
+checkout | checkout
+api keys | api-keys
+login page | login

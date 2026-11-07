@@ -3874,5 +3874,425 @@
     "A spinner suits short waits and actions such as saving. A skeleton suits loading a page or list, because it shows the layout that is coming and feels faster."
    ]
   ]
+ },
+ "music-home": {
+  "intro": "Music app home screens show what to play next. These examples include a home screen with recently played, made-for-you playlists with cover art and new releases, and a library view with playlist, album and artist filters, both with a mini now-playing bar.",
+  "tips": [
+   "Lead with what the listener played last; one tap should resume it.",
+   "Keep the mini now-playing bar on every screen, above the tab bar.",
+   "Give cover art room: it is how people recognise a playlist.",
+   "Use filter chips in the library instead of nested menus."
+  ],
+  "faq": [
+   [
+    "What goes on a music app home screen?",
+    "Recently played, personal playlists, new releases and a persistent now-playing bar. Everything else can live in search or the library."
+   ]
+  ]
+ },
+ "album-page": {
+  "intro": "Album and artist pages turn a name into something to play. These examples show an album page with large cover art, play and shuffle, a numbered track list with durations and credits, and an artist profile with popular tracks, discography and upcoming shows.",
+  "tips": [
+   "Put play and shuffle next to the cover, not below the track list.",
+   "Show track numbers and durations in tabular figures so they line up.",
+   "Mark the playing track in the list, not only in the player.",
+   "On the artist page, popular tracks first, full discography after."
+  ],
+  "faq": [
+   [
+    "Should an album page show credits?",
+    "Yes, near the end of the track list. Listeners look for writers and producers, and it costs little space."
+   ]
+  ]
+ },
+ "play-queue": {
+  "intro": "Now playing screens with the queue and lyrics. These examples show the current track with a scrubber and transport, a reorderable up-next queue with an autoplay toggle, and full-screen synced lyrics with the current line highlighted.",
+  "tips": [
+   "Show elapsed and remaining time on the scrubber.",
+   "Let people reorder the queue by dragging a visible handle.",
+   "Highlight the current lyric line and keep it in the middle of the screen.",
+   "Keep transport controls in the same place on every now-playing view."
+  ],
+  "faq": [
+   [
+    "What is an up-next queue?",
+    "The list of tracks that will play after the current one. Listeners can reorder, remove or add tracks, and autoplay fills it when it runs out."
+   ]
+  ]
+ },
+ "story-viewer": {
+  "intro": "Stories screens for social photo apps. These examples show a photo story viewer with segmented progress bars, the author, a reply field and reactions, and a create-story screen with a camera and gallery picker, text and sticker tools and an audience choice.",
+  "tips": [
+   "Use one progress segment per story so people know how many are left.",
+   "Tap right to advance, left to go back, hold to pause; show the reply field at the bottom.",
+   "Let people pick the audience before they share.",
+   "Keep text tools large enough to use with one thumb."
+  ],
+  "faq": [
+   [
+    "How long should a photo story show?",
+    "Most apps use 5 to 7 seconds per photo, with a hold-to-pause gesture so nobody has to rush."
+   ]
+  ]
+ },
+ "photo-post": {
+  "intro": "Photo post screens for a social feed. These examples show a post detail with a large photo, author, caption, location, likes and save, a comments preview and related posts, plus a threaded comments view with replies and a comment composer.",
+  "tips": [
+   "Let the photo take most of the screen; put actions directly under it.",
+   "Show the comment count and the first comments, then a link to all.",
+   "Indent replies one level only; deeper threads are hard to follow on a phone.",
+   "Keep the comment composer pinned to the bottom."
+  ],
+  "faq": [
+   [
+    "What should a photo post detail page include?",
+    "The photo, author, caption, location, like and save actions, a few comments and a way to see more posts from the same author or place."
+   ]
+  ]
+ },
+ "post-composer": {
+  "intro": "Create post screens for photo apps. These examples cover editing before posting (crop, a filter strip, adjust sliders and photo order for a carousel) and the details step (caption with mentions and hashtags, location, tagged people, audience, alt text and a share button).",
+  "tips": [
+   "Split editing and details into two steps so each screen stays simple.",
+   "Preview the filter on the real photo, not on a sample.",
+   "Ask for alt text in the details step, with a short hint.",
+   "Show who can see the post before the share button."
+  ],
+  "faq": [
+   [
+    "Should a create post flow ask for alt text?",
+    "Yes. A short, optional field with a hint makes photos accessible to people using screen readers."
+   ]
+  ]
+ },
+ "barcode-scanner": {
+  "intro": "Barcode scanner screens for product apps. These examples show a camera viewfinder with a scan frame, torch, recent scans and manual entry, and a scan history list with match results and ingredient flags.",
+  "tips": [
+   "Draw a clear scan frame and say what to point the camera at.",
+   "Offer manual entry for damaged or missing barcodes.",
+   "Give feedback the moment a code is read: a sound, a vibration or a change in the frame.",
+   "Keep recent scans one tap away."
+  ],
+  "faq": [
+   [
+    "What if the barcode is not found?",
+    "Say so plainly, keep the scan, and offer to search by name or add the product. Never show an empty result without a next step."
+   ]
+  ]
+ },
+ "skincare-routine": {
+  "intro": "Skincare routine app screens. These examples show morning and evening routines with ordered steps, product thumbnails, done checks and wait timers, and a products shelf grouped by step with opened dates, use-by dates, layering notes and scan to add.",
+  "tips": [
+   "Order steps the way people apply them and number them.",
+   "Show the product for each step, not only the step name.",
+   "Use neutral wording for layering notes; this is a routine planner, not medical advice.",
+   "Make scanning the fastest way to add a product."
+  ],
+  "faq": [
+   [
+    "What should a skincare routine app track?",
+    "The steps in order, the product used for each, when a product was opened and when it should be used by. Keep advice general and neutral."
+   ]
+  ]
+ },
+ "image-editor": {
+  "intro": "Image editor UI with a canvas and toolbar. These examples show a tool rail, the photo on a canvas with crop handles, an adjust panel with exposure, contrast and saturation sliders, zoom and undo, plus a layers view with visibility, lock, opacity and blend mode and a properties inspector.",
+  "tips": [
+   "Keep tools on one side and properties on the other.",
+   "Show slider values as numbers people can type.",
+   "Put undo, redo and zoom where they are always visible.",
+   "Name layers by what they contain, with visibility and lock on each row."
+  ],
+  "faq": [
+   [
+    "What panels does an image editor need?",
+    "A tool rail, the canvas, a properties or adjust panel for the selected tool, and a layers panel. History and export can sit in the top bar."
+   ]
+  ]
+ },
+ "document-editor": {
+  "intro": "Rich text document editor screens. These examples show a formatting toolbar (headings, bold, italic, lists, link, image, table), a document with comments in the margin, collaborators and a word count, plus a slash command menu and a floating selection toolbar.",
+  "tips": [
+   "Group toolbar buttons: text style, emphasis, lists, insert.",
+   "Show keyboard shortcuts in tooltips and in the slash menu.",
+   "Keep comments in the margin next to the text they refer to.",
+   "Show who else is editing, with their cursor colour."
+  ],
+  "faq": [
+   [
+    "What is a slash command menu?",
+    "A menu that opens when you type / in the document, letting you insert headings, lists, tables, images or code blocks without leaving the keyboard."
+   ]
+  ]
+ },
+ "sales-pipeline": {
+  "intro": "Sales pipeline boards for CRM apps. These examples show a deal kanban with full-height stage columns (lead, qualified, proposal, negotiation, won), deal cards with value and owner, stage totals and filters, and a deal detail drawer with a stage stepper, contacts, next step and activity timeline.",
+  "tips": [
+   "Show the total value at the top of each stage column.",
+   "Put the next step and its date on every deal card.",
+   "Open deal details in a drawer so the board stays in view.",
+   "Mark stale deals that have not moved in a while."
+  ],
+  "faq": [
+   [
+    "What is a sales pipeline board?",
+    "A kanban view of deals, one column per sales stage. Dragging a card moves the deal to the next stage, and column totals show the value at each stage."
+   ]
+  ]
+ },
+ "sprint-board": {
+  "intro": "Sprint board and backlog screens. These examples show a kanban board with full-height to do, in progress, in review and done columns, swimlanes by assignee, task cards with labels, points and avatars and WIP limits, plus a backlog for sprint planning with estimates and a capacity bar.",
+  "tips": [
+   "Show WIP limits in the column header and flag when one is exceeded.",
+   "Keep task cards short: title, label, points and assignee.",
+   "In the backlog, show capacity against committed points before starting the sprint.",
+   "Let swimlanes collapse so the board fits the screen."
+  ],
+  "faq": [
+   [
+    "What is the difference between a sprint board and a backlog?",
+    "The sprint board shows the work in the current sprint by status. The backlog is the ordered list of everything not started yet, where the next sprint is planned."
+   ]
+  ]
+ },
+ "project-timeline": {
+  "intro": "Project timeline screens, including a Gantt chart. These examples show phases with task bars, dependencies, milestones, a today line and progress per phase, plus a phases board with milestones, risks and an activity feed.",
+  "tips": [
+   "Draw a today line so people can see what is late at a glance.",
+   "Show progress per phase, not only per task.",
+   "Mark milestones as diamonds or flags, distinct from task bars.",
+   "Keep the activity feed beside the timeline, not on another page."
+  ],
+  "faq": [
+   [
+    "What is a Gantt chart?",
+    "A timeline where each task is a bar from its start date to its end date, grouped by phase, with dependencies and milestones drawn on the same time axis."
+   ]
+  ]
+ },
+ "approval-request": {
+  "intro": "Approval request screens. These examples show a purchase approval with requester, amount, line items, budget impact, the approver chain and approve or reject buttons, and an access request with what is asked for and why, risk notes, duration and a pending requests list.",
+  "tips": [
+   "Show the amount and what it is for before anything else.",
+   "Show where the request is in the approver chain.",
+   "Ask for a reason when someone rejects.",
+   "Keep the pending list beside the detail so approvers can move through it."
+  ],
+  "faq": [
+   [
+    "What should an approval request screen show?",
+    "Who is asking, for what, how much or how long, why, the effect on budget or risk, who else must approve, and clear approve and reject actions."
+   ]
+  ]
+ },
+ "diff-viewer": {
+  "intro": "Diff viewer screens for comparing versions. These examples show two versions side by side with added and removed lines highlighted, version pickers and a change list, and an inline before and after view with accept or reject per change and the version history.",
+  "tips": [
+   "Use colour and a + or − marker for changes; colour alone is not enough.",
+   "Let people pick any two versions to compare.",
+   "Keep a list of changes to jump between them.",
+   "In inline view, put accept and reject next to each change."
+  ],
+  "faq": [
+   [
+    "Side by side or inline diff?",
+    "Side by side is easier for long, rewritten passages on wide screens. Inline works better on phones and for small edits."
+   ]
+  ]
+ },
+ "release-notes": {
+  "intro": "Release notes and what's new screens. These examples show an in-app what's new panel with version tags, dates and new, improved and fixed labels, and a changelog timeline with releases grouped by version and filters.",
+  "tips": [
+   "Lead each release with what users can now do, then the fixes.",
+   "Use labels with words (New, Improved, Fixed), not colour alone.",
+   "Date every release.",
+   "Offer a way to subscribe to updates."
+  ],
+  "faq": [
+   [
+    "Where should release notes live in an app?",
+    "A what's new panel for recent changes, linked from the help or account menu, and a full changelog page for the history."
+   ]
+  ]
+ },
+ "stock-count": {
+  "intro": "Stock count (stocktake) screens. These examples show a count sheet by shelf with expected against counted quantities, steppers and scan to count, and a variance review with expected, counted, variance and value per item, reasons and an approve adjustments action.",
+  "tips": [
+   "Hide the expected quantity while counting if you want blind counts; show it in the review.",
+   "Show progress through the count by shelf or area.",
+   "Ask for a reason on large variances before approving.",
+   "Show the value of the variance, not only the units."
+  ],
+  "faq": [
+   [
+    "What is a stock count variance?",
+    "The difference between what the system expected and what was counted. Reviewing variances before adjusting keeps the stock figures honest."
+   ]
+  ]
+ },
+ "purchase-order": {
+  "intro": "Purchase order screens for inventory. These examples show a purchase orders list with status tabs, suppliers, totals and expected dates beside low-stock reorder suggestions, and a purchase order detail with ordered and received quantities, a receive stock button and a delivery timeline.",
+  "tips": [
+   "Suggest reorders from low stock right next to the order list.",
+   "Show ordered and received quantities on every line.",
+   "Use status tabs (Draft, Sent, Partly received, Received) with counts.",
+   "Keep the expected delivery date visible on the list."
+  ],
+  "faq": [
+   [
+    "What is a purchase order in inventory software?",
+    "A record of what you ordered from a supplier, how much and when it should arrive. Receiving stock against it updates the on-hand counts."
+   ]
+  ]
+ },
+ "subscription-billing": {
+  "intro": "Billing and subscription page UI. These examples show a billing overview with the current plan, renewal date, usage meters for seats and storage, payment method and invoices, and a change plan screen with plan cards, a monthly or annual toggle and a proration preview.",
+  "tips": [
+   "Show the current plan and next charge at the top.",
+   "Show usage against limits before people hit them.",
+   "Preview the prorated amount before the plan changes.",
+   "Keep invoices downloadable from the same page."
+  ],
+  "faq": [
+   [
+    "What is proration?",
+    "When a plan changes mid-cycle, the charge is adjusted for the days left: credit for the old plan, charge for the new one. Show the amount before confirming."
+   ]
+  ]
+ },
+ "usage-pricing": {
+  "intro": "Tiered and usage-based pricing UI. These examples show quantity pricing with a seat stepper, a tiered price table with the active tier highlighted and a total, and usage-based tiers per 1,000 events with an estimate calculator and current usage.",
+  "tips": [
+   "Highlight the tier the customer would fall into.",
+   "Show the total, not only the unit price.",
+   "Explain how tiers apply (each unit in its band, or all units at one rate).",
+   "Let people enter their own quantity."
+  ],
+  "faq": [
+   [
+    "What is tiered pricing?",
+    "The price per unit changes with quantity bands. In graduated tiers each band is priced separately; in volume tiers all units get the rate of the band you reach."
+   ]
+  ]
+ },
+ "payment-methods": {
+  "intro": "Payment method screens. These examples show saved cards with a default badge, billing address and add method, and an add card form with card number, expiry, security code, name, billing country and a save button.",
+  "tips": [
+   "Show only the last four digits of a saved card.",
+   "Mark the default method and let people change it in one tap.",
+   "Group number, expiry and security code; validate as people type.",
+   "Say clearly when a card will be charged."
+  ],
+  "faq": [
+   [
+    "Which card fields are required?",
+    "Card number, expiry date, security code and the name on the card, plus the billing country or postcode when the payment processor asks for it."
+   ]
+  ]
+ },
+ "habit-tracker": {
+  "intro": "Habit tracker app screens. These examples show a daily habit checklist home screen with check circles, streaks and a progress ring in a soft, rounded style, and a streaks view with a calendar heatmap per habit, longest and current streaks and weekly completion bars.",
+  "tips": [
+   "Make checking off a habit a single tap with a clear done state.",
+   "Show today's progress as a ring or bar.",
+   "Show the streak next to each habit.",
+   "Be kind about missed days; let people see the longest streak too."
+  ],
+  "faq": [
+   [
+    "What makes a habit tracker home screen work?",
+    "Today's habits as a short checklist, a quick way to mark them done, and visible progress and streaks."
+   ]
+  ]
+ },
+ "language-lesson": {
+  "intro": "Gamified lesson screens for language learning. These examples show a lesson with a progress bar, hearts, a translate-the-sentence exercise with word tiles and a check button, and a lesson complete screen with XP earned, the streak extended, accuracy and the daily goal.",
+  "tips": [
+   "Show progress through the lesson at the top.",
+   "Give feedback right after each answer, with the correct answer when wrong.",
+   "Celebrate the streak and daily goal at the end, then offer continue.",
+   "Keep word tiles large enough to tap."
+  ],
+  "faq": [
+   [
+    "What makes a lesson gamified?",
+    "Points (XP), streaks, lives or hearts, levels and a daily goal: small rewards that make practice a habit."
+   ]
+  ]
+ },
+ "leaderboard": {
+  "intro": "Leaderboard UI examples. These examples show a weekly league with ranked learners, XP, promotion and demotion zones, your position highlighted and days left, and a friends view with streaks, XP this week, nudges and badges.",
+  "tips": [
+   "Always show the viewer's own position, even when it is not in the top rows.",
+   "Mark promotion and demotion zones clearly.",
+   "Show the time left in the period.",
+   "Use tabular figures so scores line up."
+  ],
+  "faq": [
+   [
+    "How many rows should a leaderboard show?",
+    "Enough to see the zones and the viewer's position, usually the top 10 plus the rows around the viewer."
+   ]
+  ]
+ },
+ "delete-confirm": {
+  "intro": "Delete confirmation modal examples. These examples show a destructive confirm dialog that lists what will be deleted, offers an export first and asks the person to type the project name, and a bulk delete dialog with the selected files, a warning about shared links and a skip-Trash option.",
+  "tips": [
+   "Name the thing being deleted in the title.",
+   "List what will be lost, in numbers.",
+   "Make the delete button red and say what it does (Delete project, not OK).",
+   "Ask for typed confirmation only when the loss is large and permanent."
+  ],
+  "faq": [
+   [
+    "When should a delete dialog ask people to type the name?",
+    "When deleting something large and permanent, like a project or workspace. For files that go to Trash, a plain confirm is enough."
+   ]
+  ]
+ },
+ "celebration": {
+  "intro": "Success celebration screens. These examples show a milestone achieved state with confetti, a medal, the numbers behind it and the team, and an achievement unlocked state with the badge, a weekly streak and the next badge.",
+  "tips": [
+   "Celebrate real milestones only, or the moment loses its meaning.",
+   "Say what was achieved in plain words.",
+   "Offer one clear next step (share, write a recap, continue).",
+   "Respect reduced motion: confetti can be static."
+  ],
+  "faq": [
+   [
+    "When should an app show a celebration screen?",
+    "After a meaningful milestone such as a launch, a first goal or a long streak. Routine saves only need a toast."
+   ]
+  ]
+ },
+ "integration-connect": {
+  "intro": "Connected apps and integration settings UI. These examples show a connect-app consent dialog that lists what the app can read and change, why, and what it cannot do, and a connected app's settings with sync status, toggles for what it syncs, permissions granted and a disconnect option.",
+  "tips": [
+   "List permissions in plain words, each with the reason it is needed.",
+   "Say what the app cannot do as well.",
+   "Show last sync and errors on the connected app's page.",
+   "Keep disconnect visible and explain what happens to existing data."
+  ],
+  "faq": [
+   [
+    "What should an integration consent screen show?",
+    "Which app is asking, what it will be able to read and change, why, which data it can see, and how to disconnect later."
+   ]
+  ]
+ },
+ "model-providers": {
+  "intro": "AI model settings with provider API keys and usage. These examples show providers with masked API keys, key status and a self-hosted gateway, the default and fallback model, and a usage view with spend against a monthly cap, tokens, daily spend and per-model limits.",
+  "tips": [
+   "Never show a full API key again after it is saved; show the last four characters.",
+   "Show key status (valid, missing, slow) on each provider.",
+   "Let admins set a fallback model for outages.",
+   "Show spend against the cap with an alert before it is reached."
+  ],
+  "faq": [
+   [
+    "Why set a spend cap per model?",
+    "So one busy feature cannot use the whole budget. When a model reaches its cap, requests can pause or move to a cheaper fallback."
+   ]
+  ]
  }
 }

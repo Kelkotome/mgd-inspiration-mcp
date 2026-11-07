@@ -51,6 +51,8 @@ const FAMILIES = {
   beauty: { name: "Dewline", cat: "beauty", desc: "a skincare routine app with an ingredient and product scanner", type: { web: "SaaS web app", mobile: "Mobile app" } },
   // 5-Nov-2026 round: small-business admin builds asked twice for staff scheduling, time off, multi-location ops and inventory
   ops: { name: "Rosterline", cat: "operations", desc: "staff scheduling, time off, inventory and daily operations for a multi-location bakery-café", type: { web: "Operations web app", mobile: "Mobile app" } },
+  // 8-Nov-2026 gap round (mcp-gap-r1): the sales-pipeline screens are the app behind the Pipeloom CRM landing page (crmsite)
+  crm: { name: "Pipeloom", cat: "crm", desc: "a sales CRM for small B2B teams", type: { web: "SaaS web app", mobile: "Mobile app" } },
   homeservices: { name: "Handmere", cat: "services", desc: "on-demand plumbers, electricians and cleaners booked by arrival window", type: { web: "Marketplace web app", mobile: "Mobile app" } },
   // 5-Nov-2026 template round (n12): industry website templates (type "page", full-length home pages). Keyword Planner:
   // "{industry} website template" / "{industry} website design" worldwide. ecommerce/saas/ai reuse commerce/marketing/ai.

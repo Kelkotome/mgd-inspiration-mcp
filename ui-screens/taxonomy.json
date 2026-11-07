@@ -1,5 +1,5 @@
 {
- "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries; +6 round 2). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style. 3-Nov round 3: +6 interaction-state patterns (overlays on existing family screens). 5-Nov-2026 round (n11): +8 screen patterns (transactional emails, staff scheduling/time off, multi-location ops, inventory, savings goal, onboarding carousel) + 1 section (scored comparison); emails are type 'email' (table-based, inline-styled HTML). 5-Nov-2026 template round (n12): +18 industry website templates (type 'page': one responsive HTML document shot at 1440 and 390; variants are page types, 'homepage' first) in page_patterns.",
+ "_note": "MGD UI screens taxonomy v4 (3-Nov-2026: +15 patterns from real MCP queries; +6 round 2). Patterns are implemented in tpl/*.js (family per pattern); flows are ordered steps ('pattern' or 'pattern:variant') rendered per platform x style. 3-Nov round 3: +6 interaction-state patterns (overlays on existing family screens). 5-Nov-2026 round (n11): +8 screen patterns (transactional emails, staff scheduling/time off, multi-location ops, inventory, savings goal, onboarding carousel) + 1 section (scored comparison); emails are type 'email' (table-based, inline-styled HTML). 5-Nov-2026 template round (n12): +18 industry website templates (type 'page': one responsive HTML document shot at 1440 and 390; variants are page types, 'homepage' first) in page_patterns. 8-Nov-2026 gap round (mcp-gap-r1): +28 screen patterns (2 variants each) for real queries that got 1-2 screens: music, social photo, scan/skincare, editors, kanban/project, approval/diff/changelog, inventory counts and purchase orders, billing/pricing/payment, habits and gamified learning, delete confirm, celebration, connected apps, AI model providers.",
  "types": [
   "screen",
   "section",
@@ -28,7 +28,9 @@
   "home": [
    "dashboard",
    "feed",
-   "home"
+   "home",
+   "skincare-routine",
+   "habit-tracker"
   ],
   "data": [
    "data-table",
@@ -37,7 +39,9 @@
    "list-view",
    "kanban-board",
    "calendar",
-   "split-view"
+   "split-view",
+   "sales-pipeline",
+   "sprint-board"
   ],
   "commerce": [
    "product-detail",
@@ -52,7 +56,9 @@
    "billing-plans",
    "profile",
    "notifications-center",
-   "team-members"
+   "team-members",
+   "subscription-billing",
+   "payment-methods"
   ],
   "tools": [
    "editor-toolbar",
@@ -61,17 +67,21 @@
    "file-manager",
    "search-results",
    "canvas-editor",
-   "floor-plan"
+   "floor-plan",
+   "image-editor",
+   "document-editor"
   ],
   "states": [
    "empty-state",
    "error-404",
    "loading-skeleton",
-   "success-confirmation"
+   "success-confirmation",
+   "celebration"
   ],
   "monetize": [
    "paywall-upgrade",
-   "cancel-subscription"
+   "cancel-subscription",
+   "usage-pricing"
   ],
   "messaging": [
    "chat-list",
@@ -82,7 +92,10 @@
   "media": [
    "map-view",
    "video-player",
-   "create-post"
+   "create-post",
+   "story-viewer",
+   "photo-post",
+   "post-composer"
   ],
   "booking": [
    "class-schedule",
@@ -93,15 +106,20 @@
    "api-keys",
    "audit-log",
    "roles-permissions",
-   "integrations"
+   "integrations",
+   "integration-connect"
   ],
   "ai": [
    "ai-workspace",
-   "ai-settings"
+   "ai-settings",
+   "model-providers"
   ],
   "review": [
    "version-history",
-   "approval-queue"
+   "approval-queue",
+   "approval-request",
+   "diff-viewer",
+   "release-notes"
   ],
   "healthcare": [
    "doctor-directory",
@@ -110,7 +128,10 @@
   ],
   "music": [
    "music-player",
-   "playlist"
+   "playlist",
+   "music-home",
+   "album-page",
+   "play-queue"
   ],
   "portfolio": [
    "portfolio-home",
@@ -121,7 +142,10 @@
    "project-tracker",
    "course-dashboard",
    "ops-dashboard",
-   "savings-goal"
+   "savings-goal",
+   "project-timeline",
+   "language-lesson",
+   "leaderboard"
   ],
   "forms": [
    "form-wizard"
@@ -130,7 +154,8 @@
    "bank-onboarding"
   ],
   "camera": [
-   "product-scan"
+   "product-scan",
+   "barcode-scanner"
   ],
   "interaction-states": [
    "toast-snackbar",
@@ -138,7 +163,8 @@
    "side-drawer",
    "command-palette",
    "date-range-picker",
-   "form-validation"
+   "form-validation",
+   "delete-confirm"
   ],
   "home-services": [
    "pro-directory",
@@ -153,7 +179,9 @@
    "shift-scheduler",
    "leave-calendar",
    "time-off-request",
-   "inventory-stock"
+   "inventory-stock",
+   "stock-count",
+   "purchase-order"
   ]
  },
  "section_patterns": [
@@ -748,7 +776,19 @@
    "split-view",
    "canvas-editor",
    "floor-plan",
-   "account-email"
+   "account-email",
+   "document-editor",
+   "sprint-board",
+   "project-timeline",
+   "approval-request",
+   "diff-viewer",
+   "release-notes",
+   "subscription-billing",
+   "usage-pricing",
+   "payment-methods",
+   "delete-confirm",
+   "celebration",
+   "integration-connect"
   ],
   "finance": [
    "dashboard",
@@ -758,7 +798,8 @@
   "ai": [
    "chat-ai-assistant",
    "ai-workspace",
-   "ai-settings"
+   "ai-settings",
+   "model-providers"
   ],
   "commerce": [
    "product-detail",
@@ -769,10 +810,15 @@
   ],
   "media": [
    "feed",
-   "image-viewer"
+   "image-viewer",
+   "story-viewer",
+   "photo-post",
+   "post-composer",
+   "image-editor"
   ],
   "health": [
-   "home"
+   "home",
+   "habit-tracker"
   ],
   "marketing": [
    "hero",
@@ -798,7 +844,10 @@
   ],
   "audio": [
    "music-player",
-   "playlist"
+   "playlist",
+   "music-home",
+   "album-page",
+   "play-queue"
   ],
   "portfolio": [
    "portfolio-home",
@@ -809,7 +858,9 @@
   ],
   "learning": [
    "course-dashboard",
-   "form-wizard"
+   "form-wizard",
+   "language-lesson",
+   "leaderboard"
   ],
   "bank": [
    "bank-onboarding",
@@ -817,7 +868,9 @@
   ],
   "beauty": [
    "product-scan",
-   "onboarding-carousel"
+   "onboarding-carousel",
+   "barcode-scanner",
+   "skincare-routine"
   ],
   "homeservices": [
    "pro-directory",
@@ -829,7 +882,12 @@
    "leave-calendar",
    "time-off-request",
    "ops-dashboard",
-   "inventory-stock"
+   "inventory-stock",
+   "stock-count",
+   "purchase-order"
+  ],
+  "crm": [
+   "sales-pipeline"
   ]
  },
  "page_patterns": {
