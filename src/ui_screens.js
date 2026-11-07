@@ -10,6 +10,7 @@ import UI_ELEMENTS from "./ui_elements.json"; // HTML-derived element/layout inv
 import UI_TAXONOMY from "../ui-screens/taxonomy.json"; // pattern groups + flow steps for list_ui_patterns
 import { extractCopy } from "./ui_copy.js";
 import { parseDesignMd, uiKitPanel, UI_KIT_CSS, UI_KIT_JS } from "./ui_kit.js";
+import { specBlock, parseSpecJson, parseDesignExtras, SPEC_CSS } from "./ui_spec.js";
 import { resolveTree, treePaths, assertTree, nicheOfPattern, nicheOfFlatSeg, MIN_DESIGNS, PLATFORMS, liveDesigns } from "./ui_tree.js";
 import { industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
 import { patternSlug, flatSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
@@ -350,7 +351,10 @@ async function uiItemPage(id, env, base, h) {
   const short = isPage ? `${label(it.pattern)}${it.variant && it.variant !== "homepage" ? " " + label(it.variant).toLowerCase() : ""} template (${it.platform}, ${it.style})`
     : `${it.variant ? label(it.variant) : label(it.pattern)} ${kindWord(it.pattern).replace("email ", "")} (${it.platform}, ${it.style})`; // variant name leads (keeps titles ≤ 60)
   const shows = ((it.description || "").match(/Shows ([^.]+)\./) || [])[1];
-  const tokens = await env.BUCKET.get(`ui/${it.id}/DESIGN.md`).then((o) => (o ? o.text() : null)).then(parseDesignMd).catch(() => null); // no tokens = no panel
+  const [mdText, specText] = await Promise.all([`ui/${it.id}/DESIGN.md`, `ui/${it.id}/spec.json`].map((k) => env.BUCKET.get(k).then((o) => (o ? o.text() : null)).catch(() => null)));
+  const tokens = mdText ? parseDesignMd(mdText) : null; // no tokens = no panel
+  const spec = specText ? parseSpecJson(specText) : null; // written at ingest; absent on items ingested before the spec block → those lines are left out
+  const specHtml = specBlock({ tokens, extras: mdText ? parseDesignExtras(mdText) : null, spec, pattern: it.pattern, style: it.style, isPage, isSection, hasDarkImage: !!it.image_dark, esc: h.escHtml });
   const kind = kindWord(it.pattern), what = `${label(it.pattern)} ${kind}`;
   const metaDesc = `Free ${lcWords(short).replace(/ \(/, isPage ? " (" : " for " + (isSection ? "websites" : UI_EMAIL_PATTERNS.includes(it.pattern) ? "transactional email" : "apps") + " (")} with copyable HTML and a DESIGN.md of light and dark tokens.${shows ? " Shows " + shows + "." : ""}`;
   const body = head(h, { title: fitTitle(`${short} – HTML & DESIGN.md | MGD`, `${short} – HTML & DESIGN.md`, `${short} | MGD`, short), ogTitle: name, desc: metaDesc, canonical, image: imgAbs, ogType: "article",
@@ -369,7 +373,7 @@ dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:.3rem 1rem;margi
 .acts{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1rem}
 .tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 1rem}.tags span{font-size:.72rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.1rem .55rem}
 .flows{font-size:.9rem;margin:0 0 1rem}.flows a{font-weight:600}
-h2{font-size:1.05rem;margin:2.25rem 0 .75rem}${tokens ? UI_KIT_CSS : ""}` })
+h2{font-size:1.05rem;margin:2.25rem 0 .75rem}${specHtml ? SPEC_CSS : ""}${tokens ? UI_KIT_CSS : ""}` })
   + `${h.backLink(base, "/ui", "Back to UI screens")}
 ${itemSibling(it, base, h)}<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/${h.escHtml(patternSlug(it.pattern))}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
 <div class="detail ${h.escHtml(it.platform)}">
@@ -380,7 +384,7 @@ ${itemSibling(it, base, h)}<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI
       <a class="btn" href="${h.escHtml(base + it.design_md)}" download="DESIGN.md" rel="nofollow">Download DESIGN.md</a></div>
     ${flows.length ? `<p class="flows">Part of ${flows.map((f) => `<a href="${h.escHtml(flowPath(f.id, base, it.platform, it.style))}">${h.escHtml(UI_FLOWS[f.id])}</a> (step ${f.step})`).join(", ")}</p>` : ""}
     <dl class="facts">${facts.filter((f) => f[1]).map(([k, v, href]) => `<dt>${h.escHtml(k)}</dt><dd>${href ? `<a href="${h.escHtml(href)}">${h.escHtml(v)}</a>` : h.escHtml(v)}</dd>`).join("")}</dl>
-    ${pal ? `<div class="pal" aria-label="Colour roles: background, surface, border, text, muted, primary, on-primary, accent">${pal}</div>` : ""}
+    ${specHtml}${pal && !specHtml.includes('class="sc"') ? `<div class="pal" aria-label="Colour roles: background, surface, border, text, muted, primary, on-primary, accent">${pal}</div>` : ""}
     ${tags.length ? `<div class="tags">${tags.map((t) => `<span>${h.escHtml(t)}</span>`).join("")}</div>` : ""}
   </div></div>
 ${tokens ? uiKitPanel({ tokens, what, kind, name, pageUrl: canonical, mdUrl: site + base + it.design_md, codeUrl: site + base + it.code, ref: `ui-${flatSlug(it.pattern)}`, esc: h.escHtml }) : ""}
