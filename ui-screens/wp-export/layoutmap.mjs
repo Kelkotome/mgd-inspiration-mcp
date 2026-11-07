@@ -9,7 +9,7 @@ for (const s of ["minimal", "luxury", "brutalist", "playful"]) list.push([`contr
 for (const s of ["corporate", "retro"]) list.push([`control/dental-${s}`, path.join(OUT_MAIN, `dental-website-homepage-web-${s}`, "index.html")]);
 const b = await chromium.launch({ executablePath: exe }); const res = {};
 for (const [id, html] of list) {
-  const p = await b.newPage({ viewport: { width: 1280, height: 900 } }); await p.goto("file://" + html, { waitUntil: "load" }); await p.waitForTimeout(80);
+  const p = await b.newPage({ viewport: { width: 1280, height: 900 } }); await p.goto("file://" + html, { waitUntil: "load" }); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(150);
   res[id] = await p.evaluate(mapFn);
   await p.close();
 }

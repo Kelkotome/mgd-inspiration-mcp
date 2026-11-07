@@ -4,7 +4,7 @@ Two measures for every pair in a niche:
   tree   similarity of the tag tree of <body> (1.0 = same markup)
   layout Jaccard overlap of where content sits at 1280 px, from wp-export/layoutmap.mjs
 A pair fails if the bodies match, or tree >= 0.90, or layout >= 0.60.
-Calibration, 7-Nov-2026: re-skins of one design (same body, different style) score layout 0.645 to 0.937 and tree 1.0, and the control block below must keep
+Calibration, 7-Nov-2026: re-skins of one design (same body, different style) score layout 0.640 to 0.936 and tree 1.0, and the control block below must keep
 failing. An edge-map measure was tried first and dropped: a re-skin scored 0.075 against 0.068 for real pairs, so it could not tell them apart.
 usage: hc_distinct.py <maps.json> > distinct.json"""
 import sys, json, itertools, hashlib, difflib, collections, os

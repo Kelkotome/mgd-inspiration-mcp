@@ -29,7 +29,7 @@ for nid, pat, htmlSeg, seg in NICHES:
     for old, want in [(f"/ui/{htmlSeg}", nest), (f"/ui/{pat}", nest), (f"/ui/{htmlSeg}/", nest), (f"/ui/{pat}/", nest), (f"{nest}/", nest), (f"/ui?pattern={pat}", nest), (f"/ui/{htmlSeg}?style=minimal", nest + "?style=minimal"), (f"/ui?pattern={pat}&platform=web&style=luxury", nest + "?device=web&style=luxury")]:
         one_hop(old, want)
     s, h, b = text(nest); ck(s == 200, f"{nest} {s}"); ck(f'rel="canonical" href="{BASE}{nest}"' in b or f'href="{BASE}{nest}" rel="canonical"' in b or re.search(r'rel="canonical" href="[^"]*' + re.escape(nest) + '"', b), f"{nest} canonical"); ck('"BreadcrumbList"' in b, f"{nest} crumbs")
-    ck(f"/ui/{WP}/healthcare/{seg}" in b, f"{nest} cross-link to WordPress"); ck("distinct designs" in b, f"{nest} designs block")
+    ck(f"/ui/{WP}/healthcare/{seg}" in b, f"{nest} cross-link to WordPress"); ck("distinct designs" in b, f"{nest} designs block"); g = b.split("distinct designs", 1)[-1].split("Every screen", 1)[0]; ck(len(re.findall(r'class="card page"', g)) == len([d for d in n["designs"] if d["distinct"]]), f"{nest} shows every design")
     # filters stay on the page and canonicalise to it
     s, h, b = text(nest + "?style=minimal&device=web"); ck(s == 200 and re.search(r'rel="canonical" href="[^"]*' + re.escape(nest) + '"', b), f"{nest} filter canonical")
     s, h, b = text(f"{nest}.md"); ck(s == 200 and "text/markdown" in h.get("Content-Type", "") and nest in h.get("Link", ""), f"{nest}.md"); ck(f"/ui/{WP}/healthcare/{seg}" in b, f"{nest}.md nested link")
@@ -48,6 +48,18 @@ for p in [f"/ui/{HUB}", f"/ui/{WP}", f"/ui/{WP}/healthcare", "/ui", "/ui/website
         ck(f'/ui/{htmlSeg}"' not in b, f"{p} has flat link to {htmlSeg}")
 s, h, b = text(f"/ui/{HUB}"); ck('"BreadcrumbList"' in b and all(nest in b for nest in hits), "hub links every niche")
 for x in ["clinic-home", "doctor-directory", "telehealth-visit"]: pass
+# downloads: the throwaway bucket holds a sample of the files; every one present must match the catalog hash, and its screenshots must serve
+import hashlib
+got = 0
+for nid, n in cat["niches"].items():
+    for d in n["designs"]:
+        th = d.get("theme")
+        if not th: continue
+        s, h, b = get(f"/ui/download/wordpress/{th['slug']}.zip")
+        if s == 200:
+            got += 1; ck(hashlib.sha256(b).hexdigest() == th["sha256"], f"{th['slug']} zip hash"); ck(h.get("Content-Type") == "application/zip", f"{th['slug']} zip type"); ck(f"{th['slug']}.zip" in h.get("Content-Disposition", ""), f"{th['slug']} filename")
+            s2, h2, _ = get(f"/img/tpl/wordpress/{th['slug']}/{th['version']}/shot-1280.webp"); ck(s2 == 200 and h2.get("Content-Type") == "image/webp", f"{th['slug']} screenshot {s2} {h2.get('Content-Type')}")
+ck(got >= 1, "no zip served from the local bucket"); print("zips served and hash-checked:", got)
 for bad in [f"/ui/{HUB}/nope-website-template", f"/ui/{WP}/healthcare/nope", f"/ui/{WP}/retail", f"/ui/{WP}/healthcare/cardiology/nope", f"/ui/{HUB}.md/x", "/ui/download/wordpress/nope.zip"]:
     s, _, _ = get(bad); ck(s == 404, f"{bad} should be 404, got {s}")
 s, h, b = text("/ui/sitemap.xml"); urls = re.findall(r"<loc>([^<]+)</loc>", b); ck(len(urls) == len(set(urls)), "sitemap duplicates")

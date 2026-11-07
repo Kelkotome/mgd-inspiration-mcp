@@ -246,6 +246,9 @@ const RESET = `.wp-block-table td,.wp-block-table th{border:0}.wp-block-table th
 const GLUE = `
 .wp-site-blocks{min-height:100vh}
 .wp-block-template-part{display:contents}
+header .wp-block-navigation{flex:none}
+header .wp-block-site-title{min-width:0}
+@media (max-width:560px){header .wp-block-buttons{display:none}}
 .mgd-inline{display:contents}
 .mgd-stretch{position:relative}
 .mgd-stretch a::after{content:"";position:absolute;inset:0}

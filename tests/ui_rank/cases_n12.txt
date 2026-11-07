@@ -40,6 +40,6 @@ healthcare landing page template | medical-website clinic-home
 medical website template | medical-website clinic-home
 portfolio website | portfolio-home
 personal website template | portfolio-home
-hospital website template | clinic-home
+hospital website template | hospital-website
 website footer | footer
 landing page hero section | hero

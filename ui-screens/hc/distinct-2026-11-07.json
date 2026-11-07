@@ -1,0 +1,212 @@
+{
+ "cardiology": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.73,
+  "maxLayoutOverlap": 0.426,
+  "failedPairs": []
+ },
+ "dental": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.73,
+  "maxLayoutOverlap": 0.432,
+  "failedPairs": []
+ },
+ "dermatology": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.732,
+  "maxLayoutOverlap": 0.433,
+  "failedPairs": []
+ },
+ "fertility": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.732,
+  "maxLayoutOverlap": 0.425,
+  "failedPairs": []
+ },
+ "hospital": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.733,
+  "maxLayoutOverlap": 0.378,
+  "failedPairs": []
+ },
+ "medical": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.733,
+  "maxLayoutOverlap": 0.418,
+  "failedPairs": []
+ },
+ "mental-health": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.73,
+  "maxLayoutOverlap": 0.459,
+  "failedPairs": []
+ },
+ "optometry": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.733,
+  "maxLayoutOverlap": 0.421,
+  "failedPairs": []
+ },
+ "orthodontics": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.733,
+  "maxLayoutOverlap": 0.446,
+  "failedPairs": []
+ },
+ "pediatrics": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.733,
+  "maxLayoutOverlap": 0.409,
+  "failedPairs": []
+ },
+ "pharmacy": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.733,
+  "maxLayoutOverlap": 0.471,
+  "failedPairs": []
+ },
+ "physical-therapy": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.733,
+  "maxLayoutOverlap": 0.434,
+  "failedPairs": []
+ },
+ "therapist": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.732,
+  "maxLayoutOverlap": 0.486,
+  "failedPairs": []
+ },
+ "veterinary": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.733,
+  "maxLayoutOverlap": 0.447,
+  "failedPairs": []
+ }
+}

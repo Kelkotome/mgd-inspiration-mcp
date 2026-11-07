@@ -256,7 +256,7 @@ const bandCss = `<style>
 .bd-bar .logo b{background:var(--on-primary)}
 .bd-bar .btn{background:var(--on-primary);color:var(--primary);border-color:var(--on-primary)}
 .bd-hero{background:var(--primary);color:var(--on-primary);padding:56px 0 76px}
-.bd-h1{font-size:calc(112px * var(--hs));line-height:.94;max-width:1100px}
+.bd-h1{font-size:calc(112px * var(--hs));line-height:.94;max-width:1100px;overflow-wrap:break-word}
 .bd-hero .sk-eyebrow{color:inherit;opacity:.85}
 .bd-sub{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;align-items:end;margin-top:36px}
 .bd-sub p{font-size:20px;max-width:640px}
@@ -282,7 +282,7 @@ const bandCss = `<style>
 .bd-gogrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:48px;align-items:start}
 .bd-loc{padding:14px 0;border-top:1px solid color-mix(in oklab,var(--on-primary) 40%,transparent);display:grid;gap:2px}
 @media (max-width:1024px){.bd-h1{font-size:calc(78px * var(--hs))}.bd-big{grid-template-columns:repeat(2,minmax(0,1fr))}.bd-two,.bd-gogrid{grid-template-columns:minmax(0,1fr);gap:28px}.bd-stick{position:static}}
-@media (max-width:760px){.bd-hero{padding:30px 0 44px}.bd-h1{font-size:calc(46px * var(--hs))}.bd-sub{grid-template-columns:minmax(0,1fr);gap:20px;margin-top:22px}.bd-sub p{font-size:17px}.bd-row{grid-template-columns:minmax(0,1fr);gap:8px;padding:18px 0}.bd-big{grid-template-columns:minmax(0,1fr)}.bd-big b{font-size:calc(52px * var(--hs))}.bd-tags{font-size:calc(21px * var(--hs))}.bd-people{grid-template-columns:minmax(0,1fr)}.bd-go .sk-h2{font-size:calc(38px * var(--hs))}}
+@media (max-width:760px){.bd-hero{padding:30px 0 44px}.bd-h1{font-size:calc(41px * var(--hs))}.bd-sub{grid-template-columns:minmax(0,1fr);gap:20px;margin-top:22px}.bd-sub p{font-size:17px}.bd-row{grid-template-columns:minmax(0,1fr);gap:8px;padding:18px 0}.bd-big{grid-template-columns:minmax(0,1fr)}.bd-big b{font-size:calc(52px * var(--hs))}.bd-tags{font-size:calc(21px * var(--hs))}.bd-people{grid-template-columns:minmax(0,1fr)}.bd-go .sk-h2{font-size:calc(38px * var(--hs))}}
 </style>`;
 const band = (p, st, c) => K.page(st, `${alert(c)}${K.nav(p, [], c.hero.cta, null).replace('class="sk-nav"', 'class="sk-nav bd-bar"').replace('<nav class="sk-links" aria-label="Main"></nav>', navLinks(c)).replace('href="#' + K.slug(c.hero.cta) + '"', 'href="#visit"')}
 <main class="bd">

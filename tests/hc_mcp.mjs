@@ -26,7 +26,7 @@ await want("joomla medical template", T("joomla medical template"), ["no Joomla 
 await want("magento pharmacy store", T("magento pharmacy store"), ["no Magento templates"]);
 await want("plain template gets the nested page", T("cardiology website template"), ["/ui/healthcare-website-templates/cardiology-website-template", SCREENS, "6 distinct designs"]);
 await want("healthcare website template hub", T("healthcare website template"), ["/ui/healthcare-website-templates"]);
-for (const q of ["dark theme dashboard", "theme switcher", "settings page theme toggle", "medical app dashboard theme", "login page", "doctor directory"]) await want(`not hijacked: ${q}`, T(q), [SCREENS], ["block themes", "No WordPress theme"]);
+for (const q of ["dark theme dashboard", "theme switcher", "settings page theme toggle", "medical app dashboard theme", "login page", "doctor directory"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "No WordPress theme"]); // the local database has website rows only
 await want("device param", T("pricing page", { device: "mobile" }), [SCREENS]);
 await want("old platform=mobile still means device", T("pricing page", { platform: "mobile" }), [SCREENS], ["not available"]);
 await want("get_ui_flow device alias", call("get_ui_flow", { flow: "checkout", device: "web" }), [/step/i]);

@@ -26,7 +26,7 @@ export const nicheCrumbHtml = (n, h, base) => crumbNav(h, base, nicheCrumbs(n));
 const TEST_LINE = () => { const m = catalogMeta(); return m.wp ? `Each theme is a real zip installed and activated on WordPress ${m.wp} with PHP ${m.php} on ${m.tested}, then checked at 390, 768 and 1280 px for PHP errors, sideways scrolling and outside requests, and opened in the Site Editor with its block validator.` : ""; };
 const totals = (niches, wp) => ({ niches: niches.length, designs: niches.reduce((a, n) => a + (wp ? liveThemes(n) : liveDesigns(n)).length, 0) });
 const niceList = (a) => (a.length < 2 ? a.join("") : `${a.slice(0, -1).join(", ")} and ${a[a.length - 1]}`);
-const LOCAL_CSS = `.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:0 0 1.5rem}.tg .card .meta b{display:block}.facts{border-collapse:collapse;font-size:.9rem;margin:0 0 1.25rem;max-width:760px;width:100%}.facts th,.facts td{text-align:left;padding:.45rem .9rem .45rem 0;border-bottom:1px solid var(--border);vertical-align:top}.facts th{color:var(--muted);font-weight:600;width:34%}
+const LOCAL_CSS = `.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:0 0 1.5rem}.tg .card .meta b{display:block}.facts{border-collapse:collapse;font-size:.9rem;margin:0 0 1.25rem;max-width:760px;width:100%}.facts th,.facts td{text-align:left;padding:.45rem .9rem .45rem 0;border-bottom:1px solid var(--border);vertical-align:top}.facts th{color:var(--muted);font-weight:600;width:34%}.facts td{overflow-wrap:anywhere}
 .plain{max-width:75ch;line-height:1.6;padding-left:1.2rem}.plain li{margin:.3rem 0}.acts{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.25rem}.shots{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:1rem;align-items:start;margin:0 0 1.5rem}.shots img{width:100%;height:auto;border:1px solid var(--border);border-radius:10px;display:block}h2.s{font-size:1.05rem;margin:2.25rem 0 .5rem}@media (max-width:640px){.shots{grid-template-columns:minmax(0,1fr)}}`;
 
 async function nicheImages(env, h, x, niches) {
@@ -63,7 +63,7 @@ ${app ? `<h2 class="s">App and portal screens</h2><p class="lede" style="margin:
 // Inserted into the sub-niche page (uiPatternPage): the distinct designs first, the style and device screens below them as filters.
 export function nicheDesignsBlock(n, items, base, h, itemPath) {
   const ds = liveDesigns(n);
-  const cards = ds.map((d) => { const it = items.find((i) => (i.variant || "") === d.variant && i.style === d.style && i.platform === "web"); if (!it) return ""; return `<a class="card page" href="${h.escHtml(itemPath(it, base))}"><div class="th"><img loading="lazy" src="${h.escHtml(base + it.image)}" alt="${h.escHtml(`${n.label} template, ${d.layoutName} layout`)}"/></div><div class="meta"><b>${h.escHtml(d.layoutName)}</b><span>${h.escHtml(d.about)}</span></div></a>`; }).join("");
+  const cards = ds.map((d) => { const it = items.find((i) => (i.variant || "homepage") === d.variant && i.style === d.style && i.platform === "web"); if (!it) return ""; return `<a class="card page" href="${h.escHtml(itemPath(it, base))}"><div class="th"><img loading="lazy" src="${h.escHtml(base + it.image)}" alt="${h.escHtml(`${n.label} template, ${d.layoutName} layout`)}"/></div><div class="meta"><b>${h.escHtml(d.layoutName)}</b><span>${h.escHtml(d.about)}</span></div></a>`; }).join("");
   return `<h2 class="s">${h.escHtml(`${ds.length} distinct designs`)}</h2><div class="tg">${cards}</div>${n.wpLive ? `<p class="lede"><b>Also for WordPress:</b> <a href="${h.escHtml(base)}/ui/${h.escHtml(wpNichePath(n))}">${h.escHtml(`${n.label} WordPress themes`)}</a>, ${liveThemes(n).length} block themes you can install and edit.</p>` : ""}`;
 }
 export const nicheCss = LOCAL_CSS;
@@ -71,7 +71,7 @@ export const nicheCss = LOCAL_CSS;
 // Link from an HTML item page to the same design as a WordPress theme
 export function itemSibling(it, base, h) {
   const n = nicheOfPattern(it.pattern); if (!n) return "";
-  const d = liveThemes(n).find((x) => (x.variant || "") === (it.variant || "")); if (!d) return "";
+  const d = liveThemes(n).find((x) => (x.variant || "homepage") === (it.variant || "homepage")); if (!d) return "";
   return `<p class="lede"><b>Also for WordPress:</b> <a href="${h.escHtml(base)}/ui/${h.escHtml(themePath(n, d))}">${h.escHtml(d.theme.name)}</a>, the same layout as an installable block theme.</p>`;
 }
 
@@ -117,10 +117,10 @@ ${n.services && n.services.length ? `<h2 class="s">Written for ${h.escHtml(n.lab
 export async function themePage(n, d, env, base, h, x) {
   const site = x.siteOf(env), ind = INDUSTRIES[n.industry], t = d.theme, rel = themePath(n, d), url = `${site}${base}/ui/${rel}`, crumbs = [...wpNicheCrumbs(n), [t.name, rel]], m = catalogMeta();
   const blueprint = `${site}${base}/ui/download/wordpress/${t.slug}.blueprint.json`, play = `https://playground.wordpress.net/?blueprint-url=${encodeURIComponent(blueprint)}`;
-  const row = (await x.uiRows(env, " AND category=? AND country='web' AND style=?", [n.pattern, d.style])).map((r) => h.rowToItem(r, env)).find((i) => (i.variant || "") === d.variant);
+  const row = (await x.uiRows(env, " AND category=? AND country='web' AND style=?", [n.pattern, d.style])).map((r) => h.rowToItem(r, env)).find((i) => (i.variant || "homepage") === d.variant);
   const desc = `${t.name} is a free ${n.label.toLowerCase()} WordPress block theme: ${d.about}. ${count(t.patterns, "block pattern")}, ${t.variations} style variations, ${kb(t.zipBytes)} zip.`;
   const jsonld = [{ "@context": "https://schema.org", "@type": "SoftwareSourceCode", name: t.name, url, description: desc, codeRepository: url, programmingLanguage: "PHP, HTML, CSS", runtimePlatform: `WordPress ${t.requiresWp}+`, version: t.version, author: x.MGD_ORG(site), license: "https://www.gnu.org/licenses/gpl-2.0.html" }, crumbLd(site, base, crumbs)];
-  const facts = [["Sub-niche", n.label], ["Layout", `${d.layoutName}: ${d.about}`], ["Default style", d.style], ["Style variations", String(t.variations)], ["Block patterns", String(t.patterns)], ["Blocks on the front page", `${t.blocks}, of which ${t.htmlBlocks} are Custom HTML (forms and icons)`], ["Requires", `WordPress ${t.requiresWp} or later, PHP 7.4 or later`], ["Tested on", `WordPress ${m.wp}, PHP ${m.php}, ${m.tested}`], ["Download", `${kb(t.zipBytes)} zip`], ["SHA-256", t.sha256]];
+  const facts = [["Sub-niche", n.label], ["Layout", `${d.layoutName}: ${d.about}`], ["Default style", d.style], ["Style variations", String(t.variations)], ["Block patterns", String(t.patterns)], ["Blocks on the front page", `${t.blocks}, of which ${t.htmlBlocks} ${t.htmlBlocks === 1 ? "is" : "are"} Custom HTML (forms and small decoration)`], ["Requires", `WordPress ${t.requiresWp} or later, PHP 7.4 or later`], ["Tested on", `WordPress ${m.wp}, PHP ${m.php}, ${m.tested}`], ["Download", `${kb(t.zipBytes)} zip`], ["SHA-256", t.sha256]];
   const body = x.head(h, { title: x.fitTitle(`${t.name}: free ${n.label.toLowerCase()} WordPress theme | MGD`, `${t.name}: free WordPress theme | MGD`, `${t.name} | MGD`), desc, canonical: url, image: site + shot(d, 1280, base), jsonld, css: LOCAL_CSS, md: `${url}.md` })
   + `${h.backLink(base, `/ui/${wpNichePath(n)}`, `${n.label} themes`)}${crumbNav(h, base, crumbs)}<h1>${h.escHtml(t.name)}</h1><p class="lede">${h.escHtml(desc)}</p>
 <div class="acts"><a class="btn dark" href="${h.escHtml(zipUrl(d, base))}">Download the theme</a><a class="btn" rel="nofollow" href="${h.escHtml(play)}">Try it in WordPress Playground</a>${row ? `<a class="btn" href="${h.escHtml(x.uiItemPath(row, base))}">Also as HTML</a>` : ""}</div>

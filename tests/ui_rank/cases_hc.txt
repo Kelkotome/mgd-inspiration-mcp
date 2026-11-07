@@ -1,0 +1,27 @@
+# Healthcare tree, 7-Nov-2026
+hospital website template | hospital-website
+hospital website | hospital-website
+community hospital homepage | hospital-website
+animal hospital website | veterinary-website
+pharmacy website template | pharmacy-website
+pharmacy landing page | pharmacy-website
+community pharmacy website | pharmacy-website
+optometry website template | optometry-website
+optometrist website | optometry-website
+eye clinic website | optometry-website
+optician website | optometry-website
+mental health website template | mental-health-website
+mental health clinic website | mental-health-website
+psychiatrist website | mental-health-website
+behavioral health website | mental-health-website
+therapist website template | therapist-website
+counselling website | therapist-website
+cardiology website template | cardiology-website
+dental website template | dental-website
+dermatology website | dermatology-website
+pediatrics website | pediatrics-website
+fertility clinic website | fertility-website
+orthodontist website | orthodontics-website
+physical therapy website | physical-therapy-website
+veterinary website | veterinary-website
+medical practice website | medical-website

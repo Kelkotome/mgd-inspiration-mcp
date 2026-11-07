@@ -21,13 +21,13 @@ for (const slug of args) {
     const ac = await api(`mgdt=activate&slug=${slug}`); res.activate = ac.ok; res.block = ac.block; res.wp = ac.ver; res.php = ac.php; if (!ac.ok) fail("activate: " + ac.err); if (!ac.block) fail("not a block theme");
     const dj = path.join(WP_OUT, `${slug}.design.json`), design = fs.existsSync(dj) ? JSON.parse(fs.readFileSync(dj, "utf8")) : null; // negative controls have none
     if (design?.product) await api(`mgdt=title&v=${encodeURIComponent(design.product)}`); // what a site owner does in step 3, so the header reads as designed
-    const srcMap = {}; if (design) for (const w of [390, 1280]) { const pg = await ctx.newPage(); await pg.setViewportSize({ width: w, height: 900 }); await pg.goto("file://" + design.html, { waitUntil: "load" }); await pg.waitForTimeout(150); srcMap[w] = await pg.evaluate(mapFn); await pg.close(); }
+    const srcMap = {}; if (design) for (const w of [390, 1280]) { const pg = await ctx.newPage(); await pg.setViewportSize({ width: w, height: 900 }); await pg.goto("file://" + design.html, { waitUntil: "load" }); await pg.evaluate(() => document.fonts.ready); await pg.waitForTimeout(250); srcMap[w] = await pg.evaluate(mapFn); await pg.close(); }
     res.viewports = {};
     for (const w of [390, 768, 1280]) {
       const pg = await ctx.newPage(); await pg.setViewportSize({ width: w, height: 900 }); const ext = new Set(), errs = [], failed = new Set();
       pg.on("request", (q) => { const u = new URL(q.url()); if (!["127.0.0.1", "localhost"].includes(u.hostname) && u.protocol.startsWith("http")) ext.add(u.href); });
       pg.on("requestfailed", (q) => failed.add(q.url())); pg.on("pageerror", (e) => errs.push(String(e))); pg.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
-      const r = await pg.goto(`${BASE}/`, { waitUntil: "networkidle", timeout: 120000 }); const o = await pg.evaluate(overflow);
+      const r = await pg.goto(`${BASE}/`, { waitUntil: "networkidle", timeout: 120000 }); await pg.evaluate(() => document.fonts.ready); await pg.waitForTimeout(150); const o = await pg.evaluate(overflow);
       res.viewports[w] = { status: r.status(), ...o, ext: [...ext], errs: errs.slice(0, 3), failed: [...failed].slice(0, 3) };
       if (r.status() !== 200) fail(`${w}: HTTP ${r.status()}`); if (o.sw > o.W + 1) fail(`${w}: sideways scroll ${o.sw}>${o.W}`); if (o.off.length) fail(`${w}: overflow ${o.off.join(",")}`);
       if (ext.size) fail(`${w}: external ${[...ext].join(" ")}`); if (errs.length) fail(`${w}: console ${errs[0].slice(0, 160)}`); if (failed.size) fail(`${w}: failed request ${[...failed][0]}`);
