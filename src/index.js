@@ -8,6 +8,7 @@ import ANNUAL_HTML from "./ui/annual-reports.html";
 import MUSEUM_HTML from "./ui/museum.html";
 import BOARD_CANVAS_JS from "./ui/board-canvas.html"; // plain JS, imported as Text via the *.html rule
 import SAVE_HTML from "./ui/save.html";
+import { extractSpec } from "./ui_spec.js";
 import { getUser, googleLogin, googleCallback, logout, devLogin } from "./auth.js";
 import { MGDRoles, MGDDesignMd } from "./design_core.js";
 import { boardRolesFromWeights } from "./board_design.js";
@@ -123,6 +124,7 @@ export default {
       // No-login MCP moodboards (2-Nov-2026): public unlisted page + report button; admin disable.
       if (path.startsWith("/board/")) { const r = await moodboardRoute(path, request, env, base, { escHtml, rowToItem, site: "https://madegooddesigns.com", itemPage: mcpBoardItemPage }); if (r) return r; }
       if (path === "/api/admin/moodboard" && method === "POST") return moodboardAdmin(request, env, isAdmin);
+      if (path === "/api/admin/ui-spec-backfill" && method === "POST") return uiSpecBackfill(request, env);
       { const bm = path.match(/^\/b\/([a-z0-9]{10})$/); if (bm && method === "GET") return publicBoardPage(bm[1], env, base, url); }
       if (path === "/save" && method === "GET") return html(injectBase(SAVE_HTML, base));
       if (path === "/assets/board-canvas.js" && method === "GET")
@@ -268,8 +270,7 @@ async function addItem(request, env) {
       const imgKey = await putUiImages(env, dup.id, file, form.get("image_dark"));
       const old = dup.image_key; if (old && old !== imgKey) await env.BUCKET.delete([old, old.replace(/\.webp$/, "-dark.webp")]);
       const code = (form.get("code_html") || "").toString(), md = (form.get("design_md") || "").toString();
-      if (code) await env.BUCKET.put(`ui/${dup.id}/index.html`, code, { httpMetadata: { contentType: "text/html; charset=utf-8" } });
-      if (md) await env.BUCKET.put(`ui/${dup.id}/DESIGN.md`, md, { httpMetadata: { contentType: "text/markdown; charset=utf-8" } });
+      await putUiCode(env, dup.id, code, md);
       await env.DB.prepare(`UPDATE items SET image_key=?, title=?, description=?, tags=?, themes=?, palette=?, style=?, category=?, company=?, designer=?, industry=?, country=?, width=?, height=?, hue=? WHERE id=?`)
         .bind(imgKey, titleIn || null, (form.get("description") || "").toString().trim(), form.get("tags") || "[]", JSON.stringify(themesIn), JSON.stringify(palette), styleIn || null,
           category, company, designer, industry, country, width, height, hueOf(palette), dup.id).run();
@@ -296,8 +297,7 @@ async function addItem(request, env) {
   // UI screens carry their code: the HTML page and its DESIGN.md (served at /ui/raw/<id>.html|.md)
   if (collection === "ui") {
     const code = (form.get("code_html") || "").toString(), md = (form.get("design_md") || "").toString();
-    if (code) await env.BUCKET.put(`ui/${id}/index.html`, code, { httpMetadata: { contentType: "text/html; charset=utf-8" } });
-    if (md) await env.BUCKET.put(`ui/${id}/DESIGN.md`, md, { httpMetadata: { contentType: "text/markdown; charset=utf-8" } });
+    await putUiCode(env, id, code, md);
   }
   try {
     if (skipEnrich) throw { message: "skipped" };
@@ -3208,4 +3208,33 @@ function themeify(body) {
 }
 function html(body) {
   return new Response(themeify(body), { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache" } });
+}
+
+// UI screen code into R2: the HTML, its DESIGN.md and the spec block's facts (ui/<id>/spec.json: section names, breakpoints),
+// read from the HTML once here so item pages never parse it per view (spec block, 7-Nov-2026).
+async function putUiCode(env, id, code, md) {
+  if (code) {
+    await env.BUCKET.put(`ui/${id}/index.html`, code, { httpMetadata: { contentType: "text/html; charset=utf-8" } });
+    await env.BUCKET.put(`ui/${id}/spec.json`, JSON.stringify(extractSpec(code)), { httpMetadata: { contentType: "application/json" } });
+  }
+  if (md) await env.BUCKET.put(`ui/${id}/DESIGN.md`, md, { httpMetadata: { contentType: "text/markdown; charset=utf-8" } });
+}
+
+// Backfill ui/<id>/spec.json for UI items ingested before the spec block. Admin only; DRY RUN unless apply=1.
+// POST /api/admin/ui-spec-backfill?after=<id>&limit=50[&apply=1][&force=1] → { next, results: [{ id, sections, breakpoints, darkMedia, wrote|skipped|missing }] }
+async function uiSpecBackfill(request, env) {
+  if (!isAdmin(request, env)) return json({ error: "unauthorized" }, 401, env, request);
+  const q = new URL(request.url).searchParams, after = q.get("after") || "", limit = Math.min(Math.max(parseInt(q.get("limit"), 10) || 50, 1), 100);
+  const apply = q.get("apply") === "1", force = q.get("force") === "1";
+  const rows = (await env.DB.prepare("SELECT id FROM items WHERE collection='ui' AND status='published' AND id>? ORDER BY id LIMIT ?").bind(after, limit).all()).results || [];
+  const results = [];
+  for (const { id } of rows) {
+    if (!force && (await env.BUCKET.head(`ui/${id}/spec.json`))) { results.push({ id, skipped: "has spec.json" }); continue; }
+    const obj = await env.BUCKET.get(`ui/${id}/index.html`);
+    if (!obj) { results.push({ id, missing: "index.html" }); continue; }
+    const spec = extractSpec(await obj.text());
+    if (apply) await env.BUCKET.put(`ui/${id}/spec.json`, JSON.stringify(spec), { httpMetadata: { contentType: "application/json" } });
+    results.push({ id, sections: spec.sections.length, breakpoints: spec.breakpoints, darkMedia: spec.darkMedia, [apply ? "wrote" : "would_write"]: true });
+  }
+  return json({ ok: true, apply, next: rows.length === limit ? rows[rows.length - 1].id : null, results }, 200, env, request);
 }
