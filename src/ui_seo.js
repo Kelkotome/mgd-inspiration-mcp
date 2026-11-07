@@ -177,7 +177,7 @@ export const PATTERN_SEO = {
   "coffee-shop-website": ["coffee-shop-website-template", "Cafe and coffee shop website templates"],
   "salon-website": ["salon-website-template", "Salon website templates"],
   "real-estate-website": ["real-estate-website-template", "Real estate agency website templates"],
-  "construction-website": ["construction-website-template", "Construction website templates"],
+  "construction-website": ["construction-website-template", "Construction company website templates"],
   "law-firm-website": ["law-firm-website-template", "Law firm website templates"],
   "dental-website": ["dental-website-template", "Dental website templates"],
   "gym-website": ["gym-website-template", "Gym website templates"],
@@ -243,6 +243,11 @@ export const PATTERN_SEO = {
   "photography-website": ["photography-website-template", "Photography website templates"],
   "interior-design-website": ["interior-design-website-template", "Interior design website templates"],
   "marketing-agency-website": ["marketing-agency-website-template", "Marketing agency website templates"],
+  // 7-Nov-2026 construction and home services: new niches. These only ever live under the industry hub.
+  "plumber-website": ["plumber-website-template", "Plumber website templates"],
+  "electrician-website": ["electrician-website-template", "Electrician website templates"],
+  "roofing-website": ["roofing-website-template", "Roofing website templates"],
+  "landscaping-website": ["landscaping-website-template", "Landscaping website templates"],
   // 21-Nov-2026 beauty, fitness and wellness: new niches (gym-website keeps its n12 slug). These only ever live under the industry hub.
   "hair-salon-website": ["hair-salon-website-template", "Hair salon website templates"],
   "barbershop-website": ["barber-shop-website-template", "Barbershop website templates"],

@@ -38,6 +38,9 @@ A niche is one file, `hc/content/<niche>.js`. `node gen_hc.js --only <niche>` po
 | classes | class timetable layout only (`timetable`; gym, personal trainer and fitness, yoga): eyebrow, h2, lede, note (must say "sample"), filterLabel, allLabel, todayLabel, kinds: 3 or 4 of [id, label] (id a-z only), days: 5 to 7 of { d, slots: 2 to 4 of [time, class, who or room, kind id] }. Every kind needs a class. The first day is shown in the hero as today's classes. |
 | passes | class timetable layout only: h2, lede, note (must say "sample"), items: exactly 3 of { t, price, per, points: 3 strings }, optional button (the label on each pass, default the hero button). Prices are zero placeholders ("$00"), checked by `tests/bw_lint.py`. |
 | optional labels | visit.fields, footer.cols and services.cols: exactly 3 strings each, to rename the form fields, footer column titles and ledger table headers (a couple's site is not a business). |
+| quote | trades layouts only (`dispatch`, `project`): h2 (visit-request title), callLine (top strip text), jobs: 4 to 6 job types, where (placeholder), date, windows: exactly 4 of [arrival window, "" or "full"], note, areasH2, areas: exactly 6 place names, areaNote, optional jobsLabel, whereLabel, areasEyebrow. |
+| projects | trades layouts only: eyebrow, h2, lede, items: exactly 6 of { kind, type, t, area, time, scope }. `kind` is extension, roof, kitchen, bathroom, garden, deck, panel, boiler, unit, office, van or charger. |
+| schedule | trades layouts only: h2, lede, unit (Week, Day or Hour), span (4 to 12), rows: 4 to 6 of [stage, start, length], note (must say "sample"). |
 | notice | names the business as fictional, and for health says "general information" and "not medical advice" |
 
 Add a new industry by adding a family to `lib.js`, a motif to `GLYPH`, and content files. No layout code changes.

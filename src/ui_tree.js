@@ -129,6 +129,23 @@ export const INDUSTRIES = {
     ],
     appPatterns: ["class-schedule", "booking-details", "booking-confirmed"],
   },
+  // 7-Nov-2026 fourth industry. Demand (Keyword Planner, worldwide, template terms): construction 1,900/mo, plumber 390, cleaning 320, landscaping 320,
+  // electrician 320, roofing 260, HVAC 260, pest control 170; WordPress: construction 720, cleaning 210, plumbing 140. Runner-up: beauty salon and spa.
+  // hubFirst: the bare "construction website template" is answered with the hub before the construction company niche.
+  construction: {
+    id: "construction", label: "Construction and home services", hub: "construction-website-templates", seg: "construction", h1: "Construction and home services website templates", hubFirst: true,
+    niches: [
+      ["construction", "construction-website", "Construction company", "construction-company-website-template", "construction-company"],
+      ["plumber", "plumber-website", "Plumber", "plumber-website-template", "plumber"],
+      ["electrician", "electrician-website", "Electrician", "electrician-website-template", "electrician"],
+      ["roofing", "roofing-website", "Roofing", "roofing-website-template", "roofing"],
+      ["hvac", "hvac-website", "HVAC", "hvac-website-template", "hvac"],
+      ["cleaning-service", "cleaning-service-website", "Cleaning service", "cleaning-website-template", "cleaning"],
+      ["landscaping", "landscaping-website", "Landscaping", "landscaping-website-template", "landscaping"],
+      ["pest-control", "pest-control-website", "Pest control", "pest-control-website-template", "pest-control"],
+    ],
+    appPatterns: ["pro-directory"],
+  },
 };
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };

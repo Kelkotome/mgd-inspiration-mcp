@@ -66,6 +66,15 @@ const GLYPH = {
   dumbbell: '<path d="M20 32h24"/><rect x="10" y="20" width="10" height="24" rx="2"/><rect x="44" y="20" width="10" height="24" rx="2"/><path d="M4 26v12M60 26v12"/>',
   stopwatch: '<circle cx="32" cy="36" r="20"/><path d="M32 36V24M26 8h12M32 8v8M48 18l4-4"/>',
   lotus: '<path d="M32 50c-6-8-6-20 0-30 6 10 6 22 0 30z"/><path d="M32 50c-10-2-18-10-20-22 10 2 18 10 20 22zM32 50c10-2 18-10 20-22-10 2-18 10-20 22z"/><path d="M8 54h48"/>',
+  // construction and home services (7-Nov-2026, fourth industry)
+  helmet: '<path d="M10 42a22 22 0 0 1 44 0z"/><path d="M6 42h52v6H6zM26 20v-6h12v6M32 14v14"/><path d="M8 56h48"/>',
+  wrench: '<path d="M40 8a12 12 0 0 0-11 16L9 44a5 5 0 0 0 7 7l20-20a12 12 0 0 0 16-11l-7 7-7-2-2-7z"/><path d="M44 46h12M50 40v12"/>',
+  bolt: '<path d="M36 6L14 36h16l-4 22 22-30H32z"/><path d="M8 58h48"/>',
+  roof: '<path d="M4 34L32 10l28 24"/><path d="M12 28v26h40V28"/><path d="M14 30l18-15 18 15M20 34h24M18 40h28"/><path d="M44 16V8h6v14"/>',
+  fan: '<circle cx="32" cy="32" r="24"/><circle cx="32" cy="32" r="4"/><path d="M32 28c-2-8 2-14 8-14-1 6-4 10-8 14zM36 32c8-2 14 2 14 8-6-1-10-4-14-8zM32 36c2 8-2 14-8 14 1-6 4-10 8-14zM28 32c-8 2-14-2-14-8 6 1 10 4 14 8z"/>',
+  spray: '<path d="M22 24h16v32H22z"/><path d="M26 24v-8h10l6 4M38 14h6M48 10l4-2M48 16h6M48 22l4 2"/><path d="M22 36h16"/>',
+  leaf: '<path d="M12 52C12 26 28 10 54 10c0 26-16 42-42 42z"/><path d="M12 52L40 24M24 40h10M30 34v-8"/>',
+  bug: '<ellipse cx="32" cy="36" rx="12" ry="16"/><circle cx="32" cy="16" r="6"/><path d="M32 22v30M20 30l-10-6M20 38H8M20 46l-10 6M44 30l10-6M44 38h12M44 46l10 6M28 11l-4-6M36 11l4-6"/>',
 };
 const glyph = (c, size, sw = 2.2) => `<svg class="i" width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPH[c.motif]}</svg>`;
 // Abstract illustration, drawn from the niche's glyph. Original artwork; a site owner swaps it for a real photo.
@@ -1222,6 +1231,187 @@ const timetableL = (p, st, c) => { const C = c.classes, P = c.passes, today = C.
 <section class="sk-sec" id="visit"><div class="sk-wrap tt-visit"><div><h2 class="sk-h2">${esc(c.visit.h2)}</h2><p class="sk-lede">${esc(c.visit.lede)}</p><div class="tt-locs">${c.visit.locations.map((l) => `<article><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></article>`).join("")}</div><p style="margin-top:18px"><b>${esc(c.visit.email)}</b></p></div>${contactForm(c)}</div></section>
 <section class="tt-end tt-top"><div class="sk-wrap tt-endin"><div class="sk-stack"><h2 class="sk-h2">${esc(c.cta.h2)}</h2><p class="muted">${esc(c.cta.lede)}</p></div><a class="btn primary sk-btn-lg" href="#visit">${esc(c.hero.cta)}</a></div></section>
 </main>${notice(c)}${foot(p, c)}`, BASE + TT_BASE + ttFilterCss(c, "ttf", "tt-slot") + ttCss); };
+// ==== trades layouts (7-Nov-2026, construction and home services). Unique to trades: they need c.quote, c.projects and c.schedule. ====
+// Jobs, vans and the service-area map are drawn in theme tokens, so every style variation recolours them. Original artwork; owners swap in photos.
+const JOBS = ["extension", "roof", "kitchen", "bathroom", "garden", "deck", "panel", "boiler", "unit", "office", "van", "charger"];
+const job = (kind, w, h, i, label) => {
+  const wall = WALLS[i % 3], dark = MIX("var(--primary)", 72, "var(--text)"), glass = MIX("var(--bg)", 70, "var(--accent)"), tree = MIX("var(--primary)", 46), metal = MIX("var(--bg)", 78, "var(--text)"), hi = MIX("var(--accent)", 58), f = (c) => `style="fill:${c}"`, s = (c, wd) => `style="fill:none;stroke:${c};stroke-width:${wd};stroke-linecap:round;stroke-linejoin:round"`;
+  const win = (x, y, a = 30, b = 28) => `<rect x="${x}" y="${y}" width="${a}" height="${b}" ${f(glass)}/>`;
+  const shrub = (x, r = 18) => `<circle cx="${x}" cy="${210 - r * 0.7}" r="${r}" ${f(tree)}/>`;
+  const k = {
+    extension: `<rect x="70" y="96" width="150" height="114" ${f(wall)}/><path d="M56 100L145 40l89 60z" ${f(dark)}/>${win(92, 120, 34, 30)}${win(164, 120, 34, 30)}<rect x="220" y="140" width="120" height="70" ${f(WALLS[(i + 1) % 3])}/><rect x="216" y="132" width="128" height="10" ${f(dark)}/>${win(240, 156, 76, 36)}<path d="M228 210V112M332 210V112M224 124h112M224 168h112" ${s(metal, 4)}/>`,
+    roof: `<path d="M40 210V128h320v82" ${f(wall)}/><path d="M20 132L200 40l180 92z" ${f(dark)}/>${[0, 1, 2, 3].map((r) => `<path d="M${60 + r * 16} ${118 - r * 18}H${340 - r * 16}" ${s(MIX("var(--bg)", 40, "var(--primary)"), 3)}/>`).join("")}<path d="M300 210L250 70M326 210L276 70" ${s(metal, 5)}/>${[0, 1, 2, 3, 4].map((r) => `<path d="M${296 - r * 10} ${198 - r * 28}h26" ${s(metal, 4)}/>`).join("")}${win(90, 150, 40, 34)}<rect x="180" y="156" width="34" height="54" ${f(MIX("var(--primary)", 60, "var(--text)"))}/>`,
+    kitchen: `<rect x="40" y="40" width="320" height="170" ${f(MIX("var(--accent)", 12, "var(--bg)"))}/><rect x="56" y="56" width="288" height="44" ${f(wall)}/>${[0, 1, 2, 3].map((k2) => `<path d="M${128 + k2 * 72} 56v44" ${s(dark, 2)}/>`).join("")}<rect x="40" y="140" width="320" height="12" ${f(dark)}/><rect x="40" y="152" width="320" height="58" ${f(wall)}/>${[0, 1, 2, 3].map((k2) => `<path d="M${120 + k2 * 80} 152v58M${100 + k2 * 80} 172h16" ${s(dark, 2)}/>`).join("")}<rect x="90" y="132" width="56" height="8" ${f(metal)}/><path d="M240 140v-26h18v8" ${s(metal, 5)}/>${win(160, 106, 70, 26)}`,
+    bathroom: `<rect x="40" y="30" width="320" height="180" ${f(MIX("var(--accent)", 10, "var(--bg)"))}/>${[0, 1, 2, 3, 4, 5].map((r) => `<path d="M40 ${50 + r * 22}H360" ${s(MIX("var(--primary)", 18), 1.5)}/>`).join("")}<path d="M60 150h200v14a30 30 0 0 1-30 30H90a30 30 0 0 1-30-30z" ${f(wall)}/><path d="M60 150h200" ${s(dark, 6)}/><path d="M300 210V60h-24" ${s(metal, 5)}/><path d="M262 56h28l-4 10h-20z" ${f(metal)}/><path d="M270 74v14M278 74v20M286 74v14" ${s(glass, 3)}/><rect x="96" y="196" width="10" height="14" ${f(dark)}/><rect x="216" y="196" width="10" height="14" ${f(dark)}/>`,
+    garden: `<rect y="150" width="400" height="60" ${f(MIX("var(--primary)", 40))}/><path d="M170 210c20-30 40-50 70-60h30c-30 10-48 30-60 60z" ${f(MIX("var(--bg)", 70, "var(--accent)"))}/>${[30, 66, 102, 300, 336, 372].map((x) => `<path d="M${x} 150v-44" ${s(dark, 5)}/>`).join("")}<path d="M24 120H108M294 120H378" ${s(dark, 4)}/><circle cx="210" cy="86" r="44" ${f(tree)}/><rect x="206" y="118" width="8" height="34" ${f(dark)}/>${shrub(60, 20)}${shrub(130, 16)}${shrub(330, 22)}`,
+    deck: `<rect x="0" y="80" width="400" height="80" ${f(wall)}/>${win(120, 96, 160, 50)}<path d="M20 160h360l-30 50H50z" ${f(MIX("var(--accent)", 60, "var(--text)"))}/>${[0, 1, 2, 3, 4].map((r) => `<path d="M${26 + r * 6} ${168 + r * 9}H${374 - r * 6}" ${s(MIX("var(--bg)", 60, "var(--accent)"), 2)}/>`).join("")}<path d="M20 160v-36M380 160v-36M20 124h360" ${s(dark, 5)}/>${[60, 100, 140, 260, 300, 340].map((x) => `<path d="M${x} 160v-36" ${s(dark, 3)}/>`).join("")}`,
+    panel: `<rect x="30" y="20" width="340" height="190" ${f(MIX("var(--accent)", 10, "var(--bg)"))}/><rect x="110" y="40" width="180" height="150" rx="6" ${f(metal)}/><rect x="124" y="56" width="152" height="118" rx="3" ${f(wall)}/>${[0, 1].map((r) => [0, 1, 2, 3, 4, 5].map((k2) => `<rect x="${134 + k2 * 23}" y="${70 + r * 52}" width="14" height="34" rx="2" ${f(k2 === 0 ? hi : dark)}/>`).join("")).join("")}<path d="M200 40V20M160 40V24M240 40V24" ${s(dark, 6)}/><path d="M290 160h50v50" ${s(dark, 6)}/>`,
+    boiler: `<rect x="30" y="20" width="340" height="190" ${f(MIX("var(--accent)", 10, "var(--bg)"))}/><rect x="140" y="34" width="120" height="132" rx="10" ${f(metal)}/><rect x="160" y="128" width="80" height="22" rx="4" ${f(dark)}/><circle cx="178" cy="139" r="5" ${f(hi)}/><rect x="196" y="134" width="32" height="10" ${f(glass)}/><path d="M160 166v44M184 166v44M216 166v44M240 166v44" ${s(MIX("var(--accent)", 70, "var(--text)"), 6)}/><path d="M184 190h32" ${s(dark, 8)}/><circle cx="300" cy="80" r="22" ${f(metal)}/><path d="M300 80l10-12" ${s(dark, 4)}/>`,
+    unit: `<rect x="0" y="40" width="400" height="170" ${f(wall)}/>${win(40, 64, 90, 70)}<rect x="170" y="110" width="190" height="100" rx="6" ${f(metal)}/><circle cx="240" cy="160" r="38" ${f(MIX("var(--primary)", 30, "var(--bg)"))}/><path d="M240 122v76M202 160h76M213 133l54 54M267 133l-54 54" ${s(dark, 2.5)}/><path d="M300 126h44M300 140h44M300 154h44M300 168h44M300 182h44" ${s(dark, 3)}/><path d="M170 140h-30v-30" ${s(dark, 5)}/>`,
+    office: `<rect x="20" y="30" width="360" height="180" ${f(MIX("var(--accent)", 10, "var(--bg)"))}/>${win(40, 46, 140, 70)}${win(220, 46, 140, 70)}${[60, 230].map((x) => `<rect x="${x}" y="150" width="120" height="10" ${f(dark)}/><path d="M${x + 8} 160v50M${x + 112} 160v50" ${s(dark, 5)}/><rect x="${x + 40}" y="126" width="40" height="24" ${f(metal)}/>`).join("")}<circle cx="200" cy="186" r="18" ${f(tree)}/><rect x="190" y="196" width="20" height="14" ${f(dark)}/>`,
+    van: `<path d="M50 190V100h190l50 40h50v50z" ${f(wall)}/><path d="M244 104l40 34h-40z" ${f(glass)}/><rect x="70" y="120" width="150" height="40" ${f(MIX("var(--primary)", 30, "var(--bg)"))}/><path d="M70 86h170M80 78v16M230 78v16" ${s(metal, 5)}/><circle cx="110" cy="192" r="20" ${f(dark)}/><circle cx="290" cy="192" r="20" ${f(dark)}/><circle cx="110" cy="192" r="8" ${f(metal)}/><circle cx="290" cy="192" r="8" ${f(metal)}/>`,
+    charger: `<rect x="0" y="30" width="400" height="180" ${f(wall)}/><rect x="56" y="70" width="56" height="92" rx="8" ${f(metal)}/><rect x="68" y="84" width="32" height="20" ${f(glass)}/><circle cx="84" cy="128" r="9" ${f(hi)}/><path d="M84 162c0 30 60 34 120 20" ${s(dark, 6)}/><path d="M170 190v-34l40-30h120l40 30v34z" ${f(MIX("var(--primary)", 40, "var(--bg)"))}/><path d="M222 136h96l26 20H196z" ${f(glass)}/><circle cx="220" cy="196" r="16" ${f(dark)}/><circle cx="330" cy="196" r="16" ${f(dark)}/>`,
+  }[kind] || "";
+  return `<svg width="${w}" height="${h}" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(label || "Illustration of a job")}"><rect width="400" height="260" style="fill:${MIX("var(--primary)", 12)}"/><circle cx="${[330, 70, 300][i % 3]}" cy="40" r="20" style="fill:${MIX("var(--accent)", 30)}"/><rect y="210" width="400" height="50" style="fill:${MIX("var(--primary)", 30)}"/>${k}</svg>`;
+};
+// The service area: a drawn town plan with the base marked and a dashed coverage ring. Numbered dots match the list of areas.
+const AREA_DOTS = [[118, 120], [300, 96], [356, 236], [266, 330], [104, 300], [210, 54]];
+const areaSvg = (c, w, h) => `<svg width="${w}" height="${h}" viewBox="0 0 460 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(`Illustrated map of the area ${c.visit.locations[0].n.toLowerCase()} covers`)}"><rect width="460" height="400" style="fill:${MIX("var(--primary)", 8)}"/>
+<path d="M-10 250C80 210 150 290 250 250S400 170 470 210V270C400 240 330 320 250 320S90 270-10 310z" style="fill:${MIX("var(--accent)", 26)}"/>
+<g style="fill:none;stroke:var(--bg);stroke-width:12;stroke-linecap:round">${[90, 230, 360].map((x) => `<path d="M${x} -10V410"/>`).join("")}${[70, 190, 340].map((y) => `<path d="M-10 ${y}H470"/>`).join("")}<path d="M-10 400L460 20"/></g>
+<circle cx="230" cy="196" r="96" style="fill:${MIX("var(--primary)", 10)};stroke:${MIX("var(--primary)", 70, "var(--text)")};stroke-width:3;stroke-dasharray:10 8"/><circle cx="230" cy="196" r="168" style="fill:none;stroke:${MIX("var(--primary)", 50)};stroke-width:2;stroke-dasharray:4 8"/>
+${AREA_DOTS.map(([x, y], i) => `<g><circle cx="${x}" cy="${y}" r="15" style="fill:var(--bg);stroke:var(--primary);stroke-width:3"/><text x="${x}" y="${y + 5}" text-anchor="middle" style="fill:var(--text);font:700 14px sans-serif">${i + 1}</text></g>`).join("")}
+<g><circle cx="230" cy="196" r="20" style="fill:var(--primary)"/><path d="M220 198l10-9 10 9v9h-20z" style="fill:var(--on-primary)"/></g></svg>`;
+// A build schedule: one row per stage, one column per week (or day or hour), each stage a bar. Real table markup, so it reads without the drawing.
+const gantt = (c, cls) => { const S = c.schedule, cols = Array.from({ length: S.span }, (_, i) => i + 1);
+  return `<table class="${cls}"><caption class="sr-only">${esc(S.h2)}</caption><thead><tr><th scope="col">Stage</th>${cols.map((x) => `<th scope="col">${esc(S.unit.slice(0, 1))}${x}</th>`).join("")}</tr></thead><tbody>${S.rows.map(([t, a, n], r) => `<tr><th scope="row">${esc(t)}</th>${a > 1 ? `<td colspan="${a - 1}"></td>` : ""}<td colspan="${n}"><span class="gt-bar gt-b${r % 3}" title="${esc(`${S.unit} ${a}${n > 1 ? ` to ${a + n - 1}` : ""}`)}">${esc(`${n} ${S.unit.toLowerCase()}${n > 1 ? "s" : ""}`)}</span></td>${a + n - 1 < S.span ? `<td colspan="${S.span - (a + n - 1)}"></td>` : ""}</tr>`).join("")}</tbody></table>`; };
+const GANTT_CSS = `.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.gt{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}
+.gt th,.gt td{padding:6px 2px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}
+.gt thead th{font-size:11px;color:var(--muted);font-weight:600;text-align:center}
+.gt thead th:first-child{text-align:left;width:30%}
+.gt tbody th{font-weight:600;padding-right:10px}
+.gt-bar{display:block;padding:5px 6px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gt-b0{background:var(--primary);color:var(--on-primary)}.gt-b1{background:color-mix(in oklab,var(--accent) 55%,var(--surface));color:var(--text)}.gt-b2{background:color-mix(in oklab,var(--primary) 30%,var(--surface));color:var(--text)}
+@media (max-width:760px){.gt{font-size:12px}.gt thead th:first-child{width:38%}.gt thead th+th{font-size:0}.gt-bar{padding:5px 4px;font-size:0}.gt-bar::before{content:"";display:block;height:10px}}`;
+const chips = (xs, cls) => `<ul class="${cls}">${xs.map((x, i) => `<li${i ? "" : ' aria-current="true"'}>${esc(x)}</li>`).join("")}</ul>`;
+
+// ---- dispatch: book a visit first. A call strip, a visit-request panel with job chips and arrival windows, a service-area map, a job list, rates and the day's steps ----
+const dispatchCss = `<style>
+.dp-strip{background:var(--text);color:var(--bg);font-size:14px}
+.dp-strip .sk-wrap{display:flex;justify-content:space-between;align-items:center;gap:6px 20px;padding-top:9px;padding-bottom:9px;flex-wrap:wrap}
+.dp-strip b{font-size:15px}
+.dp-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:52px;align-items:start;padding-block:56px 64px}
+.dp-h1{font-size:calc(60px * var(--hs));line-height:1.02}
+.dp-ticks{list-style:none;display:grid;gap:10px;margin-top:6px}
+.dp-ticks li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px;align-items:start}
+.dp-ticks li>svg{margin-top:3px;color:color-mix(in oklab,var(--primary) 80%,var(--text))}
+.dp-ticks b{display:block}
+.dp-panel{padding:24px;display:grid;gap:16px}
+.dp-panel h2{font-size:calc(24px * var(--hs))}
+.dp-chips{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.dp-chips li{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-weight:600;font-size:14px;background:var(--bg)}
+.dp-chips li[aria-current]{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.dp-win{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.dp-win span{padding:10px;border:1px solid var(--border);border-radius:var(--radius);text-align:center;font-weight:600;font-size:14px;background:var(--bg)}
+.dp-win span.off{color:var(--muted);text-decoration:line-through;opacity:.7}
+.dp-lab{font-weight:600;font-size:14px}
+.dp-note{font-size:13px}
+.dp-area{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:center}
+.dp-map{aspect-ratio:46/40}
+.dp-areas{list-style:none;counter-reset:a;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;margin:18px 0}
+.dp-areas li{counter-increment:a;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-weight:600}
+.dp-areas li::before{content:counter(a);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--primary);font-size:13px}
+.dp-jobs{display:grid;gap:0;border-top:2px solid var(--text)}
+.dp-jobs article{display:grid;grid-template-columns:52px minmax(0,1.1fr) minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start;padding:20px 0;border-bottom:1px solid var(--border)}
+.dp-ico{width:44px;height:44px;display:grid;place-items:center;border:2px solid var(--text);color:var(--text)}
+.dp-who{font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:color-mix(in oklab,var(--accent) 24%,var(--surface));justify-self:start}
+.dp-day{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:52px;align-items:start}
+.dp-steps{list-style:none;display:grid;gap:0;counter-reset:d;margin-top:18px}
+.dp-steps li{counter-increment:d;display:grid;grid-template-columns:52px minmax(0,1fr);gap:4px 16px;padding:16px 0;border-top:1px solid var(--border)}
+.dp-steps li::before{content:counter(d,decimal-leading-zero);grid-row:span 2;font:var(--hw) calc(30px * var(--hs))/1 var(--font-h);color:color-mix(in oklab,var(--primary) 80%,var(--text))}
+.dp-t{width:100%;border-collapse:collapse;margin-top:16px}
+.dp-t th,.dp-t td{text-align:left;padding:12px 12px 12px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.dp-t thead th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;border-bottom:2px solid var(--text)}
+.dp-crew{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.dp-crew article{padding:20px;display:grid;gap:6px;align-content:start}
+.dp-crew .avatar{width:48px;height:48px;font-size:15px;border-radius:0}
+.dp-faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 44px}
+.dp-faq details{padding:16px 0;border-bottom:1px solid var(--border)}
+.dp-faq p{margin-top:8px;color:var(--muted)}
+.dp-visit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:44px;align-items:start}
+.dp-loc{display:grid;gap:4px;padding:18px 0;border-top:2px solid var(--text)}
+@media (max-width:1024px){.dp-hero,.dp-area,.dp-day,.dp-visit{grid-template-columns:minmax(0,1fr);gap:32px}.dp-crew{grid-template-columns:repeat(2,minmax(0,1fr))}.dp-jobs article{grid-template-columns:52px minmax(0,1fr) minmax(0,1.4fr)}.dp-jobs .dp-who{grid-column:2/-1}}
+@media (max-width:760px){.dp-hero{padding-block:30px 40px}.dp-h1{font-size:calc(40px * var(--hs))}.dp-panel{padding:18px}.dp-areas,.dp-crew,.dp-faq{grid-template-columns:minmax(0,1fr)}.dp-jobs article{grid-template-columns:44px minmax(0,1fr);gap:6px 14px}.dp-jobs article>p{grid-column:2}.dp-ico{width:40px;height:40px}.dp-strip .sk-wrap{font-size:13px}}
+</style>`;
+const dispatchL = (p, st, c) => { const Q = c.quote;
+  return K.page(st, `${alert(c)}<div class="dp-strip"><div class="sk-wrap"><span>${esc(Q.callLine)}</span><b>${esc(phone(c))}</b></div></div>
+${K.nav(p, [], c.hero.cta, null).replace('<nav class="sk-links" aria-label="Main"></nav>', navLinks(c)).replace('href="#' + K.slug(c.hero.cta) + '"', 'href="#book"')}
+<main class="dp">
+<section class="sk-wrap dp-hero"><div class="sk-stack"><span class="sk-eyebrow">${esc(c.hero.eyebrow)}</span><h1 class="dp-h1">${esc(c.hero.h1)}</h1><p class="sk-lede">${esc(c.hero.lede)}</p><ul class="dp-ticks">${c.facts.map((f) => `<li>${ic("check", 18)}<span><b>${esc(f.t)}</b><span class="muted">${esc(f.d)}</span></span></li>`).join("")}</ul><div class="sk-row"><a class="btn sk-btn-lg" href="#services">${esc(c.hero.alt)}</a></div></div>
+<form class="card dp-panel" id="book" aria-label="${esc(c.hero.cta)}"><h2>${esc(Q.h2)}</h2><div class="sk-stack"><span class="dp-lab">${esc(Q.jobsLabel || "What needs doing?")}</span>${chips(Q.jobs, "dp-chips")}</div>
+<div class="sk-field"><label for="q-where">${esc(Q.whereLabel || "Postcode or ZIP")}</label><input class="sk-input" id="q-where" name="where" type="text" placeholder="${esc(Q.where)}"></div>
+<div class="sk-stack"><span class="dp-lab">${esc(`Arrival windows on ${Q.date}`)}</span><div class="dp-win">${Q.windows.map(([t, s2]) => `<span class="${s2 ? "off" : ""}">${esc(t)}</span>`).join("")}</div></div>
+<button class="btn primary block" type="submit">${esc(c.hero.cta)}</button><p class="muted dp-note">${esc(Q.note)}</p></form></section>
+<section class="sk-sec sk-alt" id="area"><div class="sk-wrap dp-area"><div class="sk-photo dp-map">${areaSvg(c, 460, 400)}</div><div><span class="sk-eyebrow">${esc(Q.areasEyebrow || "Where we work")}</span><h2 class="sk-h2">${esc(Q.areasH2)}</h2><ol class="dp-areas">${Q.areas.map((x) => `<li>${esc(x)}</li>`).join("")}</ol><p class="muted">${esc(Q.areaNote)}</p></div></div></section>
+<section class="sk-sec" id="services"><div class="sk-wrap"><div class="sk-head"><div><span class="sk-eyebrow">${esc(c.services.eyebrow)}</span><h2 class="sk-h2">${esc(c.services.h2)}</h2></div><p class="muted">${esc(c.services.lede)}</p></div><div class="dp-jobs">${c.services.items.map((s2) => `<article><span class="dp-ico">${ic(s2.icon, 22)}</span><h3 class="sk-h3">${esc(s2.t)}</h3><p class="muted">${esc(s2.d)}</p><span class="dp-who">${esc(s2.who)}</span></article>`).join("")}</div></div></section>
+<section class="sk-sec sk-alt" id="process"><div class="sk-wrap dp-day"><div><h2 class="sk-h2">${esc(c.process.h2)}</h2><p class="muted">${esc(c.process.lede)}</p><ol class="dp-steps">${c.process.steps.map((s2) => `<li><b>${esc(s2.t)}</b><span class="muted">${esc(s2.d)}</span></li>`).join("")}</ol></div>
+<div><h2 class="sk-h2">${esc(c.table.h2)}</h2><p class="muted">${esc(c.table.lede)}</p><table class="dp-t"><thead><tr>${c.table.cols.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${c.table.rows.map((r) => `<tr>${r.map((x, i) => `<td>${i ? esc(x) : `<b>${esc(x)}</b>`}</td>`).join("")}</tr>`).join("")}</tbody></table>${c.table.note ? `<p class="muted" style="margin-top:10px;font-size:13px">${esc(c.table.note)}</p>` : ""}</div></div></section>
+<section class="sk-sec" id="team"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.team.h2)}</h2></div><p class="muted">${esc(c.team.lede)}</p></div><div class="dp-crew">${c.team.people.map((m) => `<article class="card"><span class="avatar">${esc(initials(m.n))}</span><h3 class="sk-h3">${esc(m.n)}</h3><p class="muted">${esc(m.r)}</p><p>${esc(m.b)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec sk-alt" id="faq"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.faq.h2)}</h2></div><p class="muted">${esc(c.statement)}</p></div><div class="dp-faq">${faqItems(c)}</div></div></section>
+<section class="sk-sec" id="visit"><div class="sk-wrap dp-visit"><div><h2 class="sk-h2">${esc(c.visit.h2)}</h2><p class="sk-lede">${esc(c.visit.lede)}</p>${c.visit.locations.map((l) => `<div class="dp-loc"><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></div>`).join("")}</div>${contactForm(c)}</div></section>
+</main>${notice(c)}${foot(p, c)}`, BASE + dispatchCss); };
+
+// ---- project: the work first. A drawn job in the hero, a project grid with time and scope, a stage-by-stage schedule, a scope list and a quote form ----
+const projectCss = `<style>
+${GANTT_CSS}
+.pj-bar{border-bottom:2px solid var(--text)}
+.pj-hero{display:grid}
+.pj-hero>*{grid-area:1/1}
+.pj-img{border-radius:0;aspect-ratio:1440/600}
+.pj-over{align-self:end;padding-bottom:36px;position:relative;z-index:1}
+.pj-card{max-width:620px;padding:30px 32px;display:grid;gap:14px;background:var(--bg);border:2px solid var(--text)}
+.pj-h1{font-size:calc(54px * var(--hs));line-height:1.03}
+.pj-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:2px solid var(--text)}
+.pj-facts>div{padding:24px 28px 24px 0;display:grid;gap:4px}
+.pj-facts>div+div{padding-left:28px;border-left:1px solid var(--border)}
+.pj-facts b{font:var(--hw) calc(20px * var(--hs))/1.2 var(--font-h)}
+.pj-filter{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.pj-filter li{padding:7px 14px;border:1px solid var(--text);font-size:13.5px;font-weight:600}
+.pj-filter li[aria-current]{background:var(--text);color:var(--bg)}
+.pj-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 22px}
+.pj-item{display:grid;gap:10px;align-content:start}
+.pj-item .sk-photo{aspect-ratio:400/260;border-radius:0}
+.pj-meta{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:8px}
+.pj-meta b{color:var(--text)}
+.pj-sched{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:48px;align-items:start}
+.pj-scope{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px}
+.pj-scope article{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 12px;padding:18px 0;border-top:1px solid var(--border)}
+.pj-scope article>svg{grid-row:span 3;margin-top:3px}
+.pj-scope .pj-who{font-size:13px;color:var(--muted)}
+.pj-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:2px solid var(--text);counter-reset:p}
+.pj-steps article{counter-increment:p;padding:22px 22px 0 0;display:grid;gap:8px;align-content:start}
+.pj-steps article+article{padding-left:22px;border-left:1px solid var(--border)}
+.pj-steps article::before{content:counter(p);font:var(--hw) calc(56px * var(--hs))/1 var(--font-h)}
+.pj-quote{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:48px;align-items:start}
+.pj-form{padding:26px;display:grid;gap:14px;border:2px solid var(--text)}
+.pj-t{width:100%;border-collapse:collapse;margin-top:16px}
+.pj-t th,.pj-t td{text-align:left;padding:12px 12px 12px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.pj-t thead th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--text)}
+.pj-team{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.pj-team article{display:grid;gap:6px;align-content:start;padding-top:16px;border-top:2px solid var(--text)}
+.pj-faq{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:48px;align-items:start}
+.pj-faq details{padding:16px 0;border-bottom:1px solid var(--border)}
+.pj-faq p{margin-top:8px;color:var(--muted)}
+.pj-end{background:var(--text);color:var(--bg);padding:72px 0}
+.pj-end .muted{color:inherit;opacity:.74}
+.pj-end .btn{background:var(--bg);color:var(--text);border-color:var(--bg)}
+.pj-endgrid{display:grid;grid-template-columns:minmax(0,1.2fr) repeat(2,minmax(0,1fr));gap:40px;align-items:start}
+.pj-loc{display:grid;gap:4px;padding-top:14px;border-top:1px solid color-mix(in oklab,var(--bg) 35%,transparent)}
+@media (max-width:1024px){.pj-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pj-sched,.pj-quote,.pj-faq,.pj-endgrid{grid-template-columns:minmax(0,1fr);gap:28px}.pj-steps,.pj-team{grid-template-columns:repeat(2,minmax(0,1fr))}.pj-steps article:nth-child(3){padding-left:0;border-left:0}}
+@media (max-width:760px){.pj-hero{display:block}.pj-img{aspect-ratio:4/3}.pj-over{padding:0;margin-top:-24px}.pj-card{padding:22px;max-width:none}.pj-h1{font-size:calc(36px * var(--hs))}.pj-facts,.pj-grid,.pj-scope,.pj-steps,.pj-team{grid-template-columns:minmax(0,1fr)}.pj-facts>div,.pj-facts>div+div{padding:16px 0;border-left:0;border-top:1px solid var(--border)}.pj-steps article,.pj-steps article+article{padding:18px 0 0;border-left:0}.pj-end{padding:48px 0}}
+</style>`;
+const projectL = (p, st, c) => { const P = c.projects, Q = c.quote, h = P.items[0];
+  return K.page(st, `${alert(c)}${K.nav(p, [], c.hero.cta, null).replace('class="sk-nav"', 'class="sk-nav pj-bar"').replace('<nav class="sk-links" aria-label="Main"></nav>', navLinks(c)).replace('href="#' + K.slug(c.hero.cta) + '"', 'href="#quote"')}
+<main class="pj">
+<section class="pj-hero"><div class="sk-photo pj-img">${job(h.kind, 1440, 600, 1, `${h.t}, ${h.area}`)}</div><div class="sk-wrap pj-over"><div class="pj-card"><span class="sk-eyebrow">${esc(c.hero.eyebrow)}</span><h1 class="pj-h1">${esc(c.hero.h1)}</h1><p class="muted">${esc(c.hero.lede)}</p><div class="sk-row"><a class="btn primary sk-btn-lg" href="#quote">${esc(c.hero.cta)}</a><a class="btn sk-btn-lg" href="#projects">${esc(c.hero.alt)}</a></div></div></div></section>
+<section class="sk-wrap pj-facts">${c.facts.map((f) => `<div><b>${esc(f.t)}</b><span class="muted">${esc(f.d)}</span></div>`).join("")}</section>
+<section class="sk-sec" id="projects"><div class="sk-wrap"><div class="sk-head"><div><span class="sk-eyebrow">${esc(P.eyebrow)}</span><h2 class="sk-h2">${esc(P.h2)}</h2></div><p class="muted">${esc(P.lede)}</p></div>${chips(["All", ...[...new Set(P.items.map((x) => x.type))]].slice(0, 6), "pj-filter")}
+<div class="pj-grid">${P.items.map((x, i) => `<article class="pj-item"><div class="sk-photo">${job(x.kind, 400, 260, i + 2, `${x.t}, ${x.area}`)}</div><div class="pj-meta"><b>${esc(x.type)}</b><span>${esc(x.time)}</span></div><h3 class="sk-h3">${esc(x.t)}</h3><p class="muted">${esc(x.area)}. ${esc(x.scope)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec sk-alt" id="process"><div class="sk-wrap pj-sched"><div class="sk-stack"><h2 class="sk-h2">${esc(c.schedule.h2)}</h2><p class="muted">${esc(c.schedule.lede)}</p><p class="muted" style="font-size:13px">${esc(c.schedule.note)}</p></div><div>${gantt(c, "gt")}</div></div></section>
+<section class="sk-sec" id="services"><div class="sk-wrap"><div class="sk-head"><div><span class="sk-eyebrow">${esc(c.services.eyebrow)}</span><h2 class="sk-h2">${esc(c.services.h2)}</h2></div><p class="muted">${esc(c.services.lede)}</p></div><div class="pj-scope">${c.services.items.map((s2) => `<article>${ic("check", 20)}<h3 class="sk-h3">${esc(s2.t)}</h3><p class="muted">${esc(s2.d)}</p><p class="pj-who">${esc(s2.who)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec sk-alt"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.process.h2)}</h2></div><p class="muted">${esc(c.process.lede)}</p></div><div class="pj-steps">${c.process.steps.map((s2) => `<article><h3 class="sk-h3">${esc(s2.t)}</h3><p class="muted">${esc(s2.d)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec" id="quote"><div class="sk-wrap pj-quote"><form class="pj-form" aria-label="${esc(c.hero.cta)}"><h2 class="sk-h3">${esc(Q.h2)}</h2>
+<div class="sk-field"><label for="p-job">${esc(Q.jobsLabel || "What needs doing?")}</label><select class="sk-input" id="p-job" name="job">${Q.jobs.map((x) => `<option>${esc(x)}</option>`).join("")}</select></div>
+<div class="sk-field"><label for="p-where">${esc(Q.whereLabel || "Postcode or ZIP")}</label><input class="sk-input" id="p-where" name="where" type="text" placeholder="${esc(Q.where)}"></div>
+<div class="sk-field"><label for="p-desc">Tell us about the job</label><textarea class="sk-input" id="p-desc" name="message" rows="3"></textarea></div>
+<button class="btn primary block" type="submit">${esc(c.hero.cta)}</button><p class="muted" style="font-size:12.5px">${esc(Q.note)}</p></form>
+<div><h2 class="sk-h2">${esc(c.table.h2)}</h2><p class="muted">${esc(c.table.lede)}</p><table class="pj-t"><thead><tr>${c.table.cols.map((x) => `<th scope="col">${esc(x)}</th>`).join("")}</tr></thead><tbody>${c.table.rows.map((r) => `<tr>${r.map((x, i) => `<td>${i ? esc(x) : `<b>${esc(x)}</b>`}</td>`).join("")}</tr>`).join("")}</tbody></table>${c.table.note ? `<p class="muted" style="margin-top:10px;font-size:13px">${esc(c.table.note)}</p>` : ""}</div></div></section>
+<section class="sk-sec sk-alt" id="team"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.team.h2)}</h2></div><p class="muted">${esc(c.team.lede)}</p></div><div class="pj-team">${c.team.people.map((m) => `<article><h3 class="sk-h3">${esc(m.n)}</h3><p class="muted">${esc(m.r)}</p><p>${esc(m.b)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec" id="faq"><div class="sk-wrap pj-faq"><div class="sk-stack"><h2 class="sk-h2">${esc(c.faq.h2)}</h2><p class="muted">${esc(c.statement)}</p></div><div>${faqItems(c)}</div></div></section>
+<section class="pj-end" id="visit"><div class="sk-wrap pj-endgrid"><div class="sk-stack"><h2 class="sk-h2">${esc(c.cta.h2)}</h2><p class="muted">${esc(c.cta.lede)}</p><a class="btn sk-btn-lg" href="#quote">${esc(c.hero.cta)}</a></div>${c.visit.locations.map((l) => `<div class="pj-loc"><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></div>`).join("")}</div></section>
+</main>${notice(c)}${foot(p, c)}`, BASE + projectCss); };
+
 
 const LAYOUTS = {
   atlas: { fn: atlas, style: "corporate", name: "Atlas", about: "split hero with a next-step card, card grids and a contact form" },
@@ -1244,5 +1434,8 @@ const LAYOUTS = {
   index: { fn: indexL, style: "monochrome", name: "Index", about: "the list first: the name set large as a masthead, a numbered project index that opens row by row with a discipline filter, then a CV, services and contact in columns", needs: "work", webH: 9200, mobileH: 14400 },
   // class timetable layout: only for content with a week of classes and passes (gym, personal trainer and fitness, yoga)
   timetable: { fn: timetableL, style: "monochrome", name: "Timetable", about: "the week first: a dark hero with today's classes, a weekly class timetable with a class-type filter, three passes with sample prices, a first-visit guide and coaches", needs: "classes", webH: 7400, mobileH: 15200 },
+  // trades layouts: only for content with a visit request, projects and a schedule (construction and home services)
+  dispatch: { fn: dispatchL, style: "brutalist", name: "Dispatch", about: "book a visit first: a call strip, a visit-request panel with job chips and arrival windows, a drawn service-area map with numbered areas, a job list, sample rates and the steps of the day", needs: "quote", mobileH: 11200 },
+  project: { fn: projectL, style: "monochrome", name: "Project", about: "the work first: a drawn job in the hero, a project grid with job type, time and scope, a stage-by-stage schedule chart, a scope list and a quote form beside sample prices", needs: "quote", mobileH: 11200 },
 };
-module.exports = { LAYOUTS, GLYPH, prop, dish, SAMPLE_KEY, wdArt, WD_ART, pfArt, PF_ART };
+module.exports = { LAYOUTS, GLYPH, prop, dish, job, JOBS, SAMPLE_KEY, wdArt, WD_ART, pfArt, PF_ART };

@@ -75,6 +75,17 @@ function need(c) {
     const P = c.passes || {}; req(P.h2 && P.lede && P.note && /sample/i.test(P.note) && Array.isArray(P.items) && P.items.length === 3 && P.items.every((x) => x.t && x.price && x.per && Array.isArray(x.points) && x.points.length === 3 && x.points.every(Boolean)), "passes: h2, lede, note (says sample), exactly 3 of { t, price, per, 3 points }");
   }
   for (const [k, n] of [["visit.fields", c.visit.fields], ["footer.cols", c.footer.cols], ["services.cols", c.services.cols]]) if (n) req(Array.isArray(n) && n.length === 3 && n.every(Boolean), `${k}: 3 labels`);
+  // trades layouts (dispatch, project) need a visit request, six drawn projects and a schedule: construction and home services content only
+  const { JOBS } = require("./hc/engine");
+  if ((c.layouts || []).some((l) => l === "dispatch" || l === "project")) {
+    const q = c.quote || {}; req(q.h2 && q.callLine && q.date && q.where && q.note && q.areasH2 && q.areaNote, "quote: h2, callLine, date, where, note, areasH2, areaNote");
+    req(Array.isArray(q.jobs) && q.jobs.length >= 4 && q.jobs.length <= 6, "quote.jobs 4-6"); req(Array.isArray(q.windows) && q.windows.length === 4 && q.windows.every((w) => w.length === 2 && (w[1] === "" || w[1] === "full")), "quote.windows: 4 of [label, '' or 'full']");
+    req(Array.isArray(q.areas) && q.areas.length === 6, "quote.areas = 6");
+    const P = c.projects || {}; req(P.eyebrow && P.h2 && P.lede && Array.isArray(P.items) && P.items.length === 6, "projects: eyebrow, h2, lede, 6 items");
+    for (const x of P.items || []) { req(x.t && x.type && x.area && x.time && x.scope, "project fields t, type, area, time, scope"); req(JOBS.includes(x.kind), `project kind ${x.kind}`); }
+    const S = c.schedule || {}; req(S.h2 && S.lede && S.unit && S.note && /sample/i.test(S.note) && S.span >= 4 && S.span <= 12, "schedule: h2, lede, unit, span 4-12, note (says sample)");
+    req(Array.isArray(S.rows) && S.rows.length >= 4 && S.rows.length <= 6 && S.rows.every(([t, a, n]) => t && a >= 1 && n >= 1 && a + n - 1 <= S.span), "schedule.rows: 4-6 of [stage, start, length] inside the span");
+  }
   if (/—/.test(JSON.stringify(c))) miss.push("em dash");
   if (miss.length) throw new Error(`${c.niche}: ${miss.join(", ")}`);
 }

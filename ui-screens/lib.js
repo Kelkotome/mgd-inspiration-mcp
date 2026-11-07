@@ -64,7 +64,7 @@ const FAMILIES = {
   wedding: { name: "Noor & Callum", cat: "wedding", desc: "a couple's wedding website with schedule, travel and RSVP", type: { web: "Website", mobile: "Mobile website" } },
   restaurant: { name: "Olive & Ember", cat: "restaurant", desc: "a wood-fired neighbourhood restaurant", type: { web: "Website", mobile: "Mobile website" } },
   realestate: { name: "Harrow & Vale", cat: "real-estate", desc: "a residential real estate agency for buyers, sellers and renters", type: { web: "Website", mobile: "Mobile website" } },
-  construction: { name: "Ironbark Builders", cat: "construction", desc: "a general contractor for homes and small commercial builds", type: { web: "Website", mobile: "Mobile website" } },
+  construction: { name: "Stoneharrow Builders", cat: "construction", desc: "a general contractor for homes and small commercial builds", type: { web: "Website", mobile: "Mobile website" } },
   dental: { name: "Fennick Dental", cat: "dental", desc: "a family and cosmetic dental practice", type: { web: "Website", mobile: "Mobile website" } },
   lawfirm: { name: "Whitcombe Hale", cat: "legal", desc: "a law firm for families and small businesses", type: { web: "Website", mobile: "Mobile website" } },
   travel: { name: "Driftmark Journeys", cat: "travel", desc: "a small-group tour operator", type: { web: "Website", mobile: "Mobile website" } },
@@ -140,6 +140,11 @@ const FAMILIES = {
   gymbw: { name: "Kettlewick Gym", cat: "gym", desc: "an independent gym with a weights floor, group classes and coaching", type: { web: "Website", mobile: "Mobile website" } },
   trainer: { name: "Orla Penhallow Coaching", cat: "fitness", desc: "an independent personal trainer for one-to-one, small-group and online coaching", type: { web: "Website", mobile: "Mobile website" } },
   yogabw: { name: "Wrenfold Yoga", cat: "yoga", desc: "a yoga studio with daily classes, beginners' courses and workshops", type: { web: "Website", mobile: "Mobile website" } },
+  // 7-Nov-2026 fourth industry, construction and home services. Names checked as exact phrases, no exact trade-business match (see deploy note).
+  plumber: { name: "Quellbrook Plumbing", cat: "plumber", desc: "a local plumbing and heating firm for repairs, bathrooms and boilers", type: { web: "Website", mobile: "Mobile website" } },
+  electrician: { name: "Ambersett Electrical", cat: "electrician", desc: "a local electrical contractor for homes and small businesses", type: { web: "Website", mobile: "Mobile website" } },
+  roofing: { name: "Thornlath Roofing", cat: "roofing", desc: "a roofing company for repairs, new roofs, flat roofs and gutters", type: { web: "Website", mobile: "Mobile website" } },
+  landscaping: { name: "Oakhurrow Landscapes", cat: "landscaping", desc: "a garden design, build and maintenance company", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 

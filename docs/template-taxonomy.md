@@ -8,7 +8,7 @@ Applies to website templates under `/inspiration/ui/`. Healthcare is the pilot (
 |---|---|---|
 | Platform | HTML, WordPress | Path: `/ui/wordpress-themes/...`. HTML is the default and has no path segment of its own |
 | Type | one-page, website, landing page | Filter. A chip appears only when a page has more than one value |
-| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios, Beauty, fitness and wellness | Path |
+| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios, Beauty, fitness and wellness, Construction and home services | Path |
 | Sub-niche | Cardiology, Dental... | Path, under its industry |
 
 Web and mobile are the **Device** filter, renamed so that Platform is free. The database column stays `country`, and `?platform=web|mobile` still works.
@@ -173,6 +173,29 @@ Layouts: six per niche from the existing set (booking-first `concierge`, `band`,
 
 **Words (lint, `tests/bw_lint.py`, modelled on hc_lint).** No health, medical or weight-loss claims ("cure", "detox", "burn fat", "lose X kg", "treats", "heals", "anti-ageing results"), no before/after pictures, no guarantees, no real brands (product, salon, gym or fitness-app names), no reviews, testimonials, ratings, "trusted by" or invented member counts; prices only as obvious samples ("from $00" placeholders or "sample price"); licences or certifications only in "add your own" sentences. People shown as drawn placeholders, never photographs.
 
+## Construction and home services tree (templates r5, 23-Nov-2026: eighth industry, PROPOSAL awaiting the owner; first built 7-Nov-2026 and held, now rebased on r4)
+
+Hub `construction-website-templates`, WordPress segment `construction`. Chosen on demand among the industries not yet built (Keyword Planner, worldwide, 7-Nov): "construction website template" 1,900/mo, plumber 390, cleaning 320, landscaping 320, electrician 320, roofing 260, HVAC 260, pest control 170 (about 4,300 a month of template searches across the trades), and WordPress theme searches for construction 720, cleaning 210, plumbing 140. Runner-up: beauty salon and spa (about 2,550). Four hand-built homepages were already live: the builder (n12), Spruceway Cleaning, Northdraft Heating & Cooling and Mothwell Pest Control (n13). Handyman (210, falling 57% a year) and solar (flat) are left out.
+
+| Sub-niche | id | Pattern | HTML segment | WordPress segment | Layouts |
+|---|---|---|---|---|---|
+| Construction company | construction | construction-website | construction-company-website-template | construction-company | project, dispatch, atlas, folio, ledger, concierge |
+| Plumber | plumber | plumber-website | plumber-website-template | plumber | dispatch, project, bento, band, ledger, atlas |
+| Electrician | electrician | electrician-website | electrician-website-template | electrician | dispatch, project, atlas, ledger, bento, folio |
+| Roofing | roofing | roofing-website | roofing-website-template | roofing | project, dispatch, band, folio, atlas, concierge |
+| HVAC | hvac | hvac-website | hvac-website-template | hvac | dispatch, project, ledger, bento, band, concierge |
+| Cleaning service | cleaning-service | cleaning-service-website | cleaning-website-template | cleaning | dispatch, project, bento, concierge, folio, band |
+| Landscaping | landscaping | landscaping-website | landscaping-website-template | landscaping | project, dispatch, folio, band, bento, concierge |
+| Pest control | pest-control | pest-control-website | pest-control-website-template | pest-control | dispatch, project, ledger, atlas, bento, band |
+
+**Trades layouts.** `dispatch` (a call strip, a visit-request panel with job chips, a postcode field and four arrival windows, a drawn service-area map with coverage rings, a job list, process steps beside a sample rates table, crew cards) and `project` (a drawn job in the hero, project filter chips and six project cards with time on site, a stage-by-stage Gantt schedule labelled as a sample, a quote form beside a price guide, a dark close) exist only for content with `quote`, `projects` and `schedule` (schema in `ui-screens/hc/README.md`). Every construction niche has both. Job drawings (`job()` in `ui-screens/hc/engine.js`) are SVG in the theme's colours, so there are no photos and no before/after images.
+
+**hubFirst.** "construction website template" is answered with the hub first; "construction company", "builder" and "general contractor" go straight to the company set (`HUB_SKIP` in `src/ui_templates.js`). "Home builder" stays a real estate niche, and "website builder", "page builder" and "form builder" never match.
+
+**n12/n13 rows.** construction-website, cleaning-service-website, hvac-website and pest-control-website were flat n12/n13 patterns with one hand-built homepage each. Those pages carry testimonials, invented figures and licence or warranty claims, so (as gym in r4 and agency/architecture in r3) they are not signatures and not in the catalog: the nested pages show the six new designs, the old rows stay live as plain items, and the flat URLs 301 once. Fixed versions of the four pages (fictional notice, no testimonials, "add your own" licence lines, builder renamed Ironbark to Stoneharrow) exist in commit 0cb779d (`ui-screens/tpl/site-*.js`) and are NOT in this round: they need an UPDATE bundle like the r4 Ironyard fix and the owner's approval.
+
+**Words.** No trade brands, platforms, trade bodies or certification schemes, no licence, registration, insurance, warranty or guarantee claims unless the sentence tells the owner to add their own or says "sample", no response-time promises outside tables, no before/after, no "safe for children and pets", "non-toxic", germ or allergy claims, no reviews, ratings, awards or invented figures. Safety lines (gas, electrical, carbon monoxide) are general prompts to call the emergency number. Checked by `tests/cn_lint.py` (pages, `CN_LINT_OUT` for signatures, `--readmes` for theme readmes). Readmes say the theme is "not building, electrical, gas or safety advice".
+
 ## Adding an industry
 
 1. Add a family per niche to `ui-screens/lib.js`, and a motif to `GLYPH` in `ui-screens/hc/engine.js` if needed.
@@ -201,6 +224,6 @@ node ui-screens/wp-export/build_catalog.mjs distinct.json src/tpl_catalog.json  
 
 `ui-screens/wp-export/export.mjs` converts a template's HTML into a block theme: `theme.json`, templates, header and footer parts, one pattern per section, eight style variations plus dark, bundled fonts, `readme.txt`, `screenshot.png`. Real blocks are used wherever a block can hold the markup. Custom HTML is kept for forms, plus some decoration and tables with cell attributes, and each theme's report counts them. The header uses `core/navigation`, which collapses to an overlay menu under 960 px. Text-only sections and layouts are real groups, so they edit in the Site Editor.
 
-Theme slug: `mgd-<niche>-<layout>`. Layout ids: `signature` (the hand-built homepage, variant `homepage`), `atlas`, `folio`, `ledger`, `bento`, `band`, `concierge`, for property content `listing`, `showcase`, and for restaurant content `menu`, `reserve`, for wedding content `invite`, `programme`, for portfolio content `work`, `index`, and for gym, fitness and yoga content `timetable`.
+Theme slug: `mgd-<niche>-<layout>`. Layout ids: `signature` (the hand-built homepage, variant `homepage`), `atlas`, `folio`, `ledger`, `bento`, `band`, `concierge`, for property content `listing`, `showcase`, and for restaurant content `menu`, `reserve`, for wedding content `invite`, `programme`, for portfolio content `work`, `index`, and for gym, fitness and yoga content `timetable`, and for trades content `dispatch`, `project`.
 
 R2 keys: `tpl/wordpress/<slug>/<version>/{theme.zip,shot-1280.webp,shot-390.webp}`. A new version means a new prefix, so caches and old links stay valid until the catalog changes.

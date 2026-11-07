@@ -1,0 +1,126 @@
+{
+ "cleaning-service": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "homepage",
+   "band",
+   "bento",
+   "concierge",
+   "dispatch",
+   "folio",
+   "project"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.454,
+  "failedPairs": []
+ },
+ "construction": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "concierge",
+   "dispatch",
+   "folio",
+   "ledger",
+   "project"
+  ],
+  "maxTreeSimilarity": 0.721,
+  "maxLayoutOverlap": 0.475,
+  "failedPairs": []
+ },
+ "electrician": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "bento",
+   "dispatch",
+   "folio",
+   "ledger",
+   "project"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.423,
+  "failedPairs": []
+ },
+ "hvac": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "homepage",
+   "band",
+   "bento",
+   "concierge",
+   "dispatch",
+   "ledger",
+   "project"
+  ],
+  "maxTreeSimilarity": 0.674,
+  "maxLayoutOverlap": 0.45,
+  "failedPairs": []
+ },
+ "landscaping": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "band",
+   "bento",
+   "concierge",
+   "dispatch",
+   "folio",
+   "project"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.42,
+  "failedPairs": []
+ },
+ "pest-control": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "dispatch",
+   "ledger",
+   "project"
+  ],
+  "maxTreeSimilarity": 0.72,
+  "maxLayoutOverlap": 0.475,
+  "failedPairs": []
+ },
+ "plumber": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "dispatch",
+   "ledger",
+   "project"
+  ],
+  "maxTreeSimilarity": 0.725,
+  "maxLayoutOverlap": 0.437,
+  "failedPairs": []
+ },
+ "roofing": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "concierge",
+   "dispatch",
+   "folio",
+   "project"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.51,
+  "failedPairs": []
+ }
+}

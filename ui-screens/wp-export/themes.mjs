@@ -14,7 +14,9 @@ export const OUT_WP = process.env.WP_OUT || path.join(UI, "out-wp");
 // guest notes removed, dietary labels marked as samples) but that fix is still awaiting approval, so they are shown as HTML designs only.
 // wedding (9-Nov-2026): the hand-built Noor & Callum page is fixed in this branch (fictional notice, registry figures marked as samples) but that fix
 // awaits approval, so it is shown as an HTML design only.
-export const NO_THEME = new Set(["mgd-real-estate-signature", "mgd-restaurant-signature", "mgd-coffee-shop-signature", "mgd-wedding-signature"]);
+// construction, cleaning-service, hvac, pest-control (templates r5): the hand-built n12/n13 homepages are not signatures here (as gym, agency
+// and architecture): they stay plain items, so these slugs are never exported. Listed for safety.
+export const NO_THEME = new Set(["mgd-real-estate-signature", "mgd-restaurant-signature", "mgd-coffee-shop-signature", "mgd-wedding-signature", "mgd-construction-signature", "mgd-cleaning-service-signature", "mgd-hvac-signature", "mgd-pest-control-signature"]);
 export const SIGNATURE = { cardiology: ["cardiology-website", "cardiology", "minimal"], medical: ["medical-website", "medical", "editorial"], dental: ["dental-website", "dental", "corporate"], dermatology: ["dermatology-website", "dermatology", "luxury"], therapist: ["therapist-website", "therapist", "retro"], "physical-therapy": ["physical-therapy-website", "physio", "brutalist"], veterinary: ["veterinary-website", "vet", "playful"], pediatrics: ["pediatrics-website", "pediatrics", "monochrome"], orthodontics: ["orthodontics-website", "ortho", "corporate"], fertility: ["fertility-website", "fertility", "luxury"], "real-estate": ["real-estate-website", "realestate", "corporate"], apartment: ["apartment-website", "apartment", "minimal"], restaurant: ["restaurant-website", "restaurant", "editorial"], "coffee-shop": ["coffee-shop-website", "cafe", "playful"], wedding: ["wedding-website", "wedding", "minimal"] };
 const title = (s) => s.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
 export function designs() {

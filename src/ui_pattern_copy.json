@@ -2696,22 +2696,22 @@
   ]
  },
  "construction-website": {
-  "h1": "Construction website templates",
-  "intro": "Builders win work on trust and clarity. These templates include a quote-request hero, services, recent projects with scope and duration, a process timeline, licensing and insurance facts, figures and a quote form with project type, budget range and start date.",
+  "h1": "Construction company website templates",
+  "intro": "A builder's site has to show the work and make it easy to ask for a price. These templates include a site-visit request, recent projects with scope and time on site, a stage-by-stage build schedule, a sample price guide, the process from first visit to handover and a project form. Licence and insurance lines are left for the owner to fill in.",
   "tips": [
-   "Show finished projects with scope, duration and location.",
-   "Explain your process from first visit to handover.",
-   "State licences, insurance and warranties plainly.",
+   "Show finished projects with scope, location and time on site.",
+   "Explain your process from first visit to handover, with a sample schedule.",
+   "Add your own licence and insurance details where your customers expect them; the templates leave a line for them.",
    "Ask the right questions in the quote form so you can price the job."
   ],
   "faq": [
    [
     "What should a construction company website include?",
-    "Services, a project portfolio, the process, licensing and insurance details, testimonials and a quote request form."
+    "Services, recent projects, the process, a price guide or typical ranges, your own licence and insurance details, and a way to request a site visit or quote."
    ],
    [
     "How do I get more quote requests from my website?",
-    "Put the quote button in the header, keep the form short but specific (project type, budget, start date, postcode) and show recent local work."
+    "Put the quote button in the header, keep the form short but specific (job type, postcode, timing) and show recent local work."
    ]
   ]
  },
@@ -3037,41 +3037,41 @@
  },
  "cleaning-service-website": {
   "h1": "Cleaning service website templates",
-  "intro": "Cleaning customers want a price and a date. These templates lead with an instant quote card, then show a room-by-room checklist for standard, deep and move-out cleans, recurring plans, what happens on the day, areas served, reviews and booking.",
+  "intro": "Cleaning customers want to know what is included, what it costs and when you can come. These templates include a booking panel with arrival windows, what each clean covers, sample prices, the areas served, how access and keys work, and a sample deep-clean schedule.",
   "tips": [
-   "Put a quote form in the hero.",
+   "Put the booking panel near the top.",
    "Spell out what each type of clean includes.",
-   "Say how keys and access work.",
+   "Say how keys, alarms and pets are handled.",
    "List the areas you serve so local visitors know you cover them."
   ],
   "faq": [
    [
     "What should a cleaning service website include?",
-    "A quick quote, what's included in each clean, recurring plan prices, areas served, how access works, reviews and booking."
+    "What each clean includes, prices or how you price, areas served, how access works, how to change a visit, and booking."
    ],
    [
     "How do you price cleaning on a website?",
-    "Most sites estimate from home size, bathrooms, frequency and extras, then confirm the final price after the first visit."
+    "Most sites show an hourly rate or from-prices by home size, then confirm the final price after the first visit."
    ]
   ]
  },
  "hvac-website": {
   "h1": "HVAC website templates",
-  "intro": "When the heat is out, people want someone on the way. These templates include a 24/7 emergency bar, a symptom picker, today's arrival windows, a service area check, repair, install and replacement options, a maintenance plan table and booking.",
+  "intro": "When the heating or cooling stops, people want to know when someone can come. These templates include a call strip, a booking panel with arrival windows, a service-area map, repair, service and install options, a sample maintenance-plan table, a safety line for gas and carbon monoxide alarms, and a sample install schedule.",
   "tips": [
-   "Keep the phone number and emergency bar at the top.",
+   "Keep the phone number at the top of every page.",
    "Let people start from the problem, not the service name.",
    "Show arrival windows and your service area.",
-   "Lay out maintenance plans in a simple table."
+   "Lay out maintenance plans in a simple table, and say plainly what you cannot promise, such as rebates."
   ],
   "faq": [
    [
     "What should an HVAC website include?",
-    "A visible phone number, emergency service details, repair and installation services, service area, maintenance plans, financing, reviews and booking."
+    "A visible phone number, repair, servicing and installation, service area, maintenance plans, how booking works and a short safety line for gas and carbon monoxide."
    ],
    [
     "How do you lay out HVAC services?",
-    "Start from what the customer is noticing, such as no heat or a strange noise, then route to repair, tune-up or replacement."
+    "Start from what the customer is noticing, such as no heat or a strange noise, then route to repair, service or replacement."
    ]
   ]
  },
@@ -3137,17 +3137,17 @@
  },
  "pest-control-website": {
   "h1": "Pest control website templates",
-  "intro": "People search for pest control when they have just seen something. These templates start with a pest identifier, then cover what a visit involves, one-off and quarterly plans, safety for children and pets, service areas, reviews and booking.",
+  "intro": "People search for pest control when they have just seen something. These templates start from the pest, then cover what a visit involves, how to prepare rooms, food and pets, sample prices and visit counts, business contracts, the area served and a sample treatment schedule.",
   "tips": [
    "Let people start from the pest they saw.",
-   "Explain what happens on a visit.",
-   "Show one-off and recurring plans side by side.",
-   "Be specific about preparation and safety for pets and children."
+   "Explain what happens on a visit and how many visits a treatment needs.",
+   "Give a clear preparation checklist instead of safety promises.",
+   "Show one-off treatments and business contracts side by side."
   ],
   "faq": [
    [
     "What should a pest control website include?",
-    "Pests treated, what a visit involves, one-off and recurring plans, safety guidance, service areas, reviews and booking."
+    "Pests treated, what a visit involves, preparation steps, prices or visit counts, business contracts, service areas and booking."
    ],
    [
     "How do you lay out pest control services?",
@@ -4970,6 +4970,86 @@
    [
     "How do yoga studios get new students from their website?",
     "A clear beginners' class or course, an easy first booking and honest information about what a class is like."
+   ]
+  ]
+ },
+ "plumber-website": {
+  "h1": "Plumber website templates",
+  "intro": "A plumbing site answers what you fix, when you can come and what it costs. These templates include a booking panel with two-hour arrival windows, a service-area map, repairs, heating and bathrooms, sample call-out rates, a safety line for gas, recent jobs and a sample bathroom-refit schedule.",
+  "tips": [
+   "Show arrival windows and your phone number before anything else.",
+   "Say how pricing works, call-out and hourly, before people book.",
+   "Split repairs, heating and bathrooms so each visitor finds their job.",
+   "Tell people what to do while they wait for a leak, in one or two plain lines."
+  ],
+  "faq": [
+   [
+    "What should a plumber website include?",
+    "Services, the area you cover, how booking and arrival windows work, how you charge, recent jobs, your own registration and insurance details, and contact details."
+   ],
+   [
+    "Should a plumber show prices online?",
+    "Many show a call-out charge and an hourly rate, with bigger jobs quoted after a visit. The templates include a sample rates table to replace."
+   ]
+  ]
+ },
+ "electrician-website": {
+  "h1": "Electrician website templates",
+  "intro": "An electrician's site has to explain the work in plain words. These templates include a booking panel with arrival windows, fault finding, rewires, fuse boards, lighting and car chargers, sample rates, a safety line for shocks and burning smells, recent jobs and a sample rewire schedule.",
+  "tips": [
+   "Explain what you will do and why before you mention price.",
+   "Say how long people will be without power for common jobs.",
+   "Show the paperwork people get after a job.",
+   "Add your own registration and insurance details; the templates leave a line for them."
+  ],
+  "faq": [
+   [
+    "What should an electrician website include?",
+    "Services, the area you cover, how booking works, sample prices or how you price, what paperwork customers receive, and your own registration details."
+   ],
+   [
+    "How do you lay out electrical services?",
+    "Start from the problem (a tripping switch, a dead socket) and from planned work (rewires, lighting, chargers), so both kinds of visitor find their way."
+   ]
+  ]
+ },
+ "roofing-website": {
+  "h1": "Roofing website templates",
+  "intro": "Roofing customers cannot see the problem themselves. These templates include an inspection booking panel, photo reports after inspections, repairs, re-roofs, flat roofs and gutters, a sample price guide, recent roofs with time on site and a sample re-roof schedule that allows for rain days.",
+  "tips": [
+   "Offer an inspection first, with photos of what you find.",
+   "Explain when a repair is enough and when a new roof makes sense.",
+   "Show recent roofs with the type of job and time on site.",
+   "Say how scaffold, weather and access are handled."
+  ],
+  "faq": [
+   [
+    "What should a roofing website include?",
+    "Services, an inspection booking, recent work, a price guide or typical ranges, how scaffold and weather are handled, and your own licence and insurance details."
+   ],
+   [
+    "Should roofers show prices online?",
+    "Typical ranges help people plan. The templates include a sample price guide to replace with your own."
+   ]
+  ]
+ },
+ "landscaping-website": {
+  "h1": "Landscaping website templates",
+  "intro": "A landscaping site sells a garden people cannot see yet. These templates include a garden-visit booking, recent gardens with build times, design, patios, planting, fencing and maintenance rounds, a sample price guide and a sample build schedule that follows the planting seasons.",
+  "tips": [
+   "Show recent gardens with the type of job and build time.",
+   "Explain design and build as separate steps, with a price for each.",
+   "Say which season suits planting and which suits hard landscaping.",
+   "Offer maintenance rounds for gardens you did not build."
+  ],
+  "faq": [
+   [
+    "What should a landscaping website include?",
+    "Services, recent gardens, how design and build work, typical prices, maintenance rounds, the area you cover and a way to book a garden visit."
+   ],
+   [
+    "How do landscapers show their work?",
+    "With recent gardens, the scope of each job and the time it took. The templates use drawn illustrations to replace with your own photos."
    ]
   ]
  }
