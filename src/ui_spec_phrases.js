@@ -1,7 +1,7 @@
 // Best-for phrase table for website-template pages (spec block, 7-Nov-2026). Fixed, hand-written, reviewed as a whole:
 // line = "Best for: {audience} {who} {style trait}. Not ideal for: {noun} {who} {opposite}."
 // Describe look and content only: no numbers, no results claims, no superlatives (enforced by tests/ui_spec.test.mjs).
-// DRAFT: the user still has to approve every phrase (deploy-bundle-2026-11-07/spec-block-phrases.md) before this goes live.
+// Approved by the user 7-Nov-2026 as drafted (deploy-bundle-2026-11-07/spec-block-phrases.md). Changes need the same review.
 
 // style → [trait the template has, opposite need it does not serve]
 export const STYLE_PHRASES = {
