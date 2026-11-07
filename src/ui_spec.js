@@ -2,6 +2,10 @@
 // that exists (DESIGN.md at render, ui/<id>/spec.json written at ingest); a line with no data is left out, never guessed.
 import { STYLE_PHRASES, INDUSTRY_PHRASES, OVERRIDES } from "./ui_spec_phrases.js";
 
+// Fonts the templates use that are on Google Fonts (checked against ../mgd-kit/google_fonts_families.json by tests/ui_spec.test.mjs).
+// A font not listed here drops the licence note rather than guessing; add it after checking.
+export const GOOGLE_FONTS = new Set(["Cormorant Garamond", "DM Sans", "Fraunces", "Fredoka", "Geist", "IBM Plex Sans", "Instrument Serif", "Inter", "JetBrains Mono", "Manrope", "Nunito", "Space Grotesk"]);
+export const FONT_NOTE = "Google Fonts, under their own licences";
 const SHOWN_ROLES = ["background", "surface", "text", "muted", "primary", "accent"];
 const SECTION_LABELS = { top: "hero", faq: "FAQ", rsvp: "RSVP", faqs: "FAQs" };
 const SKIP_IDS = new Set(["main", "content", "app", "root"]);
@@ -57,8 +61,9 @@ export function specLines({ tokens, extras, spec, pattern, style, isPage, isSect
     const f = [];
     if (tokens.heading && tokens.body) f.push(tokens.heading === tokens.body ? `${tokens.heading} (headings and body)` : `${tokens.heading} (headings), ${tokens.body} (body)`);
     else if (tokens.heading || tokens.body) f.push(`${tokens.heading || tokens.body} (${tokens.heading ? "headings" : "body"})`);
-    if (f.length && x.mono && x.mono !== tokens.heading && x.mono !== tokens.body) f.push(`${x.mono} (code)`);
-    if (f.length) L.push(["Fonts", esc(f.join(", "))]);
+    const names = [tokens.heading, tokens.body].filter(Boolean);
+    if (f.length && x.mono && x.mono !== tokens.heading && x.mono !== tokens.body) { f.push(`${x.mono} (code)`); names.push(x.mono); }
+    if (f.length) L.push(["Fonts", esc(f.join(", ") + (names.every((n) => GOOGLE_FONTS.has(n)) ? ` · ${FONT_NOTE}` : ""))]);
   }
   if (spec && isPage && spec.sections.length) L.push(["Sections", esc(spec.sections.join(", "))]);
   const dark = tokens && Object.keys(tokens.dark || {}).length > 0;

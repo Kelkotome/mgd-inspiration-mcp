@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import assert from "node:assert/strict";
-import { extractSpec, parseSpecJson, parseDesignExtras, bestFor, specLines, specBlock } from "../src/ui_spec.js";
+import { extractSpec, parseSpecJson, parseDesignExtras, bestFor, specLines, specBlock, GOOGLE_FONTS, FONT_NOTE } from "../src/ui_spec.js";
 import { STYLE_PHRASES, INDUSTRY_PHRASES, OVERRIDES, BANNED } from "../src/ui_spec_phrases.js";
 import { parseDesignMd } from "../src/ui_kit.js";
 
@@ -34,6 +34,7 @@ for (const out of ["ui-screens/out", "ui-screens/out-hc"]) for (const d of fs.re
   if (m.type === "page" && !bestFor(m.pattern, m.style)) bad.push(`${d}: no best-for phrase`);
   // rendered hex text must equal DESIGN.md exactly
   const t = parseDesignMd(md), html = specBlock({ tokens: t, extras: x, spec: s, pattern: m.pattern, style: m.style, isPage: m.type === "page", isSection: m.type !== "screen" && m.type !== "email", hasDarkImage: true, esc });
+  if (!html.includes(FONT_NOTE)) bad.push(`${d}: no font licence note (a font missing from GOOGLE_FONTS?)`);
   for (const th of ["light", "dark"]) for (const r of ["background", "surface", "text", "muted", "primary", "accent"]) if (t[th][r] && !html.includes(`${r} <code>${t[th][r]}</code>`)) bad.push(`${d}: ${th} ${r} missing`);
   checks++;
 }
@@ -67,7 +68,15 @@ assert.deepEqual(lab({ tokens: null, extras: null, spec: null, hasDarkImage: fal
 assert.deepEqual(lab({ tokens: tok, extras: ext, spec: law, isPage: false, isSection: false, pattern: "dashboard" }), ["Colours (light)", "Colours (dark)", "Fonts", "Light and dark", "Responsive"]); checks++; // screen: breakpoints only if its HTML has them
 assert.deepEqual(lab({ tokens: tok, extras: ext, spec: { v: 1, sections: [], breakpoints: [], darkMedia: true }, isPage: false, isSection: false, pattern: "dashboard" }), ["Colours (light)", "Colours (dark)", "Fonts", "Light and dark"]); checks++;
 const L = Object.fromEntries(specLines({ tokens: tok, extras: ext, spec: law, esc, hasDarkImage: true, pattern: "law-firm-website", style: "minimal", isPage: true, isSection: true }));
-assert.equal(L.Fonts, "Inter (headings and body), JetBrains Mono (code)");
+assert.equal(L.Fonts, "Inter (headings and body), JetBrains Mono (code) · Google Fonts, under their own licences");
+// 5. licence note: only when every font in the line is a Google Font; the list itself must be on Google Fonts
+const gf = new Set(JSON.parse(fs.readFileSync("../mgd-kit/google_fonts_families.json", "utf8")).map((f) => f.family || f.name || f));
+for (const n of GOOGLE_FONTS) ok(gf.has(n), `${n} is not on Google Fonts`);
+const fontsOf = (t, x) => Object.fromEntries(specLines({ tokens: { light: {}, dark: {}, ...t }, extras: x, spec: null, esc, pattern: "dashboard", style: "minimal", isPage: false, isSection: false, hasDarkImage: false })).Fonts;
+assert.equal(fontsOf({ heading: "Fraunces", body: "Inter" }, { mono: "JetBrains Mono" }), `Fraunces (headings), Inter (body), JetBrains Mono (code) · ${FONT_NOTE}`);
+assert.equal(fontsOf({ heading: "Helvetica Neue", body: "Inter" }, { mono: "JetBrains Mono" }), "Helvetica Neue (headings), Inter (body), JetBrains Mono (code)"); // one non-Google font: no note
+assert.equal(fontsOf({ heading: "Inter", body: "Inter" }, { mono: "SF Mono" }), "Inter (headings and body), SF Mono (code)");
+assert.equal(fontsOf({ heading: null, body: "Inter" }, { mono: null }), `Inter (body) · ${FONT_NOTE}`); checks += 4;
 assert.equal(L.Sections, "hero, practice areas, fees, our lawyers, insights, book a consultation, footer");
 assert.equal(L["Light and dark"], "Both included; follows the system setting");
 assert.equal(L.Responsive, "One HTML file, layout changes at 1024px, 960px and 760px; no horizontal scroll at 320px");
