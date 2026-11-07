@@ -33,6 +33,16 @@ function need(c) {
     for (const x of (c.listings && c.listings.items) || []) { req(x.t && x.area && x.price && x.tag, "listing fields"); req(KINDS.includes(x.kind), `listing kind ${x.kind}`); req(Array.isArray(x.specs) && x.specs.length === 3, "listing specs=3"); }
     req(c.feature && c.feature.eyebrow && c.feature.t && c.feature.lede && c.feature.price && c.feature.rooms && c.feature.rooms.length === 5 && c.feature.rooms.every((r) => r.length === 2), "feature: eyebrow, t, lede, price, 5 rooms");
   }
+  // restaurant layouts (menu, reserve) need a menu, booking details and dish drawings: restaurant content only
+  const ART = ["plate", "bowl", "pizza", "loaf", "cup", "glass", "cake", "tray"];
+  if ((c.layouts || []).some((l) => l === "menu" || l === "reserve")) {
+    const m = c.menu || {}; req(m.eyebrow && m.h2 && m.lede && m.board && m.note && /sample/i.test(m.note), "menu: eyebrow, h2, lede, board, note (says sample)");
+    req(Array.isArray(m.sections) && m.sections.length === 3 && m.sections.every((s) => s.t && s.items && s.items.length === 4 && s.items.every((x) => x.n && x.d && x.p && Array.isArray(x.tags))), "menu: 3 sections of 4 items { n, d, p, tags }");
+    req(Array.isArray(m.keys) && m.keys.length >= 2 && m.keys.length <= 5, "menu.keys 2-5");
+    const codes = new Set((m.keys || []).map((k) => k[0])); for (const s of m.sections || []) for (const x of s.items || []) for (const t of x.tags || []) req(codes.has(t), `menu tag ${t} not in keys`);
+    const b = c.booking || {}; req(b.h2 && b.date && b.note && Array.isArray(b.sizes) && b.sizes.length >= 3 && Array.isArray(b.slots) && b.slots.length === 6 && Array.isArray(b.hours) && b.hours.length === 4, "booking: h2, date, note, sizes>=3, 6 slots, 4 hours rows");
+    req(Array.isArray(c.art) && c.art.length === 3 && c.art.every((a) => ART.includes(a)), "art: 3 dish kinds");
+  }
   if (/—/.test(JSON.stringify(c))) miss.push("em dash");
   if (miss.length) throw new Error(`${c.niche}: ${miss.join(", ")}`);
 }
@@ -57,7 +67,7 @@ for (const c of niches) {
       fs.writeFileSync(path.join(dir, "DESIGN.md"), md);
       const name = `${fam.cat === c.niche ? c.niche[0].toUpperCase() + c.niche.slice(1).replace(/-/g, " ") : fam.name} website, ${L.name} layout`, shows = `a full home page for ${c.kind}: ${L.about}`;
       fs.writeFileSync(path.join(dir, "meta.json"), JSON.stringify({ slug, type: "page", pattern: c.pattern, variant: lid, platform, style: L.style, family: c.family, category: fam.cat, product: fam.name, name, shows,
-        elements: ["website-template", "landing-page", "responsive", "faq", "navigation-header", "footer"], viewport: { w: platform === "web" ? 1440 : 390, h: platform === "web" ? 6400 : (LAYOUTS[lid].needs === "listings" ? 11200 : 8400) } /* property layouts run to ~10,700 px on a phone; 8400 cut off the footer and its fictional notice */, tokens: { light, dark }, fonts: { heading: st.hf, body: st.bf }, layout: lid, niche: c.niche }, null, 2));
+        elements: ["website-template", "landing-page", "responsive", "faq", "navigation-header", "footer"], viewport: { w: platform === "web" ? 1440 : 390, h: platform === "web" ? 6400 : (LAYOUTS[lid].mobileH || (LAYOUTS[lid].needs === "listings" ? 11200 : 8400)) } /* property layouts run to ~10,700 px on a phone; 8400 cut off the footer and its fictional notice */, tokens: { light, dark }, fonts: { heading: st.hf, body: st.bf }, layout: lid, niche: c.niche }, null, 2));
       n++;
     }
   }

@@ -100,6 +100,13 @@ const FAMILIES = {
   luxuryre: { name: "Fenmoor & Hale", cat: "real-estate", desc: "a boutique agency for high-value homes and estates", type: { web: "Website", mobile: "Mobile website" } },
   commercialre: { name: "Draymark Property", cat: "real-estate", desc: "a commercial property agency for offices, shops and industrial units", type: { web: "Website", mobile: "Mobile website" } },
   vacation: { name: "Fernlow Stays", cat: "real-estate", desc: "a small holiday rental company with cottages and apartments to book direct", type: { web: "Website", mobile: "Mobile website" } },
+  // 7-Nov-2026 third industry, restaurant. Names web-searched as exact phrases, no exact food-business match found.
+  bakery: { name: "Tallowmere Bakehouse", cat: "bakery", desc: "a neighbourhood bakery with a counter, celebration cakes and a wholesale round", type: { web: "Website", mobile: "Mobile website" } },
+  pizzeria: { name: "Ferrowick Pizza", cat: "pizzeria", desc: "a pizzeria for dine in, collection and local delivery", type: { web: "Website", mobile: "Mobile website" } },
+  bar: { name: "Oxbarrow Taphouse", cat: "bar", desc: "a neighbourhood bar and pub with cask and craft beer, a short food menu and quiz nights", type: { web: "Website", mobile: "Mobile website" } },
+  catering: { name: "Quillhaven Catering", cat: "catering", desc: "an event caterer for weddings, offices and private parties", type: { web: "Website", mobile: "Mobile website" } },
+  foodtruck: { name: "Kettlewren Street Kitchen", cat: "food-truck", desc: "a food truck with a weekly route, markets and private hire", type: { web: "Website", mobile: "Mobile website" } },
+  finedining: { name: "Vellacourt", cat: "fine-dining", desc: "a fine dining restaurant with a tasting menu and a chef's counter", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 

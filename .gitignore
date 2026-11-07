@@ -25,3 +25,4 @@ ui-screens/out-wp
 ui-screens/wp-export/node_modules
 wrangler.hc.jsonc
 wrangler.ind2.jsonc
+wrangler.ind3.jsonc

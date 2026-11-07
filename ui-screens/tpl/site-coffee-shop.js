@@ -167,7 +167,7 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Today’s bakes", "Coffee", "Loc
   <div class="sk-head"><div><span class="sk-eyebrow">Wholesale & catering</span><h2 class="sk-h2">Bread for your shop, pastries for your meeting</h2></div></div>
   <div class="cf-trade">
     <div class="card cf-tcard"><span class="sk-eyebrow">For offices & events</span><h3 class="sk-h3" style="font-size:calc(24px * var(--hs))">Catering boxes</h3><p class="muted">Mixed pastry boxes, sandwich platters and coffee urns, delivered by 8:30 AM. Order by 2 PM the day before.</p>
-      <ul>${["Pastry box for 12 from $48", "Coffee urn, 40 cups, from $65 with cups and milk", "Labelled for allergens, vegan and gluten-free options"].map((x) => `<li>${ic("check", 16)}<span>${x}</span></li>`).join("")}</ul><a class="btn primary" href="#order-ahead" style="justify-self:start">Plan a catering order</a></div>
+      <ul>${["Pastry box for 12 from $48", "Coffee urn, 40 cups, from $65 with cups and milk", "Allergen labels on every box (sample: check each bake with your kitchen)"].map((x) => `<li>${ic("check", 16)}<span>${x}</span></li>`).join("")}</ul><a class="btn primary" href="#order-ahead" style="justify-self:start">Plan a catering order</a></div>
     <div class="card cf-tcard"><span class="sk-eyebrow">For cafés & grocers</span><h3 class="sk-h3" style="font-size:calc(24px * var(--hs))">Wholesale bread & beans</h3><p class="muted">Daily loaves and weekly coffee for 30 local cafés and shops. Delivery six days a week within the ring road.</p>
       <ul>${["Minimum order $60 a drop", "Barista training with your first coffee order", "Price list sent within one working day"].map((x) => `<li>${ic("check", 16)}<span>${x}</span></li>`).join("")}</ul><a class="btn" href="#" style="justify-self:start">Request the wholesale list</a></div>
   </div>
@@ -193,7 +193,7 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Today’s bakes", "Coffee", "Loc
   </form>
 </div></div></section>
 </main>
-${K.footer(p, "A bakery-café baking at Mill Street since 2019.", [["Cafés", ["Mill Street", "Dockside", "Parkside"]], ["Order", ["Order ahead", "Catering", "Wholesale", "Gift cards"]], ["Contact", ["hello@kilnandcrumb.example", "(555) 017-2200", "Jobs", "Instagram"]]])}`, CSS);
+${K.footer(p, "A bakery-café baking at Mill Street since 2019.", [["Cafés", ["Mill Street", "Dockside", "Parkside"]], ["Order", ["Order ahead", "Catering", "Wholesale", "Gift cards"]], ["Contact", ["hello@kilnandcrumb.example", "(555) 017-2200", "Jobs", "Instagram"]]], "Fictional bakery-café created for this template. Bakes, prices and opening hours are sample content. © 2026 Kiln & Crumb.")}`, CSS);
 
 module.exports = {
   "coffee-shop-website": K.def("cafe", "Coffee shop website",

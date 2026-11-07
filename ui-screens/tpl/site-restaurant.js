@@ -92,11 +92,11 @@ const mapShot = () => `<svg viewBox="0 0 600 560" preserveAspectRatio="xMidYMid 
 <g transform="translate(300 236)"><path d="M0 0c-14-18-22-30-22-42a22 22 0 0 1 44 0c0 12-8 24-22 42z" fill="#c8442f"/><circle cx="0" cy="-42" r="8" fill="#fff"/></g></svg>`;
 
 const DISHES = {
-  "From the oven": [["pizza", "Ember margherita", "San Marzano tomato, fior di latte, basil, olive oil", "16", ["Vegetarian"]],
-    ["bread", "Fire-blistered focaccia", "Rosemary, flaky salt, whipped garlic butter", "8", ["Vegan option"]],
-    ["fish", "Whole roasted bream", "Charred lemon, salsa verde, fennel", "29", ["Gluten-free"]]],
-  "Small plates": [["burrata", "Burrata & heritage tomatoes", "Smoked chilli oil, grilled sourdough", "14", ["Vegetarian"]],
-    ["beet", "Coal-roasted beetroot", "Whipped feta, pickled shallot, dill", "11", ["Vegetarian"]],
+  "From the oven": [["pizza", "Ember margherita", "Plum tomato, fior di latte, basil, olive oil", "16", ["V"]],
+    ["bread", "Fire-blistered focaccia", "Rosemary, flaky salt, whipped garlic butter", "8", ["VG"]],
+    ["fish", "Whole roasted bream", "Charred lemon, salsa verde, fennel", "29", ["GFA"]]],
+  "Small plates": [["burrata", "Burrata & heritage tomatoes", "Smoked chilli oil, grilled sourdough", "14", ["V"]],
+    ["beet", "Coal-roasted beetroot", "Whipped sheep's cheese, pickled shallot, dill", "11", ["V"]],
     ["tart", "Burnt honey tart", "Crème fraîche, orange zest", "9", []]],
 };
 
@@ -122,7 +122,7 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Menu", "Our story", "Private din
   <div class="sk-head"><div><span class="sk-eyebrow">This week’s menu</span><h2 class="sk-h2">Cooked over fire, plated simply</h2></div>
     <div class="re-tabs" role="tablist"><span class="re-tab on" role="tab" aria-selected="true">Dinner</span><span class="re-tab" role="tab">Weekend lunch</span><span class="re-tab" role="tab">Drinks</span></div></div>
   <div class="re-menu">${Object.entries(DISHES).map(([grp, ds]) => `<div><h3 class="sk-h3" style="padding-bottom:8px;border-bottom:2px solid var(--text)">${esc(grp)}</h3>${ds.map(([k, n, d, pr, tags], i) => `<div class="re-dish"><div class="sk-photo">${plate(k, grp.length + i)}</div><div><h3>${esc(n)}</h3><p>${esc(d)}</p>${tags.length ? `<div class="re-tags">${tags.map((t) => `<span class="badge">${esc(t)}</span>`).join("")}</div>` : ""}</div><span class="num re-price">$${pr}</span></div>`).join("")}</div>`).join("")}</div>
-  <div class="sk-row" style="margin-top:36px"><a class="btn primary sk-btn-lg" href="#">See the full menu</a><span class="muted" style="font-size:14px">Allergies? Tell your server, every dish is made to order.</span></div>
+  <div class="sk-row" style="margin-top:36px"><a class="btn primary sk-btn-lg" href="#">See the full menu</a><span class="muted" style="font-size:14px">Sample labels: V vegetarian, VG vegan option, GFA made without gluten on request. Check every dish’s allergens with your kitchen before you publish. Allergies? Tell your server.</span></div>
 </div></section>
 
 <section class="sk-sec re-story" id="our-story"><div class="sk-wrap sk-split">
@@ -137,11 +137,6 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Menu", "Our story", "Private din
 <section class="sk-sec sk-alt" id="private-dining"><div class="sk-wrap">
   <div class="sk-head"><div><span class="sk-eyebrow">Private dining & events</span><h2 class="sk-h2">Rooms for birthdays, teams and long lunches</h2></div><a class="btn sk-btn-lg" href="#">Send an enquiry ${ic("arrow", 16)}</a></div>
   <div class="sk-g3 sk-rail">${[["table", "The chef’s table", "Up to 12 guests beside the oven, with a set menu cooked in front of you."], ["garden", "The courtyard", "Up to 40 standing under the olive trees, May to September."], ["class", "Dough class", "Two hours at the bench, then lunch. Saturdays, eight places."]].map(([k, t, d]) => `<article class="card re-room"><div class="sk-photo">${room(k)}</div><div><h3 class="sk-h3">${t}</h3><p class="muted">${d}</p></div></article>`).join("")}</div>
-</div></section>
-
-<section class="sk-sec"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Guest notes</span><h2 class="sk-h2">What regulars order</h2></div></div>
-  <div class="sk-g3 sk-rail">${[["The focaccia arrives first and disappears first. We book the chef’s table every anniversary now.", "Hana & Joel", "Regulars since 2021"], ["Ask for the bream if it’s on. Staff remembered my nut allergy on the second visit.", "Marcus T.", "Weeknight regular"], ["Took the dough class with my dad. We still argue about whose crust was better.", "Priya N.", "Saturday class"]].map(([q, n, r]) => `<figure class="card re-note"><q>${esc(q)}</q><figcaption class="sk-row" style="gap:10px"><span class="avatar" style="width:36px;height:36px">${n.split(/[ &]+/).map((w) => w[0]).join("").slice(0, 2)}</span><span><b>${esc(n)}</b><br><span class="muted" style="font-size:13px">${esc(r)}</span></span></figcaption></figure>`).join("")}</div>
 </div></section>
 
 <section class="sk-sec sk-tight" id="visit"><div class="sk-wrap">
@@ -159,10 +154,10 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Menu", "Our story", "Private din
 <section class="sk-sec sk-tight"><div class="sk-wrap"><div class="card re-news"><div class="sk-stack" style="gap:6px"><h2 class="sk-h3" style="font-size:calc(24px * var(--hs))">New menu every season</h2><p class="muted">One email when the menu changes. Four a year, no more.</p></div>
 <form><input class="sk-input" placeholder="you@example.com" aria-label="Email address"><button class="btn primary sk-btn-lg" type="button">Subscribe</button></form></div></div></section>
 </main>
-${K.footer(p, "Wood-fired cooking on Mill Lane since 2019.", [["Visit", ["14 Mill Lane", "Tue–Sun from 5 PM", "Weekend lunch from noon"]], ["Contact", ["(555) 014-2290", "hello@oliveandember.example", "Private dining enquiries"]], ["Follow", ["Instagram", "Newsletter", "Gift cards"]]])}`, CSS);
+${K.footer(p, "Wood-fired cooking on Mill Lane since 2019.", [["Visit", ["14 Mill Lane", "Tue–Sun from 5 PM", "Weekend lunch from noon"]], ["Contact", ["(555) 014-2290", "hello@oliveandember.example", "Private dining enquiries"]], ["Follow", ["Instagram", "Newsletter", "Gift cards"]]], "Fictional restaurant created for this template. Dishes, prices and opening hours are sample content. © 2026 Olive & Ember.")}`, CSS);
 
 module.exports = {
   "restaurant-website": K.def("restaurant", "Restaurant website",
-    "a full restaurant home page: navigation with book-a-table and pickup, a wood-fired hero with a date/time/guests reservation strip and opening hours, a tabbed menu with dishes, prices and dietary tags, the restaurant story with figures, private dining and events cards, guest notes, a map with address and a time-slot reservation form, a newsletter sign-up and a footer",
-    ["navigation-header", "hero", "booking-form", "menu", "tabs", "price-list", "dietary-tags", "story", "event-cards", "testimonials", "map", "time-slots", "newsletter", "footer", "restaurant"], web),
+    "a full restaurant home page: navigation with book-a-table and pickup, a wood-fired hero with a date/time/guests reservation strip and opening hours, a tabbed menu with dishes, prices and dietary tags, the restaurant story with figures, private dining and events cards, a map with address and a time-slot reservation form, a newsletter sign-up and a footer",
+    ["navigation-header", "hero", "booking-form", "menu", "tabs", "price-list", "dietary-tags", "story", "event-cards", "map", "time-slots", "newsletter", "footer", "restaurant"], web),
 };

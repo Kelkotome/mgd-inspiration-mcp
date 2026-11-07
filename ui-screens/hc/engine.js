@@ -30,6 +30,15 @@ const GLYPH = {
   villa: '<path d="M4 56h56M8 56V30h30v26M38 38h18v18"/><path d="M4 30h38M14 38h8v10h-8zM26 38h8v18M42 44h10v6H42z"/><path d="M8 22c8-6 16-6 24 0"/>',
   tower: '<path d="M20 56V8h24v48M10 56V26h10M44 34h10v22M4 56h56"/><path d="M26 16h12M26 24h12M26 32h12M26 40h12M28 56v-8h8v8"/>',
   cabin: '<path d="M6 54L32 10l26 44z"/><path d="M26 54V40h12v14M32 22v8M4 54h56"/><path d="M48 18v-8h5v16"/>',
+  // restaurant (7-Nov-2026, third industry)
+  plate: '<circle cx="34" cy="36" r="17"/><circle cx="34" cy="36" r="10"/><path d="M6 10v10M10 10v10M14 10v10M6 20a4 4 0 0 0 8 0M10 24v30M58 10c-5 4-6 12-6 20h6v24"/>',
+  cup: '<path d="M12 26h32v12a16 16 0 0 1-32 0z"/><path d="M44 30h4a6 6 0 0 1 0 12h-5M8 58h44M22 8c-3 4 3 6 0 10M32 8c-3 4 3 6 0 10"/>',
+  loaf: '<path d="M8 44c0-12 10-22 24-22s24 10 24 22v8H8z"/><path d="M20 30l6 8M30 26l6 9M40 28l5 8M4 56h56"/>',
+  cloche: '<path d="M8 46a24 24 0 0 1 48 0z"/><path d="M4 46h56v5H4zM32 18v4"/><circle cx="32" cy="15" r="3"/><path d="M4 58h56"/>',
+  pizza: '<path d="M32 6L8 52c16 7 32 7 48 0z"/><path d="M12 44c13 5 27 5 40 0"/><circle cx="30" cy="26" r="3.5"/><circle cx="24" cy="38" r="3.5"/><circle cx="38" cy="36" r="3.5"/>',
+  cocktail: '<path d="M10 10h44L32 34z"/><path d="M32 34v18M20 54h24M42 10l8-6"/><circle cx="28" cy="17" r="3"/>',
+  truck: '<path d="M4 18h34v26H4zM38 26h12l8 10v8H38"/><circle cx="14" cy="48" r="6"/><circle cx="46" cy="48" r="6"/><path d="M8 18v-6h26v6M42 30h6l4 6H42z"/>',
+  wine: '<path d="M22 6h20c0 14-4 22-10 22S22 20 22 6z"/><path d="M32 28v20M22 54h20M23 14h18"/>',
 };
 const glyph = (c, size, sw = 2.2) => `<svg class="i" width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPH[c.motif]}</svg>`;
 // Abstract illustration, drawn from the niche's glyph. Original artwork; a site owner swaps it for a real photo.
@@ -519,6 +528,181 @@ const showcase = (p, st, c) => { const hero = c.listings.items.find((x) => ["vil
 <section class="sc-end" id="visit"><div class="sk-wrap sc-endgrid"><div class="sk-stack"><h2 class="sk-h2">${esc(c.cta.h2)}</h2><p class="muted">${esc(c.cta.lede)}</p><a class="btn sk-btn-lg" href="#">${esc(c.hero.cta)}</a></div>${c.visit.locations.map((l) => `<div class="sc-loc"><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></div>`).join("")}</div></section>
 </main>${notice(c)}${foot(p, c)}`, BASE + showcaseCss); };
 
+// ==== restaurant layouts (7-Nov-2026, third industry). Unique to food and drink: they need c.menu, c.booking and c.art. ====
+// Dishes and rooms are drawn in theme tokens, so every style variation recolours them. Original artwork; owners swap in photos.
+const FOODC = (i) => [MIX("var(--accent)", 72, "var(--text)"), MIX("var(--primary)", 62), MIX("var(--accent)", 46)][((i % 3) + 3) % 3];
+const dish = (kind, w, h, i, label) => {
+  const rim = MIX("var(--bg)", 84, "var(--text)"), a = FOODC(i), b = FOODC(i + 1), c = FOODC(i + 2), dark = MIX("var(--primary)", 70, "var(--text)"), f = (x) => `style="fill:${x}"`, s = (x, wd) => `style="fill:none;stroke:${x};stroke-width:${wd};stroke-linecap:round;stroke-linejoin:round"`;
+  const k = {
+    plate: `<circle cx="100" cy="106" r="70" ${f(rim)}/><circle cx="100" cy="106" r="56" style="fill:var(--bg)"/><ellipse cx="94" cy="108" rx="30" ry="20" ${f(a)}/><circle cx="120" cy="94" r="11" ${f(b)}/><path d="M72 122c14 10 34 10 52 0" ${s(c, 5)}/>`,
+    bowl: `<path d="M36 98h128c0 40-28 62-64 62s-64-22-64-62z" ${f(rim)}/><ellipse cx="100" cy="98" rx="64" ry="14" ${f(a)}/><circle cx="80" cy="94" r="9" ${f(b)}/><circle cx="112" cy="92" r="8" ${f(c)}/><path d="M122 62l30-30M134 68l30-30" ${s(dark, 5)}/>`,
+    pizza: `<circle cx="100" cy="104" r="68" ${f(a)}/><circle cx="100" cy="104" r="55" ${f(b)}/>${[[80, 86], [122, 92], [96, 126], [128, 124], [70, 116]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="9" ${f(c)}/>`).join("")}<path d="M100 36v136M32 104h136" ${s(a, 3)}/>`,
+    loaf: `<ellipse cx="100" cy="112" rx="72" ry="40" ${f(a)}/>${[-26, 0, 26].map((d) => `<path d="M${86 + d} 86q14 24 0 52" ${s(rim, 6)}/>`).join("")}<rect x="28" y="154" width="144" height="10" rx="5" ${f(dark)}/>`,
+    cup: `<path d="M54 80h78v36a39 39 0 0 1-78 0z" ${f(rim)}/><ellipse cx="93" cy="82" rx="39" ry="9" ${f(a)}/><path d="M132 90h10a14 14 0 0 1 0 28h-12" ${s(rim, 8)}/><ellipse cx="95" cy="162" rx="66" ry="10" ${f(b)}/><path d="M80 40c-8 10 8 14 0 24M106 40c-8 10 8 14 0 24" ${s(dark, 4)}/>`,
+    glass: `<path d="M58 46h84l-42 54z" ${f(a)}/><path d="M58 46h84l-42 54z" ${s(dark, 4)}/><path d="M100 100v52M74 156h52" ${s(dark, 5)}/><circle cx="90" cy="60" r="7" ${f(b)}/><path d="M128 46l18-20" ${s(c, 5)}/>`,
+    cake: `<rect x="46" y="96" width="108" height="56" rx="6" ${f(a)}/><rect x="46" y="96" width="108" height="16" ${f(rim)}/><path d="M46 128h108" ${s(b, 6)}/>${[70, 100, 130].map((x) => `<circle cx="${x}" cy="90" r="8" ${f(c)}/>`).join("")}<rect x="34" y="152" width="132" height="8" rx="4" ${f(dark)}/>`,
+    tray: `<ellipse cx="100" cy="130" rx="82" ry="22" ${f(rim)}/>${[[58, 118], [90, 110], [122, 116], [148, 124], [76, 134], [112, 136]].map(([x, y], j) => `<circle cx="${x}" cy="${y}" r="12" ${f([a, b, c][j % 3])}/>`).join("")}<path d="M38 74a62 50 0 0 1 124 0" ${s(dark, 5)}/>`,
+  }[kind] || "";
+  return `<svg width="${w}" height="${h}" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(label || "Illustration of a dish")}"><rect width="200" height="200" style="fill:${MIX("var(--primary)", 14)}"/><circle cx="${[160, 40, 150][i % 3]}" cy="34" r="24" style="fill:${MIX("var(--accent)", 26)}"/>${k}</svg>`;
+};
+// The dining room for the reservations hero: arched windows, pendant lights, three laid tables.
+const roomSvg = (w, h, label) => { const wall = MIX("var(--primary)", 18), floor = MIX("var(--primary)", 36), wood = MIX("var(--accent)", 64, "var(--text)"), glow = MIX("var(--accent)", 40), dark = MIX("var(--primary)", 72, "var(--text)"), cloth = MIX("var(--bg)", 92, "var(--accent)");
+  const table = (x, y, r) => `<ellipse cx="${x}" cy="${y + 10}" rx="${r}" ry="${r * 0.22}" style="fill:${dark};opacity:.25"/><rect x="${x - 6}" y="${y}" width="12" height="${560 - y}" style="fill:${dark}"/><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * 0.24}" style="fill:${cloth}"/>${[-0.5, 0, 0.5].map((k) => `<ellipse cx="${x + k * r}" cy="${y - 2}" rx="13" ry="4" style="fill:var(--bg)"/>`).join("")}<path d="M${x - r - 30} ${y - 46}h22v48h14v56h-6v-36h-24v36h-6z" style="fill:${wood}"/><path d="M${x + r + 30} ${y - 46}h-22v48h-14v56h6v-36h24v36h6z" style="fill:${wood}"/>`;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 720 640" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(label)}"><rect width="720" height="640" style="fill:${wall}"/>${[90, 300, 510].map((x) => `<path d="M${x} 330V150a60 60 0 0 1 120 0v180z" style="fill:${MIX("var(--accent)", 22, "var(--bg)")}"/><path d="M${x + 60} 90v240M${x} 230h120" style="stroke:${wall};stroke-width:6"/>`).join("")}
+<rect y="470" width="720" height="170" style="fill:${floor}"/>${[150, 360, 570].map((x) => `<path d="M${x} 0v120" style="stroke:${dark};stroke-width:3"/><path d="M${x - 30} 150l12-30h36l12 30z" style="fill:${dark}"/><ellipse cx="${x}" cy="168" rx="70" ry="22" style="fill:${glow};opacity:.5"/>`).join("")}${table(170, 470, 70)}${table(470, 500, 96)}${table(660, 450, 50)}</svg>`; };
+const dotLine = (n, p) => `<p class="mn-line"><b>${esc(n)}</b><span class="mn-dots" aria-hidden="true"></span><span class="mn-p">${esc(p)}</span></p>`;
+const tagRow = (tags, cls) => (tags && tags.length ? `<p class="${cls}">${tags.map((t) => `<span class="badge">${esc(t)}</span>`).join(" ")}</p>` : "");
+// The dietary key and allergen line are labelled as samples on every page that shows dietary codes (checked by tests/rs_lint.py).
+const SAMPLE_KEY = "Sample labels. Before you publish, check every dish's allergens with your kitchen and follow the allergen rules where you trade.";
+const menuKey = (c, cls) => `<aside class="${cls}"><div class="sk-stack"><b>Sample dietary key</b><p class="muted">${esc(SAMPLE_KEY)}</p></div><ul>${c.menu.keys.map(([k, v]) => `<li><span class="badge">${esc(k)}</span> ${esc(v)}</li>`).join("")}</ul></aside>`;
+
+// ---- menu: menu first. An info strip, a specials board in the hero, sticky section tabs, a three-column priced menu with dotted leaders ----
+const menuCss = `<style>
+.mn-info{background:var(--text);color:var(--bg);font-size:13.5px}
+.mn-info .sk-wrap{display:flex;justify-content:space-between;gap:6px 18px;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
+.mn-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:center;padding-block:56px 48px}
+.mn-h1{font-size:calc(60px * var(--hs));line-height:1.02}
+.mn-board{background:var(--text);color:var(--bg);border-radius:var(--radius-lg);padding:28px;display:grid;gap:12px}
+.mn-board .muted{color:inherit;opacity:.74}
+.mn-board .sk-eyebrow{color:inherit;opacity:.8}
+.mn-sp{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:14px;align-items:center;padding-top:12px;border-top:1px solid color-mix(in oklab,var(--bg) 25%,transparent)}
+.mn-sp .sk-photo{width:64px;height:64px;border-radius:50%}
+.mn-sp b{display:block}
+.mn-tabs{position:sticky;top:0;z-index:2;background:var(--bg);border-block:1px solid var(--border)}
+.mn-tabs>.sk-wrap{display:flex;gap:8px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
+.mn-tabs a{padding:7px 16px;border-radius:999px;border:1px solid var(--border);font-weight:600;font-size:14px}
+.mn-tabs a:first-child{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.mn-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px}
+.mn-sec h3{font-size:calc(28px * var(--hs));padding-bottom:10px;border-bottom:3px solid var(--text);margin-bottom:4px}
+.mn-item{padding:14px 0;border-bottom:1px dashed var(--border);display:grid;gap:4px}
+.mn-line{display:flex;align-items:baseline;gap:10px}
+.mn-line b{font-size:17px;min-width:0}
+.mn-dots{flex:1 1 auto;border-bottom:2px dotted var(--border);min-width:16px}
+.mn-p{font-weight:700;font-variant-numeric:tabular-nums}
+.mn-tags{display:flex;gap:6px;flex-wrap:wrap}
+.mn-key{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:32px;align-items:center;margin-top:40px;padding:22px 26px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface)}
+.mn-key ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px}
+.mn-svc{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}
+.mn-svc article{display:grid;gap:8px;align-content:start;padding-top:16px;border-top:2px solid var(--primary)}
+.mn-ico{color:color-mix(in oklab,var(--primary) 80%,var(--text))}
+.mn-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+.mn-steps{list-style:none;display:grid;gap:18px;counter-reset:m;margin-top:18px}
+.mn-steps li{counter-increment:m;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px 14px}
+.mn-steps li::before{content:counter(m);grid-row:span 2;width:36px;height:36px;border-radius:var(--radius);display:grid;place-items:center;background:var(--primary);color:var(--on-primary);font-weight:700}
+.mn-t{width:100%;border-collapse:collapse;margin-top:16px}
+.mn-t th,.mn-t td{text-align:left;padding:11px 12px 11px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.mn-t thead th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--text)}
+.mn-team{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.mn-team article{display:grid;gap:6px;align-content:start;padding:22px;border-radius:var(--radius-lg);background:var(--surface);border:1px solid var(--border)}
+.mn-team .avatar{width:54px;height:54px;font-size:16px}
+.mn-faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 44px}
+.mn-faq details{padding:16px 0;border-bottom:1px solid var(--border)}
+.mn-faq p{margin-top:8px;color:var(--muted)}
+.mn-visit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,400px);gap:28px;align-items:start}
+.mn-loc{display:grid;gap:4px;padding:20px;border-radius:var(--radius-lg);border:1px solid var(--border)}
+@media (max-width:1024px){.mn-cols{grid-template-columns:repeat(2,minmax(0,1fr))}.mn-svc{grid-template-columns:repeat(3,minmax(0,1fr))}.mn-two,.mn-key{grid-template-columns:minmax(0,1fr);gap:24px}.mn-team{grid-template-columns:repeat(2,minmax(0,1fr))}.mn-visit{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.mn-visit>form{grid-column:1/-1}}
+@media (max-width:760px){.mn-hero{grid-template-columns:minmax(0,1fr);gap:26px;padding-block:30px 36px}.mn-h1{font-size:calc(40px * var(--hs))}.mn-board{padding:22px}.mn-cols,.mn-team,.mn-faq,.mn-visit{grid-template-columns:minmax(0,1fr)}.mn-svc{grid-template-columns:repeat(2,minmax(0,1fr))}.mn-info .sk-wrap{font-size:12.5px}.mn-key{padding:18px}}
+</style>`;
+const menuL = (p, st, c) => K.page(st, `${alert(c)}<div class="mn-info"><div class="sk-wrap"><span>${esc(c.booking.hours[0][0])}: ${esc(c.booking.hours[0][1])}</span><span>${esc(c.visit.locations[0].addr)} · ${esc(phone(c))}</span></div></div>
+${K.nav(p, [], c.hero.cta, null).replace('<nav class="sk-links" aria-label="Main"></nav>', navLinks(c)).replace('href="#' + K.slug(c.hero.cta) + '"', 'href="#visit"')}
+<main class="mn">
+<section class="sk-wrap mn-hero"><div class="sk-stack"><span class="sk-eyebrow">${esc(c.hero.eyebrow)}</span><h1 class="mn-h1">${esc(c.hero.h1)}</h1><p class="sk-lede">${esc(c.hero.lede)}</p><div class="sk-row"><a class="btn primary sk-btn-lg" href="#menu">${esc(c.hero.alt)}</a><a class="btn sk-btn-lg" href="#visit">${esc(c.hero.cta)}</a></div></div>
+<aside class="mn-board"><span class="sk-eyebrow">${esc(c.menu.eyebrow)}</span><h2 class="sk-h3">${esc(c.menu.board)}</h2>${c.menu.sections.map((s, i) => { const x = s.items[0]; return `<div class="mn-sp"><div class="sk-photo">${dish(c.art[i % c.art.length], 128, 128, i, x.n)}</div><div><b>${esc(x.n)}</b><span class="muted">${esc(s.t)}</span></div><span class="mn-p">${esc(x.p)}</span></div>`; }).join("")}<p class="muted">${esc(c.menu.note)}</p></aside></section>
+<nav class="mn-tabs" aria-label="Menu sections"><div class="sk-wrap">${c.menu.sections.map((s, i) => `<a href="#m${i + 1}">${esc(s.t)}</a>`).join("")}<a href="#services">${esc(c.nav.services)}</a></div></nav>
+<section class="sk-sec" id="menu"><div class="sk-wrap"><div class="sk-head"><div><span class="sk-eyebrow">${esc(c.menu.eyebrow)}</span><h2 class="sk-h2">${esc(c.menu.h2)}</h2></div><p class="muted">${esc(c.menu.lede)}</p></div>
+<div class="mn-cols">${c.menu.sections.map((s, i) => `<div class="mn-sec" id="m${i + 1}"><h3>${esc(s.t)}</h3>${s.items.map((x) => `<div class="mn-item">${dotLine(x.n, x.p)}<p class="muted">${esc(x.d)}</p>${tagRow(x.tags, "mn-tags")}</div>`).join("")}</div>`).join("")}</div>
+${menuKey(c, "mn-key")}<p class="muted" style="margin-top:14px;font-size:13.5px">${esc(c.menu.note)}</p></div></section>
+<section class="sk-sec sk-alt" id="services"><div class="sk-wrap"><div class="sk-head"><div><span class="sk-eyebrow">${esc(c.services.eyebrow)}</span><h2 class="sk-h2">${esc(c.services.h2)}</h2></div><p class="muted">${esc(c.services.lede)}</p></div><div class="mn-svc">${c.services.items.map((s) => `<article><span class="mn-ico">${ic(s.icon, 24)}</span><h3 class="sk-h3">${esc(s.t)}</h3><p class="muted">${esc(s.d)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec" id="process"><div class="sk-wrap mn-two"><div><h2 class="sk-h2">${esc(c.process.h2)}</h2><p class="muted">${esc(c.process.lede)}</p><ol class="mn-steps">${c.process.steps.map((s) => `<li><b>${esc(s.t)}</b><span class="muted">${esc(s.d)}</span></li>`).join("")}</ol></div>
+<div><h2 class="sk-h2">${esc(c.table.h2)}</h2><p class="muted">${esc(c.table.lede)}</p><table class="mn-t"><thead><tr>${c.table.cols.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${c.table.rows.map((r) => `<tr>${r.map((x) => `<td>${esc(x)}</td>`).join("")}</tr>`).join("")}</tbody></table>${c.table.note ? `<p class="muted" style="margin-top:10px;font-size:13px">${esc(c.table.note)}</p>` : ""}</div></div></section>
+<section class="sk-sec sk-alt" id="team"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.team.h2)}</h2></div><p class="muted">${esc(c.team.lede)}</p></div><div class="mn-team">${c.team.people.map((m) => `<article><span class="avatar">${esc(initials(m.n))}</span><h3 class="sk-h3">${esc(m.n)}</h3><p class="muted">${esc(m.r)}</p><p>${esc(m.b)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec" id="faq"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.faq.h2)}</h2></div><p class="muted">${esc(c.statement)}</p></div><div class="mn-faq">${faqItems(c)}</div></div></section>
+<section class="sk-sec sk-alt" id="visit"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.visit.h2)}</h2></div><p class="muted">${esc(c.visit.lede)}</p></div><div class="mn-visit">${c.visit.locations.map((l) => `<article class="mn-loc"><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></article>`).join("")}${contactForm(c)}</div></div></section>
+</main>${notice(c)}${foot(p, c)}`, BASE + menuCss);
+
+// ---- reserve: the booking first. A dining-room drawing beside a booking panel with time slots, a set-menu column, a policy table, a group band ----
+const reserveCss = `<style>
+.rv-bar>.sk-wrap{height:72px}
+.rv-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);min-height:640px;border-bottom:1px solid var(--border)}
+.rv-img{border-radius:0;height:100%;min-height:420px}
+.rv-panel{padding:56px 56px 48px;display:grid;gap:16px;align-content:center;background:var(--surface)}
+.rv-h1{font-size:calc(50px * var(--hs));line-height:1.04}
+.rv-book{padding:22px;display:grid;gap:14px}
+.rv-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.rv-slots{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+.rv-slots legend{font-weight:600;font-size:14px;margin-bottom:8px}
+.rv-slot{min-width:76px;padding:8px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg);font-weight:600;font-size:14px;text-align:center}
+.rv-slot:first-of-type{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.rv-slot.off{color:var(--muted);text-decoration:line-through;opacity:.7}
+.rv-note{font-size:13px}
+.rv-index{padding:18px 0;border-bottom:1px solid var(--border);font:var(--hw) calc(20px * var(--hs))/1.5 var(--font-h);text-align:center}
+.rv-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;text-align:center}
+.rv-facts>div{padding:30px 20px;display:grid;gap:4px;border-right:1px solid var(--border)}
+.rv-facts>div:last-child{border-right:0}
+.rv-facts b{font:var(--hw) calc(22px * var(--hs))/1.2 var(--font-h)}
+.rv-ways{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.rv-way{padding:0;overflow:hidden;display:grid;align-content:start}
+.rv-way .sk-photo{border-radius:0;aspect-ratio:16/9}
+.rv-way>div:last-child{padding:20px 22px 24px;display:grid;gap:6px}
+.rv-set{max-width:720px;margin:0 auto;text-align:center;display:grid;gap:10px}
+.rv-course{padding:22px 0;border-top:1px solid var(--border);display:grid;gap:6px}
+.rv-course h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.rv-course p.rv-dish{font:var(--hw) calc(22px * var(--hs))/1.3 var(--font-h)}
+.rv-pol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:56px;align-items:start}
+.rv-time{list-style:none;display:grid;gap:0;border-left:2px solid var(--primary);margin:20px 0 0 8px}
+.rv-time li{padding:0 0 24px 26px;position:relative;display:grid;gap:4px}
+.rv-time li::before{content:"";position:absolute;left:-9px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--primary)}
+.rv-t{width:100%;border-collapse:collapse;margin-top:18px}
+.rv-t th,.rv-t td{text-align:left;padding:12px 14px 12px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.rv-t thead th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rv-band{background:var(--primary);color:var(--on-primary)}
+.rv-band .muted{color:inherit;opacity:.8}
+.rv-band .sk-eyebrow{color:inherit;opacity:.85}
+.rv-key{display:grid;gap:12px;padding:20px 22px;text-align:left;margin-top:8px}
+.rv-key ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px 20px}
+.rv-band .btn{background:var(--on-primary);color:var(--primary);border-color:var(--on-primary)}
+.rv-bandgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:center}
+.rv-band ul{list-style:none;display:grid;gap:10px}
+.rv-band li{padding:14px 18px;border-radius:var(--radius);background:color-mix(in oklab,var(--on-primary) 12%,transparent)}
+.rv-team{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;text-align:center}
+.rv-team article{display:grid;justify-items:center;gap:6px}
+.rv-team .avatar{width:96px;height:96px;font-size:26px}
+.rv-faq{max-width:780px;margin:0 auto}
+.rv-faq details{padding:18px 0;border-bottom:1px solid var(--border)}
+.rv-faq p{margin-top:8px;color:var(--muted)}
+.rv-end{background:var(--text);color:var(--bg);padding:76px 0}
+.rv-end .muted{color:inherit;opacity:.74}
+.rv-end .btn{background:var(--bg);color:var(--text);border-color:var(--bg)}
+.rv-endgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:start}
+.rv-hours{width:100%;border-collapse:collapse}
+.rv-hours th,.rv-hours td{text-align:left;padding:9px 0;border-bottom:1px solid color-mix(in oklab,var(--bg) 25%,transparent)}
+.rv-hours td{text-align:right}
+.rv-loc{display:grid;gap:4px;padding:14px 0;border-bottom:1px solid color-mix(in oklab,var(--bg) 25%,transparent)}
+@media (max-width:1024px){.rv-hero{grid-template-columns:minmax(0,1fr);min-height:0}.rv-img{min-height:0;aspect-ratio:16/8}.rv-panel{padding:40px 32px}.rv-ways{grid-template-columns:repeat(2,minmax(0,1fr))}.rv-pol,.rv-bandgrid,.rv-endgrid{grid-template-columns:minmax(0,1fr);gap:28px}.rv-team{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.rv-img{aspect-ratio:4/3}.rv-panel{padding:28px 20px}.rv-h1{font-size:calc(34px * var(--hs))}.rv-book{padding:18px}.rv-row{grid-template-columns:minmax(0,1fr)}.rv-slot{min-width:0;flex:1 1 30%}.rv-facts,.rv-ways{grid-template-columns:minmax(0,1fr)}.rv-facts>div{border-right:0;border-bottom:1px solid var(--border);padding:18px 12px}.rv-facts>div:last-child{border-bottom:0}.rv-index{font-size:calc(17px * var(--hs))}.rv-team .avatar{width:72px;height:72px;font-size:20px}.rv-end{padding:48px 0}}
+</style>`;
+const reserveL = (p, st, c) => { const B = c.booking;
+  return K.page(st, `${alert(c)}${K.nav(p, [], c.hero.cta, null).replace('class="sk-nav"', 'class="sk-nav rv-bar"').replace('<nav class="sk-links" aria-label="Main"></nav>', navLinks(c)).replace('href="#' + K.slug(c.hero.cta) + '"', 'href="#book"')}
+<main class="rv">
+<section class="rv-hero"><div class="sk-photo rv-img">${roomSvg(720, 640, `Illustration of the dining room at ${p.name}`)}</div>
+<div class="rv-panel" id="book"><span class="sk-eyebrow">${esc(c.hero.eyebrow)}</span><h1 class="rv-h1">${esc(c.hero.h1)}</h1><p class="muted">${esc(c.hero.lede)}</p>
+<form class="card rv-book" aria-label="${esc(B.h2)}"><div class="rv-row"><div class="sk-field"><label for="b-date">Date</label><input class="sk-input" id="b-date" name="date" type="text" placeholder="${esc(B.date)}"></div><div class="sk-field"><label for="b-size">${esc(B.sizeLabel || "Guests")}</label><select class="sk-input" id="b-size" name="size">${B.sizes.map((x) => `<option>${esc(x)}</option>`).join("")}</select></div></div>
+<fieldset class="rv-slots"><legend>${esc(B.slotsLabel || `Times on ${B.date}`)}</legend>${B.slots.map(([t, s]) => `<span class="rv-slot${s ? " off" : ""}">${esc(t)}</span>`).join("")}</fieldset>
+<button class="btn primary block" type="submit">${esc(c.hero.cta)}</button><p class="muted rv-note">${esc(B.note)}</p></form></div></section>
+<section class="rv-index"><div class="sk-wrap"><p>${c.index.items.slice(0, 7).map((x) => esc(x)).join(" · ")}</p></div></section>
+<section class="sk-wrap rv-facts">${c.facts.map((f) => `<div><b>${esc(f.t)}</b><span class="muted">${esc(f.d)}</span></div>`).join("")}</section>
+<section class="sk-sec sk-alt" id="services"><div class="sk-wrap"><div class="sk-head"><div><span class="sk-eyebrow">${esc(c.services.eyebrow)}</span><h2 class="sk-h2">${esc(c.services.h2)}</h2></div><p class="muted">${esc(c.services.lede)}</p></div><div class="rv-ways">${c.services.items.map((s, i) => `<article class="card rv-way"><div class="sk-photo">${dish(c.art[i % c.art.length], 480, 270, i + 1, s.t)}</div><div><h3 class="sk-h3">${esc(s.t)}</h3><p class="muted">${esc(s.d)}</p></div></article>`).join("")}</div></div></section>
+<section class="sk-sec" id="menu"><div class="sk-wrap rv-set"><span class="sk-eyebrow">${esc(c.menu.eyebrow)}</span><h2 class="sk-h2">${esc(c.menu.h2)}</h2><p class="muted">${esc(c.menu.lede)}</p>${c.menu.sections.map((s) => `<div class="rv-course"><h3>${esc(s.t)}</h3>${s.items.slice(0, 2).map((x) => `<p class="rv-dish">${esc(x.n)}</p><p class="muted">${esc(x.d)}${x.tags && x.tags.length ? ` (${esc(x.tags.join(", "))})` : ""}</p>`).join("")}</div>`).join("")}${menuKey(c, "card rv-key")}<p class="muted" style="font-size:13.5px">${esc(c.menu.note)}</p></div></section>
+<section class="sk-sec sk-alt" id="process"><div class="sk-wrap rv-pol"><div><h2 class="sk-h2">${esc(c.process.h2)}</h2><p class="muted">${esc(c.process.lede)}</p><ol class="rv-time">${c.process.steps.map((s) => `<li><b>${esc(s.t)}</b><span class="muted">${esc(s.d)}</span></li>`).join("")}</ol></div>
+<div><h2 class="sk-h2">${esc(c.table.h2)}</h2><p class="muted">${esc(c.table.lede)}</p><table class="rv-t"><thead><tr>${c.table.cols.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${c.table.rows.map((r) => `<tr>${r.map((x, i) => `<td>${i ? esc(x) : `<b>${esc(x)}</b>`}</td>`).join("")}</tr>`).join("")}</tbody></table>${c.table.note ? `<p class="muted" style="margin-top:10px;font-size:13px">${esc(c.table.note)}</p>` : ""}</div></div></section>
+<section class="sk-sec rv-band"><div class="sk-wrap rv-bandgrid"><div class="sk-stack"><span class="sk-eyebrow">${esc(c.audience.eyebrow)}</span><h2 class="sk-h2">${esc(c.audience.h2)}</h2><p class="muted">${esc(c.audience.lede)}</p><p><a class="btn sk-btn-lg" href="#visit">${esc(c.nav.call || "Get in touch")}</a></p></div><ul>${c.audience.points.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div></section>
+<section class="sk-sec" id="team"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.team.h2)}</h2></div><p class="muted">${esc(c.team.lede)}</p></div><div class="rv-team">${c.team.people.map((m) => `<article><span class="avatar">${esc(initials(m.n))}</span><h3 class="sk-h3">${esc(m.n)}</h3><p class="muted">${esc(m.r)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec sk-alt" id="faq"><div class="sk-wrap rv-faq"><h2 class="sk-h2">${esc(c.faq.h2)}</h2>${faqItems(c)}</div></section>
+<section class="rv-end" id="visit"><div class="sk-wrap rv-endgrid"><div class="sk-stack"><h2 class="sk-h2">${esc(c.cta.h2)}</h2><p class="muted">${esc(c.cta.lede)}</p><a class="btn sk-btn-lg" href="#book">${esc(c.hero.cta)}</a></div>
+<div><h3 class="sk-h3">${esc(B.h2)}</h3><table class="rv-hours"><tbody>${B.hours.map(([d, t]) => `<tr><th scope="row">${esc(d)}</th><td>${esc(t)}</td></tr>`).join("")}</tbody></table></div>
+<div>${c.visit.locations.map((l) => `<div class="rv-loc"><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></div>`).join("")}</div></div></section>
+</main>${notice(c)}${foot(p, c)}`, BASE + reserveCss); };
+
 const LAYOUTS = {
   atlas: { fn: atlas, style: "corporate", name: "Atlas", about: "split hero with a next-step card, card grids and a contact form" },
   folio: { fn: folio, style: "editorial", name: "Folio", about: "magazine layout: centred masthead, large type, numbered contents, ruled lists, no cards" },
@@ -529,5 +713,8 @@ const LAYOUTS = {
   // property layouts: only for content with listings and a featured home (real estate)
   listing: { fn: listing, style: "monochrome", name: "Listing", about: "search first: a search panel and area chips, listing cards beside a sticky map with numbered pins", needs: "listings" },
   showcase: { fn: showcase, style: "brutalist", name: "Showcase", about: "one home first: a full-width drawing with an intro card, a floor plan with room sizes, a listing mosaic and a dark close", needs: "listings" },
+  // restaurant layouts: only for content with a menu, booking details and dish drawings (food and drink)
+  menu: { fn: menuL, style: "retro", name: "Menu", about: "menu first: an hours strip, a specials board in the hero, sticky section tabs and a three-column priced menu with dotted leaders and a sample dietary key", needs: "menu", mobileH: 11200 },
+  reserve: { fn: reserveL, style: "luxury", name: "Reserve", about: "booking first: a dining-room drawing beside a booking panel with time slots, a set-menu column, a booking-policy table and a band for groups", needs: "menu", mobileH: 11200 },
 };
-module.exports = { LAYOUTS, GLYPH, prop };
+module.exports = { LAYOUTS, GLYPH, prop, dish, SAMPLE_KEY };

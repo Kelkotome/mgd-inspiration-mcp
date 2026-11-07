@@ -24,6 +24,9 @@ A niche is one file, `hc/content/<niche>.js`. `node gen_hc.js --only <niche>` po
 | footer | blurb, legal |
 | listings | property layouts only (`listing`, `showcase`): eyebrow, h2, lede, optional search { where, hint, type, options }, items: exactly 6 of { kind, t, area, price, specs (3 strings), tag }. `kind` is house, townhouse, flat, tower, cabin, villa, plot or shop. |
 | feature | property layouts only: eyebrow, t, lede, price, rooms: exactly 5 of [name, size]. |
+| menu | restaurant layouts only (`menu`, `reserve`): eyebrow, h2, lede, board (specials board title), note (must say "sample"), keys: 2 to 5 of [code, meaning], sections: exactly 3 of { t, items: exactly 4 of { n, d, p, tags } }. Every tag must be a key code. |
+| booking | restaurant layouts only: h2 (title over the hours), date, note, sizes (3 or more), slots: exactly 6 of [time, "" or "full"], hours: exactly 4 of [days, times], optional sizeLabel and slotsLabel. |
+| art | restaurant layouts only: exactly 3 dish drawings from plate, bowl, pizza, loaf, cup, glass, cake, tray. |
 | notice | names the business as fictional, and for health says "general information" and "not medical advice" |
 
 Add a new industry by adding a family to `lib.js`, a motif to `GLYPH`, and content files. No layout code changes.

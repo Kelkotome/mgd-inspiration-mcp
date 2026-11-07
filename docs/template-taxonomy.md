@@ -8,7 +8,7 @@ Applies to website templates under `/inspiration/ui/`. Healthcare is the pilot (
 |---|---|---|
 | Platform | HTML, WordPress | Path: `/ui/wordpress-themes/...`. HTML is the default and has no path segment of its own |
 | Type | one-page, website, landing page | Filter. A chip appears only when a page has more than one value |
-| Industry | Healthcare, Real estate | Path |
+| Industry | Healthcare, Real estate, Restaurant | Path |
 | Sub-niche | Cardiology, Dental... | Path, under its industry |
 
 Web and mobile are the **Device** filter, renamed so that Platform is free. The database column stays `country`, and `?platform=web|mobile` still works.
@@ -83,6 +83,29 @@ Hub `real-estate-website-templates`, WordPress segment `real-estate`. Chosen on 
 
 **Words.** No page uses "Realtor" (a trademark); search aliases still map "realtor" to the agent niche. Copy follows fair-housing wording (homes and services, never ideal residents), checked by `tests/re_lint.py`.
 
+## Restaurant tree (7-Nov-2026, third industry)
+
+Hub `restaurant-website-templates`, WordPress segment `restaurant`. Chosen as the runner-up to real estate: "restaurant website template" 3,600/mo, "restaurant wordpress theme" 880/mo (Keyword Planner, worldwide). Sub-niche volumes (template / WordPress theme): cafe 590 + coffee shop 320 / 90 + 110, bakery 390 / 210, catering 260 / 70, pizza 210 / 70, bar 110 / 30, food truck 50 / 10, fine dining 0 (kept for fit: it is the clearest reservations-led niche). Two hand-built n12 homepages were already live: Olive & Ember (restaurant) and Kiln & Crumb (coffee shop).
+
+| Sub-niche | id | Pattern | HTML segment | WordPress segment | Layouts |
+|---|---|---|---|---|---|
+| Casual dining | restaurant | restaurant-website | casual-dining-website-template | casual-dining | signature (HTML only), menu, reserve, atlas, folio, bento, band |
+| Cafe and coffee shop | coffee-shop | coffee-shop-website | cafe-website-template | cafe | signature (HTML only), menu, reserve, bento, folio, ledger, concierge |
+| Bakery | bakery | bakery-website | bakery-website-template | bakery | menu, reserve, bento, folio, atlas, band |
+| Pizzeria | pizzeria | pizzeria-website | pizza-website-template | pizzeria | menu, reserve, band, bento, atlas, ledger |
+| Bar and pub | bar | bar-website | bar-website-template | bar | menu, reserve, band, folio, concierge, ledger |
+| Catering | catering | catering-website | catering-website-template | catering | menu, reserve, atlas, ledger, concierge, folio |
+| Food truck | food-truck | food-truck-website | food-truck-website-template | food-truck | menu, reserve, bento, band, atlas, ledger |
+| Fine dining | fine-dining | fine-dining-website | fine-dining-website-template | fine-dining | menu, reserve, concierge, folio, ledger, atlas |
+
+**Restaurant layouts.** `menu` (hours strip, a specials board in the hero, sticky menu-section tabs, a three-column priced menu with dotted leaders, a sample dietary key) and `reserve` (a dining-room drawing beside a booking panel with time slots, a course-by-course menu column, a booking-policy table, a band for groups, an hours table in a dark close) exist only for content with `menu`, `booking` and `art` (schema in `ui-screens/hc/README.md`). Every restaurant niche has both, so 2 of its 6 layouts are not shared with the other industries.
+
+**hubFirst.** The bare query "restaurant website template" is answered with the hub, then the casual dining set, because "restaurant" names the whole industry (`hubFirst` on the industry in `src/ui_tree.js`, used by the MCP hint).
+
+**Signatures without a theme.** Olive & Ember and Kiln & Crumb are fixed in this branch (fictional notice, Olive & Ember's guest notes removed, dietary labels marked as samples, two protected food names replaced). They stay HTML designs only (`NO_THEME`) until the fix is approved and shipped.
+
+**Words.** No real chains, platforms, guides or drinks brands, no protected food names, no awards, ratings, reviews, hygiene or certification claims, no health claims, no promotions of excess. Dietary and allergen wording appears only as codes explained by a sample key, or in a sentence that says "sample". Checked by `tests/rs_lint.py`. Theme readmes carry a restaurant "Before you publish" section (`BEFORE` in `ui-screens/wp-export/export.mjs`).
+
 ## Adding an industry
 
 1. Add a family per niche to `ui-screens/lib.js`, and a motif to `GLYPH` in `ui-screens/hc/engine.js` if needed.
@@ -111,6 +134,6 @@ node ui-screens/wp-export/build_catalog.mjs distinct.json src/tpl_catalog.json  
 
 `ui-screens/wp-export/export.mjs` converts a template's HTML into a block theme: `theme.json`, templates, header and footer parts, one pattern per section, eight style variations plus dark, bundled fonts, `readme.txt`, `screenshot.png`. Real blocks are used wherever a block can hold the markup. Custom HTML is kept for forms, plus some decoration and tables with cell attributes, and each theme's report counts them. The header uses `core/navigation`, which collapses to an overlay menu under 960 px. Text-only sections and layouts are real groups, so they edit in the Site Editor.
 
-Theme slug: `mgd-<niche>-<layout>`. Layout ids: `signature` (the hand-built homepage, variant `homepage`), `atlas`, `folio`, `ledger`, `bento`, `band`, `concierge`, and for property content `listing`, `showcase`.
+Theme slug: `mgd-<niche>-<layout>`. Layout ids: `signature` (the hand-built homepage, variant `homepage`), `atlas`, `folio`, `ledger`, `bento`, `band`, `concierge`, for property content `listing`, `showcase`, and for restaurant content `menu`, `reserve`.
 
 R2 keys: `tpl/wordpress/<slug>/<version>/{theme.zip,shot-1280.webp,shot-390.webp}`. A new version means a new prefix, so caches and old links stay valid until the catalog changes.
