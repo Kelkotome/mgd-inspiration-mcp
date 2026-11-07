@@ -3,6 +3,7 @@
 // xstitch-core-69c.js, ribbon-core-69c.js, mockup-core-69.js) — one source of truth with the /tools/ pages
 // ribbon-banner, cross-stitch-pattern-maker and the t-shirt / hoodie / tote-bag / mug / poster / billboard mockups. Stateless: no D1/R2, no fetch.
 import { MGD69C, MGD69M as MK } from "./tools_core69.js";
+import { PRODUCTS73 } from "./mcp_tools73.js";
 
 const T = "https://madegooddesigns.com/tools";
 const ok = (text, structuredContent) => ({ content: [{ type: "text", text }], structuredContent });
@@ -144,7 +145,8 @@ function xstitch(a) {
 // ---- mockup print areas
 const inRow = (label, w, h, dpi, extra, px0) => { const px = px0 || (dpi ? MK.printPx(w, h, dpi) : null); return Object.assign({ name: label, in: [r2(w), r2(h)], cm: [r2(w * 2.54), r2(h * 2.54)], px }, extra || {}); };
 function mockup(a) {
-  if (!PRODUCTS.includes(a.product)) return err("product must be one of: " + PRODUCTS.join(", ") + ".");
+  // 7-Nov-2026: list the b73 products too (index.js routes those to mcp_tools73.js before this runs)
+  if (!PRODUCTS.includes(a.product)) return err("product must be one of: " + PRODUCTS.concat(PRODUCTS73).join(", ") + ".");
   if (a.dpi !== undefined && !(fin(a.dpi) && num(a.dpi) >= 72 && num(a.dpi) <= 1200)) return err("dpi must be 72-1200.");
   const pr = a.product, page = `${T}/${MOCK_PAGES[pr]}/`, dpi = fin(a.dpi) ? Math.round(num(a.dpi)) : pr === "billboard" ? null : 300;
   const pick = (table, key) => { if (key === undefined) return Object.keys(table); if (!(key in table)) return null; return [key]; };
