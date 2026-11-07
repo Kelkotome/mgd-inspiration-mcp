@@ -2536,12 +2536,12 @@
   ]
  },
  "restaurant-website": {
-  "h1": "Restaurant website templates",
-  "intro": "A restaurant home page has one job: get people to book, order or walk in. These templates put a reservation strip and opening hours in the first screen, then a menu with prices and dietary tags, the story, private dining, guest notes, a map and a time-slot booking form.",
+  "h1": "Casual dining website templates",
+  "intro": "A casual dining restaurant home page has one job: get people to book, order or walk in. These templates put hours and a booking path in the first screen, then the menu as text with prices and dietary codes explained by a sample key, ways to eat, group bookings, the kitchen team, questions and a map or contact form.",
   "tips": [
    "Show hours, address and a booking button before anything else; most visitors arrive asking “are you open, and can I get a table?”",
    "Put the menu on the page as text, not a PDF, so it reads well on phones and can be found by search.",
-   "Mark dietary options right next to each dish.",
+   "Mark dietary codes next to each dish, explain them in one key, and check every allergen with the kitchen before you publish.",
    "Offer walk-in and group options so the page answers more than one kind of visit."
   ],
   "faq": [
@@ -2636,7 +2636,7 @@
   ]
  },
  "coffee-shop-website": {
-  "h1": "Coffee shop website templates",
+  "h1": "Cafe and coffee shop website templates",
   "intro": "A café site needs to answer “what’s good, where are you, are you open?” These templates show today’s bakes, a coffee menu with prices, each location with hours, catering and wholesale, the story and an order-ahead form.",
   "tips": [
    "Show each location with its own hours and address.",
@@ -3492,6 +3492,126 @@
    [
     "Should a builder list prices?",
     "Yes, as from-prices, with a note on what is included and that final prices depend on the plot and options."
+   ]
+  ]
+ },
+ "bakery-website": {
+  "h1": "Bakery website templates",
+  "intro": "A bakery site answers what is baked today, when it comes out of the oven and how to order ahead. These templates include a priced counter menu with a sample dietary key, celebration cake and bread pre-orders with collection times, opening hours, wholesale and classes.",
+  "tips": [
+   "List what is baked each day and roughly when it comes out of the oven.",
+   "Give celebration cakes their own order path with the notice you need.",
+   "Say plainly which allergens are handled in the bakery, and check every label with the kitchen.",
+   "Put collection times and opening hours together."
+  ],
+  "faq": [
+   [
+    "What should a bakery website include?",
+    "Opening hours, a counter menu with prices, how to pre-order cakes and bread, collection times, wholesale information and contact details."
+   ],
+   [
+    "Should a bakery take orders online?",
+    "A simple pre-order form with a collection date works for most small bakeries. Say how much notice you need for cakes and how payment is taken."
+   ]
+  ]
+ },
+ "pizzeria-website": {
+  "h1": "Pizzeria website templates",
+  "intro": "A pizzeria site needs the menu, the ways to get a pizza and the hours. These templates include a priced pizza menu with a sample dietary key, table booking or collection times, a delivery area, lunch slices, party trays and opening hours.",
+  "tips": [
+   "Show dine in, collection and delivery as three clear options.",
+   "Put the menu on the page as text with prices.",
+   "State the delivery area and the times you deliver.",
+   "Keep the phone number in the header for orders."
+  ],
+  "faq": [
+   [
+    "What should a pizzeria website include?",
+    "The menu with prices, how to order for collection or delivery, a delivery area, table booking, opening hours and the address."
+   ],
+   [
+    "Do pizzerias need online ordering?",
+    "Many take orders by phone and online. A template can show the menu and a collection-time picker; connect a real ordering system before you take payments."
+   ]
+  ]
+ },
+ "bar-website": {
+  "h1": "Bar and pub website templates",
+  "intro": "A bar or pub site answers what is on tap, what is on this week and whether you can book. These templates include a drinks and snacks menu with prices, quiz and music nights, table and room booking, a sample house policy on ID and children, and opening hours.",
+  "tips": [
+   "List drinks as text with prices, including alcohol-free choices.",
+   "Put the week's events in one place.",
+   "Say whether tables and the back room can be booked.",
+   "State your house policies plainly and check them against the rules where you trade."
+  ],
+  "faq": [
+   [
+    "What should a bar website include?",
+    "Opening hours, a drinks and food menu, events, table or room booking, house policies and how to find you."
+   ],
+   [
+    "How should a bar website handle alcohol?",
+    "Keep the tone responsible: list alcohol-free drinks, avoid promotions of excess, and follow the advertising and licensing rules where you trade."
+   ]
+  ]
+ },
+ "catering-website": {
+  "h1": "Catering website templates",
+  "intro": "A caterer's site turns interest into a quote. These templates include sample packages with per-guest prices, a quote or tasting request with guest numbers, how planning works, booking terms, the team and office hours.",
+  "tips": [
+   "Show sample packages with a per-guest price range.",
+   "Ask for date, guest numbers and service style in the first form.",
+   "Explain the steps from enquiry to the event day.",
+   "Put deposits and final-numbers deadlines in one table."
+  ],
+  "faq": [
+   [
+    "What should a catering website include?",
+    "Event types, sample menus or packages with prices, a quote request, how planning works, terms, and contact details."
+   ],
+   [
+    "How do caterers price on their website?",
+    "Most show a from-price per guest for sample packages and give a full quote after the date, numbers and service style are known."
+   ]
+  ]
+ },
+ "food-truck-website": {
+  "h1": "Food truck website templates",
+  "intro": "A food truck site answers where you are this week. These templates include the weekly route and regular stops, a priced menu with a sample dietary key, pre-order for pickup at a stop, private hire for events and how to pay.",
+  "tips": [
+   "Put this week's stops and times at the top.",
+   "Keep the menu short and priced.",
+   "Offer pre-order for pickup so queues move faster.",
+   "Give private hire its own enquiry path."
+  ],
+  "faq": [
+   [
+    "What should a food truck website include?",
+    "The weekly route or schedule, the menu with prices, pre-ordering, private hire and event bookings, payment options and contact details."
+   ],
+   [
+    "How do food trucks share their location?",
+    "A weekly route on the home page, updated when plans change, works well with a note on where to check for same-day changes."
+   ]
+  ]
+ },
+ "fine-dining-website": {
+  "h1": "Fine dining website templates",
+  "intro": "A fine dining site sells the booking. These templates include a reservation panel with time slots, the tasting menu course by course with a sample dietary key, drinks pairing, booking and deposit terms, the private room and gift experiences.",
+  "tips": [
+   "Put the booking panel in the first screen.",
+   "Show the tasting menu course by course, with the price per guest.",
+   "State deposits, cancellation and dietary questions before people book.",
+   "Keep the copy quiet and specific."
+  ],
+  "faq": [
+   [
+    "What should a fine dining website include?",
+    "Reservations, the menu or a sample of it, prices, booking and deposit terms, dress code, private dining, gift experiences and how to find you."
+   ],
+   [
+    "Should a tasting menu restaurant show prices?",
+    "Yes. Showing the price per guest and any pairing price before booking avoids surprises and missed tables."
    ]
   ]
  }

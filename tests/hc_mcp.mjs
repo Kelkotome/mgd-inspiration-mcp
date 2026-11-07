@@ -19,7 +19,7 @@ await want("pharmacy theme", T("pharmacy theme"), [`${nested}pharmacy`]);
 await want("eye clinic wordpress", T("eye clinic wordpress"), [`${nested}optometry`]);
 await want("healthcare wordpress themes", T("healthcare wordpress themes"), [/\d+ healthcare block themes across 14 sub-niches/, "/ui/wordpress-themes"]);
 await want("free wordpress block theme", T("free wordpress block theme"), ["/ui/wordpress-themes", /healthcare block themes/]);
-await want("restaurant wordpress theme, honest none", T("restaurant wordpress theme"), [/No WordPress theme for "restaurant"/, "/ui/website-templates"], ["healthcare-website-templates/"]);
+await want("salon wordpress theme, honest none (restaurant is now an industry, 7-Nov-2026)", T("salon wordpress theme"), [/No WordPress theme for "salon"/, "/ui/website-templates"], ["healthcare-website-templates/"]);
 await want("shopify dental theme, honest none", T("shopify dental theme"), ["no Shopify templates", "/ui/healthcare-website-templates/dental-website-template"], ["download/wordpress"]);
 await want("platform=shopify param", T("cardiology", { platform: "shopify" }), ["no Shopify templates"]);
 await want("joomla medical template", T("joomla medical template"), ["no Joomla templates"]);

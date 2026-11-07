@@ -6,7 +6,7 @@ import json, re, sys, urllib.request, urllib.error, os
 BASE = sys.argv[1].rstrip("/"); ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 cat = json.load(open(f"{ROOT}/src/tpl_catalog.json")); tree = open(f"{ROOT}/src/ui_tree.js").read(); seo = open(f"{ROOT}/src/ui_seo.js").read()
 # IND=real-estate tests the second industry (7-Nov-2026); default healthcare. The niche rows are read from that industry's block in ui_tree.js.
-IND = os.environ.get("IND", "healthcare"); blk = tree.split(f'"{IND}": {{' if IND != "healthcare" else "healthcare: {", 1)[1].split("appPatterns", 1)[0]
+IND = os.environ.get("IND", "healthcare"); blk = (tree.split(f'"{IND}": {{', 1) if f'"{IND}": {{' in tree else tree.split(f"{IND}: {{", 1))[1].split("appPatterns", 1)[0]
 NICHES = re.findall(r'\["([a-z-]+)", "([a-z-]+-website)", "[^"]+", "([a-z-]+-website-template)", "([a-z-]+)"\]', blk); HUB = f"{IND}-website-templates"; WP = "wordpress-themes"; ISEG = IND
 class NoRedir(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *a): return None
@@ -28,7 +28,8 @@ hits = []
 for nid, pat, htmlSeg, seg in NICHES:
     nest = f"/ui/{HUB}/{htmlSeg}"; n = cat["niches"][nid]; live = len([d for d in n["designs"] if d["distinct"]]) >= 6
     ck(live, f"{nid} below the page test"); hits.append(nest)
-    for old, want in [(f"/ui/{htmlSeg}", nest), (f"/ui/{pat}", nest), (f"/ui/{htmlSeg}/", nest), (f"/ui/{pat}/", nest), (f"{nest}/", nest), (f"/ui?pattern={pat}", nest), (f"/ui/{htmlSeg}?style=minimal", nest + "?style=minimal"), (f"/ui?pattern={pat}&platform=web&style=luxury", nest + "?device=web&style=luxury")]:
+    fs = re.search(rf'"{pat}": \["([a-z0-9-]+)"', seo); flat = fs.group(1) if fs else None   # the flat keyword URL live today (PATTERN_SEO), for example restaurant-website-template
+    for old, want in ([(f"/ui/{flat}", nest), (f"/ui/{flat}/", nest)] if flat and flat != htmlSeg else []) + [(f"/ui/{htmlSeg}", nest), (f"/ui/{pat}", nest), (f"/ui/{htmlSeg}/", nest), (f"/ui/{pat}/", nest), (f"{nest}/", nest), (f"/ui?pattern={pat}", nest), (f"/ui/{htmlSeg}?style=minimal", nest + "?style=minimal"), (f"/ui?pattern={pat}&platform=web&style=luxury", nest + "?device=web&style=luxury")]:
         one_hop(old, want)
     s, h, b = text(nest); ck(s == 200, f"{nest} {s}"); ck(f'rel="canonical" href="{BASE}{nest}"' in b or f'href="{BASE}{nest}" rel="canonical"' in b or re.search(r'rel="canonical" href="[^"]*' + re.escape(nest) + '"', b), f"{nest} canonical"); ck('"BreadcrumbList"' in b, f"{nest} crumbs")
     ck(f"/ui/{WP}/{ISEG}/{seg}" in b, f"{nest} cross-link to WordPress"); ck("distinct designs" in b, f"{nest} designs block"); g = b.split("distinct designs", 1)[-1].split("Every screen", 1)[0]; ck(len(re.findall(r'class="card page"', g)) == len([d for d in n["designs"] if d["distinct"]]), f"{nest} shows every design")
@@ -73,12 +74,16 @@ s, h, b = text("/ui/chat-ai-assistant"); ck(s == 301, "old flat id still one hop
 s, h, b = text("/ui/chat-ai-assistant/"); ck(s == 301 and (h.get("Location") or "").endswith("/ui/chatbot-ui"), "old flat id with slash one hop")
 # item URLs do not move
 IT = NICHES[0]; s, h, b = text(f"/ui/{HUB}/{IT[2]}"); items = re.findall(r'href="[^"]*(/ui/' + IT[1] + r'-[a-z-]+-[0-9a-f]{12})"', b); ck(bool(items), "item link on niche page")
-LAY = re.compile(r"-website-(atlas|folio|ledger|bento|band|concierge|listing|showcase)-"); gen = [x for x in items if LAY.search(x)]; sig = [x for x in items if not LAY.search(x)]  # signature rows have no layout segment
+LAY = re.compile(r"-website-(atlas|folio|ledger|bento|band|concierge|listing|showcase|menu|reserve)-"); gen = [x for x in items if LAY.search(x)]; sig = [x for x in items if not LAY.search(x)]  # signature rows have no layout segment
 if gen: s, _, ib = text(gen[0]); ck(s == 200 and f"{HUB}/{IT[2]}" in ib, "item page links nested pattern"); ck("Also for WordPress" in ib, f"item page sibling ({gen[0]})")
 # a signature with no theme (themes.mjs NO_THEME: real-estate) must not claim a WordPress sibling
-if sig and IND == "real-estate": s, _, ib = text(sig[0]); ck(s == 200 and "Also for WordPress" not in ib, "signature item has no WordPress sibling")
+if sig and IND in ("real-estate", "restaurant"): s, _, ib = text(sig[0]); ck(s == 200 and "Also for WordPress" not in ib, "signature item has no WordPress sibling")
 # the live Harrow & Vale page, fixed 7-Nov-2026: fictional notice, no invented testimonials or sales counts
 if sig and IND == "real-estate":
     s, _, rb = text(f"/ui/raw/{sig[0][-12:]}.html"); ck(s == 200 and "Fictional agency created for this template" in rb, "agency signature carries the fictional notice")
     ck(not re.search(r"Helen M\.|homes sold in 2025|tenancies managed|From recent movers|on last year", rb), "agency signature has no invented testimonials or figures")
+# the live Olive & Ember page (casual dining, the first restaurant niche), fixed in this branch: fictional notice, guest notes and the nut-allergy quote removed
+if sig and IND == "restaurant":
+    s, _, rb = text(f"/ui/raw/{sig[0][-12:]}.html"); ck(s == 200 and "Fictional restaurant created for this template" in rb, "restaurant signature carries the fictional notice")
+    ck(not re.search(r"Guest notes|What regulars order|San Marzano|[Ff]eta\b", rb), "restaurant signature has no guest notes or protected food names")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)

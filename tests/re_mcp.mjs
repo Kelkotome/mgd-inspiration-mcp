@@ -22,7 +22,7 @@ await want("shopify real estate theme, honest none", T("shopify real estate them
 await want("wix realtor template, honest none", T("wix realtor template"), ["no Wix templates", `${H}real-estate-agent-website-template`]);
 await want("plain template gets the nested page", T("property management website template"), [`${H}property-management-website-template`, "6 distinct designs"]);
 await want("agency template hint", T("real estate website template"), [`${H}real-estate-agency-website-template`, "7 distinct designs"]);
-await want("restaurant still honest none", T("restaurant wordpress theme"), [/No WordPress theme for "restaurant"/]);
+await want("salon still honest none", T("salon wordpress theme"), [/No WordPress theme for "salon"/]);
 await want("healthcare unchanged", T("cardiology WordPress theme"), ["/ui/wordpress-themes/healthcare/cardiology", "not medical advice"], ["fair housing"]);
 for (const q of ["apartment app dashboard theme", "dark theme dashboard", "property card component", "rental booking app"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "No WordPress theme"]);
 await want("list_ui_patterns themes", call("list_ui_patterns", { kind: "themes" }), ["TEMPLATE TREE, REAL ESTATE", `${W}vacation-rental`, "TEMPLATE TREE, HEALTHCARE"]);

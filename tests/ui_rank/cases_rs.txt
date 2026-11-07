@@ -1,0 +1,21 @@
+# Restaurant tree, 7-Nov-2026
+restaurant website template | restaurant-website
+casual dining restaurant website | restaurant-website
+bistro website template | restaurant-website
+cafe website template | coffee-shop-website
+coffee shop website | coffee-shop-website
+bakery website template | bakery-website
+cake shop website | bakery-website
+pizza website template | pizzeria-website
+pizzeria website | pizzeria-website
+bar website template | bar-website
+pub website | bar-website
+cocktail bar website | bar-website
+catering website template | catering-website
+caterer website | catering-website
+food truck website template | food-truck-website
+street food website | food-truck-website
+fine dining website template | fine-dining-website
+tasting menu restaurant website | fine-dining-website
+navigation bar | navigation-header
+search bar | search-results search-filters navigation-header

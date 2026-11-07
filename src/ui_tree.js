@@ -57,6 +57,22 @@ export const INDUSTRIES = {
     ],
     appPatterns: [],
   },
+  // 7-Nov-2026 third industry. Demand: "restaurant website template" 3,600/mo, "restaurant wordpress theme" 880/mo (Keyword Planner, worldwide).
+  // hubFirst: the bare industry query ("restaurant website template") is answered with the hub before the restaurant-named niche.
+  restaurant: {
+    id: "restaurant", label: "Restaurant", hub: "restaurant-website-templates", seg: "restaurant", h1: "Restaurant website templates", hubFirst: true,
+    niches: [
+      ["restaurant", "restaurant-website", "Casual dining", "casual-dining-website-template", "casual-dining"],
+      ["coffee-shop", "coffee-shop-website", "Cafe and coffee shop", "cafe-website-template", "cafe"],
+      ["bakery", "bakery-website", "Bakery", "bakery-website-template", "bakery"],
+      ["pizzeria", "pizzeria-website", "Pizzeria", "pizza-website-template", "pizzeria"],
+      ["bar", "bar-website", "Bar and pub", "bar-website-template", "bar"],
+      ["catering", "catering-website", "Catering", "catering-website-template", "catering"],
+      ["food-truck", "food-truck-website", "Food truck", "food-truck-website-template", "food-truck"],
+      ["fine-dining", "fine-dining-website", "Fine dining", "fine-dining-website-template", "fine-dining"],
+    ],
+    appPatterns: [],
+  },
 };
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };

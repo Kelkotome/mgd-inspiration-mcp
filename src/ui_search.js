@@ -12,12 +12,12 @@ export const UI_STYLE_LIST = ["minimal", "editorial", "brutalist", "luxury", "pl
 // Curated aliases per pattern: the words people actually use for it. Matched after stemming.
 export const PATTERN_ALIASES = {
   // 5-Nov-2026 template round (n12): industry website templates (full home pages)
-  "restaurant-website": ["restaurant website", "restaurant", "restaurant landing page", "restaurant homepage", "bistro", "pizzeria", "menu and reservations", "table booking website", "webtemplate", "restaurant webtemplate"],
+  "restaurant-website": ["restaurant website", "restaurant", "restaurant landing page", "restaurant homepage", "bistro", "casual dining", "casual dining restaurant", "neighbourhood restaurant", "neighborhood restaurant", "menu and reservations", "table booking website", "webtemplate", "restaurant webtemplate"],
   "agency-website": ["agency website", "agency", "creative agency", "design agency", "digital agency", "design studio website", "marketing agency", "webtemplate", "agency webtemplate", "design agency webtemplate", "creative agency webtemplate"],
   "architecture-website": ["architecture website", "architect", "architects", "architecture firm", "architecture studio", "interior design website", "interiors", "webtemplate", "architecture webtemplate", "architect webtemplate"],
   "wedding-website": ["wedding website", "wedding", "rsvp", "save the date", "wedding rsvp", "webtemplate", "wedding webtemplate"],
   "ecommerce-website": ["ecommerce website", "ecommerce", "online store", "store homepage", "shop homepage", "storefront", "ecommerce homepage", "ecommerce landing page", "webtemplate", "ecommerce webtemplate", "online store webtemplate", "store webtemplate", "shop webtemplate"],
-  "coffee-shop-website": ["coffee shop website", "coffee shop", "cafe", "café", "bakery", "coffee", "bakery website", "cafe website", "webtemplate", "coffee shop webtemplate", "cafe webtemplate", "bakery webtemplate"],
+  "coffee-shop-website": ["coffee shop website", "coffee shop", "cafe", "café", "coffee", "coffee house", "espresso bar", "cafe website", "webtemplate", "coffee shop webtemplate", "cafe webtemplate"],
   "salon-website": ["salon website", "salon", "beauty salon", "hair salon", "hairdresser", "barber", "spa website", "webtemplate", "salon webtemplate", "beauty salon webtemplate", "hair salon webtemplate"],
   "real-estate-website": ["real estate website", "real estate", "real estate agency", "real estate brokerage", "property listings", "estate agent", "realty", "property website", "real estate landing page", "webtemplate", "real estate webtemplate", "property webtemplate"],
   "construction-website": ["construction website", "construction", "contractor", "builder", "builders", "construction company", "renovation", "webtemplate", "construction webtemplate", "contractor webtemplate", "builder webtemplate"],
@@ -44,6 +44,12 @@ export const PATTERN_ALIASES = {
   "luxury-real-estate-website": ["luxury real estate website", "luxury real estate", "luxury homes", "luxury property", "high end real estate", "estates", "luxury realtor", "luxury real estate landing page"],
   "commercial-real-estate-website": ["commercial real estate website", "commercial real estate", "commercial property", "office space", "office leasing", "office space leasing", "office space to let", "office leasing website", "retail space", "industrial property", "warehouse space", "cre website"],
   "vacation-rental-website": ["vacation rental website", "vacation rental", "holiday rental", "holiday let", "holiday cottage", "short term rental", "short-term rental", "cabin rental", "direct booking website", "vacation rental landing page"],
+  "bakery-website": ["bakery website", "bakery", "bakeries", "bakehouse", "patisserie", "cake shop", "bread shop", "bakery landing page", "bakery webtemplate"],
+  "pizzeria-website": ["pizzeria website", "pizzeria", "pizza", "pizza shop", "pizza restaurant", "pizza place", "pizza website", "pizzeria landing page", "pizza webtemplate"],
+  "bar-website": ["bar website", "pub website", "pub", "pubs", "tavern", "taproom", "taphouse", "cocktail bar", "wine bar", "brewpub", "bar and pub", "bar landing page", "bar webtemplate", "pub webtemplate"],
+  "catering-website": ["catering website", "catering", "caterer", "caterers", "catering company", "event catering", "wedding catering", "catering landing page", "catering webtemplate"],
+  "food-truck-website": ["food truck website", "food truck", "food trucks", "food van", "street food", "food cart", "mobile kitchen", "food truck landing page", "food truck webtemplate"],
+  "fine-dining-website": ["fine dining website", "fine dining", "fine dining restaurant", "tasting menu", "tasting menu restaurant", "upscale restaurant", "fine dining landing page", "fine dining webtemplate"],
   "home-builder-website": ["home builder website", "home builder", "home builders", "new homes", "new home builder", "housebuilder", "new build homes", "custom home builder", "home builder landing page"],
   "hospital-website": ["hospital website", "hospital", "community hospital", "general hospital", "hospital site", "hospital landing page", "hospital website template", "hospitalwebsite", "healthcare system website"],
   "mental-health-website": ["mental health website", "mental health", "mental health clinic", "psychiatry", "psychiatrist", "psychiatry clinic", "psychiatrist website", "behavioral health", "behavioural health", "mental health clinic website", "mental health website template", "mentalhealthwebsite"],

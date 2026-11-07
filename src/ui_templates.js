@@ -10,6 +10,8 @@ export const WP_LICENCE = "Theme code and patterns: GPL-2.0-or-later. Bundled fo
 const DISCLOSES = {
   healthcare: "Names, people, addresses, phone numbers and timings in every template are fictional samples to replace. The templates are designs, not medical advice, and they do not make a site compliant with any health, privacy or advertising rule.",
   "real-estate": "Names, people, addresses, phone numbers, listings, prices and fees in every template are fictional samples to replace. The templates are designs, not legal or financial advice, and they do not make a site compliant with any fair housing, licensing or advertising rule.",
+  // restaurant: new copy, option 1 of the options in deploy-bundle-2026-11-07/restaurant.md
+  restaurant: "Names, people, addresses, phone numbers, dishes, menus, prices and opening hours in every template are fictional samples to replace. Dietary labels and allergen notes are labelled samples: check every dish with your kitchen. The templates are designs, not food safety or legal advice, and they do not make a site compliant with any allergen, food hygiene, licensing or advertising rule.",
 };
 const discloseFor = (ids) => [...new Set(ids)].map((i) => DISCLOSES[i]).filter(Boolean).join(" ");
 const DISCLOSE_ALL = () => discloseFor(platformIndustries().map((i) => i.id));
@@ -163,7 +165,12 @@ export async function themeDownload(slug, kind, env, site, base) {
 
 // ---- MCP ----------------------------------------------------------------------------------------------------------------------------
 // Most specific phrase first: "animal hospital" before "hospital", "mental health" before "medical".
-const ALIASES = [["vacation-rental", /\b(vacation rentals?|holiday (lets?|rentals?|cottages?|homes?)|short[- ]term rentals?|cabin rentals?|direct booking)\b/], ["property-management", /\b(property manage\w*|letting agents?|lettings|rental management|landlord services)\b/],
+// restaurant (7-Nov-2026). "bar" never matches a UI bar (navigation bar, progress bar, search bar, tab bar ...).
+const BAR_UI = "(?<!\\b(?:nav|navigation|progress|search|side|tab|app|status|tool|menu|top|bottom|title|scroll|action|snack|command|address|filter|button|loading|sticky|header|footer|info|announcement|cookie|chocolate|salad|candy|granola|protein)[- ]?)";
+const ALIASES = [["fine-dining", /\b(fine[- ]dining|tasting[- ]menus?|upscale restaurants?)\b/], ["food-truck", /\b(food (trucks?|vans?|carts?)|street food|mobile kitchen)\b/], ["catering", /\b(cater(ing|ers?)|event food)\b/],
+  ["pizzeria", /\b(pizz(a|as|eria|erias)|pizza (shops?|places?))\b/], ["bakery", /\b(baker(y|ies)|bakehouse|patisseries?|cake shops?|bread shops?)\b/], ["coffee-shop", /\b(coffee (shops?|house)|coffeehouse|caf(e|é)s?|espresso bar)\b/],
+  ["bar", new RegExp(`\\b(${BAR_UI}bars?|pubs?|taverns?|taprooms?|taphouses?|brewpubs?|gastropubs?)\\b`)], ["restaurant", /\b(restaurants?|bistros?|brasseries?|eater(y|ies)|casual dining|trattorias?)\b/],
+  ["vacation-rental", /\b(vacation rentals?|holiday (lets?|rentals?|cottages?|homes?)|short[- ]term rentals?|cabin rentals?|direct booking)\b/], ["property-management", /\b(property manage\w*|letting agents?|lettings|rental management|landlord services)\b/],
   ["commercial-real-estate", /\b(commercial (real estate|property|properties)|office (space|leasing)|retail space|industrial (units?|property)|warehouse space)\b/], ["luxury-real-estate", /\b(luxury (real estate|homes?|propert\w*|realtors?)|high[- ]end (real estate|homes?))\b/], ["home-builder", /\b(home ?builders?|house ?builders?|new[- ]homes?|new[- ]build)\b/],
   ["real-estate-agent", /\b(real estate agents?|realtors?|independent agents?|solo agents?)\b/], ["apartment", /\b(apartments?|multifamily|apartment (complex|community)|leasing office)\b/], ["real-estate", /\b(real estate|realty|estate agents?|estate agency|property (listings?|websites?)|brokerage)\b/],
   ["veterinary", /\b(veterinar\w*|vets?|animal (hospital|clinic)|pet clinic)\b/], ["mental-health", /\b(mental health|psychiatr\w*|behavioural health|behavioral health)\b/], ["therapist", /\b(therapists?|counsell?(ors?|ing)|psychotherapist|psychologists?)\b/], ["physical-therapy", /\b(physical therapy|physical therapist|physio\w*|sports rehab|rehab clinic)\b/],
@@ -196,10 +203,11 @@ function indLine(n, s, u) {
 }
 // One line added above normal results when a query names a template sub-niche, so the nested page gets cited.
 // Industry words, for the hub hint and the general WordPress answer.
-const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/ };
+const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/, restaurant: /\b(restaurants?|food and drink|hospitality|food business(es)?)\b/ };
 export function tplHint({ q }, site) {
   const s = String(q || "").toLowerCase(); if (!/\b(templates?|website|landing page|homepage|home page)\b/.test(s)) return "";
   const id = (ALIASES.find(([, rx]) => rx.test(s)) || [])[0], n = id ? nicheById(id) : null, u = (rel) => `${site}/ui/${rel}`;
+  if (n && n.htmlLive && INDUSTRIES[n.industry].hubFirst && n.id === n.industry && !/\b(casual dining|bistros?|brasseries?|neighbou?rhood)\b/.test(s)) { const i = INDUSTRIES[n.industry], ns = industryNiches(i.id); return `${i.label} template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}. ${n.label}: ${liveDesigns(n).length} distinct designs at ${u(`${i.hub}/${n.htmlSeg}`)}${n.wpLive ? `, also as WordPress themes at ${u(wpNichePath(n))}` : ""}.`; }
   if (n && n.htmlLive) return `${n.label} template set: ${liveDesigns(n).length} distinct designs at ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}${n.wpLive ? `, also as WordPress themes at ${u(wpNichePath(n))}` : ""}.`;
   if (/\b(health ?care|medical)\b/.test(s)) { const i = INDUSTRIES.healthcare, ns = industryNiches("healthcare"); if (ns.length) return `Healthcare template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   if (GENERAL["real-estate"].test(s)) { const i = INDUSTRIES["real-estate"], ns = industryNiches("real-estate"); if (ns.length) return `Real estate template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }

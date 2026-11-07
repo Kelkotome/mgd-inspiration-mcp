@@ -124,12 +124,12 @@ export const PATTERN_SEO = {
   "inventory-stock": ["inventory-dashboard", "Inventory dashboard and stock UI examples"],
   "savings-goal": ["savings-goal-app", "Savings goal app UI examples"],
   // 5-Nov-2026 template round (n12): industry website templates (full responsive home pages). KP worldwide: "{industry} website template" is the head term.
-  "restaurant-website": ["restaurant-website-template", "Restaurant website templates"],
+  "restaurant-website": ["restaurant-website-template", "Casual dining website templates"],
   "agency-website": ["agency-website-template", "Agency website templates"],
   "architecture-website": ["architecture-website-template", "Architecture website templates"],
   "wedding-website": ["wedding-website-template", "Wedding website templates"],
   "ecommerce-website": ["ecommerce-website-template", "Ecommerce website templates"],
-  "coffee-shop-website": ["coffee-shop-website-template", "Coffee shop website templates"],
+  "coffee-shop-website": ["coffee-shop-website-template", "Cafe and coffee shop website templates"],
   "salon-website": ["salon-website-template", "Salon website templates"],
   "real-estate-website": ["real-estate-website-template", "Real estate agency website templates"],
   "construction-website": ["construction-website-template", "Construction website templates"],
@@ -176,6 +176,13 @@ export const PATTERN_SEO = {
   "commercial-real-estate-website": ["commercial-real-estate-website-template", "Commercial real estate website templates"],
   "vacation-rental-website": ["vacation-rental-website-template", "Vacation rental website templates"],
   "home-builder-website": ["home-builder-website-template", "Home builder website templates"],
+  // 7-Nov-2026 restaurant: new niches. These only ever live under the industry hub.
+  "bakery-website": ["bakery-website-template", "Bakery website templates"],
+  "pizzeria-website": ["pizza-website-template", "Pizzeria website templates"],
+  "bar-website": ["bar-website-template", "Bar and pub website templates"],
+  "catering-website": ["catering-website-template", "Catering website templates"],
+  "food-truck-website": ["food-truck-website-template", "Food truck website templates"],
+  "fine-dining-website": ["fine-dining-website-template", "Fine dining website templates"],
 };
 
 // Gallery facets (group / platform / style) rendered by the gallery page with that facet applied server-side.

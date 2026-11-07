@@ -10,7 +10,7 @@ usage: hc_distinct.py <maps.json> > distinct.json"""
 import sys, json, itertools, hashlib, difflib, collections, os
 from html.parser import HTMLParser
 maps = json.load(open(sys.argv[1]))
-UI = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../ui-screens"); MAIN = os.path.abspath(os.path.join(UI, "../../mgd-inspiration/ui-screens/out"))
+UI = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../ui-screens"); MAIN = os.environ.get("UI_OUT") or os.path.abspath(os.path.join(UI, "../../mgd-inspiration/ui-screens/out"))  # UI_OUT: a branch that changes a hand-built page renders its own out/
 VOID = {"meta", "link", "br", "hr", "img", "input", "source", "area", "col", "wbr"}
 class P(HTMLParser):
     def __init__(s): super().__init__(); s.seq = []; s.d = 0; s.on = False; s.svg = 0
@@ -28,7 +28,7 @@ class P(HTMLParser):
 def tree(html): p = P(); p.feed(html); return p.seq
 cells = lambda m: {(y, x) for y, r in enumerate(m["g"]) for x, c in enumerate(r) if c == "1"}
 jac = lambda a, b: len(a & b) / len(a | b)
-SIG = {"cardiology": "minimal", "medical": "editorial", "dental": "corporate", "dermatology": "luxury", "therapist": "retro", "physical-therapy": "brutalist", "veterinary": "playful", "pediatrics": "monochrome", "orthodontics": "corporate", "fertility": "luxury", "real-estate": "corporate", "apartment": "minimal"}
+SIG = {"cardiology": "minimal", "medical": "editorial", "dental": "corporate", "dermatology": "luxury", "therapist": "retro", "physical-therapy": "brutalist", "veterinary": "playful", "pediatrics": "monochrome", "orthodontics": "corporate", "fertility": "luxury", "real-estate": "corporate", "apartment": "minimal", "restaurant": "editorial", "coffee-shop": "playful"}
 def src(n, v):
     if v == "homepage": return f"{MAIN}/{n}-website-homepage-web-{SIG[n]}/index.html"
     d = [x for x in os.listdir(f"{UI}/out-hc") if x.startswith(f"{n}-website-{v}-web-")][0]; return f"{UI}/out-hc/{d}/index.html"
