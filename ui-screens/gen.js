@@ -10,7 +10,8 @@ const lib = require("./lib");
 const { STYLES, FAMILIES, esc, baseCss } = lib;
 
 const ROOT = __dirname, CORES = path.join(ROOT, "../../tool-gap-2026-10/newtools");
-const OUT = path.join(ROOT, "out");
+const OUT = path.join(ROOT, process.env.GEN_OUT || "out"); // GEN_OUT=out-comp: components round 1 renders into its own folder
+const CK = require("./compkit");
 const TAX = JSON.parse(fs.readFileSync(path.join(ROOT, "taxonomy.json"), "utf8"));
 
 // Seeded Math.random so a given screen always renders the same colours and data.
@@ -49,7 +50,7 @@ function palette(family, styleName) {
 }
 
 function buildOne(pattern, platform, styleName, variant) {
-  const d = PATTERNS[pattern], st = STYLES[styleName], fam = FAMILIES[d.family], tpl = d[platform];
+  const d = PATTERNS[pattern], st = STYLES[styleName], fam = FAMILIES[d.family], tpl = d.type === "component" ? () => "" : d[platform];
   if (!tpl) return null;
   const vname = variant ? (d.variants[variant] || {}).name || variant : null;
   const p = { ...fam, family: d.family, variant: variant || null };
@@ -62,17 +63,18 @@ function buildOne(pattern, platform, styleName, variant) {
     dos: st.numRule ? DM.DEFAULT_DO + "\nUse the heading serif only for page titles and marketing headlines. Set metrics, prices, plan names and table figures in the body sans with `font-variant-numeric: tabular-nums`." : undefined });
   const [w, h] = (d.size && d.size[platform]) || VIEWPORT[platform];
   const body = tpl(p, st, rnd);
-  const html = d.type === "email" ? body : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=${platform === "web" || d.type === "page" ? "device-width" : w},initial-scale=1">
+  const html = d.type === "component" ? CK.page(d, p, st, styleName, light, dark, pattern) : d.type === "email" ? body : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=${platform === "web" || d.type === "page" ? "device-width" : w},initial-scale=1">
 <title>${esc(fam.name)} — ${(vname || pattern).replace(/-/g, " ")} (${platform}, ${styleName}) · MGD UI screens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=${st.fonts}&display=swap" rel="stylesheet">
 <!-- Made Good Designs UI screen — original reference design, free to copy. Tokens: see DESIGN.md -->
 <style>${baseCss(light, st, dark)}${st.css || ""}</style></head><body>${body}</body></html>`;
+  const mdOut = d.type === "component" ? md.trimEnd() + CK.designSection(pattern, d, styleName) : md;
   const dir = path.join(OUT, slug);
-  if (MD_ONLY) { if (!fs.existsSync(path.join(dir, "meta.json"))) return null; fs.writeFileSync(path.join(dir, "DESIGN.md"), md); return { slug }; }
+  if (MD_ONLY) { if (!fs.existsSync(path.join(dir, "meta.json"))) return null; fs.writeFileSync(path.join(dir, "DESIGN.md"), mdOut); return { slug }; }
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, "index.html"), html);
-  fs.writeFileSync(path.join(dir, "DESIGN.md"), md);
+  fs.writeFileSync(path.join(dir, "DESIGN.md"), mdOut);
   const v = variant ? d.variants[variant] : null;
   const meta = { slug, type: d.type || "screen", pattern, variant: variant || null, platform, style: styleName, family: d.family, category: fam.cat, product: fam.name,
     name: v && v.name ? v.name : d.name, shows: v && v.shows ? v.shows : d.shows, elements: d.elements,

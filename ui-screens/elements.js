@@ -7,7 +7,7 @@
 //   node elements.js --show a   → print the inventory of slugs matching substring a
 // Key: "<pattern>|<variant or ''>|<platform>" (the 8 styles share one template, so they share one inventory).
 const fs = require("fs"), path = require("path");
-const OUT = path.join(__dirname, "out"), DEST = path.join(__dirname, "..", "src", "ui_elements.json");
+const OUTS = (process.env.ELEM_OUTS || "out").split(":").map((d) => path.join(__dirname, d)), DEST = path.join(__dirname, "..", "src", "ui_elements.json"); // ELEM_OUTS=out:out-comp adds the UI components folder
 
 // [element, test(html, body)] — class names in tpl/*.js are module-prefixed ("fw-cb", "ao-tog"), so match on suffixes.
 const count = (s, re) => (s.match(re) || []).length;
@@ -51,8 +51,8 @@ const density = (b) => { const n = count(b, />[^<>]{2,}</g); return n > 260 ? "d
 function main() {
   const show = process.argv.includes("--show") ? process.argv[process.argv.indexOf("--show") + 1] : null;
   const inv = {};
-  const slugs = fs.readdirSync(OUT).filter((d) => fs.existsSync(path.join(OUT, d, "meta.json")) && fs.existsSync(path.join(OUT, d, "index.html")));
-  for (const slug of slugs) {
+  const slugs = OUTS.flatMap((OUT) => fs.readdirSync(OUT).filter((d) => fs.existsSync(path.join(OUT, d, "meta.json")) && fs.existsSync(path.join(OUT, d, "index.html"))).map((d) => [OUT, d]));
+  for (const [OUT, slug] of slugs) {
     const m = JSON.parse(fs.readFileSync(path.join(OUT, slug, "meta.json"), "utf8"));
     const html = fs.readFileSync(path.join(OUT, slug, "index.html"), "utf8");
     const b = html.slice(html.indexOf("<body")).replace(/<style[^]*?<\/style>|<script[^]*?<\/script>/g, "");

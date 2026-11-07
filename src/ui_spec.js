@@ -1,6 +1,7 @@
 // Spec block for UI item pages (7-Nov-2026): a plain labelled list of facts, right after dl.facts. Every line comes from data
 // that exists (DESIGN.md at render, ui/<id>/spec.json written at ingest); a line with no data is left out, never guessed.
 import { STYLE_PHRASES, INDUSTRY_PHRASES, OVERRIDES } from "./ui_spec_phrases.js";
+import { componentSpecLines } from "./ui_component_page.js";
 
 // Fonts the templates use that are on Google Fonts (checked against ../mgd-kit/google_fonts_families.json by tests/ui_spec.test.mjs).
 // A font not listed here drops the licence note rather than guessing; add it after checking.
@@ -51,7 +52,7 @@ const andList = (a) => (a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + 
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 // → [[label, html]] lines, in the approved order. esc = HTML escaper.
-export function specLines({ tokens, extras, spec, pattern, style, isPage, isSection, hasDarkImage, esc }) {
+export function specLines({ tokens, extras, spec, pattern, style, isPage, isSection, isComp, hasDarkImage, esc }) {
   const L = [], x = extras || {};
   const colours = (o) => SHOWN_ROLES.filter((r) => o && o[r]).map((r) => `<span class="sc"><i style="background:${esc(o[r])}" aria-hidden="true"></i>${esc(r)} <code>${esc(o[r])}</code></span>`).join(" · ");
   if (tokens) {
@@ -71,7 +72,8 @@ export function specLines({ tokens, extras, spec, pattern, style, isPage, isSect
   const r = [];
   if (spec && spec.breakpoints.length) r.push(`layout changes at ${andList(spec.breakpoints.map((p) => p + "px"))}`);
   if (isSection && x.noScroll) r.push(`no horizontal scroll at ${x.noScroll}px`);
-  if (r.length) L.push(["Responsive", esc(cap(`one HTML file, ${r.join("; ")}`))]);
+  if (r.length && !isComp) L.push(["Responsive", esc(cap(`one HTML file, ${r.join("; ")}`))]); // components: the breakpoints belong to the demo page, not the snippet
+  if (isComp) L.push(...componentSpecLines(pattern, esc));
   const bf = isPage ? bestFor(pattern, style) : null;
   if (bf) { L.push(["Best for", esc(cap(bf.best) + ".")]); L.push(["Not ideal for", esc(cap(bf.notIdeal) + ".")]); }
   return L;

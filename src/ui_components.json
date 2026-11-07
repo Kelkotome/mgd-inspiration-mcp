@@ -1,0 +1,359 @@
+{
+  "tabs": {
+    "name": "Tabs",
+    "apg": "tabs",
+    "apgName": "Tabs",
+    "lede": "Switch between related panels without leaving the page. Arrow keys move between tabs; the panel follows.",
+    "aria": "role=\"tablist\" with an aria-label; each tab is a button with role=\"tab\", aria-selected and aria-controls; each panel has role=\"tabpanel\", aria-labelledby and tabindex=\"0\". Only the selected tab is in the tab order (roving tabindex).",
+    "keys": [
+      [
+        "Left / Right arrow",
+        "move to the previous / next tab and show its panel (wraps)"
+      ],
+      [
+        "Home / End",
+        "first / last tab"
+      ],
+      [
+        "Tab",
+        "leave the tab list and move into the panel"
+      ]
+    ],
+    "keysShort": "Left and Right arrows, Home and End; Tab moves into the panel",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "selected",
+      "disabled"
+    ]
+  },
+  "cards": {
+    "name": "Cards",
+    "apg": null,
+    "apgName": null,
+    "lede": "Product cards with one link per card: the whole card is clickable, but screen readers hear a single, clear link name.",
+    "aria": "Each card is an <article> with a heading; the heading's link covers the card with a ::after overlay, so there is one tab stop and one link name per card. A sold-out card uses aria-disabled on its button and keeps its text readable.",
+    "keys": [
+      [
+        "Tab",
+        "move from card to card (one stop each)"
+      ],
+      [
+        "Enter",
+        "open the focused card"
+      ]
+    ],
+    "keysShort": "One Tab stop per card; Enter opens it",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "selected",
+      "disabled"
+    ]
+  },
+  "pagination": {
+    "name": "Pagination",
+    "apg": null,
+    "apgName": null,
+    "lede": "Numbered pages with previous and next links, a current page and a collapsed gap for long result sets.",
+    "aria": "<nav aria-label=\"Pagination\"> around a list of links; the current page has aria-current=\"page\"; previous on page 1 is aria-disabled and out of the tab order; the gap is hidden text, not a link. A polite live region announces the new range.",
+    "keys": [
+      [
+        "Tab / Shift+Tab",
+        "move between page links"
+      ],
+      [
+        "Enter",
+        "go to the focused page"
+      ]
+    ],
+    "keysShort": "Tab between links; Enter goes to a page",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "selected",
+      "disabled"
+    ]
+  },
+  "popover": {
+    "name": "Popover",
+    "apg": "dialog-modal",
+    "apgName": "Dialog (non-modal disclosure)",
+    "lede": "A small non-modal panel anchored to a button, for a short form or details. Escape or a click outside closes it.",
+    "aria": "The trigger is a button with aria-expanded and aria-controls; the panel has role=\"dialog\" and aria-labelledby, is not modal, and takes focus on open. Escape closes it and returns focus to the trigger.",
+    "keys": [
+      [
+        "Enter / Space",
+        "open or close from the trigger"
+      ],
+      [
+        "Tab",
+        "move through the panel's controls"
+      ],
+      [
+        "Escape",
+        "close and return focus to the trigger"
+      ]
+    ],
+    "keysShort": "Enter or Space opens; Escape closes and returns focus",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "open",
+      "disabled"
+    ]
+  },
+  "tooltip": {
+    "name": "Tooltip",
+    "apg": "tooltip",
+    "apgName": "Tooltip",
+    "lede": "A short text label that appears on hover and on keyboard focus, for icon buttons and terms that need a hint.",
+    "aria": "The tooltip has role=\"tooltip\" and the trigger points to it with aria-describedby (or aria-labelledby for an icon-only button). It shows on hover and focus, stays while hovered, and Escape hides it without moving focus.",
+    "keys": [
+      [
+        "Tab",
+        "focus a trigger to show its tooltip"
+      ],
+      [
+        "Escape",
+        "hide the tooltip, keep focus"
+      ]
+    ],
+    "keysShort": "Shows on focus; Escape hides it",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "open",
+      "disabled"
+    ]
+  },
+  "dropdown-menu": {
+    "name": "Dropdown menu",
+    "apg": "menu-button",
+    "apgName": "Menu button",
+    "lede": "An actions menu behind a button: arrow keys move through the items, Escape closes, and a disabled item is skipped.",
+    "aria": "A button with aria-haspopup=\"menu\", aria-expanded and aria-controls opens a list with role=\"menu\"; items have role=\"menuitem\" and tabindex=\"-1\" (focus is moved by script); a disabled item has aria-disabled=\"true\"; a separator has role=\"separator\".",
+    "keys": [
+      [
+        "Enter / Space / Down arrow",
+        "open and focus the first item"
+      ],
+      [
+        "Up arrow",
+        "open and focus the last item"
+      ],
+      [
+        "Up / Down arrow",
+        "move between items (wraps, skips disabled)"
+      ],
+      [
+        "Home / End",
+        "first / last item"
+      ],
+      [
+        "A letter",
+        "jump to the next item starting with it"
+      ],
+      [
+        "Escape",
+        "close and return focus to the button"
+      ]
+    ],
+    "keysShort": "Arrows, Home and End, type-ahead; Escape closes",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "open",
+      "disabled"
+    ]
+  },
+  "accordion": {
+    "name": "Accordion",
+    "apg": "accordion",
+    "apgName": "Accordion",
+    "lede": "Stacked sections that expand in place; each header is a real button inside a heading.",
+    "aria": "Each header is a <button> inside an <h3> with aria-expanded and aria-controls; each panel has role=\"region\" and aria-labelledby, and is hidden with the hidden attribute when closed.",
+    "keys": [
+      [
+        "Enter / Space",
+        "expand or collapse the focused section"
+      ],
+      [
+        "Up / Down arrow",
+        "previous / next header"
+      ],
+      [
+        "Home / End",
+        "first / last header"
+      ]
+    ],
+    "keysShort": "Enter or Space toggles; arrows, Home and End move",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "open",
+      "disabled"
+    ]
+  },
+  "radio-group": {
+    "name": "Radio buttons",
+    "apg": "radio",
+    "apgName": "Radio group",
+    "lede": "Choose one option from a short list, with descriptions. Native radio inputs, so the browser handles the keyboard.",
+    "aria": "A <fieldset> with a <legend> groups native <input type=\"radio\"> controls that share a name; each has a <label> and an aria-describedby hint; a disabled option uses the disabled attribute.",
+    "keys": [
+      [
+        "Tab",
+        "move into the group (to the checked option)"
+      ],
+      [
+        "Arrow keys",
+        "move and select the previous / next option"
+      ],
+      [
+        "Space",
+        "select the focused option"
+      ]
+    ],
+    "keysShort": "Arrow keys move and select; native inputs",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "selected",
+      "disabled"
+    ]
+  },
+  "breadcrumbs": {
+    "name": "Breadcrumbs",
+    "apg": "breadcrumb",
+    "apgName": "Breadcrumb",
+    "lede": "Where the current page sits in the site. On narrow screens the middle levels fold into a back link to the parent.",
+    "aria": "<nav aria-label=\"Breadcrumb\"> around an ordered list of links; the last item is the current page with aria-current=\"page\"; separators are drawn with CSS so screen readers do not read them.",
+    "keys": [
+      [
+        "Tab",
+        "move between the links"
+      ],
+      [
+        "Enter",
+        "follow a link"
+      ]
+    ],
+    "keysShort": "Tab between links; Enter follows",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "current",
+      "collapsed"
+    ]
+  },
+  "toggle-switch": {
+    "name": "Toggle switch",
+    "apg": "switch",
+    "apgName": "Switch",
+    "lede": "On and off settings that apply straight away, each with a visible label and a hint.",
+    "aria": "Each switch is a <button role=\"switch\"> with aria-checked, named by its visible label (aria-labelledby) and described by its hint (aria-describedby); a disabled switch uses the disabled attribute.",
+    "keys": [
+      [
+        "Tab",
+        "move between switches"
+      ],
+      [
+        "Space / Enter",
+        "turn the focused switch on or off"
+      ]
+    ],
+    "keysShort": "Space or Enter flips the switch",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "selected",
+      "disabled"
+    ]
+  },
+  "stepper": {
+    "name": "Stepper",
+    "apg": null,
+    "apgName": null,
+    "lede": "Progress through a short multi-step task, with completed, current and upcoming steps and Back / Next buttons.",
+    "aria": "An ordered list of steps; the current step has aria-current=\"step\"; completed and upcoming states are spelled out in visually hidden text; a polite live region announces the step on Back / Next.",
+    "keys": [
+      [
+        "Tab",
+        "reach Back and Next"
+      ],
+      [
+        "Enter / Space",
+        "go back or forward one step"
+      ]
+    ],
+    "keysShort": "Back and Next buttons; the step is announced",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "selected",
+      "disabled"
+    ]
+  },
+  "sidebar-nav": {
+    "name": "Sidebar navigation",
+    "apg": "disclosure",
+    "apgName": "Disclosure (navigation menu)",
+    "lede": "A vertical app navigation with a current page, a collapsible group and a collapse-to-icons button.",
+    "aria": "<nav aria-label=\"Main\"> with a list of links; the current page has aria-current=\"page\"; a group header is a button with aria-expanded and aria-controls (disclosure pattern); the collapse button has aria-expanded and aria-controls, and icon-only links keep their text for screen readers.",
+    "keys": [
+      [
+        "Tab",
+        "move between links and buttons"
+      ],
+      [
+        "Enter / Space",
+        "open or close a group, or collapse the sidebar"
+      ]
+    ],
+    "keysShort": "Tab through links; Enter or Space opens a group",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "selected",
+      "disabled"
+    ]
+  },
+  "spinner": {
+    "name": "Loading spinner",
+    "apg": null,
+    "apgName": null,
+    "lede": "Indeterminate loading indicators in three sizes, a busy button and an inline status, with reduced-motion support.",
+    "aria": "A spinner sits inside role=\"status\" with visually hidden text (\"Loading…\"), so the message is announced once; a busy button is disabled with aria-busy=\"true\" while it works. With prefers-reduced-motion the spin slows to a gentle pulse.",
+    "keys": [
+      [
+        "Tab",
+        "reach the Save button"
+      ],
+      [
+        "Enter / Space",
+        "start the busy state"
+      ]
+    ],
+    "keysShort": "No keys of its own; the busy button is announced",
+    "states": [
+      "default",
+      "hover",
+      "focus-visible",
+      "busy",
+      "disabled"
+    ]
+  }
+}

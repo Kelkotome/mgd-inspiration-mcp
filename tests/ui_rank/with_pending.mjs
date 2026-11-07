@@ -15,9 +15,9 @@ for (const OUT of OUTS) for (const slug of readdirSync(OUT)) {
   const f = path.join(OUT, slug, "meta.json"); if (!existsSync(f)) continue;
   const m = JSON.parse(readFileSync(f, "utf8"));
   if (have.has(m.pattern) || (want && !want.has(m.pattern))) continue;
-  const kind = m.type === "section" ? "section" : "screen", plat = m.platform === "web" ? "web app" : "mobile app";
+  const kind = m.type === "section" ? "section" : m.type === "component" ? "UI component" : "screen", plat = m.platform === "web" ? "web app" : "mobile app";
   const tags = [m.pattern, m.platform, m.category, ...m.elements.filter((e) => e !== m.pattern && e !== m.platform), ...(m.variant ? [`variant:${m.variant}`] : [])];
-  rows.push({ id: createHash("md5").update(slug).digest("hex").slice(0, 12), title: `${m.name} — ${m.platform}, ${m.style} (${m.product})`,
+  rows.push({ id: createHash("md5").update(slug).digest("hex").slice(0, 12), title: `${m.name}${m.type === "component" ? " component" : ""} — ${m.platform}, ${m.style} (${m.product})`,
     description: `${m.name} ${kind} for a ${plat}, designed for ${m.product}, a fictional ${m.category} product. Shows ${m.shows}. ${STYLE(m.style)} Comes with the full HTML and a DESIGN.md with light and dark colour tokens.`,
     tags: JSON.stringify(tags), category: m.pattern, style: m.style, industry: m.category, country: m.platform, company: m.product,
     image_key: `ui/${slug}.webp`, palette: "[]", width: m.viewport.w, height: m.viewport.h, created_at: 0, collection: "ui", status: "published", owner_id: null });

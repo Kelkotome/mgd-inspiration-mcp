@@ -183,6 +183,20 @@ export const PATTERN_SEO = {
   "catering-website": ["catering-website-template", "Catering website templates"],
   "food-truck-website": ["food-truck-website-template", "Food truck website templates"],
   "fine-dining-website": ["fine-dining-website-template", "Fine dining website templates"],
+  // UI components round 1 (7-Nov-2026; Keyword Planner "ui design" + "html css" + "examples", deploy-bundle-2026-11-07/components-audit.md)
+  tabs: ["tabs-ui", "Tabs UI design examples"],
+  cards: ["card-ui", "Card UI design examples"],
+  pagination: ["pagination-ui", "Pagination UI design examples"],
+  popover: ["popover-ui", "Popover UI design examples"],
+  tooltip: ["tooltip-ui", "Tooltip UI design examples"],
+  "dropdown-menu": ["dropdown-menu-ui", "Dropdown menu UI design examples"],
+  accordion: ["accordion-ui", "Accordion UI design examples"],
+  "radio-group": ["radio-button-ui", "Radio button UI design examples"],
+  breadcrumbs: ["breadcrumbs-ui", "Breadcrumbs UI design examples"],
+  "toggle-switch": ["toggle-switch-ui", "Toggle switch UI design examples"],
+  stepper: ["stepper-ui", "Stepper UI design examples"],
+  "sidebar-nav": ["sidebar-navigation-ui", "Sidebar navigation UI design examples"],
+  spinner: ["loading-spinner", "Loading spinner examples (HTML and CSS)"],
 };
 
 // Gallery facets (group / platform / style) rendered by the gallery page with that facet applied server-side.
@@ -214,6 +228,8 @@ export const FACET_SEO = [
     "Complete, responsive one-page website templates by industry — restaurants, agencies, weddings, stores, salons, real estate, builders, law firms, dentists, gyms, schools, nonprofits, travel, hotels, SaaS and AI."],
   ["group", "operations", "hr-and-operations-ui", "HR and operations app UI examples", "HR and operations app UI: shifts, leave, stock | MGD",
     "Shift schedulers, leave calendars, time-off requests, inventory and multi-location operations dashboards."],
+  ["group", "components", "ui-components", "Free UI components with HTML and CSS", "Free UI components with HTML, CSS and JS code | MGD",
+    "Accessible building blocks — tabs, cards, pagination, popovers, tooltips, dropdown menus, accordions, radio buttons, breadcrumbs, toggle switches, steppers, sidebars and loading spinners — each with a live demo, every state drawn, keyboard support and ARIA, in light and dark."],
   ["platform", "mobile", "mobile-app-ui", "Mobile app UI design examples", "Mobile app UI design examples with code (free) | MGD",
     "App screens designed for phones, from sign-in and onboarding to feeds, chat, checkout and settings."],
   ["platform", "web", "web-ui", "Web UI design examples", "Web UI design examples with HTML code (free) | MGD",

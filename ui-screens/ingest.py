@@ -39,8 +39,13 @@ def fields_for(slug, flow_tags):
     kind = "website template" if m["type"] == "page" else "section" if m["type"] == "section" else ("template" if m["name"].lower().endswith("email") else "email template") if m["type"] == "email" else "screen"
     plat = ("website" if m["platform"] == "web" else "mobile website") if m["type"] in ("section", "page") else ("desktop email client" if m["platform"] == "web" else "mobile email client") if m["type"] == "email" else ("web app" if m["platform"] == "web" else "mobile app")
     title = f"{name} — {m['platform']}, {m['style']} ({m['product']})"
+    if m["type"] == "component":  # UI components round 1 (7-Nov-2026): one responsive HTML/CSS/JS file per component and style
+        title = f"{name} component — {m['platform']}, {m['style']} ({m['product']})"
     desc = (f"{name} {kind} for a {plat}, designed for {m['product']}, " + ("the fictional portfolio of an independent designer. " if m['category'] == "portfolio" else (f"a fictional {m['category'].replace('-', ' ')} business. " if m["type"] == "page" else f"a fictional {m['category']} product. ")) +
             f"Shows {shows}. {STYLE[m['style']]} " + ("Comes with email-client-safe HTML (nested tables, inline styles, a fluid 600px layout, a bulletproof button and dark-mode overrides) and a DESIGN.md with light and dark colour tokens." if m["type"] == "email" else "A complete, responsive one-page HTML template (every section, light and dark) with a DESIGN.md of light and dark colour tokens." if m["type"] == "page" else "Comes with the full HTML and a DESIGN.md with light and dark colour tokens."))
+    if m["type"] == "component":
+        desc = (f"{name} UI component for websites and web apps, shown in {m['product']}, a fictional {m['category']} product. Shows {shows}. {STYLE[m['style']]} "
+                "Comes with copyable HTML, CSS and a few lines of plain JavaScript (keyboard support and ARIA per the WAI-ARIA Authoring Practices), a live demo, and a DESIGN.md with light and dark colour tokens.")
     roles = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"]
     tags = [m["pattern"], m["platform"], m["category"]] + [e for e in elements if e not in (m["pattern"], m["platform"])]
     tags += ([f"variant:{m['variant']}"] if m.get("variant") else []) + flow_tags.get(slug, [])

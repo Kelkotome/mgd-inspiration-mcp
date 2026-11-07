@@ -3614,5 +3614,265 @@
     "Yes. Showing the price per guest and any pairing price before booking avoids surprises and missed tables."
    ]
   ]
+ },
+ "tabs": {
+  "h1": "Tabs UI design examples",
+  "intro": "Tabs let people switch between related panels without leaving the page. Each example here is a working tab list with a count badge and a disabled tab, built to the WAI-ARIA tabs pattern: arrow keys move between tabs, Home and End jump to the ends, and only the selected tab sits in the tab order. Eight styles, light and dark, with the HTML, CSS and a few lines of plain JavaScript.",
+  "tips": [
+   "Keep tab labels to one or two words so the row does not wrap; let it scroll sideways on phones rather than shrinking the text.",
+   "Mark the selected tab with more than colour: an underline, a filled pill or a weight change.",
+   "Use tabs for peer views of the same thing. If the content is a sequence, use a stepper; if people need to compare panels, show them side by side.",
+   "Give the tab list an aria-label and keep each panel focusable (tabindex=\"0\") so keyboard users can reach content without many Tab presses."
+  ],
+  "faq": [
+   [
+    "Should tabs switch on arrow keys or on Enter?",
+    "Automatic activation (the panel changes as focus moves) is the common choice when panels are already loaded, and it is what these examples do. If a panel is slow to load, switch to manual activation, where arrows move focus and Enter or Space shows the panel."
+   ],
+   [
+    "Can a tab be disabled?",
+    "Yes. These examples mark it aria-disabled=\"true\", draw it faded and skip it with the arrow keys. Explain why it is unavailable somewhere nearby, for example in the panel or a tooltip."
+   ]
+  ]
+ },
+ "cards": {
+  "h1": "Card UI design examples",
+  "intro": "Cards group an image, a title and a few facts into one clickable unit. These product cards use one real link per card, stretched over the whole card, so mouse users can click anywhere while screen readers hear one clear link name instead of four. They include a sale price, a badge and a sold-out card, in eight styles with light and dark tokens and plain HTML and CSS.",
+  "tips": [
+   "Use one link per card and stretch it with a ::after overlay; avoid wrapping the whole card in <a>, which makes the link name long and repetitive.",
+   "Show focus on the card itself (outline on :has(:focus-visible)) so keyboard users can see the whole target.",
+   "Keep the same structure in every card so people can scan prices and titles in a straight line.",
+   "Say why a card is unavailable in text (Sold out, Back in January), not only with a faded image."
+  ],
+  "faq": [
+   [
+    "How do I make a whole card clickable and still accessible?",
+    "Put a normal link on the card title and give it a ::after pseudo-element that covers the card (position:absolute; inset:0). The whole card responds to clicks, there is one tab stop, and the link name is just the title."
+   ],
+   [
+    "Do cards need ARIA roles?",
+    "No widget role is needed. An <article> or list item with a heading is enough; the heading gives screen reader users a quick way to jump between cards."
+   ]
+  ]
+ },
+ "pagination": {
+  "h1": "Pagination UI design examples",
+  "intro": "Pagination splits a long list into pages people can step through. These examples show previous and next links, numbered pages, the current page, collapsed gaps and a result range, wrapped in a nav labelled Pagination with aria-current on the current page. On phones they fold down to previous, current and next. Eight styles, light and dark, with HTML, CSS and a small demo script.",
+  "tips": [
+   "Always show where people are (Page 3 of 65 or Showing 41–60 of 1,284) next to the controls.",
+   "Make page links at least 40 px square so they are easy to hit on touch screens.",
+   "Keep pagination as real links (?page=4) so pages can be shared and crawled; the script here only re-renders the demo.",
+   "On page 1, show Previous as disabled rather than removing it, so the row does not jump around."
+  ],
+  "faq": [
+   [
+    "Pagination or infinite scroll?",
+    "Pagination suits lists people come back to, compare or share (search results, catalogues, archives) because each page has an address. Infinite scroll suits feeds people browse once. A Load more button is a middle ground."
+   ],
+   [
+    "How should the current page be marked up?",
+    "Put aria-current=\"page\" on the current page's link and give the whole control a nav landmark with aria-label=\"Pagination\". Screen readers then announce the current page and let people jump straight to the control."
+   ]
+  ]
+ },
+ "popover": {
+  "h1": "Popover UI design examples",
+  "intro": "A popover is a small non-modal panel anchored to a button, for a short form or extra details. These share popovers open from a button with aria-expanded, move focus into the panel, and close on Escape or a click outside, returning focus to the button. They follow the WAI-ARIA dialog pattern without trapping focus, in eight styles with light and dark tokens.",
+  "tips": [
+   "Keep popovers short: one task, one or two fields. Anything longer belongs in a modal or its own page.",
+   "Move focus into the popover when it opens and back to the trigger when it closes, so keyboard users never lose their place.",
+   "Close on Escape and on a click outside; do not close while people are still typing.",
+   "Leave room at the screen edge on phones: the panel here is never wider than the screen minus 40 px."
+  ],
+  "faq": [
+   [
+    "What is the difference between a popover and a tooltip?",
+    "A tooltip is a short text label that appears on hover or focus and holds nothing interactive. A popover opens on click, can hold buttons and fields, and stays open until it is dismissed."
+   ],
+   [
+    "Should a popover trap focus?",
+    "No. A popover is non-modal, so people can Tab out of it; these examples close it when focus leaves. Use a modal dialog with a focus trap only when the rest of the page must wait."
+   ]
+  ]
+ },
+ "tooltip": {
+  "h1": "Tooltip UI design examples",
+  "intro": "Tooltips give icon buttons and unfamiliar terms a short text hint. These examples show the hint on hover and on keyboard focus, keep it open while the pointer is over it, and hide it on Escape without moving focus, as WCAG 1.4.13 asks. The bubble has role=\"tooltip\" and names or describes its trigger. Eight styles, light and dark, HTML and CSS with a few lines of JavaScript.",
+  "tips": [
+   "Never put essential information only in a tooltip; touch screens have no hover.",
+   "Keep tooltip text to a short phrase. If it needs a link or a button, use a popover instead.",
+   "Use the tooltip as the accessible name of an icon-only button (aria-labelledby) so the label and the hint are the same text.",
+   "Keep a disabled button focusable (aria-disabled instead of disabled) when its tooltip explains why it is unavailable."
+  ],
+  "faq": [
+   [
+    "Do tooltips work on mobile?",
+    "Not reliably, because there is no hover. These examples also show on focus, but for touch screens put important hints in visible text and keep tooltips as a desktop extra."
+   ],
+   [
+    "Which ARIA attributes does a tooltip need?",
+    "Give the bubble role=\"tooltip\" and an id, then point to it from the trigger with aria-describedby (or aria-labelledby for an icon-only button). The tooltip must not take focus itself."
+   ]
+  ]
+ },
+ "dropdown-menu": {
+  "h1": "Dropdown menu UI design examples",
+  "intro": "A dropdown menu tucks a list of actions behind one button. These examples follow the WAI-ARIA menu button pattern: Enter, Space or the arrow keys open the menu, arrows move between items, Home and End jump to the ends, typing a letter jumps to a matching item, a disabled item is skipped and Escape closes the menu and returns focus. Eight styles, light and dark, with HTML, CSS and plain JavaScript.",
+  "tips": [
+   "Use a menu for actions (Rename, Duplicate, Delete). For choosing a value in a form, use a native <select> or a listbox instead.",
+   "Group items and put destructive actions last, after a separator.",
+   "Keep disabled items visible but faded so people learn the option exists, and say why elsewhere.",
+   "Close the menu after an action and confirm what happened, for example in a polite live region."
+  ],
+  "faq": [
+   [
+    "Dropdown menu or select?",
+    "A select (or listbox) picks a value that is submitted with a form. A menu runs a command straight away. Screen readers announce them differently, so pick the role that matches what happens."
+   ],
+   [
+    "Why tabindex=\"-1\" on menu items?",
+    "Menu items are reached with the arrow keys, not Tab. Setting tabindex=\"-1\" lets the script move focus to them while keeping the whole menu a single tab stop."
+   ]
+  ]
+ },
+ "accordion": {
+  "h1": "Accordion UI design examples",
+  "intro": "Accordions stack sections that expand in place, so long content stays scannable. In these examples every header is a real button inside a heading with aria-expanded and aria-controls, each panel is a labelled region, and arrow keys, Home and End move between headers. One section is open and one is disabled. Eight styles, light and dark, with HTML, CSS and a few lines of JavaScript.",
+  "tips": [
+   "Use a <button> inside a heading for each header, not a div with a click handler.",
+   "Show the open state with a rotating chevron or plus sign, not colour alone.",
+   "Open the first section by default when it holds the answer most people need.",
+   "Avoid accordions for content almost everyone must read; just show it."
+  ],
+  "faq": [
+   [
+    "Should only one accordion section be open at a time?",
+    "Not necessarily. Letting several stay open helps people compare answers; these examples allow it. Closing others automatically can make the page jump."
+   ],
+   [
+    "Can I use <details> and <summary> instead?",
+    "Yes, for simple cases. Native details elements need no script, but you cannot add arrow-key movement between headers or use a heading level, which the ARIA pattern here provides."
+   ]
+  ]
+ },
+ "radio-group": {
+  "h1": "Radio button UI design examples",
+  "intro": "Radio buttons let people choose exactly one option from a short list. These option cards use native radio inputs inside a fieldset with a legend, so the browser handles the keyboard: Tab enters the group at the checked option and the arrow keys move and select. Each option has a hint linked with aria-describedby, and one is disabled. Eight styles, light and dark, HTML and CSS only.",
+  "tips": [
+   "Use radios for two to six visible options; use a select for long lists.",
+   "Pre-select the most common or safest option when there is one.",
+   "Make the whole card the click target by wrapping the input and text in one <label>.",
+   "Restyle the native input with appearance:none rather than hiding it, so focus and forced-colours mode still work."
+  ],
+  "faq": [
+   [
+    "Radio buttons or a toggle switch?",
+    "A switch turns one setting on or off and takes effect straight away. Radios choose one option from several, usually as part of a form that is then saved or submitted."
+   ],
+   [
+    "How do I style radio buttons without breaking accessibility?",
+    "Keep the real <input type=\"radio\">, set appearance:none and draw the circle and dot with CSS on the input itself. Labels, keyboard support and screen reader announcements keep working."
+   ]
+  ]
+ },
+ "breadcrumbs": {
+  "h1": "Breadcrumbs UI design examples",
+  "intro": "Breadcrumbs show where a page sits in the site and give a one-click way back up. These examples are a nav labelled Breadcrumb around an ordered list of links, with aria-current on the current page and separators drawn in CSS so screen readers do not read them. A long trail collapses behind a show-more button, and on phones the trail folds to a back link to the parent. Eight styles, light and dark.",
+  "tips": [
+   "Start at the home page and end at the current page, in the same order as the site's structure.",
+   "Draw separators with CSS, not as text characters screen readers would read out.",
+   "Collapse long middle levels behind a button rather than truncating every label.",
+   "On small screens a single back link to the parent is often clearer than a wrapped trail."
+  ],
+  "faq": [
+   [
+    "Should the current page be a link?",
+    "It can be either. These examples keep it as a link with aria-current=\"page\", which the WAI-ARIA breadcrumb example also does; styling makes clear it is where you are."
+   ],
+   [
+    "Do breadcrumbs help SEO?",
+    "They give search engines clear internal links and structure, and BreadcrumbList structured data can show the trail in results. The main reason to add them is still navigation for people."
+   ]
+  ]
+ },
+ "toggle-switch": {
+  "h1": "Toggle switch UI design examples",
+  "intro": "Toggle switches turn a setting on or off and apply it straight away. Each switch here is a button with role=\"switch\" and aria-checked, named by its visible label and described by a hint, with Space and Enter to flip it and a disabled switch that says why. Eight styles, light and dark, with HTML, CSS and two lines of JavaScript.",
+  "tips": [
+   "Use a switch only when the change applies immediately; inside a form that is saved later, use a checkbox.",
+   "Write labels as the setting, not the action (Weekly email digest, not Turn on digest).",
+   "Show on and off with position as well as colour, and keep the off track visible against the background.",
+   "Put the switch at the end of the row and let the label text sit on the left."
+  ],
+  "faq": [
+   [
+    "Switch or checkbox?",
+    "Both are on/off controls. A switch suggests an instant change, like a light switch; a checkbox suggests a choice that is submitted later. Screen readers announce role=\"switch\" as on or off and a checkbox as checked or not checked."
+   ],
+   [
+    "Should a switch show On and Off text?",
+    "Not required if the thumb position and colour change are clear, and the label states the setting. If your switches sit far from their labels, adding small On/Off text helps."
+   ]
+  ]
+ },
+ "stepper": {
+  "h1": "Stepper UI design examples",
+  "intro": "A stepper shows progress through a short multi-step task such as signing up or opening an account. These examples mark completed, current and upcoming steps in an ordered list with aria-current=\"step\", spell out each state in hidden text, and announce the new step when people press Back or Next. Horizontal on desktop, vertical on phones, in eight styles with light and dark tokens.",
+  "tips": [
+   "Keep steps to three to six, each named for what people do (Verify identity), not a number alone.",
+   "Let people go back without losing what they entered.",
+   "Show completed steps with a check and the current step with a ring, not colour alone.",
+   "Announce the step change in a polite live region so screen reader users know the content changed."
+  ],
+  "faq": [
+   [
+    "Should stepper steps be clickable?",
+    "Only for steps people have already completed, and only if going back is safe. These examples use Back and Next buttons, which keeps the order clear."
+   ],
+   [
+    "How do I mark the current step for screen readers?",
+    "Use an ordered list so the position is announced, put aria-current=\"step\" on the current item, and add visually hidden words such as Completed or Not started to the others."
+   ]
+  ]
+ },
+ "sidebar-nav": {
+  "h1": "Sidebar navigation UI design examples",
+  "intro": "A sidebar holds an app's main navigation in a vertical list. These examples include a current page with aria-current, a count badge with screen reader text, a collapsible Reports group built as a disclosure button, a locked item, and a button that collapses the sidebar to icons while keeping the link names. Eight styles, light and dark, with HTML, CSS and a few lines of JavaScript.",
+  "tips": [
+   "Wrap the sidebar in a nav landmark with a label such as Main.",
+   "Mark the current page with aria-current=\"page\" and a strong visual cue (filled background or a side bar).",
+   "Keep link text for screen readers when collapsing to icons, and show a tooltip or title on hover.",
+   "Limit top-level items to about seven; group the rest under expandable sections."
+  ],
+  "faq": [
+   [
+    "Should a sidebar use role=\"menu\"?",
+    "No. Site and app navigation is a list of links in a nav landmark. The menu role is for application-style command menus and changes how screen readers and keyboards behave."
+   ],
+   [
+    "How should the collapse button be labelled?",
+    "Give it aria-expanded and aria-controls pointing at the sidebar, and change its label between Collapse sidebar and Expand sidebar so the action is always clear."
+   ]
+  ]
+ },
+ "spinner": {
+  "h1": "Loading spinner examples (HTML and CSS)",
+  "intro": "Loading spinners tell people something is working when you cannot show progress. These examples include three sizes, a button that shows a busy state and an inline status, with the spinner inside role=\"status\" and visually hidden text so the message is read once. Under prefers-reduced-motion the spin slows down and pulses gently. Pure CSS spinners in eight styles, light and dark.",
+  "tips": [
+   "Show a spinner only after a short delay (about 300 ms) so fast actions do not flash.",
+   "Say what is loading (Reading 24 sources…) instead of a spinner on its own.",
+   "Keep a busy button focusable with aria-disabled and aria-busy, rather than disabled, so focus is not lost.",
+   "For waits longer than a few seconds, show progress or a skeleton of the content instead."
+  ],
+  "faq": [
+   [
+    "How do I make a loading spinner accessible?",
+    "Put it in an element with role=\"status\" together with text such as Loading…, visually hidden if needed, and hide the spinning shape itself from screen readers. Respect prefers-reduced-motion."
+   ],
+   [
+    "Spinner or skeleton screen?",
+    "A spinner suits short waits and actions such as saving. A skeleton suits loading a page or list, because it shows the layout that is coming and feels faster."
+   ]
+  ]
  }
 }

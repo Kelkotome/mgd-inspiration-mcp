@@ -1,0 +1,56 @@
+# UI components round 1 (7-Nov-2026): search_ui_screens must find each component by name, by common synonyms and by "html css" phrasing,
+# and the old owners of the borrowed words must still win their own phrases (guards at the end). Run with the pending rows:
+#   UI_OUTS=ui-screens/out-comp node tests/ui_rank/with_pending.mjs > /tmp/rows.json && node --import ./tests/ui_rank/register.mjs tests/ui_rank/run.mjs --cases cases_comp.txt --rows /tmp/rows.json
+tabs | tabs
+tabs component html css | tabs
+tabbed interface | tabs
+cards | cards
+product card component | cards
+card ui design | cards
+pagination | pagination
+pagination with previous and next | pagination
+pager page numbers | pagination
+popover | popover
+share popover with form | popover
+tooltip | tooltip
+tooltips on icon buttons | tooltip
+hover hint tooltip css | tooltip
+dropdown menu | dropdown-menu
+dropdown | dropdown-menu
+actions menu button | dropdown-menu
+kebab menu | dropdown-menu
+accordion | accordion
+accordion component html css | accordion
+collapsible sections | accordion
+radio buttons | radio-group
+radio button group | radio-group
+radio cards | radio-group
+breadcrumbs | breadcrumbs
+breadcrumb navigation | breadcrumbs
+toggle switch | toggle-switch
+toggle | toggle-switch
+on off switch | toggle-switch
+stepper | stepper
+progress stepper | stepper
+step indicator | stepper
+sidebar navigation | sidebar-nav
+sidebar | sidebar-nav
+collapsible sidebar menu | sidebar-nav
+loading spinner | spinner
+spinner | spinner
+css loader | spinner
+busy button spinner | spinner
+accessible tabs | tabs
+tooltip | tooltip | platform=mobile
+accordion | accordion | style=brutalist
+# guards: phrases that still belong to the screens and sections that used to own the words
+faq section | faq
+faq accordion | faq
+settings page with toggles | settings
+account settings preferences | settings
+multi step form wizard | form-wizard
+skeleton loading state | loading-skeleton
+navbar with mega menu | navigation-header
+billing settings with plan cards | billing-plans
+card declined | payment-declined
+mobile app with tab bar | dashboard home feed list-view

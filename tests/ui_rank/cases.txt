@@ -124,7 +124,7 @@ bento grid features | bento-features
 doctors list | doctor-directory
 dashbord | dashboard
 kanbam board | kanban-board
-toggles | settings
+toggles | settings toggle-switch
 release notes | changelog
 open a bank account kyc | bank-onboarding
 desk booking office map | floor-plan
