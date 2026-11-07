@@ -1,0 +1,124 @@
+{
+ "bakery": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "menu",
+   "reserve"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.376,
+  "failedPairs": []
+ },
+ "bar": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "band",
+   "concierge",
+   "folio",
+   "ledger",
+   "menu",
+   "reserve"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.398,
+  "failedPairs": []
+ },
+ "catering": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "concierge",
+   "folio",
+   "ledger",
+   "menu",
+   "reserve"
+  ],
+  "maxTreeSimilarity": 0.644,
+  "maxLayoutOverlap": 0.428,
+  "failedPairs": []
+ },
+ "coffee-shop": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "homepage",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger",
+   "menu",
+   "reserve"
+  ],
+  "maxTreeSimilarity": 0.642,
+  "maxLayoutOverlap": 0.451,
+  "failedPairs": []
+ },
+ "fine-dining": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "concierge",
+   "folio",
+   "ledger",
+   "menu",
+   "reserve"
+  ],
+  "maxTreeSimilarity": 0.644,
+  "maxLayoutOverlap": 0.459,
+  "failedPairs": []
+ },
+ "food-truck": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "ledger",
+   "menu",
+   "reserve"
+  ],
+  "maxTreeSimilarity": 0.644,
+  "maxLayoutOverlap": 0.408,
+  "failedPairs": []
+ },
+ "pizzeria": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "ledger",
+   "menu",
+   "reserve"
+  ],
+  "maxTreeSimilarity": 0.644,
+  "maxLayoutOverlap": 0.404,
+  "failedPairs": []
+ },
+ "restaurant": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "menu",
+   "reserve"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.447,
+  "failedPairs": []
+ }
+}

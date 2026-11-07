@@ -3,7 +3,7 @@
 # into the throwaway bucket, then tests/hc_routes.py. Never touches live: no --remote, no routes, and the token is a dummy, so a wrong --base could not authenticate.
 # Usage: bash tests/ind3_local_e2e.sh   (reads ../mgd-inspiration-hc and ../mgd-inspiration-ind2 out folders, read only)   (env HC_KEEP=<file> keeps the server up until that file is deleted)
 set -u
-cd "$(dirname "$0")/.."; ROOT=$(pwd); W="$ROOT/node_modules/.bin/wrangler"; PORT=${HC_PORT:-8897}; INSP=${HC_INSP:-9297}; T=$(mktemp -d "${SCRATCH:-$ROOT}/ind3-e2e.XXXXXX"); CFG="$ROOT/wrangler.ind3.jsonc"; HCW="${HC_WORKTREE:-$ROOT/../mgd-inspiration-hc}"; REW="${RE_WORKTREE:-$ROOT/../mgd-inspiration-ind2}"; OWN="$ROOT/ui-screens/out"; MAIN="$ROOT/../mgd-inspiration/ui-screens/out"
+cd "$(dirname "$0")/.."; ROOT=$(pwd); W="$ROOT/node_modules/.bin/wrangler"; PORT=${HC_PORT:-8899}; INSP=${HC_INSP:-9299}; T=$(mktemp -d "${SCRATCH:-$ROOT}/ind3-e2e.XXXXXX"); CFG="$ROOT/wrangler.ind3.jsonc"; HCW="${HC_WORKTREE:-$ROOT/../mgd-inspiration-hc}"; REW="${RE_WORKTREE:-$ROOT/../mgd-inspiration-ind2}"; OWN="$ROOT/ui-screens/out"; MAIN="$ROOT/../mgd-inspiration/ui-screens/out"
 python3 - <<'PY'
 src = open("wrangler.jsonc").read(); i = src.index('"routes"'); j = src.index("]", i) + 1
 open("wrangler.ind3.jsonc", "w").write(src[:i] + '"routes": []' + src[j:])

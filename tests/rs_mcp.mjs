@@ -23,7 +23,8 @@ await want("restaurant template hint leads with the hub", T("restaurant website 
 await want("plain template gets the nested page", T("food truck website template"), [`${H}food-truck-website-template`, "6 distinct designs"]);
 await want("real estate unchanged", T("real estate wordpress theme"), ["/ui/wordpress-themes/real-estate/real-estate-agency", "fair housing"], ["allergen"]);
 await want("healthcare unchanged", T("cardiology WordPress theme"), ["/ui/wordpress-themes/healthcare/cardiology", "not medical advice"], ["allergen"]);
-for (const q of ["navigation bar theme", "progress bar theme", "search bar wordpress", "tab bar dark theme", "sidebar theme", "food delivery app dashboard theme", "dark theme dashboard", "restaurant booking app", "menu component"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "No WordPress theme", "restaurant-website-templates"]);
+await want("not hijacked: search bar wordpress (honest none, not the bar niche)", T("search bar wordpress"), [/No WordPress theme for "search bar"/], ["/ui/wordpress-themes/restaurant/bar", "restaurant block themes"]);
+for (const q of ["navigation bar theme", "progress bar theme", "tab bar dark theme", "sidebar theme", "food delivery app dashboard theme", "dark theme dashboard", "restaurant booking app", "menu component"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "No WordPress theme", "restaurant-website-templates"]);
 await want("list_ui_patterns themes", call("list_ui_patterns", { kind: "themes" }), ["TEMPLATE TREE, RESTAURANT", `${W}food-truck`, "TEMPLATE TREE, HEALTHCARE", "TEMPLATE TREE, REAL ESTATE"]);
 const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 112) { fails++; console.log("FAIL tool count changed"); }
 console.log(`${n} checks, ${fails} failed`); process.exit(fails ? 1 : 0);
