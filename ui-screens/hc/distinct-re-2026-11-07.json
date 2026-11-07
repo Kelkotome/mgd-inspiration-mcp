@@ -1,0 +1,123 @@
+{
+ "apartment": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "homepage",
+   "bento",
+   "concierge",
+   "folio",
+   "listing",
+   "showcase"
+  ],
+  "maxTreeSimilarity": 0.646,
+  "maxLayoutOverlap": 0.501,
+  "failedPairs": []
+ },
+ "commercial-real-estate": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "bento",
+   "folio",
+   "ledger",
+   "listing",
+   "showcase"
+  ],
+  "maxTreeSimilarity": 0.648,
+  "maxLayoutOverlap": 0.432,
+  "failedPairs": []
+ },
+ "home-builder": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "ledger",
+   "listing",
+   "showcase"
+  ],
+  "maxTreeSimilarity": 0.648,
+  "maxLayoutOverlap": 0.401,
+  "failedPairs": []
+ },
+ "luxury-real-estate": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "band",
+   "concierge",
+   "folio",
+   "ledger",
+   "listing",
+   "showcase"
+  ],
+  "maxTreeSimilarity": 0.73,
+  "maxLayoutOverlap": 0.416,
+  "failedPairs": []
+ },
+ "property-management": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "concierge",
+   "ledger",
+   "listing",
+   "showcase"
+  ],
+  "maxTreeSimilarity": 0.676,
+  "maxLayoutOverlap": 0.415,
+  "failedPairs": []
+ },
+ "real-estate": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "homepage",
+   "atlas",
+   "band",
+   "folio",
+   "ledger",
+   "listing",
+   "showcase"
+  ],
+  "maxTreeSimilarity": 0.73,
+  "maxLayoutOverlap": 0.485,
+  "failedPairs": []
+ },
+ "real-estate-agent": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "bento",
+   "concierge",
+   "folio",
+   "listing",
+   "showcase"
+  ],
+  "maxTreeSimilarity": 0.649,
+  "maxLayoutOverlap": 0.395,
+  "failedPairs": []
+ },
+ "vacation-rental": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "listing",
+   "showcase"
+  ],
+  "maxTreeSimilarity": 0.73,
+  "maxLayoutOverlap": 0.414,
+  "failedPairs": []
+ }
+}

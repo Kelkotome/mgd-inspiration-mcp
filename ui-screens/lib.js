@@ -93,6 +93,13 @@ const FAMILIES = {
   hospital: { name: "Tarrowmere Community Hospital", cat: "hospital", desc: "a community hospital with outpatient clinics and a minor injuries unit", type: { web: "Website", mobile: "Mobile website" } },
   pharmacy: { name: "Quenby Lane Pharmacy", cat: "pharmacy", desc: "an independent neighbourhood pharmacy", type: { web: "Website", mobile: "Mobile website" } },
   optometry: { name: "Ollanby Eyecare", cat: "optometry", desc: "an independent optometry practice with an in-house optical", type: { web: "Website", mobile: "Mobile website" } },
+  // 7-Nov-2026 second industry, real estate. Names web-searched as exact phrases, no exact real-estate match found.
+  reagent: { name: "Thistlewood Home Sales", cat: "real-estate", desc: "an independent real estate agent's personal site", type: { web: "Website", mobile: "Mobile website" } },
+  propmgmt: { name: "Wrenfold Lettings", cat: "real-estate", desc: "a residential property management company letting and managing rented homes for owners", type: { web: "Website", mobile: "Mobile website" } },
+  homebuilder: { name: "Corbel Ridge Homes", cat: "real-estate", desc: "a new-home builder with communities, home plans and move-in ready homes", type: { web: "Website", mobile: "Mobile website" } },
+  luxuryre: { name: "Fenmoor & Hale", cat: "real-estate", desc: "a boutique agency for high-value homes and estates", type: { web: "Website", mobile: "Mobile website" } },
+  commercialre: { name: "Draymark Property", cat: "real-estate", desc: "a commercial property agency for offices, shops and industrial units", type: { web: "Website", mobile: "Mobile website" } },
+  vacation: { name: "Fernlow Stays", cat: "real-estate", desc: "a small holiday rental company with cottages and apartments to book direct", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 

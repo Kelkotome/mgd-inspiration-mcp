@@ -13,7 +13,7 @@ const R = sandbox.MGDRoles, DM = sandbox.MGDDesignMd; lib.setCore(DM);
 const { LAYOUTS } = require("./hc/engine");
 const palette = (family, styleName) => { const st = STYLES[styleName]; sandbox.Math.random = mulberry32(hashStr(FAMILIES[family].name + styleName)); const sd = R.seed({ mood: st.mood, harmony: st.harmony, hue: st.hue }); return { light: R.build(sd, "light").roles, dark: R.build(sd, "dark").roles }; };
 const arg = (k) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1].split(",") : null; };
-const onlyN = arg("--only"), onlyL = arg("--layouts");
+const onlyN = arg("--only"), onlyL = arg("--layouts"), CHECK = process.argv.includes("--check");
 const niches = fs.readdirSync(path.join(ROOT, "hc/content")).filter((f) => f.endsWith(".js")).map((f) => require(`./hc/content/${f}`)).filter((c) => !onlyN || onlyN.includes(c.niche));
 // Schema gate: a missing field would print "undefined" into a page.
 function need(c) {
@@ -25,9 +25,18 @@ function need(c) {
   req(c.facts.length === 3, "facts=3"); req(c.doors.length === 3, "doors=3"); req(c.services.items.length === 6, "services=6"); req(c.index.items.length >= 10 && c.index.items.length <= 14, "index 10-14"); req(c.process.steps.length === 4, "steps=4");
   req(c.table.cols.length === 3 && c.table.rows.length === 5 && c.table.rows.every((r) => r.length === 3), "table 3x5"); req(c.team.people.length === 4, "people=4"); req(c.faq.items.length === 6, "faq=6"); req(c.visit.locations.length === 2, "locations=2");
   for (const s of c.services.items) { req(s.icon && s.t && s.d && s.who, "service fields"); req(lib.ICON[s.icon], `icon ${s.icon}`); }
-  req(c.hero.h1.length <= 46, "hero.h1 <=46 chars"); req(/\.example$/.test(c.visit.email), "email .example"); req(require("./hc/engine").GLYPH[c.motif], "motif");
+  req(c.hero.h1.length <= 46, "hero.h1 <=46 chars"); req(/\.example$/.test(c.visit.email), "email .example"); if (!CHECK) req(require("./hc/engine").GLYPH[c.motif], "motif");
+  // property layouts (listing, showcase) need listings and a featured home: real estate content only
+  const KINDS = ["house", "townhouse", "flat", "tower", "cabin", "villa", "plot", "shop"];
+  if ((c.layouts || []).some((l) => l === "listing" || l === "showcase")) {
+    req(c.listings && c.listings.h2 && c.listings.eyebrow && c.listings.lede && c.listings.items && c.listings.items.length === 6, "listings: eyebrow, h2, lede, 6 items");
+    for (const x of (c.listings && c.listings.items) || []) { req(x.t && x.area && x.price && x.tag, "listing fields"); req(KINDS.includes(x.kind), `listing kind ${x.kind}`); req(Array.isArray(x.specs) && x.specs.length === 3, "listing specs=3"); }
+    req(c.feature && c.feature.eyebrow && c.feature.t && c.feature.lede && c.feature.price && c.feature.rooms && c.feature.rooms.length === 5 && c.feature.rooms.every((r) => r.length === 2), "feature: eyebrow, t, lede, price, 5 rooms");
+  }
+  if (/—/.test(JSON.stringify(c))) miss.push("em dash");
   if (miss.length) throw new Error(`${c.niche}: ${miss.join(", ")}`);
 }
+if (CHECK) { for (const c of niches) { need(c); console.log("ok", c.niche); } process.exit(0); }
 let n = 0;
 for (const c of niches) {
   need(c);
