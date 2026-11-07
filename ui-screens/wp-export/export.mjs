@@ -363,6 +363,14 @@ const textOf = (n) => (isText(n) ? n.value : (n.childNodes || []).filter((c) => 
 const SEC_FALLBACK = (i) => (i === 0 ? "Hero" : `Section ${i + 1}`);
 const slugify = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
 
+// readme "Before you publish": per industry, from src/tpl_copy.json (industries.<id>.readme). A niche's industry comes from its content file
+// (ui-screens/hc/content/<niche>.js "industry"); content files without one are healthcare, the first industry.
+function beforePublish(niche) {
+  let ind = "healthcare"; try { ind = require(path.join(HERE, "../hc/content", `${niche}.js`)).industry || "healthcare"; } catch (_) {}
+  const lines = JSON.parse(fs.readFileSync(path.join(HERE, "../../src/tpl_copy.json"), "utf8")).industries?.[ind]?.readme;
+  if (!Array.isArray(lines) || !lines.length) throw new Error(`no readme lines for industry ${ind} (niche ${niche}) in src/tpl_copy.json`);
+  return lines;
+}
 export function exportTheme(o) {
   const doc = parse(fs.readFileSync(o.html, "utf8"));
   const html = doc.childNodes.find((c) => c.tagName === "html"), head = html.childNodes.find((c) => c.tagName === "head"), body = html.childNodes.find((c) => c.tagName === "body");
@@ -479,9 +487,7 @@ ${o.desc}
 - Style variations: ${Object.keys(STYLES).filter((s) => s !== o.style).join(", ")} and dark.
 
 == Before you publish ==
-Names, people, addresses, phone numbers, prices, opening hours, waiting times and turnaround times in this theme are fictional sample content. Replace all of it with your own.
-This theme is a design. It is not medical advice, and it does not make a site compliant with any health, privacy or advertising rule. Check that yourself.
-The forms are static sample markup in Custom HTML blocks. They do not send anything. Replace them with a form plugin you trust, and do not collect health information through a form unless your setup is built for it.
+${beforePublish(o.niche).join("\n")}
 
 == Licence ==
 ${lic}

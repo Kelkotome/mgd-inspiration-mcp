@@ -9,13 +9,24 @@ src = open(os.path.join(HERE, "n13_lint.py"), encoding="utf-8").read(); ns = {}
 for name in ("REAL", "CLAIMS", "GEN", "DOMAIN"): ns[name] = eval(re.search(rf'^{name} = (r".*")\s*$', src, re.M).group(1))
 NICHES = ["real-estate", "apartment", "real-estate-agent", "property-management", "luxury-real-estate", "commercial-real-estate", "vacation-rental", "home-builder"]
 RE_REAL = r"\b(Zillow|Redfin|Rightmove|Zoopla|Trulia|LoopNet|CoStar|MLS|Airbnb|Vrbo|Booking\.com|Expedia|Tripadvisor|Compass|Keller Williams|RE/?MAX|Sotheby'?s|Christie'?s|Coldwell Banker|Century 21|CBRE|JLL|Cushman|Colliers|Savills|Knight Frank|AppFolio|Buildium|NAR|HUD|RICS|Realtors?|REALTORS?)\b"
-FAIR = r"\b(famil(y|ies)(?! room)|family[- ]friendly|perfect for|ideal for|singles?(?![- ]stor)|couples?|bachelors?|empty[- ]nesters?|young professionals?|students?|retirees?|mature|adults? only|no (kids|children)|exclusive|safe (neighbou?rhood|area|street)s?|quiet (residents?|tenants?|neighbours?)|walking distance|church(es)?|christian|able[- ]bodied|romantic)\b"
+FAIR = r"\b(famil(y|ies)(?! room)|family[- ]friendly|perfect for|ideal for|singles?(?![- ]stor| post)|couples?|bachelors?|empty[- ]nesters?|young professionals?|students?|retirees?|mature|adults? only|no (kids|children)|exclusive|safe (neighbou?rhood|area|street)s?|quiet (residents?|tenants?|neighbours?)|walking distance|church(es)?|christian|able[- ]bodied|romantic)\b"
 REVIEW = r"(five stars?|★|\breviews?:|\btestimonials?\b|\bwhat (our )?(clients|buyers|sellers|tenants|guests|owners) say\b|\bsuperhost\b)"
 def text_of(path, drop_tables=False):
     s = open(path, encoding="utf-8").read(); body = s.split("<body>", 1)[-1]
     body = re.sub(r"<style.*?</style>|<svg.*?</svg>|<script.*?</script>", " ", body, flags=re.S)
     if drop_tables: body = re.sub(r"<table.*?</table>", " ", body, flags=re.S)
     return html.unescape(re.sub(r"<[^>]+>", " ", body)), s
+if sys.argv[1:2] == ["--readmes"]:  # theme readmes in ui-screens/out-wp: same gates, plus no healthcare wording (7-Nov-2026 readme fix)
+    HEALTH = r"\b(medical|health\w*|patients?|clinics?|clinical|waiting times?)\b"; bad = 0; n = 0
+    for f in sorted(glob.glob(os.path.join(HERE, "..", "ui-screens", "out-wp", "*", "readme.txt"))):
+        slug = os.path.basename(os.path.dirname(f))
+        if not any(slug.startswith(f"mgd-{x}-") for x in NICHES): continue
+        t = open(f, encoding="utf-8").read(); n += 1; errs = []
+        for name, rx, fl in [("general", ns["GEN"], re.I), ("real-name", ns["REAL"], 0), ("re-brand", RE_REAL, 0), ("fair-housing", FAIR, re.I), ("review", REVIEW, re.I), ("health", HEALTH, re.I)]:
+            for m in re.finditer(rx, t, flags=fl): errs.append(f"{name}: ...{t[max(0,m.start()-40):m.end()+30].strip()}...".replace("\n", " "))
+        if "fair housing" not in t: errs.append("readme lacks the real estate Before-you-publish lines")
+        print(("FAIL " if errs else "ok   ") + slug, f"({len(errs)})"); [print("   ", e) for e in errs[:8]]; bad += bool(errs)
+    print(f"{n} readmes, {bad} failed"); sys.exit(1 if bad or not n else 0)
 fails = 0; want = sys.argv[1:] or NICHES
 for d in sorted(glob.glob(os.path.join(OUT, "*-web-*"))):
     base = os.path.basename(d); n = next((x for x in sorted(want, key=len, reverse=True) if base.startswith(x + "-website-")), None)
