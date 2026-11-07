@@ -1,0 +1,21 @@
+{
+ "industries": {
+  "healthcare": { "intro": "Sub-niches cover general practice, hospitals, specialist clinics, dental and eye care, mental health, rehabilitation, pharmacy and veterinary care. Every site includes a safety line where the niche needs one, clear ways to book or refer, and sample copy written for that kind of practice." }
+ },
+ "niches": {
+  "medical": { "intro": "For a family or general practice: registration, repeat prescriptions, test results and how to get an urgent appointment, written for patients who want a practical answer." },
+  "hospital": { "intro": "For a community hospital: departments, outpatient clinics, a minor injuries unit, visiting times and how to find your way around the site." },
+  "cardiology": { "intro": "For an outpatient heart practice: a route for patients, a separate route for referring clinicians, a plain guide to each test, and emergency guidance near the top of the page." },
+  "dermatology": { "intro": "For a skin clinic with medical and cosmetic sides: mole checks, patch testing and a route for referrers, kept apart from cosmetic treatments." },
+  "pediatrics": { "intro": "For a children's clinic: well visits, sick visits and newborn care, with routing to the right visit and no symptom lists." },
+  "fertility": { "intro": "For a fertility clinic: first conversations, tests and treatment options in a plain order, including stopping or taking a break. No success rates." },
+  "dental": { "intro": "For a family dental practice: check-ups, hygiene, fillings and emergencies, with a new patient guide, guide prices and what to do about a dental emergency." },
+  "orthodontics": { "intro": "For a braces and aligner practice: consultations for children and adults, how treatment runs from first look to retainers, and general time ranges that are labelled as not a promise." },
+  "therapist": { "intro": "For a counselling practice: who it may and may not be right for, how a first session goes, fees and cancellation, and clear crisis signposting." },
+  "mental-health": { "intro": "For a group outpatient mental health clinic: assessment, therapy, group programmes and medicine reviews, a named care coordinator, referral from doctors, and crisis signposting on every page." },
+  "physical-therapy": { "intro": "For a physical therapy and rehab clinic: assessments, sports rehab, pelvic health and classes, with a route for surgeons and doctors who send patients." },
+  "optometry": { "intro": "For an independent eye care practice: eye tests, children's vision, contact lenses and frame fitting, with what to do about sudden changes in vision." },
+  "pharmacy": { "intro": "For a community pharmacy: repeat prescriptions, medicine reviews, vaccinations, minor ailment advice and travel health, with branch hours and when to see a doctor instead." },
+  "veterinary": { "intro": "For a small animal vet: consultations, vaccinations, neutering, dental care and repeat prescriptions, with new pet registration and an out-of-hours line." }
+ }
+}

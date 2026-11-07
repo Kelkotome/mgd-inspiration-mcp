@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+// The page test and the tree guarantees, run against altered catalogs so we see them fail. node --import ./tests/ui_rank/register.mjs tests/test_tpl_tree.mjs
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs"; import path from "node:path"; import { tmpdir } from "node:os"; import { fileURLToPath } from "node:url";
+const HERE = path.dirname(fileURLToPath(import.meta.url)), SRC = path.join(HERE, "../src"), tree = readFileSync(path.join(SRC, "ui_tree.js"), "utf8"), real = JSON.parse(readFileSync(path.join(SRC, "tpl_catalog.json"), "utf8"));
+const dir = mkdtempSync(path.join(process.env.SCRATCH || tmpdir(), "tree-")); let n = 0, fails = 0, v = 0;
+const load = async (mut, patchTree = (s) => s) => { const c = structuredClone(real); mut(c); v++; writeFileSync(path.join(dir, `c${v}.json`), JSON.stringify(c)); writeFileSync(path.join(dir, `t${v}.mjs`), patchTree(tree).replace('"./tpl_catalog.json"', `"./c${v}.json"`)); return import(path.join(dir, `t${v}.mjs`)); };
+const t = (name, ok) => { n++; if (!ok) fails++; console.log(`${ok ? "ok  " : "FAIL"} ${name}`); };
+const throws = (f) => { try { f(); return false; } catch { return true; } };
+{ const m = await load(() => {}); t("real catalog passes assertTree", !throws(m.assertTree)); t("no duplicate paths", new Set(m.treePaths()).size === m.treePaths().length); for (const p of m.treePaths()) if (!m.resolveTree(p)) t(`resolves ${p}`, false); t("every path resolves", true); t("cardiology nests", m.nestedPatternPath("cardiology-website") === "healthcare-website-templates/cardiology-website-template"); t("a non-tree pattern stays flat", m.nestedPatternPath("restaurant-website") === null); }
+{ const m = await load((c) => { c.niches.dental.designs = c.niches.dental.designs.slice(0, 5); }); t("5 designs: no HTML page, flat URL", m.nestedPatternPath("dental-website") === null && m.resolveTree("healthcare-website-templates/dental-website-template") === null); t("5 designs: no WordPress page", m.resolveTree("wordpress-themes/healthcare/dental") === null); t("5 designs: others untouched", !!m.nestedPatternPath("medical-website")); }
+{ const m = await load((c) => { c.niches.dental.designs[0].distinct = false; }); t("a re-skin does not count towards 6", m.nestedPatternPath("dental-website") === null); }
+{ const m = await load((c) => { delete c.niches.dental.designs[0].theme; }); t("5 tested themes: WordPress page goes, HTML page stays", m.resolveTree("wordpress-themes/healthcare/dental") === null && !!m.nestedPatternPath("dental-website")); }
+{ const m = await load((c) => { c.niches.dental.designs[0].theme.tested = false; }); t("theme without a passing test stops the deploy", throws(m.assertTree)); }
+{ const m = await load((c) => { c.niches.dental.designs[1].theme.slug = c.niches.dental.designs[0].theme.slug; }); t("duplicate theme slug stops the deploy", throws(m.assertTree)); }
+{ const m = await load((c) => { c.niches.dental.designs[0].theme.slug = "bad_Slug"; }); t("malformed slug stops the deploy", throws(m.assertTree)); }
+{ const m = await load((c) => { c.niches.dental.designs[0].theme.slug = "mgd-abcdef123456"; }); t("slug that looks like an item id stops the deploy", throws(m.assertTree)); }
+{ const m = await load(() => {}, (s) => s.replace('["dental", "dental-website", "Dental", "dental-website-template", "dental"]', '["dental", "dental-website", "Dental", "medical-website-template", "medical"]')); t("two niches on one path stops the deploy", throws(m.assertTree)); }
+{ const m = await load((c) => { c.niches = {}; }); t("empty catalog: everything flat, no tree (the redirect rollback)", m.treePaths().length === 0 && m.nestedPatternPath("cardiology-website") === null); }
+rmSync(dir, { recursive: true, force: true }); console.log(`${n} checks, ${fails} failed`); process.exit(fails ? 1 : 0);

@@ -10,7 +10,9 @@ import UI_ELEMENTS from "./ui_elements.json"; // HTML-derived element/layout inv
 import UI_TAXONOMY from "../ui-screens/taxonomy.json"; // pattern groups + flow steps for list_ui_patterns
 import { extractCopy } from "./ui_copy.js";
 import { parseDesignMd, uiKitPanel, UI_KIT_CSS, UI_KIT_JS } from "./ui_kit.js";
-import { patternSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
+import { resolveTree, treePaths, assertTree, nicheOfPattern, MIN_DESIGNS, PLATFORMS, liveDesigns } from "./ui_tree.js";
+import { industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
+import { patternSlug, flatSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
 
 export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts", "login", "sign-up", "forgot-password", "two-factor",
   "welcome", "onboarding-step", "permissions-request", "home", "feed", "list-view", "detail-view", "kanban-board", "calendar",
@@ -38,7 +40,7 @@ export const UI_SECTION_PATTERNS = ["hero", "navigation-header", "feature-grid",
   "testimonials", "pricing", "comparison-table", "scored-comparison", "integrations-grid", "security-trust", "faq", "cta-banner", "about-team", "careers",
   "blog-index", "changelog", "contact-form", "footer"];
 // Full-length, responsive website templates by industry (type "page", 5-Nov-2026 template round n12); variants are page types (homepage first).
-export const UI_PAGE_PATTERNS = ["restaurant-website", "agency-website", "architecture-website", "wedding-website", "ecommerce-website", "coffee-shop-website", "salon-website", "real-estate-website", "construction-website", "law-firm-website", "dental-website", "gym-website", "school-website", "nonprofit-website", "travel-website", "hotel-website", "saas-landing-page", "ai-website", "medical-website", "cardiology-website", "dermatology-website", "therapist-website", "physical-therapy-website", "veterinary-website", "financial-advisor-website", "cleaning-service-website", "hvac-website", "cybersecurity-website", "crm-landing-page", "coaching-website", "pest-control-website", "solar-website", "ai-agent-website", "preschool-website", "apartment-website", "pediatrics-website", "orthodontics-website", "fertility-website"];
+export const UI_PAGE_PATTERNS = ["restaurant-website", "agency-website", "architecture-website", "wedding-website", "ecommerce-website", "coffee-shop-website", "salon-website", "real-estate-website", "construction-website", "law-firm-website", "dental-website", "gym-website", "school-website", "nonprofit-website", "travel-website", "hotel-website", "saas-landing-page", "ai-website", "medical-website", "cardiology-website", "dermatology-website", "therapist-website", "physical-therapy-website", "veterinary-website", "financial-advisor-website", "cleaning-service-website", "hvac-website", "cybersecurity-website", "crm-landing-page", "coaching-website", "pest-control-website", "solar-website", "ai-agent-website", "preschool-website", "apartment-website", "pediatrics-website", "orthodontics-website", "fertility-website", "hospital-website", "mental-health-website", "optometry-website", "pharmacy-website"];
 export const UI_PATTERNS = [...UI_SCREEN_PATTERNS, ...UI_SECTION_PATTERNS, ...UI_PAGE_PATTERNS];
 // Gallery filter categories (4-Nov-2026, user-picked names): taxonomy screen_patterns groups merged into 9, plus website sections.
 // 100+ flat chips were unscannable; the page now shows these first and reveals a category's screens once it is picked.
@@ -63,7 +65,7 @@ function flowsOf(pattern, variant) {
   return out;
 }
 const ROLES = ["background", "surface", "border", "text", "muted", "primary", "on-primary", "accent"];
-const LABELS = { "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys", "security-trust": "Security and trust", "how-it-works": "How it works", "saas": "SaaS", "ai": "AI", "error-404": "404 error", "faq": "FAQ", "cta-banner": "CTA banner",
+const LABELS = { homepage: "Signature", atlas: "Atlas", folio: "Folio", ledger: "Ledger", bento: "Bento", band: "Band", concierge: "Concierge", "chat-ai-assistant": "AI chat assistant", "api-keys": "API keys", "security-trust": "Security and trust", "how-it-works": "How it works", "saas": "SaaS", "ai": "AI", "error-404": "404 error", "faq": "FAQ", "cta-banner": "CTA banner",
   "two-factor": "Two-factor code", "kanban-board": "Kanban board", "data-table": "Data table",
   "ai-workspace": "AI workspace", "ai-settings": "AI settings", "telehealth-visit": "Telehealth visit", "form-wizard": "Multi-step form wizard",
   "in-call": "In call", "visit-summary": "Visit summary",
@@ -116,7 +118,7 @@ export async function uiRoute(path, request, env, ctx, base, h) {
     const u = new URL(request.url), f = {}, cleanQ = {};
     if (UI_PATTERNS.includes(u.searchParams.get("pattern"))) f.pattern = u.searchParams.get("pattern");
     if (facetSlug("group", u.searchParams.get("group"))) f.group = u.searchParams.get("group");
-    if (["web", "mobile"].includes(u.searchParams.get("platform"))) f.platform = u.searchParams.get("platform");
+    const dev = u.searchParams.get("device") || u.searchParams.get("platform"); if (["web", "mobile"].includes(dev)) f.platform = dev; // Device; ?platform= is the old name and keeps working
     if (UI_STYLES.includes(u.searchParams.get("style"))) f.style = u.searchParams.get("style");
     if (Object.keys(f).length) return Response.redirect(new URL(cleanUiUrl(f, base), request.url).toString(), 301);
     return h.edgeCache(request, ctx, 1800, () => uiGalleryPage(env, base, h, null));
@@ -125,6 +127,21 @@ export async function uiRoute(path, request, env, ctx, base, h) {
   if (path === "/ui/flows") return h.edgeCache(request, ctx, 1800, () => uiFlowsIndex(env, base, h));
   const fm = path.match(/^\/ui\/flows\/([a-z0-9-]+)$/);
   if (fm) return UI_FLOWS[fm[1]] ? h.edgeCache(request, ctx, 1800, () => uiFlowPage(fm[1], new URL(request.url), env, base, h)) : null;
+  // Template tree: nested paths, their .md twins and theme downloads
+  const dl = path.match(/^\/ui\/download\/wordpress\/([a-z0-9-]+)\.(zip|blueprint\.json)$/);
+  if (dl) return themeDownload(dl[1], dl[2], env, siteOf(env), base);
+  const tm = path.match(/^\/ui\/([a-z0-9/-]+?)(\.md)?$/);
+  const th = tm && resolveTree(tm[1]);
+  if (th && tm[2]) { const { rel, md } = treeMd(th, siteOf(env), base); return new Response(md, { headers: { "Content-Type": "text/markdown; charset=utf-8", "Link": `<${siteOf(env)}${base}/ui/${rel}>; rel="canonical"`, "Cache-Control": "public, max-age=3600", "Access-Control-Allow-Origin": "*" } }); }
+  if (th) {
+    const x = uiX(); const go = (fn) => h.edgeCache(request, ctx, 1800, fn);
+    if (th.type === "industry") return go(() => industryPage(th.ind, env, base, h, x));
+    if (th.type === "niche") return go(() => uiPatternPage(th.n.pattern, env, base, h));
+    if (th.type === "platform") return go(() => platformPage(env, base, h, x));
+    if (th.type === "platform-industry") return go(() => platformIndustryPage(th.ind, env, base, h, x));
+    if (th.type === "platform-niche") return go(() => platformNichePage(th.n, env, base, h, x));
+    if (th.type === "theme") return go(() => themePage(th.n, th.d, env, base, h, x));
+  }
   const pm = path.match(/^\/ui\/([a-z0-9-]+)$/);
   const hit = pm && resolveUiSlug(pm[1], UI_PATTERNS);
   if (hit && hit.type === "old") { const u = new URL(request.url); return Response.redirect(new URL(`${base}/ui/${patternSlug(hit.pattern)}${u.search}`, request.url).toString(), 301); }
@@ -137,6 +154,10 @@ export async function uiRoute(path, request, env, ctx, base, h) {
   if (m) return h.edgeCache(request, ctx, 1800, () => uiItemPage(m[1], env, base, h));
   return null;
 }
+// Where an old flat path now lives (trailing-slash redirects use this too, so old URLs reach the page in one hop). null when it has not moved.
+const uiX = () => ({ uiRows, uiItemPath: (it, base) => uiItemPath(it, base), head, page, siteOf, fitTitle, MGD_ORG, licenceLd, patternSlug, label, MCP_NOTE, RIGHTS });
+export function uiMovedPath(rel) { const hit = resolveUiSlug(rel, UI_PATTERNS); return hit && hit.type === "old" ? patternSlug(hit.pattern) : null; }
+assertTree();
 assertSlugs(UI_PATTERNS); // fails the deploy (module load) if a slug is missing, duplicated or collides with an old pattern id
 
 async function uiRaw(id, kind, env, base) {
@@ -210,7 +231,7 @@ const clip = (s, n = 155) => { s = String(s || "").replace(/\s+/g, " ").trim(); 
 const head = (h, o) => `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
 ${h.GTAG}<title>${h.escHtml(o.title)}</title><meta name="description" content="${h.escHtml(clip(o.desc))}"/><link rel="canonical" href="${h.escHtml(o.canonical)}"/>
 <meta property="og:type" content="${o.ogType || "website"}"/><meta property="og:title" content="${h.escHtml(o.ogTitle || o.title)}"/><meta property="og:description" content="${h.escHtml(clip(o.desc, 200))}"/>
-${o.image ? `<meta property="og:image" content="${h.escHtml(o.image)}"/>` : ""}<meta property="og:url" content="${h.escHtml(o.canonical)}"/>
+${o.image ? `<meta property="og:image" content="${h.escHtml(o.image)}"/>` : ""}<meta property="og:url" content="${h.escHtml(o.canonical)}"/>${o.md ? `<link rel="alternate" type="text/markdown" href="${h.escHtml(o.md)}"/>` : ""}
 <script type="application/ld+json">${JSON.stringify(o.jsonld)}</script><style>${PAGE_CSS}${o.css || ""}</style></head><body><div class="wrap">`;
 const page = (h, body) => new Response(h.themeify(body), { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=1800" } });
 const MGD_ORG = (site) => ({ "@type": "Organization", name: "Made Good Designs", url: site });
@@ -235,12 +256,12 @@ const FILTER_JS = (base, scope, page) => `<script>
 (function(){var S=${UI_SLUG_JS()},B=${JSON.stringify(base)},SCOPE=${JSON.stringify(scope)},PAGE=${page || 0},shown=PAGE||1e9,f={platform:"",group:"",pattern:"",style:""},
 cards=[].slice.call(document.querySelectorAll("#grid .card")),cnt=document.getElementById("count"),more=document.getElementById("more"),word=cnt.dataset.word||"screen";
 if(SCOPE)f[SCOPE.k]=SCOPE.v;
-try{var q=new URLSearchParams(location.search);["platform","style"].forEach(function(k){if(q.get(k)&&!(SCOPE&&SCOPE.k===k))f[k]=q.get(k)})}catch(e){}
+try{var q=new URLSearchParams(location.search);["platform","style"].forEach(function(k){var v=q.get(k==="platform"?"device":k)||q.get(k);if(v&&!(SCOPE&&SCOPE.k===k))f[k]=v})}catch(e){}
 function grp(p){var c=document.querySelector('.sub .chip[data-v="'+String(p).replace(/[^a-z0-9-]/g,"")+'"]');return c?c.closest(".sub").dataset.g:""}
 if(f.pattern&&!f.group)f.group=grp(f.pattern);
 function url(s){var q=new URLSearchParams(),seg="";
-if(s.pattern){seg=S.p[s.pattern]||s.pattern;if(s.platform)q.set("platform",s.platform);if(s.style)q.set("style",s.style)}
-else if(s.group&&S.f["group:"+s.group]){seg=S.f["group:"+s.group];if(s.platform)q.set("platform",s.platform);if(s.style)q.set("style",s.style)}
+if(s.pattern){seg=S.p[s.pattern]||s.pattern;if(s.platform)q.set("device",s.platform);if(s.style)q.set("style",s.style)}
+else if(s.group&&S.f["group:"+s.group]){seg=S.f["group:"+s.group];if(s.platform)q.set("device",s.platform);if(s.style)q.set("style",s.style)}
 else if(s.platform&&S.f["platform:"+s.platform]){seg=S.f["platform:"+s.platform];if(s.style)q.set("style",s.style)}
 else if(s.style&&S.f["style:"+s.style])seg=S.f["style:"+s.style];
 q=q.toString();return B+"/ui"+(seg?"/"+seg:"")+(q?"?"+q:"")}
@@ -287,7 +308,7 @@ async function uiGalleryPage(env, base, h, facet) {
   + `${h.backLink(base, "/", "Back to inspiration")}
 ${facet ? `<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(facet.h1)}</nav>` : ""}
 <h1>${h.escHtml(facet ? facet.h1 : "UI screens")}</h1>
-${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an original design by Made Good Designs with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui"><b>all ${all.length} UI screens</b></a> and <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`
+${facet && facet.value === "websites" && industryLinks(base, h) ? `<p class="lede">By industry: ${industryLinks(base, h)}</p>` : ""}${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an original design by Made Good Designs with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui"><b>all ${all.length} UI screens</b></a> and <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`
   : `<p class="lede">Original app screens and website sections for web and mobile, designed by Made Good Designs. Unlike screenshot libraries, every screen comes with its <b>HTML code</b> and a <b>DESIGN.md</b> with the colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`}
 <div class="filters">${chips("platform", "Platform", ["web", "mobile"])}${groupChips}${chips("style", "Style", UI_STYLES)}</div>
 <p class="lede" id="count" data-word="${word}" style="margin:-.5rem 0 .5rem">${items.length} ${word}s</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>
@@ -306,7 +327,7 @@ function uiFacetsPresent(rows) {
 }
 const facetIndex = (base, h, all) => {
   const link = (k, v, text) => { const s = facetSlug(k, v); return s && all.some((it) => (k === "group" ? UI_GROUP_OF[it.pattern] === v : k === "platform" ? it.platform === v : it.style === v)) ? `<a href="${h.escHtml(base)}/ui/${s}">${h.escHtml(text)}</a>` : ""; };
-  return `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">Browse by category, platform and style</h2><div class="pidx">${[...UI_FILTER_GROUPS.map(([id, name]) => link("group", id, name)), link("group", "sections", "Website sections"), link("group", "websites", "Website templates"),
+  return `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">Browse by category, device and style</h2><div class="pidx">${[...UI_FILTER_GROUPS.map(([id, name]) => link("group", id, name)), link("group", "sections", "Website sections"), link("group", "websites", "Website templates"),
     link("platform", "web", "Web UI"), link("platform", "mobile", "Mobile app UI"), ...UI_STYLES.map((st) => link("style", st, label(st) + " style"))].filter(Boolean).join("<br>")}</div>`;
 };
 
@@ -318,7 +339,7 @@ async function uiItemPage(id, env, base, h) {
   const isSection = UI_SECTION_PATTERNS.includes(it.pattern) || UI_PAGE_PATTERNS.includes(it.pattern), isPage = UI_PAGE_PATTERNS.includes(it.pattern);
   const name = `${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""} ${kindWord(it.pattern)} — ${it.platform}, ${it.style} style`;
   const related = (await uiRows(env, " AND category=? AND id<>? AND (country=? OR style=?)", [it.pattern, it.id, it.platform, it.style])).map((r) => h.rowToItem(r, env)).slice(0, 12);
-  const facts = [["Pattern", label(it.pattern), `${base}/ui/${patternSlug(it.pattern)}`], ["Platform", label(it.platform), cleanUiUrl({ platform: it.platform }, base)],
+  const facts = [["Pattern", label(it.pattern), `${base}/ui/${patternSlug(it.pattern)}`], ["Device", label(it.platform), cleanUiUrl({ platform: it.platform }, base)],
     ["Style", label(it.style), cleanUiUrl({ style: it.style }, base)], ["Product (fictional)", it.product, null], ["Category", label(it.app_category), null]];
   const flows = (it.flows || []).filter((f) => UI_FLOWS[f.id]);
   const pal = (it.palette || []).slice(0, 8).map((hx, i) => `<span class="sw" style="background:${h.escHtml(hx)}" title="${ROLES[i] || ""} ${h.escHtml(hx)}"></span>`).join("");
@@ -347,7 +368,7 @@ dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:.3rem 1rem;margi
 .flows{font-size:.9rem;margin:0 0 1rem}.flows a{font-weight:600}
 h2{font-size:1.05rem;margin:2.25rem 0 .75rem}${tokens ? UI_KIT_CSS : ""}` })
   + `${h.backLink(base, "/ui", "Back to UI screens")}
-<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/${h.escHtml(patternSlug(it.pattern))}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
+${itemSibling(it, base, h)}<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/${h.escHtml(patternSlug(it.pattern))}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
 <div class="detail ${h.escHtml(it.platform)}">
   <div style="position:relative"${isPage ? ' class="pagebox"' : ""}><button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button>${isPage ? '<div class="shotscroll">' : ""}<img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${isPage ? "</div>" : ""}${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>
   <div><h1>${h.escHtml(name)}</h1>${it.description ? `<p class="desc">${h.escHtml(it.description)}</p>` : ""}
@@ -359,7 +380,7 @@ h2{font-size:1.05rem;margin:2.25rem 0 .75rem}${tokens ? UI_KIT_CSS : ""}` })
     ${pal ? `<div class="pal" aria-label="Colour roles: background, surface, border, text, muted, primary, on-primary, accent">${pal}</div>` : ""}
     ${tags.length ? `<div class="tags">${tags.map((t) => `<span>${h.escHtml(t)}</span>`).join("")}</div>` : ""}
   </div></div>
-${tokens ? uiKitPanel({ tokens, what, kind, name, pageUrl: canonical, mdUrl: site + base + it.design_md, codeUrl: site + base + it.code, ref: `ui-${patternSlug(it.pattern)}`, esc: h.escHtml }) : ""}
+${tokens ? uiKitPanel({ tokens, what, kind, name, pageUrl: canonical, mdUrl: site + base + it.design_md, codeUrl: site + base + it.code, ref: `ui-${flatSlug(it.pattern)}`, esc: h.escHtml }) : ""}
 ${related.length ? `<h2>More ${h.escHtml(label(it.pattern).toLowerCase())} ${kindWord(it.pattern, true)}</h2><div class="grid">${related.map((r) => card(r, base, h, `<b>${h.escHtml(r.platform)}</b>${r.variant ? " · " + h.escHtml(label(r.variant)) : ""} <span>· ${h.escHtml(r.style)}</span>`)).join("")}</div>` : ""}
 ${MCP_NOTE(base)}${RIGHTS}
 </div><script>document.addEventListener("click",function(e){var b=e.target.closest("[data-copy]");if(!b)return;var t=b.textContent;
@@ -372,7 +393,7 @@ ${THEME_JS}${tokens ? UI_KIT_JS : ""}${h.saveWidget(base)}</body></html>`;
 async function uiPatternPage(pattern, env, base, h) {
   const items = (await uiRows(env, " AND category=?", [pattern])).map((r) => h.rowToItem(r, env));
   if (!items.length) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
-  const site = siteOf(env), url = `${site}${base}/ui/${patternSlug(pattern)}`, isSection = UI_SECTION_PATTERNS.includes(pattern);
+  const site = siteOf(env), url = `${site}${base}/ui/${patternSlug(pattern)}`, isSection = UI_SECTION_PATTERNS.includes(pattern), tn = nicheOfPattern(pattern);
   const c = UI_COPY[pattern] || {}, lab = label(pattern), kind = kindWord(pattern).replace("email ", "");
   const h1 = patternH1(pattern) || c.h1 || `${lab} ${isSection ? "section" : UI_EMAIL_PATTERNS.includes(pattern) ? "template" : "UI"} examples`;
   const nStyles = new Set(items.map((x) => x.style)).size, plats = [...new Set(items.map((x) => x.platform))];
@@ -383,16 +404,18 @@ async function uiPatternPage(pattern, env, base, h) {
     isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` }, publisher: MGD_ORG(site), ...licenceLd(site, base),
     mainEntity: { "@type": "ItemList", numberOfItems: items.length, itemListElement: items.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: site + uiItemPath(it, base) })) } }];
   if (faq.length) jsonld.push({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) });
+  const nd = tn ? liveDesigns(tn).length : 0; // sub-niche pages count distinct designs, not style and device screens
+  if (tn) jsonld.push(crumbLd(site, base, nicheCrumbs(tn)));
   const chipLink = (k, v, text) => { const href = cleanUiUrl({ pattern, [k]: v }, base); return `<a class="chip" data-f="${k}" data-v="${h.escHtml(v)}" href="${h.escHtml(href)}"${href.includes("?") ? ' rel="nofollow"' : ""} aria-pressed="${v ? "false" : "true"}">${h.escHtml(text)}</a>`; };
   const chips = (k, lab2, vals) => `<div><b>${lab2}</b>${chipLink(k, "", "All")}${vals.map((v) => chipLink(k, v, label(v))).join("")}</div>`;
   const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.platform))}</b>${it.variant ? " · " + h.escHtml(label(it.variant)) : ""} <span>· ${h.escHtml(it.style)}</span>`)).join("");
-  const body = head(h, { title: fitTitle(`${h1} (${items.length} free, with code) | MGD`, `${h1} (${items.length} free) | MGD`, `${h1} with code | MGD`, `${h1} | MGD`, `${h1.replace(/ \(.*\)$/, "")} (${items.length} free, with code) | MGD`, `${h1.replace(/ \(.*\)$/, "")} | MGD`, h1), ogTitle: `${h1} with code`, desc, canonical: url,
+  const body = head(h, { css: tn ? nicheCss : "", md: tn ? `${url}.md` : null, title: tn ? fitTitle(`${h1} (${nd} designs, free, with code) | MGD`, `${h1} (${nd} designs, free) | MGD`, `${h1} (${nd} free) | MGD`, `${h1} | MGD`) : fitTitle(`${h1} (${items.length} free, with code) | MGD`, `${h1} (${items.length} free) | MGD`, `${h1} with code | MGD`, `${h1} | MGD`, `${h1.replace(/ \(.*\)$/, "")} (${items.length} free, with code) | MGD`, `${h1.replace(/ \(.*\)$/, "")} | MGD`, h1), ogTitle: `${h1} with code`, desc, canonical: url,
     image: site + base + items[0].image, jsonld })
   + `${h.backLink(base, "/ui", "All UI screens")}
-<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(lab)}</nav>
+${tn ? nicheCrumbHtml(tn, h, base) : `<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(lab)}</nav>`}
 <h1>${h.escHtml(h1)}</h1>
 <p class="lede">${h.escHtml(c.intro || desc)} Every example is an original design that comes with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, in light and dark. Free to use and adapt.</p>
-<div class="filters">${plats.length > 1 ? chips("platform", "Platform", plats) : ""}${chips("style", "Style", UI_STYLES.filter((x) => items.some((it) => it.style === x)))}<div>${THEME_SWITCH}</div></div>
+${tn ? nicheDesignsBlock(tn, items, base, h, uiItemPath) + `<h2 class="s">Every screen, by style and device</h2>` : ""}<div class="filters">${plats.length > 1 ? chips("platform", "Device", plats) : ""}${chips("style", "Style", UI_STYLES.filter((x) => items.some((it) => it.style === x)))}<div>${THEME_SWITCH}</div></div>
 <p class="lede" id="count" data-word="example" style="margin:-.5rem 0 1rem">${items.length} examples</p>
 <div class="grid" id="grid">${cards}</div>
 ${flows.length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">See it in a flow</h2><p class="lede" style="margin:0">${flows.map(([id, n]) => `<a href="${h.escHtml(flowPath(id, base))}"><b>${h.escHtml(n)}</b></a>`).join(" · ")}</p>` : ""}
@@ -479,6 +502,7 @@ async function uiSitemap(env, base) {
   const rows = await uiRows(env);
   const have = new Set(rows.map((r) => r.category)); // only patterns that have screens (new patterns appear after their ingest)
   const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...UI_PATTERNS.filter((p) => have.has(p)).map((p) => `${site}${base}/ui/${patternSlug(p)}`), ...uiFacetsPresent(rows).map((slug) => `${site}${base}/ui/${slug}`), ...(await availableFlows(env)).map((id) => `${site}${base}/ui/flows/${id}`),
+    ...[...new Set(treePaths())].filter((p) => !UI_PATTERNS.some((x) => patternSlug(x) === p)).map((p) => `${site}${base}/ui/${p}`),
     ...rows.map((r) => site + uiItemPath({ id: r.id, ...uiFields(r), style: r.style }, base))];
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${u}</loc></url>`).join("\n")}\n</urlset>`,
     { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
@@ -488,12 +512,13 @@ async function uiSitemap(env, base) {
 export const UI_MCP_TOOLS = [
   {
     name: "search_ui_screens",
-    description: "Search Made Good Designs' free library of ORIGINAL app screens and website sections (web and mobile): dashboards, data tables, charts, login, sign-up, two-factor, onboarding, settings, profile, team members, billing, invoices, paywalls, cancel flows, kanban boards, calendars, file managers, editors, AI chat, e-commerce product/cart/checkout, transactional emails (receipt, password reset, magic link…), shift schedules, time off, inventory, ops dashboards, photo feeds, empty/404/loading/success states, and landing-page sections (hero, features, pricing, comparison table, testimonials, FAQ, CTA, footer…), in 8 visual styles. Unlike screenshot libraries, every screen ships with copyable HTML and a DESIGN.md token file (colours with WCAG contrast, type, spacing). Each result gives the screenshot URL, colour roles, elements, any flows it belongs to, a page URL to cite and a screen_id — pass it to get_ui_screen_code to get the code. Use when building or designing an app screen or a marketing page.",
+    description: "Search Made Good Designs' free library of ORIGINAL app screens and website sections (web and mobile), and find installable WordPress block themes by niche: dashboards, data tables, charts, login, sign-up, two-factor, onboarding, settings, profile, team members, billing, invoices, paywalls, cancel flows, kanban boards, calendars, file managers, editors, AI chat, e-commerce product/cart/checkout, transactional emails (receipt, password reset, magic link…), shift schedules, time off, inventory, ops dashboards, photo feeds, empty/404/loading/success states, and landing-page sections (hero, features, pricing, comparison table, testimonials, FAQ, CTA, footer…), in 8 visual styles. Unlike screenshot libraries, every screen ships with copyable HTML and a DESIGN.md token file (colours with WCAG contrast, type, spacing). Each result gives the screenshot URL, colour roles, elements, any flows it belongs to, a page URL to cite and a screen_id — pass it to get_ui_screen_code to get the code. Use when building or designing an app screen or a marketing page.",
     inputSchema: {
       type: "object",
       properties: {
         query: { type: "string", description: "What screen you need, e.g. 'billing settings with plan cards', 'AI chat assistant', 'dashboard with data table'." },
-        platform: { type: "string", description: "Optional platform: web or mobile." },
+        device: { type: "string", description: "Optional device: web or mobile." },
+        platform: { type: "string", description: "Optional delivery platform: html or wordpress. wordpress returns installable block themes with download links, for example query 'cardiology'. web and mobile still work here and mean device." },
         pattern: { type: "string", description: "Optional pattern filter. Free text is fine: an exact id (e.g. doctor-directory, kanban-board, pricing) or a plain name ('doctor directory', 'kanban') is matched server-side. Call list_ui_patterns for the live list; new patterns are added often." },
         style: { type: "string", description: "Optional visual style: minimal, editorial, brutalist, luxury, playful, corporate, retro or monochrome." },
         limit: { type: "integer", description: "Max distinct screens (1-12, default 6). Each result also lists its other styles.", minimum: 1, maximum: 12 },
@@ -512,7 +537,8 @@ export const UI_MCP_TOOLS = [
       type: "object",
       properties: {
         flow: { type: "string", description: "Which flow: an id from the list above or a plain description ('reset password', 'open a bank account'); matched server-side. list_ui_patterns lists the live flows." },
-        platform: { type: "string", description: "web (default) or mobile." },
+        device: { type: "string", description: "web (default) or mobile." },
+        platform: { type: "string", description: "Old name for device; web or mobile still work here." },
         style: { type: "string", description: "Default 'minimal'. Also: editorial, brutalist, luxury, playful, corporate, retro, monochrome." },
         include_errors: { type: "boolean", description: "Default true: include the flow's error/unhappy-path steps (wrong password, expired code, card declined, form errors). false = happy path only." },
         previews: { type: "boolean", description: "Default false. true = also attach the step screenshots as images (first 6 steps, about 100 KB each)." },
@@ -539,7 +565,7 @@ export const UI_MCP_TOOLS = [
     description: "List every pattern (app screens, website sections and full website templates) and multi-step flow in Made Good Designs' free UI library, live, with screen counts, variants and flow steps. Use it to pick a pattern or flow id for search_ui_screens / get_ui_flow, or to see what exists before searching.",
     inputSchema: {
       type: "object",
-      properties: { kind: { type: "string", description: "Optional: screens, sections, templates (full website templates by industry), flows, elements (component vocabulary for the elements filter) or all (default)." } },
+      properties: { kind: { type: "string", description: "Optional: screens, sections, templates (full website templates by industry, with the template tree and WordPress themes), themes, flows, elements (component vocabulary for the elements filter) or all (default)." } },
     },
     annotations: { title: "List UI patterns", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
@@ -612,7 +638,9 @@ export async function callUiTool(name, a, env, h) {
     const wantDark = /\b(dark|night)(\s+(mode|theme|ui))?\b/i.test(q);
     const qText = wantDark ? q.replace(/\b(dark|night)(\s+(mode|theme|ui))?\b/gi, " ").replace(/\s+/g, " ").trim() : q;
     const limit = h.clampInt(a.limit, 6, 1, 12);
-    const platform = resolvePlatform(a.platform), style = resolveStyle(a.style);
+    const deliver = /^(wordpress|wp|html)$/i.test(String(a.platform || "")) ? String(a.platform).toLowerCase().replace("wp", "wordpress") : null; // Platform = what it ships as; web and mobile are the device
+    if (!a.pattern || deliver === "wordpress") { const other = a.platform && !deliver && !resolvePlatform(a.platform) ? a.platform : "", ans = tplAnswer({ q: `${q} ${String(a.pattern || "").replace(/-/g, " ")} ${other}`, platform: deliver }, site); if (ans) return { content: [{ type: "text", text: `${ans}\n\n${CITE}` }] }; }
+    const platform = resolvePlatform(a.device || (deliver ? null : a.platform)), style = resolveStyle(a.style);
     const pr = a.pattern ? resolveName(a.pattern, UI_PATTERNS, PATTERN_ALIASES) : null;
     const pattern = pr ? pr.id : null;
     const idx = await uiSearchIndex(env);
@@ -628,7 +656,7 @@ export async function callUiTool(name, a, env, h) {
       res = all; elNote += ` (no screen has all of: ${els.map((e) => e.input).join(", ")}; showing screens with the most of them)`;
     }
     const filt = `${platform ? ", " + platform : ""}${pattern ? ", " + pattern : ""}${style ? ", " + style + " style" : ""}`;
-    const patNote = elNote + (a.platform && !platform ? ` (platform "${a.platform}" not available yet; web and mobile only)` : "") + (a.style && !style ? ` (unknown style "${a.style}" ignored)` : "")
+    const patNote = elNote + ((a.device || (a.platform && !deliver)) && !platform ? ` (device "${a.device || a.platform}" not available yet; web and mobile only)` : "") + (a.style && !style ? ` (unknown style "${a.style}" ignored)` : "")
       + (a.pattern && !pattern ? ` (unknown pattern "${a.pattern}" ignored; list_ui_patterns shows them all)` : pr && pr.how !== "exact" ? ` (pattern "${a.pattern}" → ${pattern})` : "");
     const sugg = (res.suggestions || []).filter((p) => p !== pattern);
     const suggLine = sugg.length ? ` Closest patterns: ${sugg.map((p) => `${p} (${label(p).toLowerCase()})`).join(", ")} — search again with one of them, or pass pattern="…".` : "";
@@ -661,15 +689,16 @@ export async function callUiTool(name, a, env, h) {
         wantDark && it.image_dark ? `  screenshot (dark): ${site}${it.image_dark}` : `  screenshot: ${site}${it.image}`, `  page (cite this): ${site}${uiItemPath(it, "")}`, tw].filter(Boolean).join("\n");
     });
     const darkNote = wantDark ? " Every screen ships a dark theme: its HTML switches on prefers-color-scheme or data-theme=\"dark\" on <html>, and DESIGN.md lists the dark colour tokens; light screenshots are the same URL without -dark." : " Dark screenshots: same URL ending -dark.webp.";
-    const how = `Get code: get_ui_screen_code(screen_id) returns the HTML + DESIGN.md. Flows: get_ui_flow(flow). Browse any pattern at ${site}/ui/<pattern>.`;
+    const how = `Get code: get_ui_screen_code(screen_id) returns the HTML + DESIGN.md. Flows: get_ui_flow(flow). Browse any pattern at ${site}/ui.`;
+    const hint = tplHint({ q }, site);
     const imgs = a.previews === true ? await previewImages(env, picks.map(({ row }) => h.rowToItem(row, env)), wantDark, 4) : [];
-    return { content: [{ type: "text", text: `${hd}.${darkNote} ${how} ${CITE}${imgs.length ? ` Attached: screenshots of results 1-${imgs.length}, in order.` : ""}\n\n${blocks.join("\n\n")}` }, ...imgs] };
+    return { content: [{ type: "text", text: `${hint ? hint + "\n\n" : ""}${hd}.${darkNote} ${how} ${CITE}${imgs.length ? ` Attached: screenshots of results 1-${imgs.length}, in order.` : ""}\n\n${blocks.join("\n\n")}` }, ...imgs] };
   }
   if (name === "get_ui_flow") {
     const fr = resolveName(a.flow, Object.keys(UI_FLOWS), Object.fromEntries(Object.entries(UI_FLOWS).map(([k, v]) => [k, [v, ...((FLOW_DEFS[k] || {}).aliases || [])]])));
     if (!fr) return { content: [{ type: "text", text: `No flow matches "${a.flow || ""}". Available: ` + Object.entries(UI_FLOWS).map(([k, v]) => `${k} (${v.toLowerCase()})`).join(", ") }], isError: true };
     const id = fr.id;
-    const platform = resolvePlatform(a.platform) || "web", style = resolveStyle(a.style) || "minimal";
+    const platform = resolvePlatform(a.device || a.platform) || "web", style = resolveStyle(a.style) || "minimal";
     const steps = await flowSteps(env, h, id, platform, style, { noErrors: a.include_errors === false });
     if (!steps.length) return { content: [{ type: "text", text: `The ${id} flow isn't available for ${platform}/${style} yet. Browse flows at ${site}/ui/flows` }] };
     const fd = FLOW_DEFS[id] || {}, nErr = steps.filter((s) => s.error).length;
@@ -684,6 +713,7 @@ export async function callUiTool(name, a, env, h) {
   }
   if (name === "list_ui_patterns") {
     const kind = String(a.kind || "all").toLowerCase();
+    if (/^(theme|wordpress)/.test(kind)) return { content: [{ type: "text", text: `Made Good Designs template tree. Plain names work: search_ui_screens(query="cardiology", platform="wordpress").\n${tplListLines(site).join("\n")}` }] };
     const want = (k) => kind === "all" || kind.startsWith(k) || !/^(screen|section|flow|app|element)/.test(kind);
     const idx = await uiSearchIndex(env);
     const cnt = {}, vars = {};
@@ -700,7 +730,7 @@ export async function callUiTool(name, a, env, h) {
       if (rest.length) out.push("other:", ...rest.map(line));
     }
     if (want("section")) out.push("", "WEBSITE SECTIONS:", ...UI_SECTION_PATTERNS.filter((p) => cnt[p]).map(line));
-    if ((want("section") || kind.startsWith("page") || kind.startsWith("website") || kind.startsWith("template")) && UI_PAGE_PATTERNS.some((p) => cnt[p])) out.push("", "WEBSITE TEMPLATES (full responsive home pages by industry):", ...UI_PAGE_PATTERNS.filter((p) => cnt[p]).map(line));
+    if ((want("section") || kind.startsWith("page") || kind.startsWith("website") || kind.startsWith("template")) && UI_PAGE_PATTERNS.some((p) => cnt[p])) out.push("", "WEBSITE TEMPLATES (full responsive home pages by industry):", ...UI_PAGE_PATTERNS.filter((p) => cnt[p]).map(line), ...tplListLines(site));
     if (want("flow")) {
       const tf = UI_TAXONOMY.flows || {};
       out.push("", "FLOWS (ids for get_ui_flow):", ...Object.entries(UI_FLOWS).map(([k, v]) => `  ${k} — ${v}${tf[k] && tf[k].steps ? ` (${tf[k].steps.length} steps: ${tf[k].steps.join(" → ")})` : ""}`));

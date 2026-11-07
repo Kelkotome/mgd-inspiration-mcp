@@ -35,7 +35,7 @@ import { TOOL_DEFS as MCP_TOOLS_79, isTools79Tool, callTools79Tool, NEXT79 } fro
 import { TOOL_DEFS as MCP_TOOLS_80, isTools80Tool, callTools80Tool, NEXT80 } from "./mcp_tools80.js";
 import { MGDMoodboard } from "./tools_core48.js";
 import { handleAi, cleanupAiUsage } from "./ai_tools.js";
-import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields } from "./ui_screens.js";
+import { UI_MCP_TOOLS, isUiTool, callUiTool, uiRoute, uiFields, uiMovedPath } from "./ui_screens.js";
 import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authorize as oauthAuthorize,
   token as oauthToken, revoke as oauthRevoke, verifyBearer, challengeHeader,
   connectedAppsApi, connectedAppsPage } from "./oauth.js";
@@ -106,7 +106,7 @@ export default {
     try {
       // ---- Pages (inject the mount base so the front-end builds correct URLs) ----
       // Trailing-slash variants of collection pages → canonical (articles and people link both ways)
-      if (method === "GET" && /^\/(museum|annual-reports|ui)(\/.*)?\/$/.test(path)) return Response.redirect(new URL(base + path.replace(/\/+$/, ""), request.url).toString(), 301);
+      if (method === "GET" && /^\/(museum|annual-reports|ui)(\/.*)?\/$/.test(path)) return Response.redirect(new URL(base + uiNoSlash(path), request.url).toString(), 301);
       if (path === "/" && method === "GET") return html(injectBase(GALLERY_HTML, base));
       if (path === "/add" && method === "GET") return html(injectBase(ADD_HTML, base));
       if (path === "/annual-reports" && method === "GET") return html(injectBase(ANNUAL_HTML, base));
@@ -2972,6 +2972,8 @@ function rowToItem(r, env) {
 
 // Helpers handed to ui_screens.js (pages render with the same chrome as the museum pages).
 // Collection sitemaps listed in /sitemap_index.xml (paths under the mount base). Add new collections here.
+// Trailing slash off, and straight to a moved template page, so an old URL with a slash is still one hop.
+function uiNoSlash(path) { const p = path.replace(/\/+$/, ""), m = p.match(/^\/ui\/([a-z0-9-]+)$/), to = m && uiMovedPath(m[1]); return to ? `/ui/${to}` : p; }
 const WORKER_SITEMAPS = ["/ui/sitemap.xml", "/museum/sitemap.xml", "/annual-reports/sitemap.xml"];
 const UI_H = { escHtml, GTAG, themeify, saveWidget, backLink, edgeCache, rowToItem };
 

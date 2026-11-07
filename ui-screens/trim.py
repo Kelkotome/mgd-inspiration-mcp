@@ -17,7 +17,7 @@ def content_bottom(path):
     return h
 
 n = 0
-for mp in sorted(glob.glob(f"out/{sys.argv[1] if len(sys.argv) > 1 else '*'}/meta.json")):
+for mp in sorted(glob.glob(f"{os.environ.get('SHOOT_OUT', 'out')}/{sys.argv[1] if len(sys.argv) > 1 else '*'}/meta.json")):
     d = os.path.dirname(mp); m = json.load(open(mp))
     if m["type"] not in ("section", "email", "page"): continue
     shots = [p for p in (f"{d}/screen.png", f"{d}/screen-dark.png") if os.path.exists(p)]

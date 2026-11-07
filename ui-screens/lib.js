@@ -90,6 +90,10 @@ const FAMILIES = {
   pediatrics: { name: "Wrenfold Children's Clinic", cat: "pediatrics", desc: "a family paediatric practice", type: { web: "Website", mobile: "Mobile website" } },
   ortho: { name: "Wraybrook Orthodontics", cat: "orthodontics", desc: "an orthodontic practice for children, teens and adults", type: { web: "Website", mobile: "Mobile website" } },
   fertility: { name: "Moonfern Fertility", cat: "fertility", desc: "an outpatient fertility clinic", type: { web: "Website", mobile: "Mobile website" } },
+  hospital: { name: "Tarrowmere Community Hospital", cat: "hospital", desc: "a community hospital with outpatient clinics and a minor injuries unit", type: { web: "Website", mobile: "Mobile website" } },
+  pharmacy: { name: "Quenby Lane Pharmacy", cat: "pharmacy", desc: "an independent neighbourhood pharmacy", type: { web: "Website", mobile: "Mobile website" } },
+  optometry: { name: "Ollanby Eyecare", cat: "optometry", desc: "an independent optometry practice with an in-house optical", type: { web: "Website", mobile: "Mobile website" } },
+  mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 
 const ICON = {

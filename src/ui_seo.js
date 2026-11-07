@@ -5,6 +5,9 @@
 // query params (?platform=, ?style=) with the canonical on the clean path. Slugs are flat (one namespace under /ui),
 // so every slug must be unique and must not be another pattern's old id (checked at load, see assertSlugs).
 // Volumes/trends behind each choice: n11 SEO-URL report (slug table).
+// 7-Nov-2026: patterns placed in the template tree (ui_tree.js) get a nested path; patternSlug() returns it, so every link, canonical and
+// sitemap entry follows, and the flat slug and old id each 301 straight to it. Patterns not in the tree stay flat.
+import { nestedPatternPath, INDUSTRIES, PLATFORMS } from "./ui_tree.js";
 
 // pattern id -> [slug, H1]. The H1 carries the searched phrase; the slug is that phrase without "design/examples".
 export const PATTERN_SEO = {
@@ -161,6 +164,11 @@ export const PATTERN_SEO = {
   "orthodontics-website": ["orthodontics-website-template", "Orthodontics website templates"],
   "fertility-website": ["fertility-website-template", "Fertility clinic website templates"],
   // n13-end
+  // 7-Nov-2026 healthcare pilot: new niches. These only ever live under the industry hub.
+  "hospital-website": ["hospital-website-template", "Hospital website templates"],
+  "mental-health-website": ["mental-health-website-template", "Mental health clinic website templates"],
+  "optometry-website": ["optometry-website-template", "Optometry website templates"],
+  "pharmacy-website": ["pharmacy-website-template", "Pharmacy website templates"],
 };
 
 // Gallery facets (group / platform / style) rendered by the gallery page with that facet applied server-side.
@@ -214,7 +222,8 @@ export const FACET_SEO = [
     "Black-and-white monochrome interfaces built on contrast and type alone."],
 ];
 
-export const patternSlug = (p) => (PATTERN_SEO[p] ? PATTERN_SEO[p][0] : p);
+export const flatSlug = (p) => (PATTERN_SEO[p] ? PATTERN_SEO[p][0] : p);
+export const patternSlug = (p) => nestedPatternPath(p) || flatSlug(p);
 export const patternH1 = (p) => (PATTERN_SEO[p] ? PATTERN_SEO[p][1] : null);
 const FACET_BY_SLUG = Object.fromEntries(FACET_SEO.map(([kind, value, slug, h1, title, intro]) => [slug, { kind, value, slug, h1, title, intro }]));
 const FACET_SLUG = Object.fromEntries(FACET_SEO.map(([kind, value, slug]) => [`${kind}:${value}`, slug]));
@@ -223,7 +232,7 @@ const PATTERN_BY_SLUG = Object.fromEntries(Object.entries(PATTERN_SEO).map(([p, 
 
 // What a /ui/<seg> path means: { type: "pattern", pattern } | { type: "facet", facet } | { type: "old", pattern } (301) | null
 export function resolveUiSlug(seg, patterns) {
-  if (PATTERN_BY_SLUG[seg] && patterns.includes(PATTERN_BY_SLUG[seg])) return { type: "pattern", pattern: PATTERN_BY_SLUG[seg] };
+  if (PATTERN_BY_SLUG[seg] && patterns.includes(PATTERN_BY_SLUG[seg])) { const p = PATTERN_BY_SLUG[seg]; return patternSlug(p) === seg ? { type: "pattern", pattern: p } : { type: "old", pattern: p }; } // nested now: the flat slug 301s
   if (FACET_BY_SLUG[seg]) return { type: "facet", facet: FACET_BY_SLUG[seg] };
   if (patterns.includes(seg)) return patternSlug(seg) === seg ? { type: "pattern", pattern: seg } : { type: "old", pattern: seg };
   return null;
@@ -234,8 +243,8 @@ export function resolveUiSlug(seg, patterns) {
 export function cleanUiUrl(f, base) {
   const q = new URLSearchParams();
   let seg = "";
-  if (f.pattern) { seg = patternSlug(f.pattern); if (f.platform) q.set("platform", f.platform); if (f.style) q.set("style", f.style); }
-  else if (f.group && facetSlug("group", f.group)) { seg = facetSlug("group", f.group); if (f.platform) q.set("platform", f.platform); if (f.style) q.set("style", f.style); }
+  if (f.pattern) { seg = patternSlug(f.pattern); if (f.platform) q.set("device", f.platform); if (f.style) q.set("style", f.style); }
+  else if (f.group && facetSlug("group", f.group)) { seg = facetSlug("group", f.group); if (f.platform) q.set("device", f.platform); if (f.style) q.set("style", f.style); }
   else if (f.platform && facetSlug("platform", f.platform)) { seg = facetSlug("platform", f.platform); if (f.style) q.set("style", f.style); }
   else if (f.style && facetSlug("style", f.style)) seg = facetSlug("style", f.style);
   const qs = q.toString();
@@ -243,9 +252,9 @@ export function cleanUiUrl(f, base) {
 }
 
 // Slug maps for the in-page filter script (keeps chip hrefs and replaceState URLs identical to cleanUiUrl).
-export const UI_SLUG_JS = () => JSON.stringify({ p: Object.fromEntries(Object.entries(PATTERN_SEO).map(([p, [s]]) => [p, s])), f: FACET_SLUG });
+export const UI_SLUG_JS = () => JSON.stringify({ p: Object.fromEntries(Object.keys(PATTERN_SEO).map((p) => [p, patternSlug(p)])), f: FACET_SLUG });
 
-const RESERVED = new Set(["flows", "terms", "raw", "sitemap.xml"]);
+const RESERVED = new Set(["flows", "terms", "raw", "sitemap.xml", "download", "tpl"]);
 export function assertSlugs(patterns) {
   const seen = new Map();
   const add = (s, who) => {
@@ -255,6 +264,8 @@ export function assertSlugs(patterns) {
   };
   for (const [p, [s]] of Object.entries(PATTERN_SEO)) add(s, p);
   for (const [k, v, s] of FACET_SEO) add(s, `${k}:${v}`);
+  for (const i of Object.values(INDUSTRIES)) add(i.hub, `industry:${i.id}`); // hubs share the flat namespace
+  for (const pl of Object.values(PLATFORMS)) add(pl.hub, `platform:${pl.id}`);
   // An old pattern id may only be reused as a slug by that same pattern (otherwise its 301 target would be ambiguous).
   for (const p of patterns) if (seen.has(p) && seen.get(p) !== p) throw new Error(`slug ${p} is the old id of pattern ${p} but belongs to ${seen.get(p)}`);
   for (const p of patterns) if (!PATTERN_SEO[p]) throw new Error(`pattern ${p} has no SEO slug`);

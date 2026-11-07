@@ -6,12 +6,12 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-const HERE = path.dirname(fileURLToPath(import.meta.url)), OUT = path.join(HERE, "../../ui-screens/out");
+const HERE = path.dirname(fileURLToPath(import.meta.url)), OUTS = (process.env.UI_OUTS || path.join(HERE, "../../ui-screens/out")).split(":"); // colon list, so out-hc can sit beside out
 const rows = JSON.parse(readFileSync(path.join(HERE, ".cache/rows.json"), "utf8"));
 const have = new Set(rows.map((r) => r.category));
 const want = process.argv[2] ? new Set(process.argv[2].split(",")) : null;
 const STYLE = (s) => `${s[0].toUpperCase() + s.slice(1)} style: (synthetic).`;
-for (const slug of readdirSync(OUT)) {
+for (const OUT of OUTS) for (const slug of readdirSync(OUT)) {
   const f = path.join(OUT, slug, "meta.json"); if (!existsSync(f)) continue;
   const m = JSON.parse(readFileSync(f, "utf8"));
   if (have.has(m.pattern) || (want && !want.has(m.pattern))) continue;

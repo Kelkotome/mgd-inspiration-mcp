@@ -1,0 +1,1 @@
+{"name":"mgd-wp-export","private":true,"type":"module","dependencies":{"@wp-playground/cli":"3.1.62","parse5":"^8.1.0","playwright-core":"^1.65.0","postcss":"^8.5.32"}}

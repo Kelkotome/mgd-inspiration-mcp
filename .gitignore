@@ -20,3 +20,7 @@ docs_updates/backup-*.html
 wrangler.ai-test.jsonc
 tests/ui_rank/.cache/
 wrangler.n13.jsonc
+ui-screens/out-hc
+ui-screens/out-wp
+ui-screens/wp-export/node_modules
+wrangler.hc.jsonc

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Upload generated UI screens (out/<slug>/) to the inspiration Worker as collection 'ui'.
-Usage: python3 ingest.py [--base http://127.0.0.1:8787] [--only GLOB] [--dry]
+Usage: python3 ingest.py [--base http://127.0.0.1:8787] [--only GLOB] [--out out-hc] [--dry]
 Admin token: ../.admin_token. Dedup: source_url = https://madegooddesigns.com/inspiration/ui#<slug>; upsert=1 refreshes an existing screen in place (same id). Sends screen-dark.png as image_dark when present."""
 import argparse, fnmatch, io, json, os, sys, urllib.request, uuid
 from PIL import Image
@@ -62,7 +62,9 @@ def main():
     ap.add_argument("--only", default="*")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--dry", action="store_true")
+    ap.add_argument("--out", default=None, help="screens folder, for example out-hc; default out")
     a = ap.parse_args()
+    if a.out: global OUT; OUT = os.path.join(HERE, a.out)
     token = open(os.path.join(HERE, "..", ".admin_token")).read().strip()
     slugs = sorted(d for d in os.listdir(OUT) if os.path.isfile(os.path.join(OUT, d, "meta.json")) and os.path.isfile(os.path.join(OUT, d, "screen.png")) and fnmatch.fnmatch(d, a.only))
     flow_tags = {}

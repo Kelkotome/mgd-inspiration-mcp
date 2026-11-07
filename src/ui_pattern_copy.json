@@ -3294,5 +3294,85 @@
     "Rules differ by country and figures need careful context. Check your regulator's guidance. These templates do not include any."
    ]
   ]
+ },
+ "hospital-website": {
+  "h1": "Hospital website templates",
+  "intro": "A community hospital site answers practical questions first: where to go, when to visit and what each department does. These templates include departments, outpatient clinics, a minor injuries section, visiting times and a site guide.",
+  "tips": [
+   "Say what the minor injuries unit can and cannot treat, and when to call the emergency number.",
+   "Put visiting times and how to find the entrance within one click of the home page.",
+   "List departments in plain words, not internal names.",
+   "Add your real registrations, inspection reports and accreditation yourself, never sample ones."
+  ],
+  "faq": [
+   [
+    "What should a hospital website include?",
+    "Departments and clinics, how to get a referral, visiting times, directions and parking, minor injuries information and emergency guidance."
+   ],
+   [
+    "How should a hospital site show departments?",
+    "As a plain list with a short description of each, who it is for and how to get an appointment, so people do not have to know the hospital's own structure."
+   ]
+  ]
+ },
+ "mental-health-website": {
+  "h1": "Mental health clinic website templates",
+  "intro": "A mental health clinic site has to be calm, clear and honest about how care starts. These templates include assessment and therapy services, a named care coordinator, a route for referring doctors, what each appointment involves and crisis signposting on the page.",
+  "tips": [
+   "Show what to do in a crisis at the top of every page, with your local emergency number.",
+   "Explain the first appointment step by step, so people know what to expect.",
+   "Tell people how you handle waits and how to find out the current one.",
+   "Keep the booking form short and do not ask for health details through it."
+  ],
+  "faq": [
+   [
+    "What should a mental health clinic website include?",
+    "Services, how care starts, who is on the team, how referrals work, what each appointment involves, questions about medicines and family involvement, and crisis guidance."
+   ],
+   [
+    "Should a mental health site show crisis information?",
+    "Yes. Say clearly that the clinic is not a crisis service and what to do instead, using your local emergency number and crisis lines."
+   ]
+  ]
+ },
+ "optometry-website": {
+  "h1": "Optometry website templates",
+  "intro": "An eye care site helps people book a test and understand what happens next. These templates include eye tests, children's vision, contact lenses, frames, a table of what each appointment involves and a section on sudden changes in vision.",
+  "tips": [
+   "Say how long each kind of appointment takes.",
+   "Tell people what to do about sudden loss of vision, flashes or a painful red eye.",
+   "Show which tests you offer for children and from what age.",
+   "Replace the sample timings with your own, and add your real registrations."
+  ],
+  "faq": [
+   [
+    "What should an optometry website include?",
+    "Eye tests, children's vision, contact lens fitting and aftercare, frames, opening hours, how to book, and when to seek urgent help."
+   ],
+   [
+    "Should an eye care site list prices?",
+    "If you can. A short table of tests and fittings answers the question most people have before they book."
+   ]
+  ]
+ },
+ "pharmacy-website": {
+  "h1": "Pharmacy website templates",
+  "intro": "A community pharmacy site is used for quick jobs: order a repeat, check hours, ask what a service involves. These templates include repeat prescriptions, medicine reviews, vaccinations, minor ailment advice and travel health, with branch details.",
+  "tips": [
+   "Make ordering a repeat prescription the clearest action on the page.",
+   "Show opening hours for each branch.",
+   "Say when someone should see a doctor instead.",
+   "Check what your regulator allows you to say about medicines and services, and add your real registration."
+  ],
+  "faq": [
+   [
+    "What should a pharmacy website include?",
+    "Repeat prescriptions, services and how long they take, opening hours for each branch, how to reach the pharmacist, and when to see a doctor instead."
+   ],
+   [
+    "Can a pharmacy site take repeat orders online?",
+    "The templates show the layout only. The form is sample markup, and a real ordering system needs a secure, compliant service behind it."
+   ]
+  ]
  }
 }
