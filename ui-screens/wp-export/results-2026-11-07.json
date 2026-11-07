@@ -14,7 +14,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:00:23.476Z"
+"t": "2026-11-07T03:53:49.895Z"
 },
 {
 "slug": "mgd-cardiology-band",
@@ -31,7 +31,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:22:41.840Z"
+"t": "2026-11-07T03:54:49.870Z"
 },
 {
 "slug": "mgd-cardiology-bento",
@@ -48,7 +48,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:00:23.477Z"
+"t": "2026-11-07T03:55:43.524Z"
 },
 {
 "slug": "mgd-cardiology-folio",
@@ -65,7 +65,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:01:28.216Z"
+"t": "2026-11-07T03:56:25.475Z"
 },
 {
 "slug": "mgd-cardiology-ledger",
@@ -82,7 +82,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:01:28.206Z"
+"t": "2026-11-07T03:57:05.650Z"
 },
 {
 "slug": "mgd-cardiology-signature",
@@ -99,14 +99,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:01:31.649Z"
+"t": "2026-11-07T03:57:45.229Z"
 },
 {
 "slug": "mgd-dental-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 188,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -116,7 +116,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:02:19.236Z"
+"t": "2026-11-07T03:58:16.574Z"
 },
 {
 "slug": "mgd-dental-band",
@@ -133,7 +133,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:22:41.840Z"
+"t": "2026-11-07T03:58:40.429Z"
 },
 {
 "slug": "mgd-dental-bento",
@@ -150,14 +150,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:02:23.917Z"
+"t": "2026-11-07T03:59:06.459Z"
 },
 {
 "slug": "mgd-dental-folio",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 137,
+"liveBlocks": 177,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -167,14 +167,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:03:12.413Z"
+"t": "2026-11-07T03:59:36.314Z"
 },
 {
 "slug": "mgd-dental-ledger",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 93,
+"liveBlocks": 136,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -184,14 +184,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:03:13.105Z"
+"t": "2026-11-07T04:00:00.779Z"
 },
 {
 "slug": "mgd-dental-signature",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 160,
+"liveBlocks": 197,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -201,14 +201,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:03:15.391Z"
+"t": "2026-11-07T04:00:27.256Z"
 },
 {
 "slug": "mgd-dermatology-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 188,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -218,14 +218,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:04:03.530Z"
+"t": "2026-11-07T04:00:51.762Z"
 },
 {
 "slug": "mgd-dermatology-band",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 124,
+"liveBlocks": 166,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -235,14 +235,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:22:41.807Z"
+"t": "2026-11-07T04:01:18.094Z"
 },
 {
 "slug": "mgd-dermatology-bento",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 140,
+"liveBlocks": 182,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -252,14 +252,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:04:04.620Z"
+"t": "2026-11-07T04:01:43.983Z"
 },
 {
 "slug": "mgd-dermatology-folio",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 138,
+"liveBlocks": 178,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -269,14 +269,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:04:43.797Z"
+"t": "2026-11-07T04:02:11.141Z"
 },
 {
 "slug": "mgd-dermatology-ledger",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 94,
+"liveBlocks": 97,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -286,14 +286,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:04:45.577Z"
+"t": "2026-11-07T04:02:40.741Z"
 },
 {
 "slug": "mgd-dermatology-signature",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 161,
+"liveBlocks": 198,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -303,14 +303,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:04:45.197Z"
+"t": "2026-11-07T04:03:06.435Z"
 },
 {
 "slug": "mgd-fertility-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 188,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -320,14 +320,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:05:40.998Z"
+"t": "2026-11-07T04:03:32.586Z"
 },
 {
 "slug": "mgd-fertility-band",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 124,
+"liveBlocks": 166,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -337,14 +337,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:23:30.481Z"
+"t": "2026-11-07T04:04:00.271Z"
 },
 {
 "slug": "mgd-fertility-bento",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 140,
+"liveBlocks": 182,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -354,14 +354,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:05:42.577Z"
+"t": "2026-11-07T04:04:30.443Z"
 },
 {
 "slug": "mgd-fertility-folio",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 138,
+"liveBlocks": 178,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -371,14 +371,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:06:19.452Z"
+"t": "2026-11-07T04:04:58.052Z"
 },
 {
 "slug": "mgd-fertility-ledger",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 94,
+"liveBlocks": 97,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -388,14 +388,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:06:20.242Z"
+"t": "2026-11-07T04:05:21.613Z"
 },
 {
 "slug": "mgd-fertility-signature",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 166,
+"liveBlocks": 202,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -405,14 +405,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:06:20.793Z"
+"t": "2026-11-07T04:05:48.329Z"
 },
 {
 "slug": "mgd-hospital-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 188,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -422,14 +422,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:06:57.421Z"
+"t": "2026-11-07T04:06:16.262Z"
 },
 {
 "slug": "mgd-hospital-band",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 125,
+"liveBlocks": 167,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -439,7 +439,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:23:30.256Z"
+"t": "2026-11-07T04:06:41.675Z"
 },
 {
 "slug": "mgd-hospital-bento",
@@ -456,14 +456,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:06:58.721Z"
+"t": "2026-11-07T04:07:09.753Z"
 },
 {
 "slug": "mgd-hospital-concierge",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 102,
+"liveBlocks": 144,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -473,7 +473,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:07:31.672Z"
+"t": "2026-11-07T04:07:37.900Z"
 },
 {
 "slug": "mgd-hospital-folio",
@@ -490,7 +490,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:07:33.026Z"
+"t": "2026-11-07T03:53:49.895Z"
 },
 {
 "slug": "mgd-hospital-ledger",
@@ -507,7 +507,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:07:33.400Z"
+"t": "2026-11-07T03:54:51.487Z"
 },
 {
 "slug": "mgd-medical-atlas",
@@ -524,7 +524,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:08:08.919Z"
+"t": "2026-11-07T03:55:45.335Z"
 },
 {
 "slug": "mgd-medical-band",
@@ -541,7 +541,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:23:29.776Z"
+"t": "2026-11-07T03:56:27.555Z"
 },
 {
 "slug": "mgd-medical-bento",
@@ -558,7 +558,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:08:09.693Z"
+"t": "2026-11-07T03:57:06.017Z"
 },
 {
 "slug": "mgd-medical-folio",
@@ -575,14 +575,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:08:44.680Z"
+"t": "2026-11-07T03:57:45.499Z"
 },
 {
 "slug": "mgd-medical-ledger",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 95,
+"liveBlocks": 98,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -592,14 +592,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:08:45.204Z"
+"t": "2026-11-07T03:58:16.645Z"
 },
 {
 "slug": "mgd-medical-signature",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 239,
+"liveBlocks": 253,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -609,14 +609,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:08:45.385Z"
+"t": "2026-11-07T03:58:41.000Z"
 },
 {
 "slug": "mgd-mental-health-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 160,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -626,14 +626,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:09:17.813Z"
+"t": "2026-11-07T03:59:07.921Z"
 },
 {
 "slug": "mgd-mental-health-band",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 123,
+"liveBlocks": 165,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -643,14 +643,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:24:26.275Z"
+"t": "2026-11-07T03:59:38.065Z"
 },
 {
 "slug": "mgd-mental-health-bento",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 139,
+"liveBlocks": 181,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -660,14 +660,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:09:18.278Z"
+"t": "2026-11-07T04:00:02.818Z"
 },
 {
 "slug": "mgd-mental-health-concierge",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 102,
+"liveBlocks": 144,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -677,14 +677,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:09:51.536Z"
+"t": "2026-11-07T04:00:29.634Z"
 },
 {
 "slug": "mgd-mental-health-folio",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 137,
+"liveBlocks": 177,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -694,7 +694,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:09:51.624Z"
+"t": "2026-11-07T04:00:54.030Z"
 },
 {
 "slug": "mgd-mental-health-ledger",
@@ -711,14 +711,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:09:51.511Z"
+"t": "2026-11-07T04:01:20.615Z"
 },
 {
 "slug": "mgd-optometry-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 188,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -728,14 +728,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:10:25.983Z"
+"t": "2026-11-07T04:01:48.212Z"
 },
 {
 "slug": "mgd-optometry-band",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 125,
+"liveBlocks": 167,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -745,14 +745,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:24:24.822Z"
+"t": "2026-11-07T04:02:16.813Z"
 },
 {
 "slug": "mgd-optometry-bento",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 141,
+"liveBlocks": 183,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -762,14 +762,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:10:25.797Z"
+"t": "2026-11-07T04:02:46.103Z"
 },
 {
 "slug": "mgd-optometry-concierge",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 102,
+"liveBlocks": 144,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -779,14 +779,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:11:03.600Z"
+"t": "2026-11-07T04:03:12.917Z"
 },
 {
 "slug": "mgd-optometry-folio",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 139,
+"liveBlocks": 179,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -796,14 +796,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:11:04.036Z"
+"t": "2026-11-07T04:03:41.334Z"
 },
 {
 "slug": "mgd-optometry-ledger",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 95,
+"liveBlocks": 98,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -813,14 +813,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:11:03.153Z"
+"t": "2026-11-07T04:04:07.257Z"
 },
 {
 "slug": "mgd-orthodontics-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 188,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -830,14 +830,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:11:41.110Z"
+"t": "2026-11-07T04:04:38.477Z"
 },
 {
 "slug": "mgd-orthodontics-band",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 125,
+"liveBlocks": 167,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -847,14 +847,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:24:25.068Z"
+"t": "2026-11-07T04:05:03.948Z"
 },
 {
 "slug": "mgd-orthodontics-bento",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 141,
+"liveBlocks": 183,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -864,14 +864,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:11:40.294Z"
+"t": "2026-11-07T04:05:27.371Z"
 },
 {
 "slug": "mgd-orthodontics-folio",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 139,
+"liveBlocks": 179,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -881,14 +881,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:12:16.155Z"
+"t": "2026-11-07T04:05:56.424Z"
 },
 {
 "slug": "mgd-orthodontics-ledger",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 95,
+"liveBlocks": 138,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -898,14 +898,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:12:16.640Z"
+"t": "2026-11-07T04:06:22.585Z"
 },
 {
 "slug": "mgd-orthodontics-signature",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 184,
+"liveBlocks": 221,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -915,14 +915,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:12:15.921Z"
+"t": "2026-11-07T04:06:48.419Z"
 },
 {
 "slug": "mgd-pediatrics-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 188,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -932,14 +932,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:12:49.769Z"
+"t": "2026-11-07T04:07:17.120Z"
 },
 {
 "slug": "mgd-pediatrics-band",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 125,
+"liveBlocks": 167,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -949,7 +949,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:25:22.752Z"
+"t": "2026-11-07T04:07:45.082Z"
 },
 {
 "slug": "mgd-pediatrics-bento",
@@ -966,7 +966,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:12:50.255Z"
+"t": "2026-11-07T03:53:49.896Z"
 },
 {
 "slug": "mgd-pediatrics-folio",
@@ -983,7 +983,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:13:30.339Z"
+"t": "2026-11-07T03:54:51.785Z"
 },
 {
 "slug": "mgd-pediatrics-ledger",
@@ -1000,7 +1000,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:13:30.314Z"
+"t": "2026-11-07T03:55:46.191Z"
 },
 {
 "slug": "mgd-pediatrics-signature",
@@ -1017,7 +1017,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:13:30.480Z"
+"t": "2026-11-07T03:56:28.009Z"
 },
 {
 "slug": "mgd-pharmacy-atlas",
@@ -1034,7 +1034,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:14:16.613Z"
+"t": "2026-11-07T03:57:06.330Z"
 },
 {
 "slug": "mgd-pharmacy-band",
@@ -1051,14 +1051,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:25:22.269Z"
+"t": "2026-11-07T03:57:45.569Z"
 },
 {
 "slug": "mgd-pharmacy-bento",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 141,
+"liveBlocks": 183,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -1068,14 +1068,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:14:17.011Z"
+"t": "2026-11-07T03:58:16.912Z"
 },
 {
 "slug": "mgd-pharmacy-concierge",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 102,
+"liveBlocks": 144,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -1085,7 +1085,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:14:54.041Z"
+"t": "2026-11-07T03:58:40.952Z"
 },
 {
 "slug": "mgd-pharmacy-folio",
@@ -1102,14 +1102,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:14:52.813Z"
+"t": "2026-11-07T03:59:07.692Z"
 },
 {
 "slug": "mgd-pharmacy-ledger",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 95,
+"liveBlocks": 98,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -1119,14 +1119,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:14:53.441Z"
+"t": "2026-11-07T03:59:37.853Z"
 },
 {
 "slug": "mgd-physical-therapy-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 188,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -1136,14 +1136,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:15:33.270Z"
+"t": "2026-11-07T04:00:02.210Z"
 },
 {
 "slug": "mgd-physical-therapy-band",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 125,
+"liveBlocks": 167,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -1153,14 +1153,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:25:22.081Z"
+"t": "2026-11-07T04:00:28.216Z"
 },
 {
 "slug": "mgd-physical-therapy-bento",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 141,
+"liveBlocks": 183,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -1170,14 +1170,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:15:32.921Z"
+"t": "2026-11-07T04:00:52.369Z"
 },
 {
 "slug": "mgd-physical-therapy-folio",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 139,
+"liveBlocks": 179,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -1187,14 +1187,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:16:09.710Z"
+"t": "2026-11-07T04:01:18.591Z"
 },
 {
 "slug": "mgd-physical-therapy-ledger",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 98,
+"liveBlocks": 95,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -1204,7 +1204,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:16:08.100Z"
+"t": "2026-11-07T04:01:45.235Z"
 },
 {
 "slug": "mgd-physical-therapy-signature",
@@ -1221,14 +1221,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:16:09.276Z"
+"t": "2026-11-07T04:02:11.780Z"
 },
 {
 "slug": "mgd-therapist-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 188,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -1238,14 +1238,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:16:44.445Z"
+"t": "2026-11-07T04:02:41.254Z"
 },
 {
 "slug": "mgd-therapist-band",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 138,
+"liveBlocks": 166,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -1255,14 +1255,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:26:07.395Z"
+"t": "2026-11-07T04:03:06.914Z"
 },
 {
 "slug": "mgd-therapist-bento",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 140,
+"liveBlocks": 182,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -1272,14 +1272,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:16:44.535Z"
+"t": "2026-11-07T04:03:32.287Z"
 },
 {
 "slug": "mgd-therapist-folio",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 138,
+"liveBlocks": 178,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -1289,14 +1289,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:17:17.925Z"
+"t": "2026-11-07T04:03:59.437Z"
 },
 {
 "slug": "mgd-therapist-ledger",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 94,
+"liveBlocks": 137,
 "patterns": 8,
 "invalid": 0,
 "variations": 8,
@@ -1306,14 +1306,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:17:16.469Z"
+"t": "2026-11-07T04:04:30.059Z"
 },
 {
 "slug": "mgd-therapist-signature",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 108,
+"liveBlocks": 142,
 "patterns": 1,
 "invalid": 0,
 "variations": 8,
@@ -1323,14 +1323,14 @@
 "menu390": 4,
 "menu768": 4,
 "phpLog": 0,
-"t": "2026-11-07T03:17:17.602Z"
+"t": "2026-11-07T04:04:56.803Z"
 },
 {
 "slug": "mgd-veterinary-atlas",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 146,
+"liveBlocks": 188,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -1340,14 +1340,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:17:54.714Z"
+"t": "2026-11-07T04:05:20.409Z"
 },
 {
 "slug": "mgd-veterinary-band",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 125,
+"liveBlocks": 167,
 "patterns": 7,
 "invalid": 0,
 "variations": 8,
@@ -1357,7 +1357,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:26:07.440Z"
+"t": "2026-11-07T04:05:47.618Z"
 },
 {
 "slug": "mgd-veterinary-bento",
@@ -1374,14 +1374,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:17:55.046Z"
+"t": "2026-11-07T04:06:15.183Z"
 },
 {
 "slug": "mgd-veterinary-folio",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 139,
+"liveBlocks": 151,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -1391,7 +1391,7 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:18:27.153Z"
+"t": "2026-11-07T04:06:40.349Z"
 },
 {
 "slug": "mgd-veterinary-ledger",
@@ -1408,14 +1408,14 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:18:26.089Z"
+"t": "2026-11-07T04:07:08.748Z"
 },
 {
 "slug": "mgd-veterinary-signature",
 "pass": true,
 "wp": "7.1.4",
 "php": "8.3.36",
-"liveBlocks": 129,
+"liveBlocks": 166,
 "patterns": 9,
 "invalid": 0,
 "variations": 8,
@@ -1425,6 +1425,6 @@
 "menu390": 5,
 "menu768": 5,
 "phpLog": 0,
-"t": "2026-11-07T03:18:27.727Z"
+"t": "2026-11-07T04:07:37.427Z"
 }
 ]

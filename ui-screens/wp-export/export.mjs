@@ -454,7 +454,7 @@ Tags: full-site-editing, block-patterns, block-styles, one-column, wide-blocks, 
 }
 
 function readme(o, ex, patterns) {
-  const lic = o.licenceText || "Proposed, not yet approved by the site owner: GPL-2.0-or-later.";
+  const lic = o.licenceText || "Theme code and patterns: GPL-2.0-or-later. Bundled fonts: SIL Open Font License 1.1. Illustrations: original, included under the same GPL terms.";
   const fonts = Object.keys(FONT_FILES).join(", ");
   return `=== ${o.name} ===
 Contributors: madegooddesigns

@@ -23,6 +23,6 @@ for (const d of designs()) {
 }
 // the niche's own service names, for factual, quotable page copy
 for (const id of Object.keys(niches)) niches[id].services = require(path.join(UI, `hc/content/${id}.js`)).services.items.map((s) => s.t);
-fs.writeFileSync(out, JSON.stringify({ wp, php, tested, version: VERSION, licence: "pending", niches }, null, 0) + "\n");
+fs.writeFileSync(out, JSON.stringify({ wp, php, tested, version: VERSION, licence: "GPL-2.0-or-later", niches }, null, 0) + "\n");
 console.log(`themes pass ${seen.pass.length} fail ${seen.fail.length} untested ${seen.untested.length}`); for (const f of seen.fail) console.log("FAIL", f); for (const f of seen.untested) console.log("UNTESTED", f);
 for (const [id, n] of Object.entries(niches)) console.log(id.padEnd(18), "distinct", n.designs.filter((d) => d.distinct).length, "themes", n.designs.filter((d) => d.distinct && d.theme).length);

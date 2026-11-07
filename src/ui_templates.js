@@ -4,7 +4,7 @@
 import TPL_COPY from "./tpl_copy.json";
 import { INDUSTRIES, PLATFORMS, NICHES, MIN_DESIGNS, nicheById, nicheOfPattern, liveDesigns, liveThemes, industryNiches, platformIndustries, catalogMeta, wpIndustryPath, wpNichePath, themePath, nestedPatternPath } from "./ui_tree.js";
 
-// PENDING USER APPROVAL (licence wording, see deploy-bundle-2026-11-07/healthcare.md). Nothing is live until then.
+// Approved by the user on 7-Nov-2026 (Option A: GPL for themes only, HTML templates keep their current terms). export.mjs writes the same sentence into each readme.
 export const WP_LICENCE = "Theme code and patterns: GPL-2.0-or-later. Bundled fonts: SIL Open Font License 1.1. Illustrations: original, included under the same GPL terms.";
 const DISCLOSE = "Names, people, addresses, phone numbers and timings in every template are fictional samples to replace. The templates are designs, not medical advice, and they do not make a site compliant with any health, privacy or advertising rule.";
 const FORM_NOTE = "Forms are static sample markup. They do not send anything until you connect a form plugin.";
