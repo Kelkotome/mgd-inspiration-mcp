@@ -115,6 +115,12 @@ _post = _offer_q(f"after (offer, last {DAYS} d)", f"o.kind='offer' AND o.created
 rows = (sql(_pre) or []) + (sql(_post) or [])
 for r in rows: r["rate_pct"] = round(100.0 * (r["followed"] or 0) / r["shown"], 1) if r["shown"] else None
 table("Next-step offers: shown, followed within 30 min by the same visitor (ip+ua) with palette/type/moodboard/design_md calls", rows)
+# 8-Nov-2026 (mcp-gap-r1): search_ui_screens hint on design searches with UI words (src/search_extras.js withUiHint).
+# shown = mcp_events kind='hint'; followed = the same visitor called search_ui_screens within 30 min.
+table("UI-screens hint on design searches: shown, followed within 30 min by search_ui_screens (same visitor)", sql(
+    f"SELECT COUNT(*) shown, COUNT(DISTINCT o.visitor) visitors, SUM(EXISTS (SELECT 1 FROM mcp_events f WHERE f.kind='call' AND f.visitor=o.visitor "
+    f"AND f.tool IN ('search_ui_screens','run:search_ui_screens') AND f.created_at > o.created_at AND f.created_at <= o.created_at + 1800000)) followed "
+    f"FROM mcp_events o WHERE o.{BOT}{NB} AND o.kind='hint' AND o.{W}"))
 table("Countries (desktop clients; claude.ai shows Anthropic's servers)", sql(
     f"SELECT country, COUNT(DISTINCT visitor) visitors, COUNT(*) events {EV} AND ua NOT LIKE 'Claude-User%' GROUP BY 1 ORDER BY 2 DESC LIMIT 10"))
 print("\nVisits from MCP answers: GA4 → Reports → Acquisition → Traffic acquisition, filter Session source = 'mcp' "

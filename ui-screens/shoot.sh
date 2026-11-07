@@ -1,7 +1,7 @@
 #!/bin/bash
 # Screenshot out/<slug>/index.html at its viewport (2x) with Playwright's cached headless Chromium, 6 in parallel.
 # Writes screen.png (light) and screen-dark.png (dark; the HTML switches on prefers-color-scheme). Set THEMES=light to skip dark.
-# Usage: ./shoot.sh [slug-glob]   SHOOT_OUT=out-hc picks another folder
+# Usage: ./shoot.sh [slug-glob]   SHOOT_OUT=out-hc picks another folder; SHOOT_P=2 runs fewer Chromes at once
 cd "$(dirname "$0")"
 export SHOOT_OUT=${SHOOT_OUT:-out}
 export CH=$(ls -d ~/Library/Caches/ms-playwright/chromium_headless_shell-*/*/chrome-headless-shell | tail -1) THEMES=${THEMES:-light dark}
@@ -14,4 +14,4 @@ one() {
   done; echo "ok $1"
 }
 export -f one
-for d in "$SHOOT_OUT"/${1:-*}/; do [ -f "$d/meta.json" ] && basename "$d"; done | xargs -P 6 -I{} bash -c 'one {}'
+for d in "$SHOOT_OUT"/${1:-*}/; do [ -f "$d/meta.json" ] && basename "$d"; done | xargs -P "${SHOOT_P:-6}" -I{} bash -c 'one {}'

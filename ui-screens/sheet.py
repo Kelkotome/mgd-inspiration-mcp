@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Contact sheet of rendered screens. Usage: python3 sheet.py '<slug-glob>' out.png [width-per-web-shot] [--dark]
 Web shots are scaled to W (default 560), mobile shots to W*0.42; wraps 3 web / 7 mobile per row."""
-import glob, sys
+import glob, os, sys
 from PIL import Image
 pat, out = sys.argv[1], sys.argv[2]
 args = [a for a in sys.argv[3:] if a != "--dark"]
 W = int(args[0]) if args else 560
-files = sorted(glob.glob(f"out/{pat}/screen-dark.png" if "--dark" in sys.argv else f"out/{pat}/screen.png"))
+D = os.environ.get("SHOOT_OUT", "out")  # SHOOT_OUT=out-gap reads another folder
+files = sorted(glob.glob(f"{D}/{pat}/screen-dark.png" if "--dark" in sys.argv else f"{D}/{pat}/screen.png"))
 if not files: sys.exit("no matches")
 ims = []
 for f in files:

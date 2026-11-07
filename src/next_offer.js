@@ -5,7 +5,16 @@
 //   1. a merged palette from the top results (value with zero extra calls),
 //   2. an offer the model can relay to the user, with three prefilled one-call options.
 // Pure helpers (no D1, no fetch) so tests/test_next_offer.mjs can test them.
-import { iconIntent } from "./search_extras.js";
+import { iconIntent, uiIntent } from "./search_extras.js";
+
+// ONE SWITCH (8-Nov-2026, mcp-gap-r1) for what follows the results of the 4 library searches:
+//   "offer"   = the 5-Nov behaviour: merged palette line + "Next step:" offer with 3 prefilled calls (OFFER_HEAD).
+//   "palette" = the merged palette line only (zero extra calls for the model); no offer block. RECOMMENDED: the offer was
+//               followed by 2 of 36 visitors (5 of 142 offers) in 5–8 Nov, while 6 visitors went to search_ui_screens on their own.
+//   "off"     = nothing after the results.
+// In every mode a search_design_inspiration query with UI words gets the search_ui_screens hint (search_extras.js withUiHint)
+// and no palette/offer, so the answer carries one pointer, not two.
+export const NEXT_STEP_MODE = "palette";
 
 export const OFFER_TOOLS = new Set(["search_design_inspiration", "browse_inspiration_by_theme", "search_museum_art", "search_annual_reports"]);
 // Calls that count as "following" the offer in mcp_report.py (kept in sync there).
@@ -34,6 +43,7 @@ export function offerSkip(tool, q) {
   if (!OFFER_TOOLS.has(tool)) return "tool";
   if (iconIntent(q)) return "icon";
   if (CODING.test(String(q || ""))) return "coding";
+  if (tool === "search_design_inspiration" && uiIntent(q)) return "ui"; // the UI-screens hint leads instead
   return null;
 }
 
@@ -136,4 +146,13 @@ export function buildOffer(tool, q, items) {
     `• Type pairing${fonts ? ` (${fonts[0]} / ${fonts[1]})` : ""} + DESIGN.md: ${typeCall}\n` +
     `• Mood board: save_moodboard(items=${board}, title="${title}")`;
   return { text, palette: m.palette, accent: m.accent, fonts, references: top.map((it) => it.id), board: list.slice(0, 8).map((it) => it.id), title };
+}
+
+// What mcpOffer (index.js) appends, per NEXT_STEP_MODE. Returns { text, kind } or null; kind 'offer' is logged as an mcp_events row.
+export function buildNextStep(tool, q, items, mode = NEXT_STEP_MODE) {
+  if (mode === "off") return null;
+  const o = buildOffer(tool, q, items);
+  if (!o) return null;
+  if (mode === "offer") return { text: o.text, kind: "offer" };
+  return { text: `Palette from these references: ${o.palette.join(" ")}`, kind: null };
 }

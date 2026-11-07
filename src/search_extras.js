@@ -35,6 +35,56 @@ export async function withIconHint(q, result, searchIcons) {
   return result;
 }
 
+// ---- (A2) UI-screen intent (8-Nov-2026, mcp-gap-r1) ----------------------------------------------------------------------
+// Agents sometimes send app/website requests to search_design_inspiration ("billing settings dashboard data table saas" got
+// brand guidelines back). A query with UI words keeps its results but leads with one line pointing to search_ui_screens.
+// STRONG words are enough on their own; WEAK words ("table", "form", "settings", "page", "layout"…) need a context word
+// (app, saas, web, mobile, ui…), so graphic-design queries ("editorial report layout grid data tables", "poster layout",
+// "newspaper front page layout") stay quiet. NOT phrases always win ("table setting photography", "screen print poster").
+// Tested in tests/test_ui_hint.mjs against the real logged queries of both tools.
+const W_ = (alt) => new RegExp(`(^|[^\\p{L}\\p{N}])(${alt})($|[^\\p{L}\\p{N}])`, "iu");
+const UI_STRONG = W_([
+  "dashboards?", "onboarding", "checkout", "ui", "ux", "ui/ux", "user interfaces?", "interfaces?", "landing ?pages?", "home ?screens?",
+  "app screens?", "web ?apps?", "mobile apps?", "ios apps?", "android apps?", "saas", "admin panels?", "admin dashboards?", "wireframes?",
+  "navbar", "nav bar", "sidebar", "modal", "modals", "kanban", "login", "log in", "sign ?up", "sign ?in", "websites?", "web ?pages?",
+  "web design", "settings (page|screen)s?", "pricing (page|table)s?", "data tables?.*(app|saas|dashboard)", "(app|saas|web) (layout|design)s?",
+  "components?", "tailwind", "react", "shadcn", "html", "css", "frontend", "front-end",
+  "toolbar", "empty states?", "hero section", "add to cart", "product (detail|listing) pages?", "product grid", "search results",
+  "filter chips", "status (chips|badges)", "side panel", "detail pane", "split view", "master.detail", "kpi", "stat tiles",
+  "settings (panel|form|list)s?", "(account|profile) settings", "now playing", "music player", "image editor", "rich.text editor",
+  "confirm dialog", "dialogs?", "inline validation", "form wizard", "multi-step form", "navigation header", "dark mode",
+].join("|"));
+const UI_WEAK_LIST = ["tables?", "forms?", "settings", "screens?", "pages?", "layouts?", "cards?", "feed", "profile", "player", "editor",
+  "toolbar", "chat", "inbox", "calendar", "cart", "leaderboard", "billing", "pricing", "menu", "tabs", "buttons?", "search results",
+  "notifications?", "empty state", "invoices?", "subscription", "playlist", "stepper", "wizard"];
+const UI_WEAK = W_(UI_WEAK_LIST.join("|"));
+const UI_WEAK_G = new RegExp(`(?<=^|[^\\p{L}\\p{N}])(${UI_WEAK_LIST.join("|")})(?=$|[^\\p{L}\\p{N}])`, "giu"); // every weak word, for counting
+const UI_CONTEXT = W_(["apps?", "application", "saas", "web", "mobile", "ios", "android", "software", "platform", "admin", "users?",
+  "digital product", "startup", "fintech", "crm", "b2b"].join("|"));
+const UI_NOT = W_(["table ?settings?", "tablescapes?", "table ?top", "tabletop", "dining table", "periodic table", "timetable poster",
+  "screen ?print(ed|ing)?s?", "silk ?screen", "screen-print(ed|ing)?", "letterpress", "book (page|layout|cover)s?",
+  "magazine (page|layout|spread)s?", "poster layouts?", "art form", "form follows function", "tarot cards?", "playing cards?",
+  "greeting cards?", "business cards?", "trading cards?", "menu card", "restaurant menu", "cocktail menu"].join("|"));
+export function uiIntent(q) {
+  const s = String(q || "").trim();
+  if (!s || s.length > 200 || UI_NOT.test(s)) return null;
+  // two different weak words also count ("settings form", "editor preview toolbar"), except print-ish ones (page, layout, card, menu)
+  const weak = new Set((s.toLowerCase().match(UI_WEAK_G) || []).map((w) => w.replace(/s$/, "")).filter((w) => !/^(page|layout|card|menu)$/.test(w)));
+  if (!(UI_STRONG.test(s) || (UI_WEAK.test(s) && UI_CONTEXT.test(s)) || weak.size >= 2)) return null;
+  return s.replace(/["\\\n\r]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
+}
+export const UI_HINT_HEAD = "Looking for app or website screens?";
+// Wording option A (default; B and C are in deploy-bundle-2026-11-07/mcp-gap-r1.md for Eugene to pick).
+export const UI_HINT = (cq) => `${UI_HINT_HEAD} search_ui_screens(query="${cq}") returns original UI screens with their HTML and a DESIGN.md. The results below are graphic-design references.`;
+// Prepend the hint to a search_design_inspiration answer. Never throws; never removes results.
+export function withUiHint(q, result) {
+  const cq = uiIntent(q);
+  if (!cq || !result || result.isError || !Array.isArray(result.content) || !result.content[0] || typeof result.content[0].text !== "string") return result;
+  if (iconIntent(q)) return result; // the icon hint (withIconHint) leads instead; one hint per answer
+  result.content[0].text = UI_HINT(cq) + "\n\n" + result.content[0].text;
+  return result;
+}
+
 // ---- (B) get_brand_typeface ----------------------------------------------------------------------------------------------
 // Data = D1 table brand_type (build_brand_type.py: our "What font does X use?" articles + the brand-guide specimen blocks +
 // the "<Brand> — Typeface" tiles). Brands published after the last build fall back to their D1 tile (guide + palette, no font facts).

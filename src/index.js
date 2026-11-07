@@ -44,9 +44,9 @@ import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authori
 import { MOODBOARD_TOOL, callMoodboard, moodboardRoute, moodboardAdmin } from "./moodboards.js";
 import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs } from "./discovery.js";
 import { uiItemPath } from "./ui_screens.js";
-import { withIconHint, BRAND_TYPEFACE_TOOL, brandTypeface, ftsSearch } from "./search_extras.js";
+import { withIconHint, withUiHint, UI_HINT_HEAD, BRAND_TYPEFACE_TOOL, brandTypeface, ftsSearch } from "./search_extras.js";
 import { FONT_PAIRING_TOOL, fontPairing } from "./font_pairing.js"; // kit pilot 5-Nov-2026 (local branch kit-pilot-2026-11)
-import { REF_FONTS, OFFER_HEAD, buildOffer } from "./next_offer.js";
+import { REF_FONTS, OFFER_HEAD, buildNextStep } from "./next_offer.js";
 
 // Aggressive AI-training / SEO / bulk crawlers that spider the JSON read API (which is
 // meant for the SPA running in real browsers) and can burn the D1 read quota on cache
@@ -2047,6 +2047,10 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
   // 5-Nov: log each next-step offer shown (kind='offer'); mcp_report.py measures follow-ups by the same visitor within 30 min.
   if (r && !r.isError && Array.isArray(r.content) && r.content.some((x) => x && x.type === "text" && typeof x.text === "string" && x.text.includes(OFFER_HEAD)))
     await mcpEvent(env, c, { kind: "offer", tool });
+  // 8-Nov: log each search_ui_screens hint shown on a design search (kind='hint'); mcp_report.py counts a search_ui_screens call
+  // by the same visitor within 30 min as followed.
+  if (r && !r.isError && Array.isArray(r.content) && r.content[0] && typeof r.content[0].text === "string" && r.content[0].text.startsWith(UI_HINT_HEAD))
+    await mcpEvent(env, c, { kind: "hint", tool });
   // 4-Nov: empty searches are logged and fed into the next content rounds, so tell the caller to come back.
   if (zero && !r.isError && MCP_LIBRARY_TOOLS.test(dispatched || tool)) r.content[0].text += "\n\nNothing here yet, but thanks for asking. Empty searches tell us what to add next, and we usually fill gaps within 1–2 days. Meanwhile, try a broader word or one of the suggestions above.";
   if (r) mcpUtm(r, dispatched || tool, c.ua);
@@ -2108,7 +2112,7 @@ const mcpIconHinted = (q, result, env) => withIconHint(q, result, (args) => call
 function mcpOffer(tool, q, rows, r) {
   if (!r || r.isError || !Array.isArray(rows) || !rows.length || !Array.isArray(r.content)) return r;
   try {
-    const o = buildOffer(tool, q, rows.filter((x) => !isLinkOnly(x)).map((x) => { const it = rowToItem(x, null); return { id: it.id, palette: it.palette, tags: it.tags, themes: it.themes }; }));
+    const o = buildNextStep(tool, q, rows.filter((x) => !isLinkOnly(x)).map((x) => { const it = rowToItem(x, null); return { id: it.id, palette: it.palette, tags: it.tags, themes: it.themes }; }));
     const last = [...r.content].reverse().find((c) => c && c.type === "text");
     if (o && last) last.text += "\n\n" + o.text;
   } catch (_) { /* the offer must never break a search answer */ }
@@ -2122,7 +2126,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.theme) { where += " AND themes LIKE ?"; binds.push(`%"${a.theme}"%`); }
     const r = await mcpSearchRowsRetry(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
-    return mcpIconHinted(q, mcpOffer(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design)), env);
+    return mcpIconHinted(q, withUiHint(q, mcpOffer(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design))), env);
   }
   if (name === "list_inspiration_themes") {
     // 2-Nov-2026: this scans every design row (avg 2.6 s live); counts move slowly, so memoise per isolate for 30 min.
