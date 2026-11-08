@@ -5,7 +5,7 @@
 # Usage: bash tests/gap2_local_e2e.sh   (env GAP_PORT / GAP_INSP pick the ports, default 8927 / 9327; GAP_KEEP=<file> keeps it up until deleted)
 set -u
 cd "$(dirname "$0")/.."; ROOT=$(pwd); W="${WRANGLER:-$ROOT/node_modules/.bin/wrangler}"; PORT=${GAP_PORT:-8927}; INSP=${GAP_INSP:-9327}
-T=$(mktemp -d "${SCRATCH:-$ROOT}/gap2-e2e.XXXXXX"); CFG="$ROOT/wrangler.gap2.jsonc"; MAIN="$ROOT/../mgd-inspiration-ind3/ui-screens/out"; GAP1="$ROOT/../mgd-inspiration-gap/ui-screens/out-gap"
+T=$(mktemp -d "${SCRATCH:-$ROOT}/gap2-e2e.XXXXXX"); CFG="$ROOT/wrangler.gap2.jsonc"; MAIN="$ROOT/../mgd-inspiration/ui-screens/out"; GAP1="$ROOT/../mgd-inspiration-gap/ui-screens/out-gap"
 python3 - <<'PY'
 src = open("wrangler.jsonc").read(); i = src.index('"routes"'); j = src.index("]", i) + 1
 open("wrangler.gap2.jsonc", "w").write(src[:i] + '"routes": []' + src[j:])

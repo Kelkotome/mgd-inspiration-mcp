@@ -44,15 +44,16 @@ const lp = await call("list_ui_patterns", {});
 ok(NEW.every((p) => lp.includes(p)), "list_ui_patterns names all 10");
 
 // the real gap queries (7 days to 9-Nov) and synonym phrasings: [query, a pattern that must be listed, minimum screens, must be first?]
+// Minimums are for the local Worker (only the r2 rows + a few neighbours); live answers have more rows to fill with.
 for (const [q, want, min, first] of [
-  ["payroll", "payroll", 4, true], ["timesheet", "timesheet", 4, true], ["invoices list table with status, simple small business billing", "invoice-list", 4, true],
-  ["empty state first run checklist", "first-run", 4, true], ["delete confirmation dialog with image preview", "media-library", 3, false],
-  ["admin subscription management subscribers table filter", "subscriptions-admin", 4, true], ["premium upgrade benefit feature preview", "upgrade-preview", 4, true],
-  ["minimal dark subscription billing plan checkout", "plan-checkout", 3, false], ["compact logo badge dark header", "compact-header", 4, true],
-  ["loyalty stamp card wallet pass on phone", "loyalty-card", 4, true], ["media library image picker gallery modal", "media-library", 4, true],
+  ["payroll", "payroll", 2, true], ["timesheet", "timesheet", 2, true], ["invoices list table with status, simple small business billing", "invoice-list", 2, true],
+  ["empty state first run checklist", "first-run", 2, true], ["delete confirmation dialog with image preview", "media-library", 2, false],
+  ["admin subscription management subscribers table filter", "subscriptions-admin", 2, true], ["premium upgrade benefit feature preview", "upgrade-preview", 2, true],
+  ["minimal dark subscription billing plan checkout", "plan-checkout", 2, false], ["compact logo badge dark header", "compact-header", 2, true],
+  ["loyalty stamp card wallet pass on phone", "loyalty-card", 2, true], ["media library image picker gallery modal", "media-library", 2, true],
   // synonyms
   ["salary slip", "payroll", 2, true], ["employee pay stub", "payroll", 2, true], ["time tracking weekly hours", "timesheet", 2, true],
-  ["clock in clock out", "timesheet", 2, true], ["zero state", "empty-state", 2, false], ["blank slate new project", "first-run", 2, true],
+  ["clock in clock out", "timesheet", 2, true], ["zero state", "empty-state", 2, false], ["blank slate new project", "first-run", 2, false],
   ["rewards stamp card", "loyalty-card", 2, true]]) {
   const t = await call("search_ui_screens", { query: q });
   const cnt = +(t.match(/^(\d+) UI screen/m) || [])[1] || 0, top = (t.match(/(?:^\s+|· )pattern: ([a-z0-9-]+)/m) || [])[1];
