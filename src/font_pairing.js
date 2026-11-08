@@ -22,13 +22,31 @@ export const FONT_PAIRING_TOOL = {
 };
 
 const INDEX = Object.values(PAIRINGS).map((v) => ({ key: btKey(v.font), v }));
-export function fpFind(q) {
-  const key = btKey(String(q || "").replace(/\b(font|fonts|typeface|pairing|pairings|pair|pairs|with|for|what|goes|go)\b/gi, " "));
+const BY_KEY = new Map(INDEX.map((x) => [x.key, x]));
+// 9-Nov-2026 (round 2): lookup is case/space/punctuation-proof via btKey ("Jetbrains mono", "JETBRAINS-MONO", "jet brains mono" all →
+// "jetbrainsmono"). ALIASES maps renamed or alternate family names to the guide's font. The prefix step no longer crosses into a sibling
+// family: "Nunito Sans" used to answer with Nunito, "Roboto Slab" with Roboto. A longer query only falls back to a shorter guide when
+// the extra words are a style or edition ("Garamond Premier Pro", "Montserrat Bold", "Source Sans 3"), not a different family.
+const ALIASES = {
+  bigshouldersdisplay: "bigshoulders", bigshoulderstext: "bigshoulders", cormorantgaramond: "cormorant", sourcesanspro: "sourcesans",
+  sourcesans3: "sourcesans", sourceserifpro: "sourceserif4", sourceserif: "sourceserif4", plexsans: "ibmplexsans", plexmono: "ibmplexmono",
+  ibmplex: "ibmplexsans", plusjakarta: "plusjakartasans", jakartasans: "plusjakartasans", jakarta: "plusjakartasans", geistsans: "geist",
+  googlesanstext: "googlesans", garamondeb: "ebgaramond", jetbrains: "jetbrainsmono", jetbrainsmononl: "jetbrainsmono",
+  robotocondensed: "robotocondensed", fjalla: "fjallaone", alfaslab: "alfaslabone", titillium: "titilliumweb", librefranklin: "librefranklin",
+};
+const SIBLING = /sans|serif|slab|mono|code|condensed|narrow|compressed|expanded|extended|rounded|tight|flex|stencil|inline|outline|script|alternates|grotesk|gothic/;
+export const fontKey = (q) => btKey(String(q || "").replace(/\b(font|fonts|typeface|typefaces|pairing|pairings|pair|pairs|with|for|what|goes|go)\b/gi, " "));
+export function fpFind(q, { fuzzy = true } = {}) {
+  const key = fontKey(q);
   if (!key) return null;
-  const exact = INDEX.find((x) => x.key === key);
+  const exact = BY_KEY.get(key);
   if (exact) return { v: exact.v, how: "exact" };
-  const pre = INDEX.filter((x) => x.key.startsWith(key) || key.startsWith(x.key)).sort((a, b) => a.key.length - b.key.length)[0];
+  const al = ALIASES[key] && BY_KEY.get(ALIASES[key]);
+  if (al) return { v: al.v, how: "alias" };
+  const pre = INDEX.filter((x) => (key.length >= 4 && x.key.startsWith(key)) || (key.startsWith(x.key) && !SIBLING.test(key.slice(x.key.length))))
+    .sort((a, b) => a.key.length - b.key.length)[0];
   if (pre) return { v: pre.v, how: "prefix" };
+  if (!fuzzy) return null;
   const max = key.length >= 8 ? 2 : 1;
   const fz = INDEX.map((x) => ({ x, d: btLev(key, x.key, max) })).filter((y) => y.d <= max).sort((a, b) => a.d - b.d)[0];
   return fz ? { v: fz.x.v, how: "fuzzy" } : null;
@@ -47,7 +65,16 @@ function partnerPairs(hit, a) {
   return { content: [{ type: "text", text: lines.join("\n") }], structuredContent: { font: hit.font, page: null, match: "partner", pairs } };
 }
 
-const cat = (g) => /serif/i.test(g) && !/sans/i.test(g) ? "serif" : /sans/i.test(g) ? "sans-serif" : /display|script|decor/i.test(g) ? "display" : /mono|code/i.test(g) ? "monospace" : "sans-serif";
+// CSS generic fallback. "display" is not a CSS generic family (it used to be emitted for Display groups); Display falls back to sans-serif.
+const cat = (g) => /mono|code/i.test(g) ? "monospace" : /script|handwriting/i.test(g) ? "cursive" : /serif/i.test(g) && !/sans/i.test(g) ? "serif" : "sans-serif";
+// The page font's own fallback comes from its Google Fonts category (about.category) when we have it.
+const ownCat = (v) => (v.about && v.about.category ? cat(v.about.category) : "sans-serif");
+const aboutLine = (v) => {
+  const a = v.about;
+  if (!a) return null;
+  const by = a.designers && a.designers.length ? ` by ${a.designers.slice(0, 3).join(", ")}${a.designers.length > 3 ? " and others" : ""}` : "";
+  return `About: ${v.font} is a ${a.category.toLowerCase()} typeface${by}, free on Google Fonts${a.added ? ` (added ${a.added})` : ""}.`;
+};
 
 // Fonts with no guide of their own that appear as the partner in another font's published pairs.
 const AS_PARTNER = new Map();
@@ -57,15 +84,16 @@ for (const v of Object.values(PAIRINGS)) for (const p of v.pairs) for (const n o
   if (!AS_PARTNER.has(k)) AS_PARTNER.set(k, { font: n, hits: [] });
   AS_PARTNER.get(k).hits.push({ ...p, page: v.page });
 }
-const fontKey = (q) => btKey(String(q || "").replace(/\b(font|fonts|typeface|pairing|pairings|pair|pairs|with|for|what|goes|go)\b/gi, " "));
 
 export function fontPairing(a) {
-  const f = fpFind(a && a.font);
+  // exact / alias / prefix first; then a font that only appears as a partner on other guides; fuzzy spelling matches last, so a
+  // partner-only font (e.g. "Crimson Pro") is never swapped for a different guide one edit away.
+  const f = fpFind(a && a.font, { fuzzy: false }) || (AS_PARTNER.has(fontKey(a && a.font)) ? null : fpFind(a && a.font));
   if (!f) {
     const hit = AS_PARTNER.get(fontKey(a && a.font));
     if (hit) return partnerPairs(hit, a);
-    const known = Object.values(PAIRINGS).map((v) => v.font).slice(0, 30).join(", ");
-    return { content: [{ type: "text", text: `0 results: no published pairing guide for "${(a && a.font) || ""}" yet. Fonts with pairing guides: ${known}.` }],
+    const known = Object.values(PAIRINGS).map((v) => v.font);
+    return { content: [{ type: "text", text: `0 results: no published pairing guide for "${(a && a.font) || ""}" yet. ${known.length} fonts have pairing guides, including: ${known.slice(0, 30).join(", ")}.` }],
       structuredContent: { font: null, pairs: [] } };
   }
   const want = String((a && a.group) || "").toLowerCase();
@@ -75,12 +103,14 @@ export function fontPairing(a) {
   pairs = pairs.slice(0, lim).map((p) => {
     const gfNames = [p.heading_gf !== false ? p.heading : null, p.body_gf !== false ? p.body : null];
     const link = gfLink(gfNames);
-    const css = `h1, h2, h3 { font-family: "${p.heading}", ${cat(f.v.font === p.heading ? "sans" : p.group)}; }\nbody { font-family: "${p.body}", ${cat(p.group)}; }`;
+    const css = `h1, h2, h3 { font-family: "${p.heading}", ${f.v.font === p.heading ? ownCat(f.v) : cat(p.group)}; }\nbody { font-family: "${p.body}", ${f.v.font === p.body ? ownCat(f.v) : cat(p.group)}; }`;
     const note = p.heading_gf === false || p.body_gf === false
       ? `not on Google Fonts: ${[p.heading_gf === false && p.heading, p.body_gf === false && p.body].filter(Boolean).join(", ")} (licence or self-host it)` : null;
     return { heading: p.heading, body: p.body, group: p.group, why: p.why, google_fonts_url: link, css, note };
   });
   const lines = [`${pairs.length} pairing(s) for ${f.v.font}${f.how !== "exact" ? ` (closest match for "${a.font}")` : ""}. Source: ${f.v.page} — please cite it.`];
+  const about = aboutLine(f.v);
+  if (about) lines.push(about);
   for (const p of pairs) {
     lines.push(`\n• ${p.heading} + ${p.body}  [${p.group}]`);
     if (p.why) lines.push(`  why: ${p.why}`);
@@ -88,5 +118,5 @@ export function fontPairing(a) {
     lines.push(p.css.split("\n").map((l) => "  " + l).join("\n"));
     if (p.note) lines.push(`  note: ${p.note}`);
   }
-  return { content: [{ type: "text", text: lines.join("\n") }], structuredContent: { font: f.v.font, page: f.v.page, match: f.how, pairs } };
+  return { content: [{ type: "text", text: lines.join("\n") }], structuredContent: { font: f.v.font, page: f.v.page, match: f.how, about: f.v.about || null, pairs } };
 }
