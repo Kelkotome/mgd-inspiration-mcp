@@ -28,7 +28,7 @@ class P(HTMLParser):
 def tree(html): p = P(); p.feed(html); return p.seq
 cells = lambda m: {(y, x) for y, r in enumerate(m["g"]) for x, c in enumerate(r) if c == "1"}
 jac = lambda a, b: len(a & b) / len(a | b)
-SIG = {"cardiology": "minimal", "medical": "editorial", "dental": "corporate", "dermatology": "luxury", "therapist": "retro", "physical-therapy": "brutalist", "veterinary": "playful", "pediatrics": "monochrome", "orthodontics": "corporate", "fertility": "luxury", "real-estate": "corporate", "apartment": "minimal", "restaurant": "editorial", "coffee-shop": "playful"}
+SIG = {"cardiology": "minimal", "medical": "editorial", "dental": "corporate", "dermatology": "luxury", "therapist": "retro", "physical-therapy": "brutalist", "veterinary": "playful", "pediatrics": "monochrome", "orthodontics": "corporate", "fertility": "luxury", "real-estate": "corporate", "apartment": "minimal", "restaurant": "editorial", "coffee-shop": "playful", "wedding": "minimal"}
 def src(n, v):
     if v == "homepage": return f"{MAIN}/{n}-website-homepage-web-{SIG[n]}/index.html"
     d = [x for x in os.listdir(f"{UI}/out-hc") if x.startswith(f"{n}-website-{v}-web-")][0]; return f"{UI}/out-hc/{d}/index.html"

@@ -39,6 +39,15 @@ const GLYPH = {
   cocktail: '<path d="M10 10h44L32 34z"/><path d="M32 34v18M20 54h24M42 10l8-6"/><circle cx="28" cy="17" r="3"/>',
   truck: '<path d="M4 18h34v26H4zM38 26h12l8 10v8H38"/><circle cx="14" cy="48" r="6"/><circle cx="46" cy="48" r="6"/><path d="M8 18v-6h26v6M42 30h6l4 6H42z"/>',
   wine: '<path d="M22 6h20c0 14-4 22-10 22S22 20 22 6z"/><path d="M32 28v20M22 54h20M23 14h18"/>',
+  // weddings and events (9-Nov-2026, fifth industry)
+  rings: '<circle cx="24" cy="38" r="15"/><circle cx="40" cy="38" r="15"/><path d="M36 10l4 6 4-6M34 10h12"/>',
+  envelope: '<rect x="6" y="16" width="52" height="36" rx="3"/><path d="M6 18l26 20 26-20"/><path d="M32 30c-4-4-9-1-7 3l7 6 7-6c2-4-3-7-7-3z"/>',
+  clipboard: '<rect x="12" y="10" width="40" height="48" rx="4"/><path d="M24 10V6h16v4"/><path d="M20 24l3 3 6-6M20 36l3 3 6-6M20 48l3 3 6-6M34 25h12M34 37h12M34 49h12"/>',
+  archway: '<path d="M12 58V30a20 20 0 0 1 40 0v28"/><path d="M20 58V31a12 12 0 0 1 24 0v27M6 58h52"/><circle cx="14" cy="22" r="3"/><circle cx="50" cy="22" r="3"/><circle cx="32" cy="8" r="3"/>',
+  camera: '<rect x="6" y="18" width="52" height="34" rx="4"/><path d="M22 18l4-8h12l4 8"/><circle cx="32" cy="35" r="11"/><circle cx="32" cy="35" r="5"/><path d="M48 25h4"/>',
+  flower: '<circle cx="32" cy="22" r="6"/><path d="M32 16c-3-8 9-8 6 0M38 22c8-3 8 9 0 6M32 28c3 8-9 8-6 0M26 22c-8 3-8-9 0-6"/><path d="M32 28v30M32 46c-8 0-14-6-14-12 8 0 14 6 14 12zM32 40c8 0 14-6 14-12-8 0-14 6-14 12z"/>',
+  confetti: '<path d="M8 56l12-34 22 22z"/><path d="M14 40l8 8M18 30l14 14"/><path d="M40 8v8M36 12h8M52 22l4-4M50 34h8M30 14c4 2 4 6 8 6"/><circle cx="48" cy="12" r="2"/><circle cx="56" cy="44" r="2"/>',
+  lanyard: '<path d="M16 6l16 22 16-22"/><rect x="18" y="28" width="28" height="30" rx="3"/><circle cx="32" cy="40" r="5"/><path d="M24 52h16"/>',
 };
 const glyph = (c, size, sw = 2.2) => `<svg class="i" width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPH[c.motif]}</svg>`;
 // Abstract illustration, drawn from the niche's glyph. Original artwork; a site owner swaps it for a real photo.
@@ -50,12 +59,18 @@ const navLinks = (c, cls = "sk-links", extra = "") => `<nav class="${cls}${extra
 const menu = (c) => `<details class="sk-menu"><summary aria-label="Open menu">${ic("menu", 20)}</summary><nav aria-label="Mobile">${anchors(c).map(([l, id]) => `<a href="#${id}">${esc(l)}</a>`).join("")}<a class="btn primary block" style="margin-top:12px" href="#visit">${esc(c.hero.cta)}</a></nav></details>`;
 const phone = (c) => c.visit.locations[0].phone;
 const faqItems = (c, cls = "") => c.faq.items.map((f) => `<details class="${cls}"><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join("");
-const contactForm = (c, cls = "") => `<form class="card ${cls}" aria-label="${esc(c.visit.formLabel || "Contact the practice")}"><h3 class="sk-h3">${esc(c.visit.formTitle)}</h3>
-<div class="sk-field"><label for="f-name">Your name</label><input class="sk-input" id="f-name" name="name" type="text" autocomplete="name"></div>
-<div class="sk-field"><label for="f-tel">Phone</label><input class="sk-input" id="f-tel" name="tel" type="tel" autocomplete="tel"></div>
-<div class="sk-field"><label for="f-why">How can we help?</label><textarea class="sk-input" id="f-why" name="message" rows="3"></textarea></div>
+// Wedding and event content has a reply form (RSVP or enquiry with choices); every layout uses it in place of the plain contact form.
+const contactForm = (c, cls = "") => (c.reply ? WD_BASE + replyForm(c, cls, "f", c.visit.formTitle) : contactFormPlain(c, cls));
+const contactFormPlain = (c, cls = "") => `<form class="card ${cls}" aria-label="${esc(c.visit.formLabel || "Contact the practice")}"><h3 class="sk-h3">${esc(c.visit.formTitle)}</h3>
+<div class="sk-field"><label for="f-name">${esc(fl(c, 0, "Your name"))}</label><input class="sk-input" id="f-name" name="name" type="text" autocomplete="name"></div>
+<div class="sk-field"><label for="f-tel">${esc(fl(c, 1, "Phone"))}</label><input class="sk-input" id="f-tel" name="tel" type="tel" autocomplete="tel"></div>
+<div class="sk-field"><label for="f-why">${esc(fl(c, 2, "How can we help?"))}</label><textarea class="sk-input" id="f-why" name="message" rows="3"></textarea></div>
 <button class="btn primary block" type="submit">${esc(c.visit.formButton)}</button><p class="muted hc-formnote">${esc(c.visit.formNote)}</p></form>`;
-const footerCols = (c) => [["Services", c.services.items.slice(0, 4).map((s) => s.t)], ["Visit", [c.visit.locations[0].n, c.visit.locations[0].addr, c.visit.locations[0].hours]], ["Contact", [phone(c), c.visit.email]]];
+// Optional label overrides (weddings, 9-Nov-2026): c.visit.fields [name, phone, message], c.footer.cols [3 titles], c.services.cols [3 headers].
+// Without them every label is exactly as before, so other industries render byte-identical pages.
+const fl = (c, i, d) => (c.visit.fields && c.visit.fields[i]) || d;
+const fc = (c, i, d) => (c.footer.cols && c.footer.cols[i]) || d;
+const footerCols = (c) => [[fc(c, 0, "Services"), c.services.items.slice(0, 4).map((s) => s.t)], [fc(c, 1, "Visit"), [c.visit.locations[0].n, c.visit.locations[0].addr, c.visit.locations[0].hours]], [fc(c, 2, "Contact"), [phone(c), c.visit.email]]];
 const foot = (p, c) => K.footer(p, c.footer.blurb, footerCols(c), c.footer.legal);
 const notice = (c) => `<aside class="hc-notice"><div class="sk-wrap"><p>${esc(c.notice)}</p></div></aside>`;
 const alert = (c, cls = "") => (c.alert ? `<div class="hc-alert ${cls}"><div class="sk-wrap"><p>${ic("bell", 15)}<span>${esc(c.alert)}</span></p></div></div>` : "");
@@ -211,7 +226,7 @@ const ledgerCss = `<style>
 const ledger = (p, st, c) => K.page(st, `${alert(c)}<div class="lg-shell"><header class="sk-nav lg-side"><div class="lg-sidein"><a class="logo" href="#"><b></b>${esc(p.name)}</a>${navLinks(c, "lg-vert")}<div class="lg-hours"><b>${esc(c.visit.locations[0].hours)}</b><span class="muted">${esc(c.visit.locations[0].addr)}</span><span>${esc(phone(c))}</span></div><a class="btn primary" href="#visit">${esc(c.hero.cta)}</a>${menu(c)}</div></header>
 <main class="lg">
 <section class="lg-sec lg-hero"><span class="sk-eyebrow">${esc(c.hero.eyebrow)}</span><h1 class="lg-h1">${esc(c.hero.h1)}</h1><p class="lg-lede">${esc(c.hero.lede)}</p><div class="lg-kv">${c.facts.map((f) => `<div><b>${esc(f.t)}</b><span class="muted">${esc(f.d)}</span></div>`).join("")}</div></section>
-<section class="lg-sec" id="services"><h2 class="sk-h2">${esc(c.services.h2)}</h2><p class="muted">${esc(c.services.lede)}</p><table class="lg-t"><thead><tr><th scope="col">Service</th><th scope="col">What it covers</th><th scope="col">Who it suits</th></tr></thead><tbody>${c.services.items.map((s) => `<tr><td><b>${esc(s.t)}</b></td><td>${esc(s.d)}</td><td>${esc(s.who)}</td></tr>`).join("")}</tbody></table></section>
+<section class="lg-sec" id="services"><h2 class="sk-h2">${esc(c.services.h2)}</h2><p class="muted">${esc(c.services.lede)}</p><table class="lg-t"><thead><tr>${(c.services.cols || ["Service", "What it covers", "Who it suits"]).map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${c.services.items.map((s) => `<tr><td><b>${esc(s.t)}</b></td><td>${esc(s.d)}</td><td>${esc(s.who)}</td></tr>`).join("")}</tbody></table></section>
 <section class="lg-sec"><h2 class="sk-h2">${esc(c.index.h2)}</h2><p class="muted">${esc(c.index.lede)}</p><ul class="lg-cols">${c.index.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>
 <section class="lg-sec" id="process"><h2 class="sk-h2">${esc(c.process.h2)}</h2><p class="muted">${esc(c.process.lede)}</p><ol class="lg-line">${c.process.steps.map((s) => `<li><b>${esc(s.t)}</b><span class="muted">${esc(s.d)}</span></li>`).join("")}</ol></section>
 <section class="lg-sec"><h2 class="sk-h2">${esc(c.table.h2)}</h2><p class="muted">${esc(c.table.lede)}</p><table class="lg-t"><thead><tr>${c.table.cols.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${c.table.rows.map((r) => `<tr>${r.map((x, i) => `<td>${i ? esc(x) : `<b>${esc(x)}</b>`}</td>`).join("")}</tr>`).join("")}</tbody></table>${c.table.note ? `<p class="muted" style="margin-top:12px;font-size:13px">${esc(c.table.note)}</p>` : ""}</section>
@@ -703,6 +718,215 @@ const reserveL = (p, st, c) => { const B = c.booking;
 <div>${c.visit.locations.map((l) => `<div class="rv-loc"><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></div>`).join("")}</div></div></section>
 </main>${notice(c)}${foot(p, c)}`, BASE + reserveCss); };
 
+// ==== wedding and event layouts (9-Nov-2026, fifth industry). Unique to occasions: they need c.occasion, c.reply, c.programme and c.art. ====
+// Venues, tables, flowers and stages are drawn in theme tokens, so every style variation recolours them. Original artwork; owners swap in photos.
+const WD_ART = ["barn", "arch", "table", "hall", "bouquet", "marquee", "camera", "cake"];
+const wdArt = (kind, w, h, i, label) => {
+  const a = MIX("var(--accent)", 58, "var(--text)"), b = MIX("var(--primary)", 50), cc = MIX("var(--accent)", 34), dark = MIX("var(--primary)", 72, "var(--text)"), pale = MIX("var(--bg)", 86, "var(--accent)"), leaf = MIX("var(--primary)", 44);
+  const f = (x) => `style="fill:${x}"`, s = (x, wd) => `style="fill:none;stroke:${x};stroke-width:${wd};stroke-linecap:round;stroke-linejoin:round"`;
+  const lights = (y, x0 = 30, x1 = 370, n = 12) => `<path d="M${x0} ${y}Q${(x0 + x1) / 2} ${y + 34} ${x1} ${y}" ${s(dark, 1.5)}/>${Array.from({ length: n }, (_, k) => { const t = (k + 0.5) / n, x = x0 + (x1 - x0) * t, yy = y + 34 * 2 * t * (1 - t) * 1; return `<circle cx="${x.toFixed(1)}" cy="${(yy + 3).toFixed(1)}" r="3.5" ${f(pale)}/>`; }).join("")}`;
+  const oak = (x, r = 24) => `<circle cx="${x}" cy="${206 - r * 1.5}" r="${r}" ${f(leaf)}/><rect x="${x - 3}" y="${206 - r}" width="6" height="${r + 4}" ${f(dark)}/>`;
+  const bloom = (x, y, r, k) => `<circle cx="${x}" cy="${y}" r="${r}" ${f([a, cc, pale][k % 3])}/><circle cx="${x}" cy="${y}" r="${r * 0.35}" ${f(dark)}/>`;
+  const k = {
+    barn: `<rect x="120" y="96" width="160" height="114" ${f(b)}/><path d="M108 104L200 46l92 58z" ${f(dark)}/><path d="M176 210v-52a24 24 0 0 1 48 0v52z" ${f(pale)}/><rect x="136" y="122" width="24" height="22" ${f(pale)}/><rect x="240" y="122" width="24" height="22" ${f(pale)}/>${lights(70, 20, 380)}${oak(60)}${oak(346, 28)}`,
+    arch: `<path d="M150 210V104a50 50 0 0 1 100 0v106" ${s(dark, 7)}/>${[[150, 110], [158, 80], [176, 60], [200, 54], [224, 60], [242, 80], [250, 110], [150, 140], [250, 140]].map(([x, y], j) => bloom(x, y, 11 - (j % 2) * 3, j)).join("")}<path d="M200 210L170 260h60z" ${f(pale)}/>${[0, 1, 2].map((r) => [-1, 1].map((sd) => `<rect x="${200 + sd * (56 + r * 14) - (sd < 0 ? 40 : 0)}" y="${190 + r * 22}" width="40" height="10" rx="3" ${f(r % 2 ? a : dark)}/>`).join("")).join("")}`,
+    table: `${lights(40)}<path d="M80 150h240l40 64H40z" ${f(pale)}/><path d="M40 214h320v10H40z" ${f(dark)}/>${[110, 160, 200, 240, 290].map((x, j) => `<rect x="${x - 2}" y="${124 - (j % 2) * 8}" width="5" height="${30 + (j % 2) * 8}" ${f(pale)}/><path d="M${x + 0.5} ${116 - (j % 2) * 8}c-5 7 5 7 0 0" ${f(a)}/>`).join("")}${[90, 150, 210, 270, 330].map((x) => `<ellipse cx="${x}" cy="186" rx="18" ry="6" ${f(MIX("var(--bg)", 94, "var(--text)"))}/>`).join("")}${bloom(200, 168, 9, 0)}${bloom(130, 170, 7, 1)}${bloom(270, 170, 7, 1)}`,
+    hall: `<rect x="70" y="40" width="260" height="110" rx="4" ${f(dark)}/><rect x="84" y="52" width="232" height="86" ${f(pale)}/><path d="M104 74h120M104 92h170M104 110h90" ${s(b, 8)}/><rect x="40" y="150" width="320" height="18" ${f(b)}/><rect x="300" y="122" width="22" height="28" ${f(a)}/>${[0, 1, 2].map((r) => Array.from({ length: 9 - r }, (_, j) => `<rect x="${60 + r * 16 + j * 34}" y="${186 + r * 22}" width="24" height="14" rx="4" ${f(r % 2 ? a : dark)}/>`).join("")).join("")}`,
+    bouquet: `<path d="M168 236l32-112 32 112z" ${f(pale)}/><path d="M168 236l32-112 32 112" ${s(dark, 3)}/><path d="M182 210c12 6 24 6 36 0" ${s(a, 6)}/>${[[200, 96, 22], [166, 112, 18], [234, 112, 18], [182, 76, 15], [220, 74, 16], [148, 86, 13], [254, 86, 13], [200, 54, 14]].map(([x, y, r], j) => bloom(x, y, r, j)).join("")}<path d="M140 120c-20-6-30-24-26-40 18 4 28 20 26 40zM260 120c20-6 30-24 26-40-18 4-28 20-26 40z" ${f(leaf)}/>`,
+    marquee: `<path d="M60 210V112l70-56 70 56 70-56 70 56v98z" ${f(pale)}/><path d="M60 112l70-56 70 56 70-56 70 56" ${s(dark, 5)}/>${[60, 200, 340].map((x) => `<rect x="${x - 3}" y="112" width="6" height="98" ${f(dark)}/>`).join("")}<path d="M120 210v-70h160v70z" ${f(MIX("var(--accent)", 40, "var(--bg)"))}/>${Array.from({ length: 12 }, (_, j) => `<path d="M${64 + j * 23} 118l11 0-5.5 12z" ${f([a, b, cc][j % 3])}/>`).join("")}${oak(30, 18)}${oak(372, 20)}`,
+    camera: `<rect x="250" y="40" width="110" height="80" ${f(pale)}/><rect x="262" y="52" width="86" height="56" ${f(cc)}/><rect x="40" y="56" width="80" height="62" ${f(pale)}/><rect x="50" y="66" width="60" height="42" ${f(b)}/><rect x="140" y="82" width="120" height="78" rx="10" ${f(dark)}/><rect x="164" y="68" width="42" height="18" rx="4" ${f(dark)}/><circle cx="200" cy="121" r="30" ${f(pale)}/><circle cx="200" cy="121" r="20" ${f(a)}/><circle cx="200" cy="121" r="8" ${f(dark)}/><path d="M200 160l-34 50M200 160v52M200 160l34 50" ${s(dark, 5)}/>`,
+    cake: `<rect x="120" y="172" width="160" height="40" rx="4" ${f(pale)}/><rect x="140" y="134" width="120" height="38" rx="4" ${f(MIX("var(--bg)", 92, "var(--primary)"))}/><rect x="160" y="100" width="80" height="34" rx="4" ${f(pale)}/><path d="M120 190h160M140 152h120M160 116h80" ${s(cc, 4)}/>${[[170, 98, 9], [186, 92, 8], [228, 98, 9], [150, 132, 7], [252, 132, 7]].map(([x, y, r], j) => bloom(x, y, r, j)).join("")}<path d="M100 212h200M200 212v18M170 230h60" ${s(dark, 6)}/>`,
+  }[kind] || "";
+  return `<svg width="${w}" height="${h}" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(label || "Illustration of an event")}"><rect width="400" height="260" style="fill:${MIX("var(--primary)", 12)}"/><circle cx="${[330, 70, 300][i % 3]}" cy="44" r="22" style="fill:${MIX("var(--accent)", 28)}"/><rect y="210" width="400" height="50" style="fill:${MIX("var(--primary)", 26)}"/>${k}</svg>`;
+};
+// A drawn site plan of the grounds or the building, with six numbered spots. The names sit in the legend beside it, never in the drawing.
+const SPOTS = [[150, 120], [330, 92], [520, 150], [610, 300], [380, 330], [170, 330]];
+const sitePlan = (c, w, h) => { const lawn = MIX("var(--primary)", 16), path = MIX("var(--bg)", 96, "var(--text)"), bld = MIX("var(--primary)", 40), water = MIX("var(--accent)", 30), tree = MIX("var(--primary)", 34), dark = MIX("var(--primary)", 78, "var(--text)");
+  return `<svg width="${w}" height="${h}" viewBox="0 0 720 440" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(`Illustrated plan of ${c.programme.mapH2.toLowerCase().startsWith("the") ? "" : "the "}${c.programme.mapH2}`.replace(/\s+/g, " "))}"><rect width="720" height="440" style="fill:${lawn}"/>
+<path d="M0 230C160 200 260 250 360 220S560 180 720 210" style="fill:none;stroke:${path};stroke-width:22;stroke-linecap:round"/><path d="M360 0V440M150 120L360 220L610 300" style="fill:none;stroke:${path};stroke-width:14;stroke-linecap:round"/>
+<rect x="100" y="70" width="110" height="80" rx="4" style="fill:${bld}"/><rect x="280" y="54" width="120" height="66" rx="4" style="fill:${bld}"/><rect x="470" y="110" width="110" height="74" rx="4" style="fill:${bld}"/><rect x="560" y="270" width="110" height="70" rx="6" style="fill:none;stroke:${dark};stroke-width:2;stroke-dasharray:8 6"/>
+<ellipse cx="380" cy="350" rx="86" ry="44" style="fill:${water}"/><rect x="110" y="300" width="130" height="70" rx="8" style="fill:${MIX("var(--accent)", 20, "var(--bg)")}"/>
+${[[40, 40], [60, 400], [250, 400], [680, 60], [680, 400], [460, 40], [520, 400], [250, 170]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="20" style="fill:${tree}"/>`).join("")}
+${SPOTS.map(([x, y], i) => `<g transform="translate(${x} ${y})"><circle r="17" style="fill:var(--primary)"/><circle r="17" style="fill:none;stroke:var(--bg);stroke-width:3"/><text y="6" text-anchor="middle" style="fill:var(--on-primary);font:700 16px var(--font-b)">${i + 1}</text></g>`).join("")}</svg>`; };
+const replyForm = (c, cls, id = "r", title = "") => { const R = c.reply;
+  return `<form class="card ${cls}" aria-label="${esc(R.h2)}">${title ? `<h3 class="sk-h3">${esc(title)}</h3>` : ""}<div class="wd-row"><div class="sk-field"><label for="${id}-name">${esc(fl(c, 0, "Your name"))}</label><input class="sk-input" id="${id}-name" name="name" type="text" autocomplete="name"></div><div class="sk-field"><label for="${id}-mail">Email</label><input class="sk-input" id="${id}-mail" name="email" type="email" autocomplete="email"></div></div>
+<fieldset class="wd-chips"><legend>${esc(R.choicesLabel)}</legend>${R.choices.map((x, i) => `<label class="wd-chip"><input type="radio" name="${id}-choice"${i ? "" : " checked"}><span>${esc(x)}</span></label>`).join("")}</fieldset>
+<div class="sk-field"><label for="${id}-opt">${esc(R.selectLabel)}</label><select class="sk-input" id="${id}-opt" name="option">${R.options.map((x) => `<option>${esc(x)}</option>`).join("")}</select></div>
+<div class="sk-field"><label for="${id}-ask">${esc(R.askLabel)}</label><textarea class="sk-input" id="${id}-ask" name="message" rows="3"></textarea></div>
+<button class="btn primary block" type="submit">${esc(R.button)}</button><p class="muted hc-formnote">${esc(R.note)}</p></form>`; };
+const WD_BASE = `<style>
+.wd-chips{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+.wd-chips legend{font-weight:500;font-size:13px;margin-bottom:8px}
+.wd-chip{position:relative;display:inline-flex}
+.wd-chip input{position:absolute;opacity:0;width:1px;height:1px}
+.wd-chip span{padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:var(--bg);font-weight:600;font-size:14px;cursor:pointer}
+.wd-chip input:checked+span{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.wd-chip input:focus-visible+span{outline:2px solid var(--primary);outline-offset:2px}
+.wd-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:760px){.wd-row{grid-template-columns:minmax(0,1fr)}}
+</style>`;
+
+// ---- invite: the occasion first. An invitation card hero between two drawings, the order of the day as a centred timeline, a reply form ----
+const inviteCss = `<style>
+.iv-top{border-bottom:1px solid var(--border)}
+.iv-top>.sk-wrap{height:76px}
+.iv-hero{background:color-mix(in oklab,var(--primary) 9%,var(--bg));padding:56px 0 64px;border-bottom:1px solid var(--border)}
+.iv-heroin{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) minmax(0,1fr);gap:32px;align-items:center}
+.iv-side{aspect-ratio:3/4;border-radius:999px 999px var(--radius-lg) var(--radius-lg)}
+.iv-card{position:relative;background:var(--bg);padding:52px 44px;text-align:center;display:grid;gap:14px;justify-items:center;border:1px solid var(--border);box-shadow:var(--shadow)}
+.iv-card::before{content:"";position:absolute;inset:10px;border:1px solid color-mix(in oklab,var(--primary) 46%,var(--bg));pointer-events:none}
+.iv-orn{color:color-mix(in oklab,var(--primary) 78%,var(--text))}
+.iv-names{display:grid;gap:2px;font:var(--hw) calc(64px * var(--hs))/1.02 var(--font-h)}
+.iv-names .amp{font-style:italic;font-size:.6em;color:color-mix(in oklab,var(--primary) 80%,var(--text))}
+.iv-h1{font-size:calc(19px * var(--hs));line-height:1.35;font-weight:600;max-width:440px}
+.iv-when{display:grid;gap:2px;padding:14px 0;border-block:1px solid var(--border);width:100%;max-width:420px}
+.iv-when b{font-size:17px}
+.iv-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));text-align:center}
+.iv-facts>div{padding:26px 18px;display:grid;gap:4px;border-right:1px solid var(--border)}
+.iv-facts>div:last-child{border-right:0}
+.iv-facts b{font:var(--hw) calc(21px * var(--hs))/1.25 var(--font-h)}
+.iv-center{text-align:center;display:grid;justify-items:center;gap:12px;margin-bottom:40px}
+.iv-center p{max-width:620px}
+.iv-ev{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.iv-ev article{padding:28px 24px;display:grid;gap:10px;align-content:start;text-align:center;justify-items:center}
+.iv-ev .badge{margin-top:4px}
+.iv-ico{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:color-mix(in oklab,var(--primary) 14%,var(--surface));color:color-mix(in oklab,var(--primary) 76%,var(--text))}
+.iv-day{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:56px;align-items:start}
+.iv-day .sk-photo{aspect-ratio:4/5;position:sticky;top:24px}
+.iv-tl{list-style:none;display:grid;gap:0;position:relative}
+.iv-tl::before{content:"";position:absolute;left:96px;top:6px;bottom:6px;width:1px;background:color-mix(in oklab,var(--primary) 50%,var(--border))}
+.iv-tl li{display:grid;grid-template-columns:84px 24px minmax(0,1fr);gap:0 12px;padding:0 0 26px}
+.iv-tl time{font-weight:700;font-variant-numeric:tabular-nums;text-align:right;padding-top:1px}
+.iv-tl i{width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--primary);justify-self:center;margin-top:5px;position:relative;z-index:1}
+.iv-tl b{display:block;font:var(--hw) calc(20px * var(--hs))/1.25 var(--font-h)}
+.iv-ribbon{background:var(--text);color:var(--bg);padding:22px 0;text-align:center;font:var(--hw) calc(19px * var(--hs))/1.6 var(--font-h)}
+.iv-ribbon span{opacity:.55;margin:0 4px}
+.iv-quote{text-align:center;max-width:820px;margin:0 auto;display:grid;gap:18px;justify-items:center;font:var(--hw) italic calc(32px * var(--hs))/1.3 var(--font-h)}
+.iv-people{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:26px;text-align:center}
+.iv-people article{display:grid;gap:6px;justify-items:center}
+.iv-people .avatar{width:104px;height:104px;font-size:28px;border:4px solid var(--bg);box-shadow:0 0 0 1px var(--border)}
+.iv-reply{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:56px;align-items:start}
+.iv-steps{list-style:none;counter-reset:v;display:grid;gap:18px;margin-top:24px}
+.iv-steps li{counter-increment:v;display:grid;grid-template-columns:40px minmax(0,1fr);gap:2px 14px}
+.iv-steps li::before{content:counter(v,lower-roman);grid-row:span 2;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--primary);font:italic 600 15px var(--font-h);color:color-mix(in oklab,var(--primary) 80%,var(--text))}
+.iv-form{padding:30px}
+.iv-tcard{padding:30px 32px}
+.iv-t{width:100%;border-collapse:collapse;margin-top:14px}
+.iv-t th,.iv-t td{text-align:left;padding:12px 14px 12px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.iv-t thead th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.iv-faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px}
+.iv-faq details{padding:18px 0;border-bottom:1px solid var(--border)}
+.iv-faq p{margin-top:8px;color:var(--muted)}
+.iv-places{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.iv-place{padding:0;overflow:hidden;display:grid;align-content:start}
+.iv-place .sk-photo{border-radius:0;aspect-ratio:16/8}
+.iv-place>div:last-child{padding:22px 26px 26px;display:grid;gap:4px}
+.iv-close{text-align:center;display:grid;gap:14px;justify-items:center;padding-top:56px}
+@media (max-width:1024px){.iv-heroin{grid-template-columns:minmax(0,1fr)}.iv-side{display:none}.iv-ev{grid-template-columns:repeat(2,minmax(0,1fr))}.iv-day,.iv-reply{grid-template-columns:minmax(0,1fr);gap:32px}.iv-day .sk-photo{position:static;aspect-ratio:16/9}.iv-people{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.iv-hero{padding:24px 0 36px}.iv-card{padding:36px 22px}.iv-names{font-size:calc(44px * var(--hs))}.iv-facts,.iv-ev,.iv-faq,.iv-places{grid-template-columns:minmax(0,1fr)}.iv-facts>div{border-right:0;border-bottom:1px solid var(--border);padding:16px 12px}.iv-facts>div:last-child{border-bottom:0}.iv-tl::before{left:76px}.iv-tl li{grid-template-columns:64px 24px minmax(0,1fr);gap:0 8px}.iv-quote{font-size:calc(23px * var(--hs))}.iv-form{padding:22px}.iv-tcard{padding:22px 18px}.iv-t th:nth-child(3),.iv-t td:nth-child(3){display:none}.iv-ribbon{font-size:calc(16px * var(--hs))}}
+</style>`;
+const ivNames = (lines) => lines.map((x) => (x === "&" || x === "and" ? `<span class="amp">${esc(x)}</span>` : `<span>${esc(x)}</span>`)).join("");
+const inviteL = (p, st, c) => { const O = c.occasion;
+  return K.page(st, `${alert(c)}${K.nav(p, [], c.hero.cta, null).replace('class="sk-nav"', 'class="sk-nav iv-top"').replace('<nav class="sk-links" aria-label="Main"></nav>', navLinks(c)).replace('href="#' + K.slug(c.hero.cta) + '"', 'href="#reply"')}
+<main class="iv">
+<section class="iv-hero"><div class="sk-wrap iv-heroin"><div class="sk-photo iv-side">${wdArt(c.art[0], 300, 400, 0, `Illustration: ${O.place}`)}</div>
+<div class="iv-card"><span class="sk-eyebrow">${esc(c.hero.eyebrow)}</span><span class="iv-orn">${glyph(c, 40, 2)}</span><p class="iv-names">${ivNames(O.title)}</p><h1 class="iv-h1">${esc(c.hero.h1)}</h1>
+<div class="iv-when"><b>${esc(O.date)}</b><span>${esc(O.place)}</span><span class="muted">${esc(O.time)}</span></div><p class="muted">${esc(c.hero.lede)}</p><div class="sk-row" style="justify-content:center"><a class="btn primary sk-btn-lg" href="#reply">${esc(c.hero.cta)}</a><a class="btn sk-btn-lg" href="#process">${esc(c.hero.alt)}</a></div></div>
+<div class="sk-photo iv-side">${wdArt(c.art[1], 300, 400, 1, `Illustration for ${c.kind}`)}</div></div></section>
+<section class="sk-wrap iv-facts">${c.facts.map((f) => `<div><b>${esc(f.t)}</b><span class="muted">${esc(f.d)}</span></div>`).join("")}</section>
+<section class="sk-sec sk-alt" id="services"><div class="sk-wrap"><div class="iv-center"><span class="sk-eyebrow">${esc(c.services.eyebrow)}</span><h2 class="sk-h2">${esc(c.services.h2)}</h2><p class="muted">${esc(c.services.lede)}</p></div><div class="iv-ev">${c.services.items.map((s) => `<article class="card"><span class="iv-ico">${ic(s.icon, 22)}</span><h3 class="sk-h3">${esc(s.t)}</h3><p class="muted">${esc(s.d)}</p><span class="badge">${esc(s.who)}</span></article>`).join("")}</div></div></section>
+<section class="sk-sec" id="process"><div class="sk-wrap iv-day"><div class="sk-photo">${wdArt(c.art[2], 480, 600, 2, `Illustration: ${O.timelineH2}`)}</div><div><span class="sk-eyebrow">${esc(O.date)}</span><h2 class="sk-h2">${esc(O.timelineH2)}</h2><p class="muted" style="margin:10px 0 30px">${esc(O.timelineLede)}</p><ol class="iv-tl">${O.timeline.map(([t, h, d]) => `<li><time>${esc(t)}</time><i aria-hidden="true"></i><span><b>${esc(h)}</b><span class="muted">${esc(d)}</span></span></li>`).join("")}</ol></div></div></section>
+<section class="iv-ribbon"><div class="sk-wrap"><p>${c.index.items.map((x) => esc(x)).join(' <span aria-hidden="true">·</span> ')}</p></div></section>
+<section class="sk-sec"><div class="sk-wrap iv-quote"><span class="iv-orn">${glyph(c, 34, 2)}</span><p>${esc(c.statement)}</p></div></section>
+<section class="sk-sec sk-alt" id="team"><div class="sk-wrap"><div class="iv-center"><h2 class="sk-h2">${esc(c.team.h2)}</h2><p class="muted">${esc(c.team.lede)}</p></div><div class="iv-people">${c.team.people.map((m) => `<article><span class="avatar">${esc(initials(m.n))}</span><h3 class="sk-h3">${esc(m.n)}</h3><p class="muted">${esc(m.r)}</p><p>${esc(m.b)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec" id="reply"><div class="sk-wrap iv-reply"><div><span class="sk-eyebrow">${esc(c.nav.call || c.hero.cta)}</span><h2 class="sk-h2">${esc(c.reply.h2)}</h2><p class="muted">${esc(c.reply.lede)}</p><h3 class="sk-h3" style="margin-top:28px">${esc(c.process.h2)}</h3><ol class="iv-steps">${c.process.steps.map((s) => `<li><b>${esc(s.t)}</b><span class="muted">${esc(s.d)}</span></li>`).join("")}</ol></div>${replyForm(c, "iv-form", "iv")}</div></section>
+<section class="sk-sec sk-alt"><div class="sk-wrap"><div class="card iv-tcard"><h2 class="sk-h2">${esc(c.table.h2)}</h2><p class="muted">${esc(c.table.lede)}</p><table class="iv-t"><thead><tr>${c.table.cols.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${c.table.rows.map((r) => `<tr>${r.map((x, i) => `<td>${i ? esc(x) : `<b>${esc(x)}</b>`}</td>`).join("")}</tr>`).join("")}</tbody></table>${c.table.note ? `<p class="muted" style="margin-top:12px;font-size:13px">${esc(c.table.note)}</p>` : ""}</div></div></section>
+<section class="sk-sec" id="faq"><div class="sk-wrap"><div class="iv-center"><h2 class="sk-h2">${esc(c.faq.h2)}</h2></div><div class="iv-faq">${faqItems(c)}</div></div></section>
+<section class="sk-sec sk-alt" id="visit"><div class="sk-wrap"><div class="iv-center"><h2 class="sk-h2">${esc(c.visit.h2)}</h2><p class="muted">${esc(c.visit.lede)}</p></div><div class="iv-places">${c.visit.locations.map((l, i) => `<article class="card iv-place"><div class="sk-photo">${wdArt(c.art[i % c.art.length], 640, 320, i + 1, `Illustration: ${l.n}`)}</div><div><h3 class="sk-h3">${esc(l.n)}</h3><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></div></article>`).join("")}</div>
+<div class="iv-close"><h2 class="sk-h2">${esc(c.cta.h2)}</h2><p class="muted">${esc(c.cta.lede)}</p><a class="btn primary sk-btn-lg" href="#reply">${esc(c.hero.cta)}</a></div></div></section>
+</main>${notice(c)}${foot(p, c)}`, BASE + WD_BASE + inviteCss); };
+
+// ---- programme: the schedule first. A split hero with a programme card, day columns of time slots, a drawn site plan with a numbered legend ----
+const progCss = `<style>
+.pg-hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:48px;align-items:stretch;padding-block:60px 56px}
+.pg-h1{font-size:calc(62px * var(--hs));line-height:1}
+.pg-kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:30px;border-top:2px solid var(--text)}
+.pg-kv>div{padding:16px 16px 0 0;display:grid;gap:4px}
+.pg-card{background:var(--text);color:var(--bg);border-radius:var(--radius-lg);padding:30px;display:grid;gap:14px;align-content:start}
+.pg-card .muted{color:inherit;opacity:.72}
+.pg-card .sk-eyebrow{color:inherit;opacity:.8}
+.pg-cardday{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;padding-top:14px;border-top:1px solid color-mix(in oklab,var(--bg) 26%,transparent)}
+.pg-cardday b{font-size:16px}
+.pg-cardday span:last-child{font-variant-numeric:tabular-nums;font-weight:700}
+.pg-art{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.pg-art .sk-photo{aspect-ratio:16/10}
+.pg-days{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:0;border:2px solid var(--text);border-radius:var(--radius-lg);overflow:hidden}
+.pg-day{border-right:2px solid var(--text);display:grid;align-content:start}
+.pg-day:last-child{border-right:0}
+.pg-day header{padding:18px 20px;background:var(--text);color:var(--bg);display:grid;gap:2px}
+.pg-day header span{opacity:.72;font-size:14px}
+.pg-day:nth-child(2) header{background:var(--primary);color:var(--on-primary)}
+.pg-slot{display:grid;grid-template-columns:80px minmax(0,1fr);gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)}
+.pg-slot:last-child{border-bottom:0}
+.pg-slot time{font-weight:700;font-variant-numeric:tabular-nums}
+.pg-slot b{display:block}
+.pg-note{margin-top:14px;font-size:13.5px}
+.pg-svc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px;counter-reset:g}
+.pg-svc article{counter-increment:g;display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:4px 16px;padding:22px 0;border-top:1px solid var(--border);align-items:start}
+.pg-svc article::before{content:counter(g,decimal-leading-zero);font:var(--hw) calc(24px * var(--hs))/1 var(--font-h);color:color-mix(in oklab,var(--primary) 80%,var(--text))}
+.pg-svc .badge{white-space:nowrap}
+.pg-map{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:40px;align-items:start}
+.pg-map .sk-photo{aspect-ratio:720/440}
+.pg-legend{list-style:none;display:grid;gap:0;counter-reset:l}
+.pg-legend li{counter-increment:l;display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-weight:600}
+.pg-legend li::before{content:counter(l);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:var(--on-primary);font-size:14px}
+.pg-t{width:100%;border-collapse:collapse;margin-top:18px}
+.pg-t th,.pg-t td{text-align:left;padding:14px 16px 14px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.pg-t thead th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;border-bottom:2px solid var(--text)}
+.pg-people{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.pg-people article{display:grid;gap:8px;align-content:start;padding:22px;border:1px solid var(--border);border-radius:var(--radius-lg)}
+.pg-people .avatar{width:48px;height:48px;font-size:15px;border-radius:var(--radius)}
+.pg-band{background:var(--primary);color:var(--on-primary)}
+.pg-band .muted{color:inherit;opacity:.8}
+.pg-band .sk-eyebrow{color:inherit;opacity:.85}
+.pg-bandgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:48px;align-items:center}
+.pg-band ul{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pg-band li{padding:16px 18px;border-radius:var(--radius);border:1px solid color-mix(in oklab,var(--on-primary) 40%,transparent)}
+.pg-faq{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:48px}
+.pg-faq details{padding:16px 0;border-bottom:1px solid var(--border)}
+.pg-faq p{margin-top:8px;color:var(--muted)}
+.pg-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:28px 0 32px;border-top:2px solid var(--text)}
+.pg-flow li{list-style:none;padding:16px 18px 0 0;display:grid;gap:4px}
+.pg-flow li b::before{content:counter(f) ". ";counter-increment:f}
+.pg-flow{counter-reset:f}
+.pg-form{padding:30px}
+.pg-end{background:var(--text);color:var(--bg);padding:72px 0}
+.pg-end .muted{color:inherit;opacity:.72}
+.pg-end .btn{background:var(--bg);color:var(--text);border-color:var(--bg)}
+.pg-endgrid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:start}
+.pg-loc{display:grid;gap:4px;padding-top:14px;border-top:1px solid color-mix(in oklab,var(--bg) 28%,transparent)}
+@media (max-width:1024px){.pg-hero,.pg-map,.pg-bandgrid,.pg-faq{grid-template-columns:minmax(0,1fr);gap:28px}.pg-days{grid-template-columns:minmax(0,1fr)}.pg-day{border-right:0;border-bottom:2px solid var(--text)}.pg-day:last-child{border-bottom:0}.pg-people{grid-template-columns:repeat(2,minmax(0,1fr))}.pg-endgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.pg-endgrid>div:first-child{grid-column:1/-1}.pg-flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.pg-hero{padding-block:30px 36px}.pg-h1{font-size:calc(40px * var(--hs))}.pg-kv{grid-template-columns:minmax(0,1fr)}.pg-card{padding:22px}.pg-art{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.pg-art .sk-photo:last-child{display:none}.pg-slot{grid-template-columns:70px minmax(0,1fr);padding:14px 16px}.pg-svc,.pg-people,.pg-band ul,.pg-endgrid,.pg-flow{grid-template-columns:minmax(0,1fr)}.pg-svc article{grid-template-columns:40px minmax(0,1fr)}.pg-svc .badge{grid-column:2;justify-self:start}.pg-t th:nth-child(3),.pg-t td:nth-child(3){display:none}.pg-form{padding:22px}.pg-end{padding:48px 0}}
+</style>`;
+const progL = (p, st, c) => { const O = c.occasion, P = c.programme;
+  return K.page(st, `${alert(c)}${K.nav(p, [], c.hero.cta, null).replace('<nav class="sk-links" aria-label="Main"></nav>', navLinks(c)).replace('href="#' + K.slug(c.hero.cta) + '"', 'href="#reply"')}
+<main class="pg">
+<section class="sk-wrap pg-hero"><div><span class="sk-eyebrow">${esc(c.hero.eyebrow)}</span><h1 class="pg-h1" style="margin-top:12px">${esc(c.hero.h1)}</h1><p class="sk-lede" style="margin-top:16px">${esc(c.hero.lede)}</p><div class="sk-row" style="margin-top:24px"><a class="btn primary sk-btn-lg" href="#reply">${esc(c.hero.cta)}</a><a class="btn sk-btn-lg" href="#process">${esc(c.hero.alt)}</a></div>
+<div class="pg-kv">${c.facts.map((f) => `<div><b>${esc(f.t)}</b><span class="muted">${esc(f.d)}</span></div>`).join("")}</div></div>
+<aside class="pg-card"><span class="sk-eyebrow">${esc(P.h2)}</span><h2 class="sk-h3">${esc(O.date)}</h2><p class="muted">${esc(O.place)} · ${esc(O.time)}</p>${P.days.map((d) => `<div class="pg-cardday"><b>${esc(d.t)}</b><span>${esc(d.slots[0][0])}</span><span class="muted">${esc(d.sub)}</span><span class="muted">${esc(d.slots[0][1])}</span></div>`).join("")}</aside></section>
+<section class="sk-wrap pg-art">${c.art.map((k, i) => `<div class="sk-photo">${wdArt(k, 480, 300, i, `Illustration for ${c.kind}`)}</div>`).join("")}</section>
+<section class="sk-sec" id="process"><div class="sk-wrap"><div class="sk-head"><div><span class="sk-eyebrow">${esc(O.date)}</span><h2 class="sk-h2">${esc(P.h2)}</h2></div><p class="muted">${esc(P.lede)}</p></div>
+<div class="pg-days" style="--n:${P.days.length}">${P.days.map((d) => `<div class="pg-day"><header><b>${esc(d.t)}</b><span>${esc(d.sub)}</span></header>${d.slots.map(([t, h, w]) => `<div class="pg-slot"><time>${esc(t)}</time><span><b>${esc(h)}</b><span class="muted">${esc(w)}</span></span></div>`).join("")}</div>`).join("")}</div><p class="muted pg-note">${esc(P.note)}</p></div></section>
+<section class="sk-sec sk-alt" id="services"><div class="sk-wrap"><div class="sk-head"><div><span class="sk-eyebrow">${esc(c.services.eyebrow)}</span><h2 class="sk-h2">${esc(c.services.h2)}</h2></div><p class="muted">${esc(c.services.lede)}</p></div><div class="pg-svc">${c.services.items.map((s) => `<article><span><h3 class="sk-h3">${esc(s.t)}</h3><span class="muted">${esc(s.d)}</span></span><span class="badge">${esc(s.who)}</span></article>`).join("")}</div></div></section>
+<section class="sk-sec"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(P.mapH2)}</h2></div><p class="muted">${esc(P.mapLede)}</p></div><div class="pg-map"><div class="sk-photo">${sitePlan(c, 720, 440)}</div><div><ol class="pg-legend">${P.spots.map((x) => `<li>${esc(x)}</li>`).join("")}</ol><p class="muted" style="margin-top:14px;font-size:13.5px">${esc(P.mapNote)}</p></div></div></div></section>
+<section class="sk-sec sk-alt"><div class="sk-wrap"><h2 class="sk-h2">${esc(c.table.h2)}</h2><p class="muted">${esc(c.table.lede)}</p><table class="pg-t"><thead><tr>${c.table.cols.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${c.table.rows.map((r) => `<tr>${r.map((x, i) => `<td>${i ? esc(x) : `<b>${esc(x)}</b>`}</td>`).join("")}</tr>`).join("")}</tbody></table>${c.table.note ? `<p class="muted" style="margin-top:12px;font-size:13px">${esc(c.table.note)}</p>` : ""}</div></section>
+<section class="sk-sec" id="team"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.team.h2)}</h2></div><p class="muted">${esc(c.team.lede)}</p></div><div class="pg-people">${c.team.people.map((m) => `<article><span class="avatar">${esc(initials(m.n))}</span><h3 class="sk-h3">${esc(m.n)}</h3><p class="muted">${esc(m.r)}</p><p>${esc(m.b)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec pg-band"><div class="sk-wrap pg-bandgrid"><div class="sk-stack"><span class="sk-eyebrow">${esc(c.audience.eyebrow)}</span><h2 class="sk-h2">${esc(c.audience.h2)}</h2><p class="muted">${esc(c.audience.lede)}</p></div><ul>${c.audience.points.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div></section>
+<section class="sk-sec" id="faq"><div class="sk-wrap pg-faq"><div class="sk-stack"><h2 class="sk-h2">${esc(c.faq.h2)}</h2><p class="muted">${esc(c.statement)}</p></div><div>${faqItems(c)}</div></div></section>
+<section class="sk-sec sk-alt" id="reply"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.reply.h2)}</h2></div><p class="muted">${esc(c.reply.lede)}</p></div><ol class="pg-flow">${c.process.steps.map((s) => `<li><b>${esc(s.t)}</b><span class="muted">${esc(s.d)}</span></li>`).join("")}</ol>${replyForm(c, "pg-form", "pg")}</div></section>
+<section class="pg-end" id="visit"><div class="sk-wrap pg-endgrid"><div class="sk-stack"><h2 class="sk-h2">${esc(c.cta.h2)}</h2><p class="muted">${esc(c.cta.lede)}</p><a class="btn sk-btn-lg" href="#reply">${esc(c.hero.cta)}</a></div>${c.visit.locations.map((l) => `<div class="pg-loc"><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></div>`).join("")}</div></section>
+</main>${notice(c)}${foot(p, c)}`, BASE + WD_BASE + progCss); };
+
 const LAYOUTS = {
   atlas: { fn: atlas, style: "corporate", name: "Atlas", about: "split hero with a next-step card, card grids and a contact form" },
   folio: { fn: folio, style: "editorial", name: "Folio", about: "magazine layout: centred masthead, large type, numbered contents, ruled lists, no cards" },
@@ -716,5 +940,8 @@ const LAYOUTS = {
   // restaurant layouts: only for content with a menu, booking details and dish drawings (food and drink)
   menu: { fn: menuL, style: "retro", name: "Menu", about: "menu first: an hours strip, a specials board in the hero, sticky section tabs and a three-column priced menu with dotted leaders and a sample dietary key", needs: "menu", mobileH: 11200 },
   reserve: { fn: reserveL, style: "luxury", name: "Reserve", about: "booking first: a dining-room drawing beside a booking panel with time slots, a set-menu column, a booking-policy table and a band for groups", needs: "menu", mobileH: 11200 },
+  // wedding and event layouts: only for content with an occasion, a reply form, a programme and venue drawings (weddings and events)
+  invite: { fn: inviteL, style: "luxury", name: "Invite", about: "the occasion first: an invitation card hero between two drawings, the order of the day as a timeline, a reply form with choices and a places section", needs: "occasion", webH: 8000, mobileH: 12800 },
+  programme: { fn: progL, style: "monochrome", name: "Programme", about: "the schedule first: a split hero with a programme card, day columns of time slots, a drawn site plan with a numbered legend, an options table and a reply form", needs: "occasion", webH: 8000, mobileH: 12800 },
 };
-module.exports = { LAYOUTS, GLYPH, prop, dish, SAMPLE_KEY };
+module.exports = { LAYOUTS, GLYPH, prop, dish, SAMPLE_KEY, wdArt, WD_ART };

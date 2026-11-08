@@ -12,6 +12,8 @@ const DISCLOSES = {
   "real-estate": "Names, people, addresses, phone numbers, listings, prices and fees in every template are fictional samples to replace. The templates are designs, not legal or financial advice, and they do not make a site compliant with any fair housing, licensing or advertising rule.",
   // restaurant: new copy, option 1 of the options in deploy-bundle-2026-11-07/restaurant.md
   restaurant: "Names, people, addresses, phone numbers, dishes, menus, prices and opening hours in every template are fictional samples to replace. Dietary labels and allergen notes are labelled samples: check every dish with your kitchen. The templates are designs, not food safety or legal advice, and they do not make a site compliant with any allergen, food hygiene, licensing or advertising rule.",
+  // weddings and events: new copy, option A of the options in deploy-bundle-2026-11-09/templates-r2.md
+  wedding: "Names, couples, people, places, dates, prices and schedules in every template are fictional samples to replace. Licence, legal and venue details are left for you to add and check. The templates are designs, not legal or planning advice, and they do not make a site compliant with any marriage, licensing, consumer or advertising rule.",
 };
 const discloseFor = (ids) => [...new Set(ids)].map((i) => DISCLOSES[i]).filter(Boolean).join(" ");
 const DISCLOSE_ALL = () => discloseFor(platformIndustries().map((i) => i.id));
@@ -170,6 +172,11 @@ const BAR_UI = "(?<!\\b(?:nav|navigation|progress|search|side|tab|app|status|too
 const ALIASES = [["fine-dining", /\b(fine[- ]dining|tasting[- ]menus?|upscale restaurants?)\b/], ["food-truck", /\b(food (trucks?|vans?|carts?)|street food|mobile kitchen)\b/], ["catering", /\b(cater(ing|ers?)|event food)\b/],
   ["pizzeria", /\b(pizz(a|as|eria|erias)|pizza (shops?|places?))\b/], ["bakery", /\b(baker(y|ies)|bakehouse|patisseries?|cake shops?|bread shops?)\b/], ["coffee-shop", /\b(coffee (shops?|house)|coffeehouse|caf(e|é)s?|espresso bar)\b/],
   ["bar", new RegExp(`\\b(${BAR_UI}bars?|pubs?|taverns?|taprooms?|taphouses?|brewpubs?|gastropubs?)\\b`)], ["restaurant", /\b(restaurants?|bistros?|brasseries?|eater(y|ies)|casual dining|trattorias?)\b/],
+  // weddings and events (9-Nov-2026), after catering so "wedding catering" stays a caterer. Most specific first; the couple's site ("wedding") last.
+  ["wedding-invitation", /\b(wedding invit\w*|digital (wedding )?invit\w*|online (wedding )?invit\w*|e-?invites?|save[- ]the[- ]dates?)\b/], ["wedding-planner", /\b(wedding (planners?|planning|coordinators?|coordination)|day[- ]of coordinators?)\b/],
+  ["wedding-venue", /\b(wedding (venues?|barns?)|event venues?|reception venues?|barn venues?)\b/], ["wedding-photographer", /\b(wedding photograph\w*|elopement photograph\w*)\b/],
+  ["florist", /\b(florists?|flower (shops?|studios?)|floral (studios?|design\w*))\b/], ["event-planner", /\b(event (planners?|planning|management|organi[sz]ers?)|party planners?)\b/],
+  ["conference", /\b(conferences?|summits?|symposi(um|a)|event (websites?|sites?|landing pages?|wordpress themes?))\b/], ["wedding", /\b(weddings?|elopements?)\b/],
   ["vacation-rental", /\b(vacation rentals?|holiday (lets?|rentals?|cottages?|homes?)|short[- ]term rentals?|cabin rentals?|direct booking)\b/], ["property-management", /\b(property manage\w*|letting agents?|lettings|rental management|landlord services)\b/],
   ["commercial-real-estate", /\b(commercial (real estate|property|properties)|office (space|leasing)|retail space|industrial (units?|property)|warehouse space)\b/], ["luxury-real-estate", /\b(luxury (real estate|homes?|propert\w*|realtors?)|high[- ]end (real estate|homes?))\b/], ["home-builder", /\b(home ?builders?|house ?builders?|new[- ]homes?|new[- ]build)\b/],
   ["real-estate-agent", /\b(real estate agents?|realtors?|independent agents?|solo agents?)\b/], ["apartment", /\b(apartments?|multifamily|apartment (complex|community)|leasing office)\b/], ["real-estate", /\b(real estate|realty|estate agents?|estate agency|property (listings?|websites?)|brokerage)\b/],
@@ -203,7 +210,7 @@ function indLine(n, s, u) {
 }
 // One line added above normal results when a query names a template sub-niche, so the nested page gets cited.
 // Industry words, for the hub hint and the general WordPress answer.
-const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/, restaurant: /\b(restaurants?|food and drink|hospitality|food business(es)?)\b/ };
+const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/, restaurant: /\b(restaurants?|food and drink|hospitality|food business(es)?)\b/, wedding: /\b(weddings?( and events?)?|wedding industry|bridal)\b/ };
 export function tplHint({ q }, site) {
   const s = String(q || "").toLowerCase(); if (!/\b(templates?|website|landing page|homepage|home page)\b/.test(s)) return "";
   const id = (ALIASES.find(([, rx]) => rx.test(s)) || [])[0], n = id ? nicheById(id) : null, u = (rel) => `${site}/ui/${rel}`;

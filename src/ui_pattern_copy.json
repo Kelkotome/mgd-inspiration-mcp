@@ -2597,12 +2597,12 @@
  },
  "wedding-website": {
   "h1": "Wedding website templates",
-  "intro": "A wedding website answers guests’ questions before they ask. These templates include the date and a countdown, your story, the day’s schedule, venue and travel details, the wedding party, registry, an FAQ and an RSVP form with meal choices.",
+  "intro": "A wedding website answers guests' questions before they ask. These templates put the date, place and reply-by date at the top, then the weekend's events, the order of the day, travel and places to stay, the wedding party, an FAQ and an RSVP with dinner choices.",
   "tips": [
    "Put the date, place and RSVP deadline at the very top.",
-   "Give one schedule with times and addresses, and say what to wear.",
-   "Answer the awkward questions (kids, plus-ones, parking) in the FAQ.",
-   "Keep the RSVP short: attending, names, meal choice and dietary needs."
+   "Give one schedule with times and places, and say what to wear.",
+   "Answer the awkward questions (children, plus-ones, rain) in the FAQ.",
+   "Keep the RSVP short: attending, names, dinner choice and anything the kitchen needs to know."
   ],
   "faq": [
    [
@@ -4494,6 +4494,146 @@
    [
     "Should a loyalty programme use an app or a wallet pass?",
     "Many do both. The app holds ordering, history and rewards; the wallet pass is the quick way to get scanned at the till and can show reminders on the lock screen when someone is near a location."
+   ]
+  ]
+ },
+ "wedding-invitation-website": {
+  "h1": "Wedding invitation website templates",
+  "intro": "An online wedding invitation is the invitation itself as a page: who, when and where, the order of the day, what to wear and a short RSVP with a reply-by date. These templates keep it to one focused page that a couple can send as a link.",
+  "tips": [
+   "Lead with names, date and place, the way a printed invitation does.",
+   "Give the reply-by date next to the RSVP button.",
+   "Keep the RSVP to attending, names and one choice.",
+   "Add a short order of the day so guests can plan travel."
+  ],
+  "faq": [
+   [
+    "What should a wedding invitation website include?",
+    "The couple's names, the date, time and place, what to wear, an order of the day and an RSVP with a reply-by date."
+   ],
+   [
+    "Is an online invitation the same as a wedding website?",
+    "An online invitation is shorter: one page with the details and the RSVP. A wedding website adds travel, places to stay, the wedding party and more questions."
+   ]
+  ]
+ },
+ "wedding-planner-website": {
+  "h1": "Wedding planner website templates",
+  "intro": "A wedding planner's site needs to show what each level of help includes and start a conversation about a date. These templates include full planning, partial planning and on-the-day coordination, packages with from-prices, the planning timeline from first call to the day, the team and a check-a-date enquiry.",
+  "tips": [
+   "Show packages with what each includes and a from-price.",
+   "Explain the planning timeline month by month.",
+   "Ask for the date, guest numbers and venue status in the first form.",
+   "Show the people couples will work with."
+  ],
+  "faq": [
+   [
+    "What should a wedding planner website include?",
+    "Services and packages with from-prices, how planning works, the team, questions couples ask and an enquiry form with the date and guest numbers."
+   ],
+   [
+    "Should wedding planners show prices?",
+    "A from-price for each package helps couples decide whether to get in touch. Give the full quote after the first call."
+   ]
+  ]
+ },
+ "wedding-venue-website": {
+  "h1": "Wedding venue website templates",
+  "intro": "A wedding venue site answers whether the date is free, whether the space fits the guest list and what a day costs. These templates include the spaces and how many they seat, a sample wedding day, a drawn plan of the grounds, seasons and day rates, and a viewing or check-a-date form.",
+  "tips": [
+   "Give capacities for the ceremony, dinner and evening.",
+   "Show a sample wedding day with times.",
+   "Put seasons and day rates in one table.",
+   "Make booking a viewing the main call to action."
+  ],
+  "faq": [
+   [
+    "What should a wedding venue website include?",
+    "The spaces and capacities, a sample day, prices or from-prices by season, what is included, suppliers, accommodation, a plan of the site and a way to check a date or book a viewing."
+   ],
+   [
+    "Should a venue list its ceremony licence?",
+    "State what kinds of ceremony the venue can hold and tell couples to confirm the legal side with the local authority where they marry."
+   ]
+  ]
+ },
+ "wedding-photographer-website": {
+  "h1": "Wedding photographer website templates",
+  "intro": "A wedding photographer's site sells the way you work as much as the pictures. These templates include coverage packages, how a wedding day is covered from getting ready to the evening, gallery and album delivery, the people behind the camera and a date enquiry.",
+  "tips": [
+   "Show coverage packages with hours and what is delivered.",
+   "Explain how the day is covered, part by part.",
+   "Say when couples get their gallery and album.",
+   "Ask for the date and venue first."
+  ],
+  "faq": [
+   [
+    "What should a wedding photographer website include?",
+    "Packages with hours and from-prices, how the day is covered, delivery times, the photographers, questions couples ask and an enquiry form with the date and venue."
+   ],
+   [
+    "How many photos should a wedding photographer show?",
+    "A small, careful selection from whole days reads better than hundreds of single images. Replace the drawings in these templates with your own photographs."
+   ]
+  ]
+ },
+ "florist-website": {
+  "h1": "Florist website templates",
+  "intro": "A florist's site has two audiences: people buying flowers this week and couples planning wedding flowers. These templates include everyday bouquets with collection and delivery, wedding and event flowers with a consultation, workshops, and how wedding flowers come together week by week.",
+  "tips": [
+   "Separate everyday orders from wedding and event enquiries.",
+   "Give delivery areas, cut-off times and collection hours.",
+   "Show wedding flowers with from-prices and a consultation step.",
+   "List workshops with dates and what people take home."
+  ],
+  "faq": [
+   [
+    "What should a florist website include?",
+    "Everyday bouquets with prices, delivery and collection details, wedding and event flowers, workshops, opening hours and contact details."
+   ],
+   [
+    "How should florists show wedding prices?",
+    "From-prices for bouquets, buttonholes and table flowers help couples budget. Give a full quote after the consultation."
+   ]
+  ]
+ },
+ "event-planner-website": {
+  "h1": "Event planner website templates",
+  "intro": "An event planner's site turns an idea into a brief. These templates include private parties, company events and launches, how planning works, a sample event programme with a drawn site plan, a budget guide with from-prices, the team and an enquiry form.",
+  "tips": [
+   "Group services by kind of event.",
+   "Show a sample event from the first call to the day.",
+   "Give a budget guide with from-prices.",
+   "Ask for the date, guest numbers and type of event first."
+  ],
+  "faq": [
+   [
+    "What should an event planner website include?",
+    "Types of event, how planning works, sample events, a budget guide, the team, questions clients ask and an enquiry form."
+   ],
+   [
+    "Should event planners show prices?",
+    "A from-price or budget range per type of event helps clients decide whether to get in touch. Give the full proposal after the brief."
+   ]
+  ]
+ },
+ "conference-website": {
+  "h1": "Event and conference website templates",
+  "intro": "An event or conference website answers when, where, what is on and how to get a ticket. These templates include the dates and venue, a day-by-day programme with rooms, speakers, ticket types and prices, a drawn venue plan, travel and places to stay, questions and a registration form.",
+  "tips": [
+   "Put dates, place and the register button in the first screen.",
+   "Show the programme by day, with times and rooms.",
+   "Give every ticket type with its price and what it includes.",
+   "Answer refunds, access and recordings in the FAQ."
+  ],
+  "faq": [
+   [
+    "What should a conference website include?",
+    "Dates and venue, the programme, speakers, ticket types and prices, registration, travel and accommodation, and an FAQ on refunds, access and recordings."
+   ],
+   [
+    "When should a conference programme go online?",
+    "Put the outline up when tickets go on sale and fill in sessions as speakers confirm. Mark anything still to be confirmed."
    ]
   ]
  }

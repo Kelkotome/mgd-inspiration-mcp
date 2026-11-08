@@ -111,6 +111,15 @@ const FAMILIES = {
   catering: { name: "Quillhaven Catering", cat: "catering", desc: "an event caterer for weddings, offices and private parties", type: { web: "Website", mobile: "Mobile website" } },
   foodtruck: { name: "Kettlewren Street Kitchen", cat: "food-truck", desc: "a food truck with a weekly route, markets and private hire", type: { web: "Website", mobile: "Mobile website" } },
   finedining: { name: "Vellacourt", cat: "fine-dining", desc: "a fine dining restaurant with a tasting menu and a chef's counter", type: { web: "Website", mobile: "Mobile website" } },
+  // 9-Nov-2026 fifth industry, weddings and events. Names web-searched as exact phrases (see deploy-bundle-2026-11-09/templates-r2.md).
+  weddingsite: { name: "Imogen & Tobiah", cat: "wedding", desc: "a couple's wedding website with the weekend, travel, a stay block and RSVP", type: { web: "Website", mobile: "Mobile website" } },
+  invitation: { name: "Elodie & Ravi", cat: "wedding-invitation", desc: "a one-page digital wedding invitation with the details and an RSVP", type: { web: "Website", mobile: "Mobile website" } },
+  weddingplanner: { name: "Brackenmoor Weddings", cat: "wedding-planner", desc: "a wedding planning studio offering full planning, partial planning and on-the-day coordination", type: { web: "Website", mobile: "Mobile website" } },
+  weddingvenue: { name: "Tarnwick Barn", cat: "wedding-venue", desc: "a converted barn and walled garden wedding venue", type: { web: "Website", mobile: "Mobile website" } },
+  weddingphoto: { name: "Fernsby Studio", cat: "wedding-photographer", desc: "a two-person wedding photography studio", type: { web: "Website", mobile: "Mobile website" } },
+  florist: { name: "Thimblewort Flowers", cat: "florist", desc: "a florist shop with wedding and event flowers, everyday bouquets and workshops", type: { web: "Website", mobile: "Mobile website" } },
+  eventplanner: { name: "Corrowby Events", cat: "event-planner", desc: "an event planning company for private parties, company events and launches", type: { web: "Website", mobile: "Mobile website" } },
+  conference: { name: "Understorey Forum 2027", cat: "conference", desc: "a two-day conference for people who look after city parks and street trees", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 

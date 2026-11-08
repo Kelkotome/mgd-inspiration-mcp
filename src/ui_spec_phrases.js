@@ -72,6 +72,14 @@ export const INDUSTRY_PHRASES = {
   "catering-website": ["a catering company", "a caterer"],
   "food-truck-website": ["a food truck", "a food truck"],
   "fine-dining-website": ["a fine-dining restaurant", "a restaurant"],
+  // weddings and events, 9-Nov-2026: drafted as option A, NOT yet approved (deploy-bundle-2026-11-09/templates-r2.md, approval item)
+  "wedding-invitation-website": ["a couple sending their invitation online", "a couple", "who want"],
+  "wedding-planner-website": ["an independent wedding planner", "a planner"],
+  "wedding-venue-website": ["a wedding venue", "a venue"],
+  "wedding-photographer-website": ["an independent wedding photographer", "a photographer"],
+  "florist-website": ["an independent florist", "a florist"],
+  "event-planner-website": ["an event planning company", "a company"],
+  "conference-website": ["a conference, summit or community event", "an event"],
 };
 
 // Hand-written exceptions where the default audience reads oddly with the style: "pattern|style" → [best, notIdeal]

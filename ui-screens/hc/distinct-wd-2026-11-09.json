@@ -1,0 +1,123 @@
+{
+ "conference": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "invite",
+   "ledger",
+   "programme"
+  ],
+  "maxTreeSimilarity": 0.625,
+  "maxLayoutOverlap": 0.429,
+  "failedPairs": []
+ },
+ "event-planner": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "invite",
+   "ledger",
+   "programme"
+  ],
+  "maxTreeSimilarity": 0.616,
+  "maxLayoutOverlap": 0.454,
+  "failedPairs": []
+ },
+ "florist": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "invite",
+   "programme"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.367,
+  "failedPairs": []
+ },
+ "wedding": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "homepage",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "invite",
+   "programme"
+  ],
+  "maxTreeSimilarity": 0.723,
+  "maxLayoutOverlap": 0.38,
+  "failedPairs": []
+ },
+ "wedding-invitation": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "bento",
+   "concierge",
+   "folio",
+   "invite",
+   "ledger",
+   "programme"
+  ],
+  "maxTreeSimilarity": 0.56,
+  "maxLayoutOverlap": 0.318,
+  "failedPairs": []
+ },
+ "wedding-photographer": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "folio",
+   "invite",
+   "programme"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.409,
+  "failedPairs": []
+ },
+ "wedding-planner": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "concierge",
+   "folio",
+   "invite",
+   "ledger",
+   "programme"
+  ],
+  "maxTreeSimilarity": 0.68,
+  "maxLayoutOverlap": 0.361,
+  "failedPairs": []
+ },
+ "wedding-venue": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "concierge",
+   "folio",
+   "invite",
+   "programme"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.394,
+  "failedPairs": []
+ }
+}

@@ -43,6 +43,17 @@ function need(c) {
     const b = c.booking || {}; req(b.h2 && b.date && b.note && Array.isArray(b.sizes) && b.sizes.length >= 3 && Array.isArray(b.slots) && b.slots.length === 6 && Array.isArray(b.hours) && b.hours.length === 4, "booking: h2, date, note, sizes>=3, 6 slots, 4 hours rows");
     req(Array.isArray(c.art) && c.art.length === 3 && c.art.every((a) => ART.includes(a)), "art: 3 dish kinds");
   }
+  // wedding and event layouts (invite, programme) need an occasion, a reply form, a programme and venue drawings: weddings and events content only
+  const WART = ["barn", "arch", "table", "hall", "bouquet", "marquee", "camera", "cake"];
+  if ((c.layouts || []).some((l) => l === "invite" || l === "programme")) {
+    const o = c.occasion || {}; req(Array.isArray(o.title) && o.title.length >= 1 && o.title.length <= 3 && o.date && o.place && o.time && o.timelineH2 && o.timelineLede, "occasion: title (1-3 lines), date, place, time, timelineH2, timelineLede");
+    req(Array.isArray(o.timeline) && o.timeline.length >= 5 && o.timeline.length <= 7 && o.timeline.every((r) => r.length === 3 && r.every(Boolean)), "occasion.timeline: 5-7 of [time, title, detail]");
+    const r = c.reply || {}; req(r.h2 && r.lede && r.choicesLabel && r.selectLabel && r.askLabel && r.button && r.note && Array.isArray(r.choices) && r.choices.length >= 2 && r.choices.length <= 4 && Array.isArray(r.options) && r.options.length >= 3 && r.options.length <= 6, "reply: h2, lede, choicesLabel, 2-4 choices, selectLabel, 3-6 options, askLabel, button, note");
+    const g = c.programme || {}; req(g.h2 && g.lede && g.note && /sample/i.test(g.note) && g.mapH2 && g.mapLede && g.mapNote && Array.isArray(g.spots) && g.spots.length === 6, "programme: h2, lede, note (says sample), mapH2, mapLede, mapNote, 6 spots");
+    req(Array.isArray(g.days) && g.days.length >= 2 && g.days.length <= 3 && g.days.every((d) => d.t && d.sub && Array.isArray(d.slots) && d.slots.length >= 3 && d.slots.length <= 5 && d.slots.every((x) => x.length === 3 && x.every(Boolean))), "programme.days: 2-3 of { t, sub, 3-5 slots [time, title, where] }");
+    req(Array.isArray(c.art) && c.art.length === 3 && c.art.every((a) => WART.includes(a)), "art: 3 event drawings");
+  }
+  for (const [k, n] of [["visit.fields", c.visit.fields], ["footer.cols", c.footer.cols], ["services.cols", c.services.cols]]) if (n) req(Array.isArray(n) && n.length === 3 && n.every(Boolean), `${k}: 3 labels`);
   if (/—/.test(JSON.stringify(c))) miss.push("em dash");
   if (miss.length) throw new Error(`${c.niche}: ${miss.join(", ")}`);
 }
@@ -67,7 +78,7 @@ for (const c of niches) {
       fs.writeFileSync(path.join(dir, "DESIGN.md"), md);
       const name = `${fam.cat === c.niche ? c.niche[0].toUpperCase() + c.niche.slice(1).replace(/-/g, " ") : fam.name} website, ${L.name} layout`, shows = `a full home page for ${c.kind}: ${L.about}`;
       fs.writeFileSync(path.join(dir, "meta.json"), JSON.stringify({ slug, type: "page", pattern: c.pattern, variant: lid, platform, style: L.style, family: c.family, category: fam.cat, product: fam.name, name, shows,
-        elements: ["website-template", "landing-page", "responsive", "faq", "navigation-header", "footer"], viewport: { w: platform === "web" ? 1440 : 390, h: platform === "web" ? 6400 : (LAYOUTS[lid].mobileH || (LAYOUTS[lid].needs === "listings" ? 11200 : 8400)) } /* property layouts run to ~10,700 px on a phone; 8400 cut off the footer and its fictional notice */, tokens: { light, dark }, fonts: { heading: st.hf, body: st.bf }, layout: lid, niche: c.niche }, null, 2));
+        elements: ["website-template", "landing-page", "responsive", "faq", "navigation-header", "footer"], viewport: { w: platform === "web" ? 1440 : 390, h: platform === "web" ? (LAYOUTS[lid].webH || 6400) : (LAYOUTS[lid].mobileH || (LAYOUTS[lid].needs === "listings" ? 11200 : 8400)) } /* property layouts run to ~10,700 px on a phone; 8400 cut off the footer and its fictional notice */, tokens: { light, dark }, fonts: { heading: st.hf, body: st.bf }, layout: lid, niche: c.niche }, null, 2));
       n++;
     }
   }

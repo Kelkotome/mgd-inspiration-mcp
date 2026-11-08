@@ -223,6 +223,14 @@ export const PATTERN_SEO = {
   "catering-website": ["catering-website-template", "Catering website templates"],
   "food-truck-website": ["food-truck-website-template", "Food truck website templates"],
   "fine-dining-website": ["fine-dining-website-template", "Fine dining website templates"],
+  // 9-Nov-2026 weddings and events: new niches. These only ever live under the industry hub.
+  "wedding-invitation-website": ["wedding-invitation-website-template", "Wedding invitation website templates"],
+  "wedding-planner-website": ["wedding-planner-website-template", "Wedding planner website templates"],
+  "wedding-venue-website": ["wedding-venue-website-template", "Wedding venue website templates"],
+  "wedding-photographer-website": ["wedding-photographer-website-template", "Wedding photographer website templates"],
+  "florist-website": ["florist-website-template", "Florist website templates"],
+  "event-planner-website": ["event-planner-website-template", "Event planner website templates"],
+  "conference-website": ["event-website-template", "Event and conference website templates"],
   // UI components round 1 (7-Nov-2026; Keyword Planner "ui design" + "html css" + "examples", deploy-bundle-2026-11-07/components-audit.md)
   tabs: ["tabs-ui", "Tabs UI design examples"],
   cards: ["card-ui", "Card UI design examples"],

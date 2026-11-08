@@ -155,7 +155,7 @@ const web = (p, st) => {
 <section class="sk-sec sk-tight" id="schedule"><div class="sk-wrap">
   <div class="wd-center"><span class="sk-eyebrow">The weekend</span><h2 class="sk-h2">Three days in Hollow Vale</h2><p class="muted">Join us for as much as you can. Saturday is the main event; Friday and Sunday are relaxed and optional.</p></div>
   <div class="wd-days">
-    <article class="card wd-day"><span class="sk-eyebrow">Friday 11 June</span><h3 class="sk-h3">Welcome drinks</h3>${[["7:00 PM", "Drinks at The Plough", "Main Street, Hollow Vale. Casual."], ["9:30 PM", "Last orders", "Taxis from the green."]].map(([t, n, d]) => `<div class="wd-slot"><span class="num">${t}</span><div><b>${n}</b><div class="wd-soft">${d}</div></div></div>`).join("")}</article>
+    <article class="card wd-day"><span class="sk-eyebrow">Friday 11 June</span><h3 class="sk-h3">Welcome drinks</h3>${[["7:00 PM", "Drinks at the Lantern Inn", "Main Street, Hollow Vale. Casual."], ["9:30 PM", "Last orders", "Taxis from the green."]].map(([t, n, d]) => `<div class="wd-slot"><span class="num">${t}</span><div><b>${n}</b><div class="wd-soft">${d}</div></div></div>`).join("")}</article>
     <article class="card wd-day feat"><span class="sk-eyebrow wd-soft">Saturday 12 June</span><h3 class="sk-h3" style="font-size:calc(26px * var(--hs))">The wedding day</h3>${[["1:30 PM", "Guests arrive", "Shuttle from the Hollow Vale Inn at 1:00"], ["2:00 PM", "Ceremony", "In the orchard, weather permitting"], ["3:00 PM", "Drinks & lawn games", "Canapés on the terrace"], ["5:30 PM", "Dinner & speeches", "Long tables in the barn"], ["8:00 PM", "First dance, then dancing", "Carriages at midnight"]].map(([t, n, d]) => `<div class="wd-slot"><span class="num">${t}</span><div><b>${n}</b><div class="wd-soft">${d}</div></div></div>`).join("")}</article>
     <article class="card wd-day"><span class="sk-eyebrow">Sunday 13 June</span><h3 class="sk-h3">Recovery brunch</h3>${[["11:00 AM", "Brunch at the barn", "Bacon rolls, pastries, strong coffee."], ["1:00 PM", "Goodbyes", "Last shuttle to the station at 1:30."]].map(([t, n, d]) => `<div class="wd-slot"><span class="num">${t}</span><div><b>${n}</b><div class="wd-soft">${d}</div></div></div>`).join("")}</article>
   </div>
@@ -180,7 +180,7 @@ const web = (p, st) => {
 
 <section class="sk-sec sk-tight sk-alt" id="registry"><div class="sk-wrap wd-reg">
   <div class="sk-stack" style="gap:12px"><span class="sk-eyebrow">Registry</span><h2 class="sk-h2" style="font-size:calc(32px * var(--hs))">Your being there is the gift</h2><p class="wd-soft">If you’d like to give something, here are three things we’re saving for.</p></div>
-  ${[["Honeymoon fund", "Ten days on a slow train through the mountains.", 64], ["Garden fund", "A bench, a lemon tree and a lot of soil for the balcony.", 38], ["A cause we love", "Gifts here go to our local food bank.", 51]].map(([t, d, pc]) => `<div class="card"><b>${t}</b><p class="wd-soft">${d}</p><div class="wd-bar" role="img" aria-label="${pc}% of goal"><i style="width:${pc}%"></i></div><span class="wd-soft" style="font-size:12px">${pc}% of goal</span><a href="#" style="font-weight:600;font-size:14px;display:inline-flex;gap:6px;align-items:center;margin-top:4px">Contribute ${ic("arrow", 14)}</a></div>`).join("")}
+  ${[["Honeymoon fund", "Ten days on a slow train through the mountains.", 64], ["Garden fund", "A bench, a lemon tree and a lot of soil for the balcony.", 38], ["A cause we love", "Gifts here go to our local food bank.", 51]].map(([t, d, pc]) => `<div class="card"><b>${t}</b><p class="wd-soft">${d}</p><div class="wd-bar" role="img" aria-label="Sample progress towards this fund"><i style="width:${pc}%"></i></div><span class="wd-soft" style="font-size:12px">Sample progress</span><a href="#" style="font-weight:600;font-size:14px;display:inline-flex;gap:6px;align-items:center;margin-top:4px">Contribute ${ic("arrow", 14)}</a></div>`).join("")}
 </div></section>
 
 <section class="sk-sec sk-tight" id="faq"><div class="sk-wrap">
@@ -195,12 +195,12 @@ const web = (p, st) => {
     <div class="sk-field"><label>Will you be attending?</label><div class="wd-opts"><span class="wd-opt on"><i></i>Joyfully accepts</span><span class="wd-opt"><i></i>Regretfully declines</span></div></div>
     <div class="sk-g2"><div class="sk-field"><label for="wd-guest">Guest name (if invited)</label><input class="sk-input" id="wd-guest" value="Sam Achebe"></div><div class="sk-field"><label for="wd-fri">Friday welcome drinks</label><select class="sk-input" id="wd-fri"><option>Yes, both of us</option><option>No, Saturday only</option></select></div></div>
     <div class="sk-field"><label>Dinner choice</label><div class="wd-opts c3">${[["Slow-roast lamb", "Salsa verde, new potatoes", 1], ["Hake & mussels", "Saffron broth", 0], ["Wild mushroom risotto", "Vegetarian, vegan option", 0]].map(([t, d, on]) => `<span class="wd-opt${on ? " on" : ""}"><i></i><span>${t}<small>${d}</small></span></span>`).join("")}</div></div>
-    <div class="sk-field"><label for="wd-diet">Dietary needs or allergies</label><input class="sk-input" id="wd-diet" value="Sam is allergic to tree nuts"></div>
+    <div class="sk-field"><label for="wd-diet">Dietary needs or allergies</label><input class="sk-input" id="wd-diet" value="No food needs"></div>
     <div class="sk-row" style="justify-content:space-between"><span class="wd-soft">Questions? rsvp@ourday.example</span><button class="btn primary sk-btn-lg" type="button">Send RSVP</button></div>
   </form>
 </div></section>
 </main>
-${K.footer(p, "Saturday 12 June 2027 · Larkfield Barn, Hollow Vale. We can’t wait to celebrate with you.", [["The day", ["Ceremony 2:00 PM", "Dinner 5:30 PM", "Carriages midnight"]], ["Contact", ["rsvp@ourday.example", "Layla: (555) 012-8841", "Ewan: (555) 012-3307"]], ["Plan", ["Travel & hotels", "Registry", "FAQ"]]], `Made with love by ${p.name}, 2027.`)}`, CSS);
+${K.footer(p, "Saturday 12 June 2027 · Larkfield Barn, Hollow Vale. We can’t wait to celebrate with you.", [["The day", ["Ceremony 2:00 PM", "Dinner 5:30 PM", "Carriages midnight"]], ["Contact", ["rsvp@ourday.example", "Layla: (555) 012-8841", "Ewan: (555) 012-3307"]], ["Plan", ["Travel & hotels", "Registry", "FAQ"]]], `${p.name} are a fictional couple created for this template. Names, places, prices and dates are sample content.`)}`, CSS);
 };
 
 module.exports = {

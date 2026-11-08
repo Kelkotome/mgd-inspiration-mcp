@@ -73,6 +73,23 @@ export const INDUSTRIES = {
     ],
     appPatterns: [],
   },
+  // 9-Nov-2026 fifth industry. Demand (Keyword Planner, worldwide, Oct-2026): "wedding website template" 8,100/mo (+21% YoY, the only rising head term
+  // in the round), "wedding invitation website template" 1,300 (+153% YoY), "event website template" 720, florist 320, event planner 320,
+  // "wedding wordpress theme" 390, "event wordpress theme" 480. hubFirst: the bare "wedding website template" is answered with the hub first.
+  wedding: {
+    id: "wedding", label: "Weddings and events", hub: "wedding-website-templates", seg: "wedding", h1: "Wedding and event website templates", hubFirst: true,
+    niches: [
+      ["wedding", "wedding-website", "Wedding website", "wedding-website-template", "wedding-website"],
+      ["wedding-invitation", "wedding-invitation-website", "Wedding invitation", "wedding-invitation-website-template", "wedding-invitation"],
+      ["wedding-planner", "wedding-planner-website", "Wedding planner", "wedding-planner-website-template", "wedding-planner"],
+      ["wedding-venue", "wedding-venue-website", "Wedding venue", "wedding-venue-website-template", "wedding-venue"],
+      ["wedding-photographer", "wedding-photographer-website", "Wedding photographer", "wedding-photographer-website-template", "wedding-photographer"],
+      ["florist", "florist-website", "Florist", "florist-website-template", "florist"],
+      ["event-planner", "event-planner-website", "Event planner", "event-planner-website-template", "event-planner"],
+      ["conference", "conference-website", "Event and conference", "event-website-template", "event"],
+    ],
+    appPatterns: [],
+  },
 };
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };

@@ -27,6 +27,11 @@ A niche is one file, `hc/content/<niche>.js`. `node gen_hc.js --only <niche>` po
 | menu | restaurant layouts only (`menu`, `reserve`): eyebrow, h2, lede, board (specials board title), note (must say "sample"), keys: 2 to 5 of [code, meaning], sections: exactly 3 of { t, items: exactly 4 of { n, d, p, tags } }. Every tag must be a key code. |
 | booking | restaurant layouts only: h2 (title over the hours), date, note, sizes (3 or more), slots: exactly 6 of [time, "" or "full"], hours: exactly 4 of [days, times], optional sizeLabel and slotsLabel. |
 | art | restaurant layouts only: exactly 3 dish drawings from plate, bowl, pizza, loaf, cup, glass, cake, tray. |
+| occasion | wedding and event layouts only (`invite`, `programme`): title (1 to 3 lines), date, place, time, timelineH2, timelineLede, timeline: 5 to 7 of [time, title, detail]. |
+| reply | wedding and event layouts only: h2, lede, choicesLabel, choices (2 to 4), selectLabel, options (3 to 6), askLabel, button, note. When present, the shared layouts use this RSVP or enquiry form in place of the contact form. |
+| programme | wedding and event layouts only: h2, lede, note (must say "sample"), mapH2, mapLede, mapNote, spots: exactly 6 (numbered pins on the site plan), days: 2 or 3 of { t, sub, slots: 3 to 5 of [time, title, where] }. |
+| art (weddings) | exactly 3 drawings from barn, arch, table, hall, bouquet, marquee, camera, cake. |
+| optional labels | visit.fields, footer.cols and services.cols: exactly 3 strings each, to rename the form fields, footer column titles and ledger table headers (a couple's site is not a business). |
 | notice | names the business as fictional, and for health says "general information" and "not medical advice" |
 
 Add a new industry by adding a family to `lib.js`, a motif to `GLYPH`, and content files. No layout code changes.

@@ -8,7 +8,7 @@ Applies to website templates under `/inspiration/ui/`. Healthcare is the pilot (
 |---|---|---|
 | Platform | HTML, WordPress | Path: `/ui/wordpress-themes/...`. HTML is the default and has no path segment of its own |
 | Type | one-page, website, landing page | Filter. A chip appears only when a page has more than one value |
-| Industry | Healthcare, Real estate, Restaurant | Path |
+| Industry | Healthcare, Real estate, Restaurant, Weddings and events | Path |
 | Sub-niche | Cardiology, Dental... | Path, under its industry |
 
 Web and mobile are the **Device** filter, renamed so that Platform is free. The database column stays `country`, and `?platform=web|mobile` still works.
@@ -105,6 +105,27 @@ Hub `restaurant-website-templates`, WordPress segment `restaurant`. Chosen as th
 **Signatures without a theme.** Olive & Ember and Kiln & Crumb are fixed in this branch (fictional notice, Olive & Ember's guest notes removed, dietary labels marked as samples, two protected food names replaced). They stay HTML designs only (`NO_THEME`) until the fix is approved and shipped.
 
 **Words.** No real chains, platforms, guides or drinks brands, no protected food names, no awards, ratings, reviews, hygiene or certification claims, no health claims, no promotions of excess. Dietary and allergen wording appears only as codes explained by a sample key, or in a sentence that says "sample". Checked by `tests/rs_lint.py`. Theme readmes carry a restaurant "Before you publish" section (`BEFORE` in `ui-screens/wp-export/export.mjs`).
+
+## Weddings and events tree (9-Nov-2026, fifth industry)
+
+Hub `wedding-website-templates`, WordPress segment `wedding`. Chosen on demand after restaurant (construction is on hold): "wedding website template" 5,400/mo, "wedding invitation website" 2,400/mo, "event website template" 140/mo, "florist website template" 90/mo, "wedding planner website template" and "event planner website template" 70/mo each, "wedding wordpress theme" 50/mo, "wedding photographer website template" 50/mo, "conference website template" 40/mo, "wedding venue website template" 20/mo (Keyword Planner, worldwide, 9-Nov-2026). The venue niche is kept for fit: it is the clearest site-plan-led niche. One hand-built n12 homepage was already live: Noor & Callum (wedding website), fixed in this branch and kept HTML only.
+
+| Sub-niche | id | Pattern | HTML segment | WordPress segment | Layouts |
+|---|---|---|---|---|---|
+| Wedding website (couple) | wedding | wedding-website | wedding-website-template | wedding-website | signature (HTML only), invite, programme, folio, bento, concierge, band |
+| Wedding invitation | wedding-invitation | wedding-invitation-website | wedding-invitation-website-template | wedding-invitation | invite, programme, concierge, folio, bento, ledger |
+| Wedding planner | wedding-planner | wedding-planner-website | wedding-planner-website-template | wedding-planner | invite, programme, atlas, folio, ledger, concierge |
+| Wedding venue | wedding-venue | wedding-venue-website | wedding-venue-website-template | wedding-venue | invite, programme, band, folio, concierge, atlas |
+| Wedding photographer | wedding-photographer | wedding-photographer-website | wedding-photographer-website-template | wedding-photographer | invite, programme, folio, bento, band, atlas |
+| Florist | florist | florist-website | florist-website-template | florist | invite, programme, bento, band, folio, concierge |
+| Event planner | event-planner | event-planner-website | event-planner-website-template | event-planner | programme, invite, atlas, ledger, bento, band |
+| Event and conference | conference | conference-website | event-website-template | event | programme, invite, ledger, atlas, band, bento |
+
+**Wedding layouts.** `invite` (a stationery-style hero with names, date and place, an order-of-the-day timeline, drawings, an RSVP or enquiry form with choice chips) and `programme` (a day-by-day schedule in tabs, a numbered site plan with six pins, a reply form) exist only for content with `occasion`, `reply`, `programme` and `art` (schema in `ui-screens/hc/README.md`). Every wedding niche has both. Shared layouts take the `reply` form in place of the contact form, and couples' sites rename fields and footer columns through optional labels; other industries render byte-identical.
+
+**hubFirst.** "wedding website template" is answered with the hub, then the couple's set.
+
+**Words.** No real wedding platforms, registries, magazines, venues, fashion or camera brands, no awards, reviews or ratings, no "stress-free" or "perfect day" promises, no promotions of excess. Licence, legal-ceremony, green, accessibility and CPD wording appears only in a sentence that says "sample" or tells the owner to check or add their own. Checked by `tests/wd_lint.py`. Theme readmes carry the wedding "Before you publish" section (`industries.wedding` in `src/tpl_copy.json`).
 
 ## Adding an industry
 
