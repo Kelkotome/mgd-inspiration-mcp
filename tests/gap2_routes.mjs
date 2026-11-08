@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// mcp-gap-r2 (9-Nov-2026): pages and MCP answers for the 10 r2 patterns (640 rows), the museum hint, the synonyms, generic-word
+// mcp-gap-r2 (9-Nov-2026): pages and MCP answers for the 10 r2 patterns (320 rows), the museum hint, the synonyms, generic-word
 // weighting and the annual-report zero text.
 //   node tests/gap2_routes.mjs http://127.0.0.1:8927/inspiration          local Worker from tests/gap2_local_e2e.sh (seeded design rows)
 //   node tests/gap2_routes.mjs https://madegooddesigns.com/inspiration --live   read-only live checks (skips the seeded-row checks)
