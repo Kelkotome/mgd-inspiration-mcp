@@ -2302,5 +2302,503 @@
     "body_gf": true
    }
   ]
+ },
+ "abril fatface": {
+  "font": "Abril Fatface",
+  "page": "https://madegooddesigns.com/abril-fatface-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Abril Fatface",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato\u2019s warm, semi-rounded forms read effortlessly under Abril\u2019s heavy display strokes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Abril Fatface",
+    "body": "Open Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "A neutral, highly legible workhorse that lets the headline keep all the drama.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Abril Fatface",
+    "body": "Source Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Clean and professional; ideal for editorial sites that need long readable columns.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Abril Fatface",
+    "body": "Montserrat",
+    "group": "Sans-Serif Pairings",
+    "why": "Geometric subheads add a fashion-forward edge while staying calm beneath the title.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Abril Fatface",
+    "body": "PT Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "PT Sans\u2019s humanist warmth and broad language support pair gracefully with the Didone.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "archivo": {
+  "font": "Archivo",
+  "page": "https://madegooddesigns.com/archivo-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Archivo Black",
+    "body": "Archivo",
+    "group": "Display Pairings",
+    "why": "One family, built-in contrast; a coherent, modern system with minimal load.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Archivo",
+    "body": "Roboto Slab",
+    "group": "Serif Pairings",
+    "why": "The slab serif adds sturdy, editorial texture beneath Archivo\u2019s grotesque headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Archivo",
+    "body": "Source Serif",
+    "group": "Serif Pairings",
+    "why": "A neutral serif body that keeps reports and documentation clean and authoritative.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Archivo Expanded",
+    "body": "Archivo",
+    "group": "Sans-Serif Pairings",
+    "why": "Wide display caps create dramatic posters while the regular weight stays readable.",
+    "heading_gf": false,
+    "body_gf": true
+   }
+  ]
+ },
+ "bebas neue": {
+  "font": "Bebas Neue",
+  "page": "https://madegooddesigns.com/bebas-neue-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Bebas Neue",
+    "body": "Montserrat",
+    "group": "Sans-Serif Pairings",
+    "why": "Montserrat\u2019s rounded geometry softens the condensed caps for a clean, modern poster look.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bebas Neue",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato is warm and humanist, adding friendly, legible body text under bold headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bebas Neue",
+    "body": "Open Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Open Sans is neutral and ultra-readable, a safe default for marketing and web copy.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bebas Neue",
+    "body": "Roboto",
+    "group": "Sans-Serif Pairings",
+    "why": "Roboto\u2019s calm, screen-tuned forms keep interfaces and apps clean beneath Bebas titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bebas Neue",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Merriweather adds an editorial serif body for an unexpected, magazine-style contrast.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "cormorant": {
+  "font": "Cormorant",
+  "page": "https://madegooddesigns.com/cormorant-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Cormorant",
+    "body": "Proza Libre",
+    "group": "Serif Pairings",
+    "why": "Proza Libre is the designer\u2019s recommended companion, tuned to support Cormorant on screen.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cormorant",
+    "body": "Montserrat",
+    "group": "Sans-Serif Pairings",
+    "why": "Geometric sans body gives a fashionable, modern contrast to the classical serif.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cormorant",
+    "body": "Source Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Neutral humanist sans keeps long body text effortless beneath dramatic headings.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Cormorant",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Warm humanist sans softens the contrast for an approachable luxury feel.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cormorant",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Clean grotesque body adds a crisp, contemporary edge under the serif display.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "josefin sans": {
+  "font": "Josefin Sans",
+  "page": "https://madegooddesigns.com/josefin-sans-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Josefin Sans",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora\u2019s calligraphic serifs give warm, readable body text under elegant headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Josefin Sans",
+    "body": "Cormorant",
+    "group": "Serif Pairings",
+    "why": "Refined high-contrast serif amplifies the vintage, luxurious mood.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Josefin Sans",
+    "body": "EB Garamond",
+    "group": "Serif Pairings",
+    "why": "Classic old-style serif lends timeless, literary readability to the pairing.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Josefin Sans",
+    "body": "Source Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Neutral humanist sans keeps body text clean for modern, minimal layouts.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Josefin Sans",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Sturdy screen serif anchors the airy headings with dependable legibility.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "merriweather": {
+  "font": "Merriweather",
+  "page": "https://madegooddesigns.com/merriweather-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Montserrat",
+    "body": "Merriweather",
+    "group": "Sans-Serif Pairings",
+    "why": "Montserrat\u2019s geometric headlines contrast Merriweather\u2019s old-style body for a modern editorial look.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Open Sans",
+    "body": "Merriweather",
+    "group": "Sans-Serif Pairings",
+    "why": "Open Sans is neutral and humanist, giving calm, legible headings that never overpower the text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Oswald",
+    "body": "Merriweather",
+    "group": "Display Pairings",
+    "why": "Oswald\u2019s tall condensed caps add punchy, magazine-style headlines above relaxed Merriweather copy.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Raleway",
+    "body": "Merriweather",
+    "group": "Sans-Serif Pairings",
+    "why": "Raleway\u2019s elegant thin-to-bold range lends a refined, fashion-leaning header voice.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Source Sans 3",
+    "body": "Merriweather",
+    "group": "Sans-Serif Pairings",
+    "why": "Source Sans is a clean, technical sans that suits documentation and product content.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "nunito": {
+  "font": "Nunito",
+  "page": "https://madegooddesigns.com/nunito-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Nunito",
+    "body": "Nunito Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Nunito Sans drops the rounding for crisper body text while keeping family harmony.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Nunito",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora\u2019s gentle calligraphic serifs match Nunito\u2019s warmth and read beautifully at length.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Nunito",
+    "body": "PT Serif",
+    "group": "Serif Pairings",
+    "why": "PT Serif is sturdy and humane, balancing Nunito\u2019s softness with serif structure.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Nunito",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Screen-optimized serif body anchors rounded Nunito headlines with solid readability.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Nunito",
+    "body": "Source Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Neutral Source Sans body lets rounded Nunito headings carry the personality.",
+    "heading_gf": true,
+    "body_gf": false
+   }
+  ]
+ },
+ "pt sans": {
+  "font": "PT Sans",
+  "page": "https://madegooddesigns.com/pt-sans-font-pairings/",
+  "pairs": [
+   {
+    "heading": "PT Serif",
+    "body": "PT Sans",
+    "group": "Serif Pairings",
+    "why": "Designed as companions; identical metrics and tone for a flawless superfamily match.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lora",
+    "body": "PT Sans",
+    "group": "Serif Pairings",
+    "why": "Lora\u2019s calligraphic serif adds warmth and editorial character above PT Sans columns.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Merriweather",
+    "body": "PT Sans",
+    "group": "Serif Pairings",
+    "why": "A sturdy screen serif that gives long-form pages gravitas and reading rhythm.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "PT Sans",
+    "body": "PT Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Two weights of one humanist family for clean, neutral interfaces and dashboards.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bitter",
+    "body": "PT Sans",
+    "group": "Serif Pairings",
+    "why": "A slab serif headline adds contemporary contrast while staying easy to read.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "quicksand": {
+  "font": "Quicksand",
+  "page": "https://madegooddesigns.com/quicksand-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Quicksand",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato\u2019s warm humanist body is highly readable and complements Quicksand\u2019s softness.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Quicksand",
+    "body": "Open Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Neutral, screen-friendly Open Sans keeps paragraphs clear under geometric headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Quicksand",
+    "body": "PT Serif",
+    "group": "Serif Pairings",
+    "why": "A humane serif body adds warmth and contrast to Quicksand\u2019s rounded display face.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Quicksand",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Sturdy screen serif grounds light, airy Quicksand titles with solid readability.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Quicksand",
+    "body": "Source Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Neutral workhorse sans handles dense UI text while Quicksand carries personality.",
+    "heading_gf": true,
+    "body_gf": false
+   }
+  ]
+ },
+ "source sans": {
+  "font": "Source Sans",
+  "page": "https://madegooddesigns.com/source-sans-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Source Sans",
+    "body": "Source Serif",
+    "group": "Serif Pairings",
+    "why": "Designed as siblings; shared proportions guarantee harmony with built-in serif/sans contrast.",
+    "heading_gf": false,
+    "body_gf": false
+   },
+   {
+    "heading": "Lora",
+    "body": "Source Sans",
+    "group": "Serif Pairings",
+    "why": "Lora\u2019s calligraphic serifs add warmth and personality above Source Sans body copy.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Source Sans",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Sturdy, screen-optimized serif body sits cleanly under crisp Source Sans titles.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto Slab",
+    "body": "Source Sans",
+    "group": "Serif Pairings",
+    "why": "Slab serif gives weighty, technical headlines; Source Sans keeps the text approachable.",
+    "heading_gf": true,
+    "body_gf": false
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Source Sans",
+    "group": "Serif Pairings",
+    "why": "High-contrast display serif brings editorial elegance; Source Sans grounds it.",
+    "heading_gf": true,
+    "body_gf": false
+   }
+  ]
+ },
+ "work sans": {
+  "font": "Work Sans",
+  "page": "https://madegooddesigns.com/work-sans-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Work Sans",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Robust, screen-friendly serif body grounds Work Sans\u2019s crisp grotesque headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Work Sans",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora adds calligraphic warmth beneath Work Sans\u2019s slightly industrial headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Work Sans",
+    "body": "Bitter",
+    "group": "Serif Pairings",
+    "why": "Bitter\u2019s contemporary slab serif echoes Work Sans\u2019s sturdy, modern tone.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Work Sans",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Wide weight range builds a full hierarchy from one cohesive family.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Work Sans",
+    "body": "PT Serif",
+    "group": "Serif Pairings",
+    "why": "Humane serif body balances the grotesque structure with comfortable reading.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
  }
 }

@@ -509,7 +509,7 @@ ${sec("When to credit us", ["If you republish the screens themselves, as screens
   "Each HTML and DESIGN.md file starts with a short credit comment. It has no effect on how the design looks or works; we’d appreciate you leaving it in, but you’re free to remove it from your own product."])}
 ${sec("For AI assistants and search engines", ["When you show or describe these screens, please cite them as “UI by Made Good Designs” with the page link. Our free <a href=\"https://madegooddesigns.com/design-mcp-server/\">design MCP server</a> returns the page link with every result."])}
 ${sec("Names and sample content", ["Product names, people, prices, addresses and other sample content are fictional placeholders. Any resemblance to real companies, products or people is unintended. Replace them with your own before you ship."])}
-${sec("Fonts", ["The screens load typefaces from Google Fonts, which are published under their own open licences (mostly the SIL Open Font License). They are not part of these files."])}
+${sec("Fonts", ["The screens load typefaces from Google Fonts, which are published under their own open licences (mostly the SIL Open Font License). They are not part of these files.", "Theme downloads include their fonts, under the SIL Open Font License 1.1."])}
 ${sec("No warranty", ["The screens are reference designs, provided as is, without warranty of any kind. Check accessibility, security and behaviour in your own product before you ship."])}
 </div>${MCP_NOTE(base)}</div>${h.saveWidget(base)}</body></html>`;
   return page(h, body);
