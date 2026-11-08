@@ -81,17 +81,19 @@ table("Common tool chains (consecutive calls in a session)", sql(
 table("Returning visitors (desktop clients; claude.ai users can't be told apart)", sql(
     f"SELECT COUNT(*) visitors, SUM(days>1) returned_on_another_day, MAX(days) max_days FROM "
     f"(SELECT visitor, COUNT(DISTINCT date({SG})) days {EV} AND ua NOT LIKE 'Claude-User%' GROUP BY visitor)"))
-# mcp_calls (query text) and mcp_events (zero flag) are separate rows, matched by tool+UA+time. When several calls of one tool
-# fire together (claude.ai fan-out), only `zero_events` of the `parallel` calls returned 0 — those rows are ambiguous, not all empty
-# (the 30-Oct "5 museum searches all returned 0" was 1 real zero, Bauhaus, smeared over 5 parallel calls).
-table("Zero-result searches (content gaps; parallel>zero_events = ambiguous, only some of those calls were empty)", sql(
+# mcp_calls (query text) and mcp_events (zero flag) are separate rows. 9-Nov-2026: matched by START time, not a 15 s window. mcpTracked
+# writes the event at the end of the call with ms = its duration, so created_at - ms is the call's start, which equals the mcp_calls
+# created_at to the millisecond (checked on every get_font_pairing call 5 to 8 Nov). The old window smeared one real zero over every
+# parallel call of the same tool: 8-Nov 21:29 "Instrument Serif" was flagged 0 but the zero was Bricolage Grotesque, fired 12 ms
+# earlier (the 30-Oct "5 museum searches all returned 0" was the same effect). `ZM` = a zero event that started within 25 ms of this
+# call and nearer to it than to any other call of the same tool and UA (parallel calls are often only 8 to 12 ms apart).
+ZM = (f"e.zero=1 AND e.{BOT} AND e.tool=mcp_calls.tool AND e.ua=mcp_calls.ua AND e.ms IS NOT NULL "
+      f"AND ABS((e.created_at - e.ms) - mcp_calls.created_at) <= 25 AND NOT EXISTS (SELECT 1 FROM mcp_calls c3 WHERE c3.tool=mcp_calls.tool "
+      f"AND c3.ua=mcp_calls.ua AND c3.id!=mcp_calls.id AND ABS((e.created_at - e.ms) - c3.created_at) < ABS((e.created_at - e.ms) - mcp_calls.created_at))")
+table("Zero-result searches (content gaps; each row matched to its own call by start time, parallel = same-tool calls within 3 s)", sql(
     f"SELECT {SG} t, tool, substr(query,1,70) query, "
-    f"(SELECT COUNT(*) FROM mcp_calls c2 WHERE c2.tool=mcp_calls.tool AND c2.ua=mcp_calls.ua AND ABS(c2.created_at-mcp_calls.created_at)<=3000) parallel, "
-    f"(SELECT COUNT(*) FROM mcp_events e WHERE e.zero=1 AND e.{BOT} AND e.tool=mcp_calls.tool AND e.ua=mcp_calls.ua "
-    f"AND e.created_at BETWEEN mcp_calls.created_at AND mcp_calls.created_at+15000) zero_events "
-    f"FROM mcp_calls WHERE {CALLS_EX} AND {W} AND query != '' AND EXISTS ("
-    f"SELECT 1 FROM mcp_events e WHERE e.zero=1 AND e.{BOT} AND e.tool=mcp_calls.tool AND e.ua=mcp_calls.ua "
-    f"AND e.created_at BETWEEN mcp_calls.created_at AND mcp_calls.created_at+15000) ORDER BY created_at DESC LIMIT 40"))
+    f"(SELECT COUNT(*) FROM mcp_calls c2 WHERE c2.tool=mcp_calls.tool AND c2.ua=mcp_calls.ua AND ABS(c2.created_at-mcp_calls.created_at)<=3000) parallel "
+    f"FROM mcp_calls WHERE {CALLS_EX} AND {W} AND query != '' AND EXISTS (SELECT 1 FROM mcp_events e WHERE {ZM}) ORDER BY created_at DESC LIMIT 40"))
 table("What people searched for (all queries)", sql(
     f"SELECT {SG} t, tool, substr(query,1,90) query, CASE WHEN ua LIKE 'Claude-User%' THEN 'claude.ai' ELSE substr(ua,1,20) END app "
     f"FROM mcp_calls WHERE {CALLS_EX} AND {W} AND query != '' AND ua NOT LIKE 'AMP-Server%' AND ua NOT LIKE 'undici%' AND ua NOT LIKE 'Go-http%' "

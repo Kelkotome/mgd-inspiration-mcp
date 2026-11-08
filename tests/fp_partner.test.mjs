@@ -7,12 +7,13 @@ fs.writeFileSync(tmp, code);
 try {
   const { fontPairing } = await import(pathToFileURL(tmp));
   const t = (x) => x.content[0].text;
-  const n = fontPairing({ font: "Nunito Sans" });
+  const n = fontPairing({ font: "Crimson Text" });
   assert.equal(n.structuredContent.match, "partner"); assert.ok(n.structuredContent.pairs.length > 0);
-  assert.ok(n.structuredContent.pairs.every((p) => /Nunito Sans/.test(p.heading + p.body) && p.page.startsWith("https://madegooddesigns.com/")));
+  assert.ok(n.structuredContent.pairs.every((p) => /Crimson Text/.test(p.heading + p.body) && p.page.startsWith("https://madegooddesigns.com/")));
   assert.ok(/No dedicated pairing guide/.test(t(n)));
-  assert.equal(fontPairing({ font: "Nunito Sans font pairing", limit: 1 }).structuredContent.pairs.length, 1);
+  assert.equal(fontPairing({ font: "Crimson Text font pairing", limit: 1 }).structuredContent.pairs.length, 1);
   assert.equal(fontPairing({ font: "Oswald" }).structuredContent.match, "exact");
+  assert.equal(fontPairing({ font: "Nunito Sans" }).structuredContent.font, "Nunito Sans"); // round 2: own guide, no longer Nunito
   assert.equal(fontPairing({ font: "Poppins font pairing" }).structuredContent.match, "exact");
   assert.ok(/^0 results/.test(t(fontPairing({ font: "Zzyzx Display" }))));
   console.log("ok", n.structuredContent.pairs.length, "pairs\n" + t(n).slice(0, 300));
