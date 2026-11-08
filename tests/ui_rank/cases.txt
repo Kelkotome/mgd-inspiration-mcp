@@ -49,7 +49,7 @@ friendly class schedule and home dashboard | class-schedule home
 form with sections settings list | settings
 fintech bank account welcome screen | bank-onboarding
 finance money account setup | bank-onboarding
-empty state first run with steps | empty-state
+empty state first run with steps | empty-state first-run
 editorial hero with name and two paths | portfolio-home hero
 editorial dashboard with text rows and hairlines | dashboard analytics-charts
 download queue list with progress and status icons | file-manager list-view
@@ -60,7 +60,7 @@ dense data table with live status column and sidebar | data-table
 data table with logo cells, right-aligned tabular numbers, inline bars, row selection checkboxes | data-table
 data table list with filters and status chips | data-table
 dashboard with data table and summary cards | dashboard data-table
-dashboard with KPI stat tiles and onboarding checklist | dashboard project-tracker
+dashboard with KPI stat tiles and onboarding checklist | dashboard project-tracker first-run
 dark settings panel with readable labels and clear hierarchy | settings ai-settings
 dark security dashboard with charts and cards | security-dashboard
 dark centered hero decorative graphics below heading | hero

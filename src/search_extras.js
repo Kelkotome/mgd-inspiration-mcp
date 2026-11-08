@@ -85,6 +85,48 @@ export function withUiHint(q, result) {
   return result;
 }
 
+// ---- (A3) art-history intent → search_museum_art (9-Nov-2026, mcp-gap-r2) ------------------------------------------------
+// "Greek vase", "ukiyo-e", "Bauhaus poster" sent to search_design_inspiration or search_ui_screens: keep the answer, and make
+// its next-step line point to the museum collection. Movements, periods, techniques and a few artists; never on UI requests
+// ("art deco hotel website" is a website), never on icon queries, never on errors.
+const ART = W_([
+  "greek vases?", "vases?", "amphora", "amphorae", "black[- ]figure", "red[- ]figure", "kylix", "krater", "ukiyo[- ]?e", "woodblock( prints?)?",
+  "woodcuts?", "hokusai", "hiroshige", "utamaro", "kuniyoshi", "bauhaus", "art nouveau", "art deco", "jugendstil", "(vienna )?secession",
+  "baroque", "rococo", "renaissance", "medieval", "illuminated manuscripts?", "manuscripts?", "impressionis(m|t|ts)", "post[- ]impressionis(m|t)",
+  "expressionis(m|t)", "cubis(m|t)", "italian futuris(m|t)", "constructivis(m|t)", "de stijl", "dada", "dadaism", "surrealis(m|t)", "pre[- ]raphaelite",
+  "romanticism", "neoclassical", "neoclassicism", "old masters?", "oil paintings?", "(landscape|portrait|still[- ]life|history|religious) paintings?", "frescos?", "frescoes", "pompeii", "byzantine",
+  "mughal", "persian miniatures?", "miniature paintings?", "ottoman", "iznik", "egyptian", "hieroglyph(s|ics)?", "etchings?", "engravings?",
+  "lithographs?", "mezzotints?", "botanical (illustrations?|plates?|prints?)", "natural history (plates?|illustrations?)", "museum (art|pieces?|works?|collections?|prints?)",
+  "art history", "art movements?", "ancient", "antiquity", "classical antiquity", "roman (mosaics?|frescos?|inscriptions?)", "mosaics?",
+  "heraldry", "tapestr(y|ies)", "calligraphy", "ink wash", "sumi[- ]e", "mucha", "klimt", "van gogh", "monet", "durer", "dürer", "rembrandt",
+  "vermeer", "piranesi", "william morris", "toulouse[- ]lautrec", "kandinsky", "malevich", "mondrian", "haeckel", "audubon",
+].join("|"));
+const ART_UI = W_(["websites?", "web ?pages?", "landing ?pages?", "dashboards?", "apps?", "ui", "ux", "screens?", "saas", "components?",
+  "html", "css", "tailwind", "react", "navbar", "hero section", "checkout", "login", "sign ?up", "onboarding", "settings",
+  // brand work, not art history ("art deco logo", "museum identity")
+  "logos?", "logotypes?", "wordmarks?", "brand(ing)?", "brand guidelines?", "identity", "fonts?", "typefaces?", "packaging"].join("|"));
+export function artIntent(q) {
+  const s = String(q || "").trim();
+  if (!s || s.length > 120 || !ART.test(s) || ART_UI.test(s)) return null;
+  return s.replace(/["\\\n\r]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
+}
+export const MUSEUM_HINT_HEAD = "Next step: this looks like an art-history search.";
+export const MUSEUM_HINT = (cq) => `${MUSEUM_HINT_HEAD} search_museum_art(query="${cq}") searches public-domain museum works (paintings, prints, posters, vases, ornament; mostly made before the 1930s) with images and page links.`;
+// Append the museum pointer as the answer's next-step line (search_design_inspiration, search_ui_screens). Never throws or removes
+// results; zero-result answers get it too. A "Next step:" line already present stops index.js mcpAddNext adding a second one.
+export function withMuseumHint(tool, q, result) {
+  try {
+    if (tool !== "search_design_inspiration" && tool !== "search_ui_screens") return result;
+    const cq = artIntent(q);
+    if (!cq || !result || result.isError || !Array.isArray(result.content)) return result;
+    if (iconIntent(q) || (tool === "search_design_inspiration" && uiIntent(q))) return result; // one pointer per answer
+    const last = [...result.content].reverse().find((c) => c && c.type === "text" && typeof c.text === "string");
+    if (!last || last.text.includes(MUSEUM_HINT_HEAD)) return result;
+    last.text += "\n\n" + MUSEUM_HINT(cq);
+  } catch (_) { /* a hint must never break a search answer */ }
+  return result;
+}
+
 // ---- (B) get_brand_typeface ----------------------------------------------------------------------------------------------
 // Data = D1 table brand_type (build_brand_type.py: our "What font does X use?" articles + the brand-guide specimen blocks +
 // the "<Brand> — Typeface" tiles). Brands published after the last build fall back to their D1 tile (guide + palette, no font facts).
@@ -258,14 +300,23 @@ export function ftsWords(q, stop) {
   return [...new Set(String(q || "").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").split(/[^\p{L}\p{N}]+/u)
     .filter((w) => w.length > 1 && !(stop && stop.has(w))))].slice(0, 8);
 }
+// Generic words (9-Nov-2026, mcp-gap-r2): "modern minimal jazz poster design" should be about the jazz poster. They still count
+// (they come first when a row has them too), but at GENERIC_W of a normal word, and the any/prefix tiers do not fetch rows that
+// match only generic words. "design"/"designs" are already MCP_STOP words in index.js.
+export const GENERIC_WORDS = new Set(["design", "designs", "ui", "ux", "screen", "screens", "page", "pages", "app", "apps", "modern",
+  "clean", "minimal", "minimalist", "simple", "website", "websites", "template", "templates", "layout", "layouts", "style", "beautiful", "nice"]);
+export const GENERIC_W = 0.25;
+export const isGeneric = (w) => GENERIC_WORDS.has(String(w || "").toLowerCase());
 export function ftsTiers(words, cols) {
   const fc = cols && cols.length ? `{${cols.join(" ")}} : ` : "";
   const qt = (w) => `"${w}"`;
   const t = [];
+  const core = words.filter((w) => !isGeneric(w)), opt = core.length ? core : words; // only generic words: treat them as normal
   if (words.length > 1) t.push({ tier: "phrase", expr: fc + `"${words.join(" ")}"` });
   t.push({ tier: "all", expr: fc + "(" + words.map(qt).join(" AND ") + ")" });
-  if (words.length > 1) t.push({ tier: "any", expr: fc + "(" + words.map(qt).join(" OR ") + ")" });
-  const pre = words.filter((w) => w.length >= 3);
+  if (core.length && core.length < words.length) t.push({ tier: core.length > 1 ? "core" : "core1", expr: fc + "(" + core.map(qt).join(" AND ") + ")" });
+  if (opt.length > 1) t.push({ tier: "any", expr: fc + "(" + opt.map(qt).join(" OR ") + ")" });
+  const pre = opt.filter((w) => w.length >= 3);
   if (pre.length) t.push({ tier: "prefix", expr: fc + "(" + pre.map((w) => qt(w) + "*").join(" OR ") + ")" });
   return t;
 }
@@ -279,7 +330,7 @@ export function ftsCoverageSort(rows, words, cols, prefix) {
   return rows.map((r, i) => {
     const toks = new Set(cols.map((c) => String(r[c] == null ? "" : r[c])).join(" ").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
       .split(/[^\p{L}\p{N}]+/u).filter(Boolean).map(stem));
-    const hit = qs.filter((q) => toks.has(q) || (prefix && [...toks].some((x) => x.startsWith(q)))).length;
+    const hit = qs.reduce((n, q, k) => n + (toks.has(q) || (prefix && [...toks].some((x) => x.startsWith(q))) ? (isGeneric(words[k]) ? GENERIC_W : 1) : 0), 0);
     return { r, i, hit };
   }).sort((a, b) => b.hit - a.hit || a.i - b.i).map((x) => x.r);
 }
@@ -307,7 +358,7 @@ export async function ftsSearch(env, where, binds, cols, q, order, limit, stop) 
     for (const t of ftsTiers(words, cols)) {
       if (out.length >= limit) break;
       if (t.tier === "prefix" && out.length) break;   // prefixes only when no whole-word hit at all
-      const any = t.tier === "any" || (t.tier === "prefix" && words.length > 1);
+      const any = t.tier === "any" || (t.tier === "prefix" && words.filter((x) => !isGeneric(x)).length !== 1 && words.length > 1);
       let rows = await env.DB.prepare(`SELECT items.* FROM items_fts JOIN items ON items.rowid = items_fts.rowid WHERE items_fts MATCH ? AND ${w} ORDER BY ${rank}, ${ord} LIMIT ?`)
         .bind(t.expr, ...binds, any ? Math.max(120, limit * 15) : limit + seen.size).all().then((r) => r.results || []);
       // OR-matches: bm25 alone lets one rare word win ("emerald" → the Emerald brand tiles for "dark luxury landscape emerald green"),
@@ -318,9 +369,11 @@ export async function ftsSearch(env, where, binds, cols, q, order, limit, stop) 
       if (added) { last = t.tier; from[t.tier] = added; }
     }
     if (!out.length) return null;   // zero via FTS → let the LIKE search try (substrings, CJK, rows the index may lack)
-    const full = (from.phrase || 0) + (from.all || 0), ws = words.join(", ");
+    const full = (from.phrase || 0) + (from.all || 0), ws = words.join(", "), cw = words.filter((x) => !isGeneric(x)).join(", ");
+    const core = (from.core || 0) + (from.core1 || 0);
     const note = words.length < 2 || last === "phrase" ? "" : last === "all" ? ` (matching all of: ${ws})` :
-      full ? ` (the first ${full} match all of: ${ws}; the rest match some of them)` : ` (no item matches every word; closest matches for: ${ws})`;
+      (last === "core" || last === "core1") ? (full ? ` (the first ${full} match all of: ${ws}; the rest match: ${cw})` : ` (matching: ${cw}; general words like ${words.filter(isGeneric).join(", ")} count less)`) :
+      full || core ? ` (the first ${full + core} match ${full ? "all of: " + ws : cw}; the rest match some of them)` : ` (no item matches every word; closest matches for: ${ws})`;
     return { rows: out, note, engine: "fts" };
   } catch (e) {
     if (!/overloaded|too many resources|timed? ?out/i.test(String((e && e.message) || e))) FTS_STATE.errAt = Date.now(); // transient D1 load: LIKE for this call only

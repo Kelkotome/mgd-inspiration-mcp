@@ -1,0 +1,81 @@
+# mcp-gap-r2 (9-Nov-2026) HELD-OUT set: real search_ui_screens queries from the 7 days to 9-Nov (mcp_calls, own IP/curl/scraper
+# excluded) that are in no other cases file. Labelled BEFORE the r2 search changes were written, and never tuned on.
+# Expected = any pattern a reasonable designer would accept as the top answer (new r2 patterns included where they fit).
+admin analytics dashboard with kpi cards bar chart donut | dashboard analytics-charts
+admin subscription management subscribers table filter | subscriptions-admin data-table
+agency operations dashboard with revenue chart and workload charts | dashboard analytics-charts ops-dashboard
+architecture studio interior design website home | architecture-website
+architecture studio portfolio home | architecture-website portfolio-home
+banking wallet home with balance and transactions | dashboard bank-onboarding savings-goal home
+b2b admin team members moderation data table search filters row actions sidebar | team-members data-table
+cash register closing, cash count reconciliation, end of day pos report | ops-dashboard stock-count
+clinic appointment booking | booking-details service-booking clinic-home doctor-directory
+clinic homepage | clinic-home medical-website
+compact logo badge dark header | compact-header navigation-header
+compact subscription upgrade banner locked feature inline callout dark | upgrade-preview paywall-upgrade cta-banner
+construction company website home page | construction-website
+dashboard data table | data-table dashboard
+dashboard notification list actions | notifications-center
+data table with expandable rows and review checkboxes | data-table
+delete confirmation dialog with image preview | media-library delete-confirm confirm-dialog
+delivery tracking on a map, courier on the way | map-view order-confirmation job-tracker
+dental clinic appointment booking | dental-website booking-details service-booking
+dental practice website | dental-website
+design tool canvas layers properties | canvas-editor image-editor
+e-commerce product grid streetwear store | ecommerce-website search-results product-detail
+editorial pricing | pricing
+empty state | empty-state first-run
+empty state first run checklist | first-run empty-state
+event conference landing page schedule speakers ticket tiers | hero pricing saas-landing-page
+finance dashboard with data table of transactions | dashboard data-table
+finance dashboard with spending summary and recent transactions | dashboard
+gym sports website home with hero and classes | gym-website
+how it works process timeline steps icons | how-it-works
+invoice | invoice invoice-list
+invoice with line items, subtotal, totals | invoice invoice-list
+invoices list table with status, simple small business billing | invoice-list invoice
+ios subscription paywall | paywall-upgrade upgrade-preview
+knowledge base documentation help center sidebar article search | search-results faq
+logo cloud as seen in press logos band | logo-cloud
+loyalty stamp card customer wallet pass | loyalty-card
+loyalty stamp card wallet pass on phone | loyalty-card
+media library image picker gallery modal | media-library file-manager
+media library thumbnails grid | media-library file-manager image-viewer
+minimal dark billing settings subscription cards | billing-plans subscription-billing
+minimal dark subscription billing plan checkout | plan-checkout subscription-billing billing-plans checkout
+mobile habit tracker dashboard showing daily completion, prayer log and weekly progress | habit-tracker home
+mobile onboarding carousel with illustration, title and next button | onboarding-carousel welcome
+multi-step checkout with stepper and order summary | checkout form-wizard
+notifications side panel with grouped task list, urgent items, counts and empty state | notifications-center side-drawer
+payroll | payroll
+premium upgrade benefit feature preview | upgrade-preview paywall-upgrade
+pricing section single plan monthly yearly toggle | pricing
+product detail add to cart | product-detail
+product detail page | product-detail
+profile account settings | settings profile
+profile with photo grid and follower stats | profile
+projects tasks list search filters | list-view data-table project-tracker
+qr code scanner result success state mobile | barcode-scanner product-scan
+saas landing page hero for a small business tool with phone mockup | hero saas-landing-page
+savings goal dark | savings-goal
+search results list with filters and a docked detail side panel, three-pane workspace | search-results split-view
+settings form inline validation input | form-validation settings
+settings page with section sidebar, toggles, unsaved changes save bar | settings
+settings screen mobile | settings
+settings sidebar nav monochrome minimal | settings sidebar-nav
+settings with sidebar sections, business hours, team members and roles | settings team-members roles-permissions
+shared support inbox, conversation list, thread and customer details | chat-list chat-thread split-view
+side drawer form to add an expense over a dashboard | side-drawer
+sidebar navigation dashboard | sidebar-nav dashboard
+sign in screen with username, password show toggle and forgot password | login
+sign up form with terms consent checkbox | sign-up
+sports court booking slot picker | booking-details class-schedule service-booking
+staff schedule week shifts time off planner | shift-scheduler leave-calendar time-off-request
+subscription pricing premium upgrade clean dark billing | paywall-upgrade upgrade-preview pricing billing-plans plan-checkout subscription-billing
+team members table status search detail action | team-members
+timesheet | timesheet
+transactional email magic link sign in | account-email
+transactions history list with filter chips and summary cards | list-view data-table dashboard
+travel booking landing page hero with destinations | travel-website hero
+upcoming bills timeline with calendar and list | calendar list-view
+video creator dashboard, media library, thumbnails grid, fun vibrant | dashboard media-library file-manager

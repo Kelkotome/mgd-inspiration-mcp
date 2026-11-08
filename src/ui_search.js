@@ -226,6 +226,17 @@ export const PATTERN_ALIASES = {
   "celebration": ["celebration", "celebrate", "confetti", "milestone", "achievement", "achievement unlocked", "milestone achieved", "badge earned", "success celebration"],
   "integration-connect": ["connect app", "connected apps", "integration settings", "integrations settings", "oauth consent", "app permissions", "connect integration", "authorize app", "disconnect"],
   "model-providers": ["model providers", "ai providers", "provider api keys", "model usage", "spend limits", "token usage", "ai model settings", "llm settings", "bring your own key"],
+  // 9-Nov-2026 gap round r2 (mcp-gap-r2): real zero/weak queries (payroll, timesheet, invoices, empty state, billing admin, loyalty).
+  "payroll": ["payroll", "pay run", "payroll dashboard", "payroll software", "run payroll", "approve payroll", "payslip", "pay slip", "pay stub", "paystub", "salary slip", "employee pay"],
+  "timesheet": ["timesheet", "timesheets", "weekly timesheet", "time sheet", "clock in clock out", "time clock", "time tracking", "hours worked", "timesheet approval", "approve timesheets", "attendance"],
+  "invoice-list": ["invoices", "invoice list", "invoices table", "invoicing app", "small business billing", "create invoice", "new invoice", "invoice generator", "invoice form", "overdue invoices", "invoices list", "bills list"],
+  "first-run": ["first run", "first-run experience", "onboarding checklist", "getting started checklist", "setup checklist", "empty dashboard", "empty state first run", "blank slate", "no projects yet", "dashboard with onboarding checklist", "zero state", "new user empty state"],
+  "media-library": ["media library", "image picker", "image picker modal", "media picker", "asset library", "file picker", "image gallery modal", "media library thumbnails grid", "insert image dialog", "delete confirmation with image preview", "delete images dialog", "select images grid"],
+  "subscriptions-admin": ["subscription management", "admin subscriptions table", "subscribers table", "subscriptions list", "manage subscriptions admin", "subscription detail", "dunning", "failed payment retry", "past due subscriptions", "mrr table", "saas admin billing", "customer subscriptions", "subscribers list", "subscriber list"],
+  "upgrade-preview": ["upgrade prompt", "premium upgrade", "locked feature", "upgrade banner", "upsell callout", "feature gating", "upgrade modal", "pro plan benefits", "free vs pro comparison", "start free trial prompt", "premium feature preview", "inline upgrade callout", "upsell banner", "premium feature"],
+  "plan-checkout": ["subscription checkout", "saas checkout", "plan checkout", "upgrade checkout", "seats checkout", "free trial checkout", "start free trial", "trial card required", "annual billing toggle", "billing checkout dark", "order summary tax", "trial timeline"],
+  "compact-header": ["compact header", "dark header", "logo badge", "compact logo badge dark header", "pill navigation", "pill nav header", "app top bar", "app header", "workspace switcher", "environment switcher", "top bar with breadcrumbs", "header with command k search"],
+  "loyalty-card": ["loyalty card", "stamp card", "digital stamp card", "coffee stamp card", "loyalty program app", "rewards app", "punch card", "wallet pass", "loyalty wallet pass", "membership pass with qr code", "loyalty stamp card wallet pass on phone", "cafe rewards"],
 };
 // Words that only point at a nearby pattern (used for suggestions when nothing matches, never as matches).
 const HINTS = { homeservices: ["pro-directory", "service-booking", "booking-details", "class-schedule"], shoe: ["product-detail", "cart"], sneaker: ["product-detail", "cart"], shirt: ["product-detail"], dress: ["product-detail"],
@@ -255,11 +266,37 @@ const STYLE_WORDS = { minimal: "minimal", minimalist: "minimal", clean: "minimal
 const PLATFORM_WORDS = { mobile: "mobile", ios: "mobile", iphone: "mobile", android: "mobile", web: "web", desktop: "web", website: "web", browser: "web" };
 
 // Multi-word phrases folded into one token before splitting (applied to queries and documents alike).
-const PHRASES = [[/\bsign[\s-]?in\b/g, "login"], [/\blog[\s-]?in\b/g, "login"], [/\bsign[\s-]?up\b/g, "signup"], [/\bto[\s-]do\b/g, "todo"],
+const PHRASES = [[/\bpay[\s-]?runs?\b/g, "payrun"], [/\bfirst[\s-]runs?\b/g, "firstrun"], // 9-Nov (r2): "running shoes" must not stem into "pay run" / "first run"
+  [/\bsign[\s-]?in\b/g, "login"], [/\blog[\s-]?in\b/g, "login"], [/\bsign[\s-]?up\b/g, "signup"], [/\bto[\s-]do\b/g, "todo"],
   [/\be[\s-]commerce\b/g, "ecommerce"], [/\bnow[\s-]playing\b/g, "nowplaying"], [/\bwhat'?s new\b/g, "whatsnew changelog"], [/\bcheck[\s-]out\b/g, "checkout"],
   [/\bmulti[\s-]step\b/g, "multistep"], [/\bmaster[\s-]detail\b/g, "masterdetail"], [/\bwork[\s-]?flow\b/g, "workflow"], [/\b2[\s-]?fa\b/g, "2fa"],
   [/\bone[\s-]time\b/g, "onetime"], [/\bset[\s-]?up\b/g, "setup"], [/\bdrop[\s-]?down\b/g, "dropdown"], [/\bfaq'?s\b/g, "faq"], [/\b(e-?mail)\b/g, "email"],
   [/\bhome[\s-]services?\b/g, "homeservices"], [/\bluxury (?:real[\s-]estate|homes?|propert(?:y|ies)|realtors?)\b/g, "luxuryestate"], [/\b(?:custom )?home[\s-]?builders?\b/g, "homebuilder"], [/\bnew[\s-](?:build )?homes?\b/g, "homebuilder"], [/\breal[\s-]estate agents?\b|\brealtors?\b/g, "realtoragent"], [/\b(?:websites?|landing[\s-]pages?|home[\s-]?pages?|site)(?:\s+(?:templates?|designs?|themes?))?(?=\s*$|\s+(?:templates?|designs?|themes?|with|for|that|in|html|code|free)\b)/g, "webtemplate"], [/\b(?:website|landing page|html) templates?\b/g, "webtemplate"], [/\bcolou?rs?\b/g, "colour"], [/\bkpis?\b/g, "kpi"]];
+// Synonyms (9-Nov-2026, mcp-gap-r2). QUERY side only: rows, document frequencies and every pattern alias stay exactly as they
+// were, so the change can only add matches for words the library did not use. Real zeros on 7-Nov: "payroll", "timesheet" (x2),
+// "empty state" variants. (1) Multi-word variants are rewritten to the word our screens use ("zero state" → "empty state",
+// "pay stub" → "payslip", "time tracking" → "timesheet"). (2) Single words get alternates (SYN_GROUPS): a row without the word
+// itself but with an alternate counts it at SYN_W of the field weight, so a row that has the user's own word always wins.
+export const SYN_PHRASES = [
+  [/\b(?:zero|blank|no[\s-]data|nothing[\s-]yet)[\s-]states?\b|\bblank[\s-]slates?\b/g, "empty state"],
+  [/\bfirst[\s-]time[\s-](?:use|user|users|experience)\b|\bfirst[\s-]launch\b/g, "first run"],
+  [/\bpay[\s-]?stubs?\b|\bpay[\s-]?slips?\b|\bpay[\s-]?checks?\b|\bpay[\s-]?cheques?\b|\bwage[\s-]?slips?\b|\bsalary[\s-]slips?\b|\bearnings[\s-]statements?\b/g, "payslip"],
+  [/\bpay[\s-]?runs?\b|\bpay[\s-]?rolls?\b|\bsalary[\s-]runs?\b/g, "payroll"],
+  [/\btime[\s-]?sheets?\b|\btime[\s-]?cards?\b|\btime[\s-]track(?:ing|er)\b|\bclock[\s-]?ins?(?:[\s-](?:and|\/)[\s-]?clock[\s-]?outs?)?\b|\bhours[\s-]logged\b|\bhours[\s-]log\b/g, "timesheet"],
+  [/\bnav[\s-]?bars?\b|\bnavigation[\s-]bars?\b|\btop[\s-]?bars?\b|\bapp[\s-]?bars?\b|\bmenu[\s-]?bars?\b|\bheader[\s-]bars?\b/g, "navbar"],
+  [/\bpop[\s-]ups?\b/g, "popup"], [/\blight[\s-]?box(?:es)?\b/g, "lightbox"],
+];
+export const SYN_GROUPS = [
+  ["payroll", "payslip", "salary", "salaries", "wage", "wages", "paystub", "paycheck"],
+  ["timesheet", "timecard"],
+  ["invoice", "bill", "receipt"],
+  ["modal", "dialog", "popup", "lightbox", "overlay"],
+  ["navbar", "navigation", "nav", "header", "menubar"],
+  ["settings", "preferences"],
+  ["delete", "remove"],
+  ["loyalty", "rewards"],
+];
+export const SYN_W = 0.8;
 const IRREG = { children: "child", people: "person", men: "man", women: "woman", analyses: "analysis", statuses: "status", buses: "bus", menus: "menu" };
 
 export function stem(w) {
@@ -279,6 +316,10 @@ export function stem(w) {
 const norm = (s) => { let t = String(s || "").toLowerCase().replace(/[’']/g, "'"); for (const [re, to] of PHRASES) t = t.replace(re, to); return t; };
 export function words(s) { return norm(s).split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 1 || /\d/.test(w)); }
 export function tokens(s, keepStop) { return words(s).filter((w) => keepStop || !STOP.has(w)).map(stem); }
+const SYN = new Map(); // stem → [alternate stems]
+for (const g of SYN_GROUPS) { const st = [...new Set(g.map(stem))]; for (const t of st) SYN.set(t, [...new Set([...(SYN.get(t) || []), ...st.filter((x) => x !== t)])]); }
+export function synPhrases(q) { let t = String(q || "").toLowerCase(); for (const [re, to] of SYN_PHRASES) t = t.replace(re, to); return t; }
+export function synonymsOf(w) { return SYN.get(stem(String(w || "").toLowerCase())) || []; }
 
 // Character trigrams, for typo tolerance ("dashbord", "kanbam") and free-text pattern names.
 const grams = (w) => { const s = ` ${w} `, g = new Set(); for (let i = 0; i < s.length - 2; i++) g.add(s.slice(i, i + 3)); return g; };
@@ -326,7 +367,7 @@ function parseArr(s) { if (Array.isArray(s)) return s; try { const v = JSON.pars
 
 // Parse a free-text query into weighted terms + soft preferences.
 export function parseQuery(q, idx) {
-  const raw = words(q);
+  const raw = words(synPhrases(q));
   const prefs = { style: null, platform: null };
   for (const w of raw) { if (!prefs.style && STYLE_WORDS[w] && UI_STYLE_LIST.includes(STYLE_WORDS[w]) && /^(minimal|minimalist|editorial|brutalist|brutal|luxury|playful|corporate|retro|monochrome|vintage|magazine)$/.test(w)) prefs.style = STYLE_WORDS[w];
     if (!prefs.platform && PLATFORM_WORDS[w]) prefs.platform = PLATFORM_WORDS[w]; }
@@ -337,14 +378,16 @@ export function parseQuery(q, idx) {
     if (STOP.has(w) || styleNames.has(w)) continue;
     let t = stem(w), fuzzy = false;
     if (seen.has(t)) continue;
-    if (!idx.df.has(t) && t.length >= 4 && !/\d/.test(t)) { // typo tolerance: nearest vocabulary word by trigrams
+    const alts = (SYN.get(t) || []).filter((a) => idx.df.has(a) && !seen.has(a));
+    if (!idx.df.has(t) && !alts.length && t.length >= 4 && !/\d/.test(t)) { // typo tolerance: nearest vocabulary word by trigrams
       const g = grams(t); let best = null, bs = 0;
       for (const [v, vg] of idx.vocab) { const s = jacc(g, vg); if (s > bs) { bs = s; best = v; } }
       if (best && bs >= 0.5 && !seen.has(best)) { t = best; fuzzy = true; }
     }
     seen.add(t);
-    const d = idx.df.get(t) || 0;
-    terms.push({ w, t, df: d, idf: d ? Math.log(1 + idx.N / d) : maxIdf, fuzzy });
+    // with alternates, rarity is that of the word itself when the library has it, else of its most common alternate
+    const d = idx.df.get(t) || (alts.length ? Math.max(...alts.map((a) => idx.df.get(a))) : 0);
+    terms.push({ w, t, df: d, idf: d ? Math.log(1 + idx.N / d) : maxIdf, fuzzy, alts });
   }
   return { terms, prefs, raw };
 }
@@ -357,6 +400,7 @@ export function rankRows(q, idx, opts = {}) {
   const total = terms.reduce((s, x) => s + x.idf, 0) || 1;
   // Alias bonus per pattern: fully matched multi-word aliases (strong evidence of intent).
   const tset = new Set(known.map((x) => x.t)), idfOf = new Map(known.map((x) => [x.t, x.idf * (x.fuzzy ? 0.7 : 1)]));
+  for (const x of known) for (const a of x.alts || []) if (!tset.has(a)) { tset.add(a); idfOf.set(a, x.idf * SYN_W); } // "delete dialog" completes the alias "delete modal"
   const aliasBonus = {};
   for (const [p, P] of Object.entries(idx.pat)) {
     let b = 0;
@@ -374,6 +418,7 @@ export function rankRows(q, idx, opts = {}) {
     for (const x of known) {
       let fw = 0;
       for (const k in W) if (W[k] > fw && d.f[k].has(x.t)) fw = W[k];
+      if (!fw && x.alts && x.alts.length) for (const k in W) if (W[k] * SYN_W > fw && x.alts.some((a) => d.f[k].has(a))) fw = W[k] * SYN_W;
       if (fw) { const iw = idfOf.get(x.t); score += iw * fw; matched += x.idf; hitW += x.idf * Math.min(1, fw / W.tags); hit.push(x.w); if (fw >= W.tags) strong = true; }
     }
     score += aliasBonus[d.pattern] || 0;

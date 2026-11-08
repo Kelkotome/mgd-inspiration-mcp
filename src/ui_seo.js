@@ -11,6 +11,17 @@ import { nestedPatternPath, INDUSTRIES, PLATFORMS } from "./ui_tree.js";
 
 // pattern id -> [slug, H1]. The H1 carries the searched phrase; the slug is that phrase without "design/examples".
 export const PATTERN_SEO = {
+  // 9-Nov-2026 gap round r2 (mcp-gap-r2): slugs chosen by hand (not checked in Keyword Planner).
+  "payroll": ["payroll-ui", "Payroll UI examples"],
+  "timesheet": ["timesheet-ui", "Timesheet UI examples"],
+  "invoice-list": ["invoicing-ui", "Invoicing UI examples"],
+  "first-run": ["onboarding-checklist-ui", "Onboarding checklist and first-run empty state UI examples"],
+  "media-library": ["media-library-ui", "Media library and image picker UI examples"],
+  "subscriptions-admin": ["subscription-management-ui", "Subscription management UI examples"],
+  "upgrade-preview": ["upgrade-prompt-ui", "Upgrade prompt UI examples"],
+  "plan-checkout": ["subscription-checkout-ui", "Subscription checkout UI examples"],
+  "compact-header": ["compact-header-ui", "Compact header and app top bar UI examples"],
+  "loyalty-card": ["loyalty-card-ui", "Loyalty stamp card and wallet pass UI examples"],
   // 8-Nov-2026 gap round (mcp-gap-r1): head terms chosen by hand (not yet checked in Keyword Planner).
   "music-home": ["music-app-ui", "Music app UI design examples"],
   "album-page": ["album-page-ui", "Album and artist page UI examples"],

@@ -121,6 +121,11 @@ table("UI-screens hint on design searches: shown, followed within 30 min by sear
     f"SELECT COUNT(*) shown, COUNT(DISTINCT o.visitor) visitors, SUM(EXISTS (SELECT 1 FROM mcp_events f WHERE f.kind='call' AND f.visitor=o.visitor "
     f"AND f.tool IN ('search_ui_screens','run:search_ui_screens') AND f.created_at > o.created_at AND f.created_at <= o.created_at + 1800000)) followed "
     f"FROM mcp_events o WHERE o.{BOT}{NB} AND o.kind='hint' AND o.{W}"))
+# 9-Nov-2026 (mcp-gap-r2): search_museum_art next step on art-history design/UI searches (src/search_extras.js withMuseumHint).
+table("Museum hint on art-history searches: shown, followed within 30 min by search_museum_art (same visitor)", sql(
+    f"SELECT COUNT(*) shown, COUNT(DISTINCT o.visitor) visitors, SUM(EXISTS (SELECT 1 FROM mcp_events f WHERE f.kind='call' AND f.visitor=o.visitor "
+    f"AND f.tool IN ('search_museum_art','run:search_museum_art') AND f.created_at > o.created_at AND f.created_at <= o.created_at + 1800000)) followed "
+    f"FROM mcp_events o WHERE o.{BOT}{NB} AND o.kind='museum_hint' AND o.{W}"))
 table("Countries (desktop clients; claude.ai shows Anthropic's servers)", sql(
     f"SELECT country, COUNT(DISTINCT visitor) visitors, COUNT(*) events {EV} AND ua NOT LIKE 'Claude-User%' GROUP BY 1 ORDER BY 2 DESC LIMIT 10"))
 print("\nVisits from MCP answers: GA4 → Reports → Acquisition → Traffic acquisition, filter Session source = 'mcp' "

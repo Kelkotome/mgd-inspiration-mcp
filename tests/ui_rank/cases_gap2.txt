@@ -1,0 +1,64 @@
+# mcp-gap-r2 (9-Nov-2026): gap phrasings + synonym phrasings + guards, written by the agent that built the r2 screens (overfit risk; the
+# held-out set is cases_heldout_r2.txt). Valid once ui-screens/out-gap2 is in the row dump (with_pending.mjs, UI_OUTS=ui-screens/out-gap2).
+payroll | payroll
+payroll run approve and pay | payroll
+payslip | payroll
+employee pay stub with deductions | payroll
+salary | payroll
+salary slip year to date | payroll
+wages and deductions table | payroll
+timesheet | timesheet
+weekly timesheet clock in clock out | timesheet
+time tracking hours per day overtime | timesheet
+time sheet approval manager | timesheet approval-queue
+timecard | timesheet
+invoices list | invoice-list
+invoice list with overdue and paid status | invoice-list
+create invoice line items preview | invoice-list invoice
+new invoice form | invoice-list
+bills list overdue | invoice-list
+invoice detail paid stamp | invoice invoice-list
+receipt | invoice invoice-list order-confirmation account-email order-email
+empty state | empty-state first-run
+zero state | empty-state first-run
+blank slate | first-run empty-state
+first run checklist getting started | first-run
+getting started checklist dashboard | first-run
+onboarding checklist empty dashboard | first-run
+no projects yet create from template | first-run empty-state
+media library | media-library
+image picker modal | media-library
+choose image from library insert | media-library
+delete images confirmation with thumbnails | media-library delete-confirm
+delete dialog | delete-confirm confirm-dialog media-library
+confirm popup | confirm-dialog delete-confirm
+subscriptions table admin | subscriptions-admin
+subscribers list filter by plan and status | subscriptions-admin
+subscription detail cancel refund | subscriptions-admin cancel-subscription
+past due subscriptions | subscriptions-admin
+locked feature upgrade | upgrade-preview paywall-upgrade
+upsell banner premium feature | upgrade-preview
+pro benefits upgrade modal | upgrade-preview paywall-upgrade
+paywall | paywall-upgrade upgrade-preview
+subscription checkout | plan-checkout
+start free trial card required | plan-checkout
+annual plan checkout with seats | plan-checkout
+compact header | compact-header navigation-header
+app top bar with workspace switcher | compact-header
+nav bar | navigation-header compact-header
+navbar | navigation-header compact-header
+loyalty card | loyalty-card
+stamp card coffee | loyalty-card
+wallet pass | loyalty-card
+rewards card | loyalty-card
+# guards: these must keep their old answers
+kanban board | kanban-board sprint-board
+pricing table | pricing usage-pricing
+billing plans | billing-plans subscription-billing
+checkout | checkout
+login | login
+settings | settings
+upcoming bills timeline with calendar and list | calendar list-view invoice-list
+data table | data-table
+music player | music-player music-home
+confirm delete dialog | confirm-dialog delete-confirm

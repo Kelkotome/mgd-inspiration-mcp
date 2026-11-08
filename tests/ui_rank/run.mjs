@@ -62,7 +62,7 @@ if (LIVE) {
 
 const NONE_RE = /^0 UI screen\(s\)|No screen (in the library )?(matches|has)/m;
 const results = [];
-let pass = 0, chars = 0;
+let pass = 0, pass3 = 0, chars = 0;
 for (const c of cases) {
   const text = await call(c.args);
   chars += text.length;
@@ -71,12 +71,13 @@ for (const c of cases) {
   const ok = none ? c.expect.includes("none") : !!top && c.expect.includes(top);
   if (ok) pass++;
   const distinct = [...new Set([...text.matchAll(/(?:^\s+|· )pattern: ([a-z0-9-]+)/gm)].map((m) => m[1]))];
+  if (ok || (!none && distinct.slice(0, 3).some((p) => c.expect.includes(p)))) pass3++; // hit@3: one of the first 3 distinct patterns (r2, 9-Nov)
   results.push({ q: c.q, args: c.args, expect: c.expect, got: none ? "none" : top, ok, distinct, chars: text.length });
   if (flag("--verbose") || !ok) console.log(`${ok ? "PASS" : "FAIL"}  ${c.q}${Object.keys(c.args).length > 1 ? " " + JSON.stringify({ ...c.args, query: undefined }) : ""}\n      expect ${c.expect.join("|")}  got ${none ? "none" : top}  [${distinct.join(", ")}]`);
 }
 const secA = val("--cases") ? [] : results.slice(0, 89), secA_pass = secA.filter((r) => r.ok).length;
 const rate = pass / cases.length;
-console.log(`\n${LIVE ? "LIVE " + LIVE : "LOCAL (src/ui_screens.js)"}: ${pass}/${cases.length} = ${(rate * 100).toFixed(1)}% hit@1  ·  real-log queries ${secA.length ? `${secA_pass}/${secA.length} = ${(secA_pass / secA.length * 100).toFixed(1)}%` : "n/a"}  ·  avg ${Math.round(chars / cases.length)} chars/answer  ·  avg distinct patterns ${(results.reduce((s, r) => s + r.distinct.length, 0) / results.length).toFixed(1)}`);
+console.log(`\n${LIVE ? "LIVE " + LIVE : "LOCAL (src/ui_screens.js)"}: ${pass}/${cases.length} = ${(rate * 100).toFixed(1)}% hit@1  ·  hit@3 ${pass3}/${cases.length}  ·  real-log queries ${secA.length ? `${secA_pass}/${secA.length} = ${(secA_pass / secA.length * 100).toFixed(1)}%` : "n/a"}  ·  avg ${Math.round(chars / cases.length)} chars/answer  ·  avg distinct patterns ${(results.reduce((s, r) => s + r.distinct.length, 0) / results.length).toFixed(1)}`);
 if (val("--json")) writeFileSync(val("--json"), JSON.stringify(results, null, 1));
 const min = parseFloat(val("--min", "0"));
 if (rate < min) process.exit(1);

@@ -44,7 +44,7 @@ import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authori
 import { MOODBOARD_TOOL, callMoodboard, moodboardRoute, moodboardAdmin } from "./moodboards.js";
 import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs } from "./discovery.js";
 import { uiItemPath } from "./ui_screens.js";
-import { withIconHint, withUiHint, UI_HINT_HEAD, BRAND_TYPEFACE_TOOL, brandTypeface, ftsSearch } from "./search_extras.js";
+import { withIconHint, withUiHint, UI_HINT_HEAD, BRAND_TYPEFACE_TOOL, brandTypeface, ftsSearch, withMuseumHint, MUSEUM_HINT_HEAD, isGeneric, GENERIC_W } from "./search_extras.js";
 import { FONT_PAIRING_TOOL, fontPairing } from "./font_pairing.js"; // kit pilot 5-Nov-2026 (local branch kit-pilot-2026-11)
 import { REF_FONTS, OFFER_HEAD, buildNextStep } from "./next_offer.js";
 
@@ -2051,8 +2051,12 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
   // by the same visitor within 30 min as followed.
   if (r && !r.isError && Array.isArray(r.content) && r.content[0] && typeof r.content[0].text === "string" && r.content[0].text.startsWith(UI_HINT_HEAD))
     await mcpEvent(env, c, { kind: "hint", tool });
+  // 9-Nov (mcp-gap-r2): the search_museum_art next step on art-history queries (kind='museum_hint'; mcp_report.py counts follow-ups)
+  if (r && !r.isError && Array.isArray(r.content) && r.content.some((x) => x && x.type === "text" && typeof x.text === "string" && x.text.includes(MUSEUM_HINT_HEAD)))
+    await mcpEvent(env, c, { kind: "museum_hint", tool });
   // 4-Nov: empty searches are logged and fed into the next content rounds, so tell the caller to come back.
-  if (zero && !r.isError && MCP_LIBRARY_TOOLS.test(dispatched || tool)) r.content[0].text += "\n\nNothing here yet, but thanks for asking. Empty searches tell us what to add next, and we usually fill gaps within 1–2 days. Meanwhile, try a broader word or one of the suggestions above.";
+  // (9-Nov: not on annual-report zeros; those are modern brands the public-domain archive cannot hold, and the answer says so.)
+  if (zero && !r.isError && MCP_LIBRARY_TOOLS.test(dispatched || tool) && (dispatched || tool) !== "search_annual_reports") r.content[0].text += "\n\nNothing here yet, but thanks for asking. Empty searches tell us what to add next, and we usually fill gaps within 1–2 days. Meanwhile, try a broader word or one of the suggestions above.";
   if (r) mcpUtm(r, dispatched || tool, c.ua);
   return res;
 }
@@ -2100,7 +2104,8 @@ async function mcpCallToolSafe(name, fn) {
 const MCP_D1_TOOLS = new Set(["get_brand_typeface", "search_design_inspiration", "list_inspiration_themes", "browse_inspiration_by_theme", "search_annual_reports", "search_museum_art", "search_ui_screens", "get_ui_flow", "get_ui_screen_code"]);
 const MCP_SIBLING = {
   design: "Nothing in the design-inspiration gallery; try search_museum_art (historical art and posters) or search_ui_screens (app and website screens).",
-  "annual-report": "Nothing in the annual-report archive; try search_design_inspiration or search_museum_art.",
+  // 9-Nov-2026 (mcp-gap-r2): brand-name zeros (IBM, Xerox…) cannot be fixed with content, so say why and where to go instead.
+  "annual-report": "The annual-report archive only holds historical reports that are public domain or openly licensed (1820s to 1990s, mostly from smaller or long-gone companies), so many big modern brands' reports (IBM, Apple, Xerox…) are not in it. For a company's own brand: get_brand_typeface(brand=\"…\") gives its typeface and palette, and search_design_inspiration(query=\"…\") finds its brand guide and identity references.",
   museum: "Nothing in the museum collection (public-domain works, mostly before the 1930s); for modern movements such as Bauhaus or Swiss style try search_design_inspiration or search_annual_reports.",
 };
 const MCP_THEME_COUNTS = { at: 0, counts: null };
@@ -2126,7 +2131,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.theme) { where += " AND themes LIKE ?"; binds.push(`%"${a.theme}"%`); }
     const r = await mcpSearchRowsRetry(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
-    return mcpIconHinted(q, withUiHint(q, mcpOffer(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design))), env);
+    return mcpIconHinted(q, withMuseumHint(name, q, withUiHint(q, mcpOffer(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design)))), env);
   }
   if (name === "list_inspiration_themes") {
     // 2-Nov-2026: this scans every design row (avg 2.6 s live); counts move slowly, so memoise per isolate for 30 min.
@@ -2211,7 +2216,10 @@ async function mcpCallToolInner(name, a, env, opts) {
   if (isTools79Tool(name)) return callTools79Tool(name, a);
   if (isTools80Tool(name)) return callTools80Tool(name, a);
   if (isTools48Tool(name)) return callTools48Tool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, site: MCP_SITE });
-  if (isUiTool(name)) return callUiTool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, clampInt, site: MCP_SITE });
+  if (isUiTool(name)) { // 9-Nov (mcp-gap-r2): art-history queries ("ukiyo-e", "Bauhaus poster") get a search_museum_art next step
+    const r = await callUiTool(name, a, env, { mcpSearchRows: mcpSearchRowsRetry, rowToItem, clampInt, site: MCP_SITE });
+    return name === "search_ui_screens" ? withMuseumHint(name, String((a && a.query) || ""), r) : r;
+  }
   return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
 }
 
@@ -2379,7 +2387,16 @@ async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, l
     return ids.map((id) => byId.get(id)).filter(Boolean);
   };
   const wsAll = words.map(wordStart).map((x) => `(CASE WHEN ${x} THEN 1 ELSE 0 END)`).join(" + ");
-  const allC = await pool(" AND " + hit.join(" AND "), wb, `(${wsAll}) DESC, ${order}`, []);
+  let allC = await pool(" AND " + hit.join(" AND "), wb, `(${wsAll}) DESC, ${order}`, []);
+  // 9-Nov (mcp-gap-r2): nothing has every word → try every non-generic word ("modern minimal jazz poster" → jazz AND poster)
+  const coreI = words.map((_, i) => i).filter((i) => !isGeneric(words[i]));
+  if (!allC.length && coreI.length && coreI.length < words.length) {
+    const cC = await pool(" AND " + coreI.map((i) => hit[i]).join(" AND "), coreI.flatMap((i) => likes(words[i])), `(${coreI.map((i) => `(CASE WHEN ${wordStart(words[i])} THEN 1 ELSE 0 END)`).join(" + ")}) DESC, ${order}`, []);
+    if (cC.length) {
+      const core = await finish(cC, (d) => wholeRe.reduce((n, re, i) => n + (re.test(d) ? (isGeneric(words[i]) ? GENERIC_W : 1) : 0), 0));
+      if (core.length) return { rows: core, note: ` (matching: ${coreI.map((i) => words[i]).join(", ")}; general words like ${words.filter(isGeneric).join(", ")} count less)` };
+    }
+  }
   if (allC.length || words.length === 1) {
     const all = await finish(allC, (d) => wholeRe.reduce((n, re) => n + (re.test(d) ? 1 : 0), 0));
     return { rows: all, note: all.length ? ` (matching all of: ${words.join(", ")})` : "" };
@@ -2391,7 +2408,7 @@ async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, l
   const idf = df.map((d) => (d ? Math.log(N / d) : 0));
   const use = words.map((_, i) => i).filter((i) => df[i]);
   if (!use.length) return { rows: [], note: "" };
-  const w = (i) => Math.max(1, Math.round(idf[i] * 10));
+  const w = (i) => Math.max(1, Math.round(idf[i] * 10 * (isGeneric(words[i]) ? GENERIC_W : 1))); // 9-Nov: "modern", "minimal", "app"… count less
   // D1 pool order = the IDF weight of every word found anywhere (as before 4-Nov), plus a small word-start bonus in
   // title/tags as a tie-break; whole-word precision is applied in JS. (A bigger word-start weight pushed rare words that
   // live in other columns, e.g. the artist "Klimt", out of the pool behind common tags like "gold".)

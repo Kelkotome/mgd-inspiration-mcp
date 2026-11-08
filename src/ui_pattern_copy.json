@@ -4294,5 +4294,207 @@
     "So one busy feature cannot use the whole budget. When a model reaches its cap, requests can pause or move to a cheaper fallback."
    ]
   ]
+ },
+ "payroll": {
+  "intro": "Payroll UI examples. These examples show a fortnightly pay run with hours, overtime, gross pay, tax, retirement deductions and net pay for each employee, warnings for missing timesheets and an approve and pay button, and an employee payslip with earnings, deductions, year-to-date totals and the bank deposit.",
+  "tips": [
+   "Show the pay date and the total net pay next to the approve button.",
+   "Flag missing timesheets and unusual overtime before anyone approves the run.",
+   "Give every payslip line both this period and year to date.",
+   "Put the net pay and the account it goes to at the top of a payslip."
+  ],
+  "faq": [
+   [
+    "What should a pay run screen show?",
+    "The pay period and pay date, each employee's hours, gross pay, deductions and net pay, the totals for the whole run, and any problems to fix first, such as a missing timesheet."
+   ],
+   [
+    "What goes on a payslip?",
+    "The employee and pay period, each earnings line with hours and rate, each deduction, gross and net pay, year-to-date totals and where the money was paid."
+   ]
+  ]
+ },
+ "timesheet": {
+  "intro": "Timesheet UI examples. These examples show an employee's weekly timesheet with clock in and out per day, breaks, hours, overtime flags and a missed clock-out to fix before submitting, and a manager approval screen with submitted against rostered hours, variance flags and approve or query actions.",
+  "tips": [
+   "Show rostered hours beside worked hours so differences stand out.",
+   "Make a missed clock-out impossible to miss and quick to fix.",
+   "Let managers approve clean timesheets in bulk and query the flagged ones.",
+   "On mobile, put today's clock in, break and clock out buttons first."
+  ],
+  "faq": [
+   [
+    "What is a timesheet approval screen?",
+    "A list where a manager checks each person's submitted hours against the roster, looks at flags such as unrostered shifts or short breaks, and approves or queries them before payroll runs."
+   ]
+  ]
+ },
+ "invoice-list": {
+  "intro": "Invoicing UI examples. These examples show an invoices list with Draft, Sent, Overdue and Paid status chips, outstanding and overdue totals, filters and reminders, and a create invoice form with line items, discount, VAT and totals beside a live preview of the invoice.",
+  "tips": [
+   "Put outstanding and overdue totals above the list.",
+   "Use status chips with counts so people can filter to overdue in one tap.",
+   "Show a live preview while the invoice is being written.",
+   "Keep the total and the send button in view on mobile."
+  ],
+  "faq": [
+   [
+    "What statuses should an invoice list have?",
+    "Most small businesses need Draft, Sent, Overdue and Paid. Show the due date on every row and how late an overdue invoice is."
+   ],
+   [
+    "What fields does a create invoice form need?",
+    "Client, invoice number, issue and due dates, line items with quantity, rate and amount, any discount and tax, payment terms and a note. A live preview helps people check it before sending."
+   ]
+  ]
+ },
+ "first-run": {
+  "intro": "Onboarding checklist and first-run empty state UI examples. These examples show what a new workspace looks like before anything exists in it: a welcome header, a getting-started checklist at 2 of 5 steps with the next step expanded, KPI tiles at zero with a hint and an action each, and an empty projects list with a shape illustration, a create button, template cards and import options, in eight visual styles on desktop and mobile.",
+  "tips": [
+   "Show progress as a count and a bar (2 of 5 done) and expand only the next step, with its button right there, so people know what to do now.",
+   "Keep finished steps visible but struck through or ticked; they prove the checklist is real and that progress is being saved.",
+   "Never leave a zero tile blank. Say why it is empty and give one action that would fill it.",
+   "On an empty list, offer three ways in: start from scratch, start from a template and import existing work."
+  ],
+  "faq": [
+   [
+    "What should a first-run screen include?",
+    "A short welcome, the single most useful next action, and a way to see the rest of setup, usually a checklist with 3 to 6 steps. Empty metrics and lists should explain what will appear there and link to the action that fills them, so the screen never looks broken."
+   ],
+   [
+    "How many steps should an onboarding checklist have?",
+    "Three to six is typical. Each step should be something the user does in the product in a minute or two, such as inviting teammates or creating a first project. Mark steps the user has already done and let people hide the checklist once they no longer need it."
+   ],
+   [
+    "What is the difference between an empty state and a blank slate?",
+    "An empty state is any screen with no data, for example a cleared inbox or a search with no results. A blank slate is the first-time version: nothing has ever been created, so the screen explains what the area is for and offers templates or imports to get started."
+   ]
+  ]
+ },
+ "media-library": {
+  "intro": "Media library and image picker UI examples. These examples show an insert-image modal over a document editor with folders, search, type filters, a thumbnail grid with numbered selection, a details panel with alt text and an insert button, plus a delete confirmation that previews the selected images, says which docs use them and offers move to Trash or delete forever, in eight visual styles on desktop and mobile.",
+  "tips": [
+   "Number selected thumbnails when order matters, for example when several images are inserted at once.",
+   "Put alt text in the details panel next to the preview, so it is filled in at the moment the image is chosen.",
+   "In a delete dialog, show the actual thumbnails and where each image is used, so nobody removes the wrong file.",
+   "Make move to Trash the default and keep delete forever as a separate, clearly labelled choice."
+  ],
+  "faq": [
+   [
+    "What should an image picker modal include?",
+    "Folders or collections, search, a filter by file type, a thumbnail grid with clear selected states, a details panel with name, size, dimensions and alt text, and a primary insert button that says how many items will be inserted. Upload and insert-from-link are usually tabs in the same modal."
+   ],
+   [
+    "Should a delete confirmation show image previews?",
+    "Yes, when people delete files they picked visually. Thumbnails with names and sizes let them check the selection, and a used-in-docs note warns them about broken images before it happens."
+   ],
+   [
+    "How do I design the mobile version of a media library?",
+    "Use a full-screen picker: a search field, folder chips, a three-column square grid and a bottom bar with the selected items and the insert button. For deleting, a bottom sheet with thumbnails and the two delete options fits the thumb zone."
+   ]
+  ]
+ },
+ "subscriptions-admin": {
+  "intro": "Subscription management UI examples. These examples show an admin subscriptions table with saved views, filters by plan, status, interval and renewal date, a totals strip, status badges for active, trialing, past due, cancelling and paused, bulk actions, and a subscription detail panel with a failed-payment alert, event timeline, invoices and actions to change plan, pause, cancel or refund.",
+  "tips": [
+   "Put next renewal and payment method in the table so people can spot problems without opening each row.",
+   "Give past due rows the retry attempt and date, not just a red badge.",
+   "Offer saved views like 'Needs attention' and 'Trials ending this week' for the lists people check every day.",
+   "Keep cancel at period end separate from cancel now, and show what each one does to the next invoice."
+  ],
+  "faq": [
+   [
+    "What is dunning?",
+    "Dunning is the process of retrying a failed subscription payment and emailing the customer to update their card. Show the attempt number, the next retry time and when the subscription will cancel if every retry fails."
+   ],
+   [
+    "What should a subscription detail screen show?",
+    "The plan and price, status, next renewal, payment method, a timeline of events such as trial started, upgraded and payment failed, recent invoices, and the main actions: change plan, pause, cancel and refund."
+   ]
+  ]
+ },
+ "upgrade-preview": {
+  "intro": "Upgrade prompt UI examples. These examples show a locked feature preview, where a report keeps your own data visible and blurs the rest behind a compact inline upgrade callout, and an upgrade modal (a bottom sheet on mobile) with a benefits list, a free vs paid comparison, a monthly or yearly price toggle and a start-free-trial button.",
+  "tips": [
+   "Show the real screen with some real data rather than a generic lock icon, so people see what they would get.",
+   "Keep the inline callout to one line of benefit plus two buttons: start trial and see plans.",
+   "Compare only the four or five limits people actually hit, not the full pricing table.",
+   "Say when the trial ends and when they will be reminded, right next to the trial button."
+  ],
+  "faq": [
+   [
+    "Should an upgrade prompt block the screen?",
+    "Not by default. An inline callout on the locked feature lets people keep working and upgrade when the benefit is clear; use a modal when they actively click a paid feature."
+   ],
+   [
+    "What goes in a premium upgrade modal?",
+    "What they get as a short benefit list, a small free vs paid comparison, the price with a monthly/yearly toggle, and one main call to action such as starting a free trial."
+   ]
+  ]
+ },
+ "plan-checkout": {
+  "intro": "Subscription checkout UI examples. These examples show a SaaS plan checkout with a seats stepper, monthly or annual billing with the saving, card fields, company and tax ID, and an order summary with tax, total due today and the renewal date, plus a free trial checkout with a card-required notice and a timeline of trial start, reminder and first charge.",
+  "tips": [
+   "Show the total due today and the renewal date and amount in the same summary.",
+   "Let people change seats and billing interval on the checkout page instead of sending them back to pricing.",
+   "On a trial checkout, say plainly when the first charge happens and when the reminder email goes out.",
+   "Ask for company and tax ID as optional fields so they do not block a quick purchase."
+  ],
+  "faq": [
+   [
+    "Should a free trial ask for a card?",
+    "Either works. If you ask for one, say why, show that nothing is charged today, give the first charge date and send a reminder before it."
+   ],
+   [
+    "What belongs in a subscription order summary?",
+    "The plan and seats, the price per seat and interval, any annual saving, tax, the total due today and the date and amount of the next renewal."
+   ]
+  ]
+ },
+ "compact-header": {
+  "intro": "Compact header and app top bar UI examples. These examples show a slim marketing header on a dark band with a logo badge, pill navigation, a New badge, sign in and a start-free button, and an app top bar with a workspace switcher, an open environment dropdown, breadcrumbs, ⌘K search, a status pill and notifications, in eight visual styles on desktop and mobile.",
+  "tips": [
+   "Put the mark and wordmark inside one pill so the logo reads as a single badge at small sizes.",
+   "Mark the current page in pill navigation with a filled pill, not just a colour change.",
+   "In app headers, keep workspace and environment switchers next to the logo, and make the live environment obvious with a status dot.",
+   "On mobile, collapse the site header to logo, one call to action and a menu button; collapse app sections into a segmented control."
+  ],
+  "faq": [
+   [
+    "What is a compact header?",
+    "A header that keeps navigation to one slim row, typically 56 to 72 pixels tall, with a small logo, a few primary links and one or two actions. It leaves more of the first screen for content."
+   ],
+   [
+    "What goes in an app top bar?",
+    "The logo, a workspace or account switcher, breadcrumbs for where you are, search (often with a keyboard shortcut), status, notifications with a count and the user avatar. Section tabs can sit in a second row below it."
+   ],
+   [
+    "How do I keep a dark header readable?",
+    "Use the background colour of the page for text on the dark band, lower its opacity for secondary links, and give the active item a solid light pill. Keep the call-to-action button in the brand colour so it stands out against the dark band."
+   ]
+  ]
+ },
+ "loyalty-card": {
+  "intro": "Loyalty stamp card and wallet pass UI examples. These examples show a bakery-café rewards programme: a digital stamp card at 7 of 10 coffee-cup stamps with a free-drink slot, a scan-to-collect button, rewards ready to redeem and recent visits, and a wallet pass with member name, tier, stamps and a QR code, its back with café locations and terms, and an add-to-wallet button, in eight visual styles on desktop and mobile.",
+  "tips": [
+   "Draw every stamp slot, filled and empty, so the distance to the reward is visible without reading a number.",
+   "Make the last slot the reward itself, so the goal sits at the end of the row.",
+   "Keep the scan or show-my-code button directly under the card; it is what people open the app for at the till.",
+   "Put a QR code on a plain panel with a printed member number underneath, in case the scanner fails."
+  ],
+  "faq": [
+   [
+    "What should a digital stamp card show?",
+    "The stamps collected out of the total, what the reward is and how many stamps are left, a button to scan or show a code, rewards ready to redeem and a short visit history. A one-line rule such as one stamp per hot drink avoids questions at the counter."
+   ],
+   [
+    "What goes on a loyalty wallet pass?",
+    "The front holds the logo, member name, tier, stamp or points balance and a QR code or barcode with the member number. The back holds café locations, how stamps are earned, notification settings and a short terms line."
+   ],
+   [
+    "Should a loyalty programme use an app or a wallet pass?",
+    "Many do both. The app holds ordering, history and rewards; the wallet pass is the quick way to get scanned at the till and can show reminders on the lock screen when someone is near a location."
+   ]
+  ]
  }
 }
