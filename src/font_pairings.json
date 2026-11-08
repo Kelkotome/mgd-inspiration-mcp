@@ -2800,5 +2800,235 @@
     "body_gf": true
    }
   ]
+ },
+ "figtree": {
+  "font": "Figtree",
+  "page": "https://madegooddesigns.com/figtree-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Figtree",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora\u2019s brushed, calligraphic serifs echo Figtree\u2019s friendly curves and read comfortably in long paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Instrument Serif",
+    "body": "Figtree",
+    "group": "Serif Pairings",
+    "why": "A condensed display serif gives headlines elegance and height while Figtree keeps the body text clean and easy.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Figtree",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Merriweather is a sturdy screen serif that anchors light, rounded Figtree headings with dependable readability.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Fraunces",
+    "body": "Figtree",
+    "group": "Serif Pairings",
+    "why": "Fraunces brings soft, chunky serif personality to headlines, matching Figtree\u2019s playful side without clashing.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Figtree",
+    "group": "Serif Pairings",
+    "why": "DM Serif Display\u2019s bold, high-contrast headlines sit confidently above clean, readable Figtree body text.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "lexend": {
+  "font": "Lexend",
+  "page": "https://madegooddesigns.com/lexend-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Lexend",
+    "body": "Source Serif 4",
+    "group": "Serif Pairings",
+    "why": "A calm, neutral text serif with a true italic sits under open Lexend headings without fighting for attention.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lexend",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Merriweather\u2019s sturdy, large-x-height serifs match Lexend\u2019s screen-first clarity for long articles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Lora",
+    "body": "Lexend",
+    "group": "Serif Pairings",
+    "why": "Lora\u2019s gentle calligraphic serifs make warm headings above open, easy-reading Lexend body text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Lexend",
+    "group": "Serif Pairings",
+    "why": "High-contrast Playfair headlines add elegance while Lexend keeps body text open and easy to read.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Lexend",
+    "group": "Serif Pairings",
+    "why": "A bold, compact display serif gives headings weight while Lexend handles paragraphs and interface text.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "instrument serif": {
+  "font": "Instrument Serif",
+  "page": "https://madegooddesigns.com/instrument-serif-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Instrument Serif",
+    "body": "Instrument Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Made by the same designers for the same brand, so proportions and tone match while serif and sans stay clearly distinct.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Instrument Serif",
+    "body": "Inter",
+    "group": "Sans-Serif Pairings",
+    "why": "Inter\u2019s neutral, screen-tuned body text lets the condensed serif headline carry all the personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Instrument Serif",
+    "body": "Figtree",
+    "group": "Sans-Serif Pairings",
+    "why": "Figtree\u2019s friendly geometric forms soften the serif\u2019s sharpness for approachable brand and product sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Instrument Serif",
+    "body": "DM Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "DM Sans is a low-contrast geometric sans that gives clean, compact body copy under tall serif titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Instrument Serif",
+    "body": "Newsreader",
+    "group": "Serif Pairings",
+    "why": "A text serif built for on-screen reading pairs with the display serif for an all-serif, magazine-style page.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "newsreader": {
+  "font": "Newsreader",
+  "page": "https://madegooddesigns.com/newsreader-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Inter",
+    "body": "Newsreader",
+    "group": "Sans-Serif Pairings",
+    "why": "Inter\u2019s neutral, screen-tuned sans makes crisp headlines and UI text above Newsreader\u2019s comfortable reading serif.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Instrument Serif",
+    "body": "Newsreader",
+    "group": "Serif Pairings",
+    "why": "A condensed display serif adds editorial drama to headlines while Newsreader handles long articles underneath.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Figtree",
+    "body": "Newsreader",
+    "group": "Sans-Serif Pairings",
+    "why": "Figtree\u2019s friendly geometric headings give a reading-first serif site a warmer, more approachable tone.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Newsreader",
+    "body": "Source Sans 3",
+    "group": "Sans-Serif Pairings",
+    "why": "Newsreader\u2019s Display optical size makes elegant headlines above a highly legible humanist sans body.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Newsreader",
+    "body": "IBM Plex Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "IBM Plex Sans brings a structured, technical feel under serif headlines for research and tech publications.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "unbounded": {
+  "font": "Unbounded",
+  "page": "https://madegooddesigns.com/unbounded-font-pairings/",
+  "pairs": [
+   {
+    "heading": "Unbounded",
+    "body": "Inter",
+    "group": "Sans-Serif Pairings",
+    "why": "Inter is a neutral, screen-tuned sans that keeps dense body and UI text calm under loud, wide headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Unbounded",
+    "body": "Manrope",
+    "group": "Sans-Serif Pairings",
+    "why": "Manrope\u2019s modern geometric forms echo Unbounded\u2019s tech feel while staying compact and readable at text sizes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Unbounded",
+    "body": "Space Grotesk",
+    "group": "Sans-Serif Pairings",
+    "why": "Space Grotesk\u2019s quirky, technical details match Unbounded\u2019s personality for crypto, gaming and dev-tool brands.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Unbounded",
+    "body": "Newsreader",
+    "group": "Serif Pairings",
+    "why": "A reading serif underneath a wide display sans creates strong contrast for editorial and culture sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Unbounded",
+    "body": "Lexend",
+    "group": "Sans-Serif Pairings",
+    "why": "Lexend\u2019s open, readability-focused letterforms keep body text clear when the headlines are this bold.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
  }
 }
