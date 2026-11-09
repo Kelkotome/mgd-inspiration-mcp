@@ -1926,6 +1926,9 @@ async function mcpHandler(request, env, profile) {
   return res ? mcpJson(res, 0, hdrs) : mcpJson(null, 0, hdrs);
 }
 
+function mcpArgsText(a) {
+  try { const k = a && typeof a === "object" ? Object.keys(a) : []; return k.length ? JSON.stringify(a).slice(0, 200) : ""; } catch (_) { return ""; }
+}
 // Best-effort MCP usage log (never blocks/breaks a tool call).
 async function logMcp(env, tool, query, ip, ua, who) {
   if (who && who.user_id) {
@@ -1960,14 +1963,30 @@ async function mcpVisitor(env, ip, ua) {
   const h = new Uint8Array(await crypto.subtle.digest("SHA-256", d));
   return Array.from(h.slice(0, 12), (b) => b.toString(16).padStart(2, "0")).join("");
 }
+// 9-Nov-2026 (mcp-errors-r1): failed calls also record a short error ("class: message", ≤ 200 chars) in mcp_events.err
+// (migrate_mcp_events_err.sql). Until that column exists the insert fails once, and the old 16-column insert is used for 10 min.
+const MCP_ERR_COL = { off: 0 };
 async function mcpEvent(env, c, e) {
   try {
     const cut = (x, n) => (x == null ? null : String(x).slice(0, n));
-    await env.DB.prepare("INSERT INTO mcp_events (id,created_at,endpoint,kind,session_id,client_name,client_version,protocol,visitor,ua,country,tool,ok,zero,ms,bot) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
-      .bind(genId(), Date.now(), c.endpoint, e.kind, cut(e.sid || c.sid || null, 64), cut(e.client_name, 80), cut(e.client_version, 40), cut(e.protocol, 20),
-        await mcpVisitor(env, c.ip, c.ua), cut(c.ua, 200), cut(c.country, 4), cut(e.tool, 60),
-        e.ok == null ? null : e.ok ? 1 : 0, e.zero == null ? null : e.zero ? 1 : 0, e.ms == null ? null : e.ms, MCP_BOT_UA.test(c.ua) ? 1 : 0).run();
+    const vals = [genId(), Date.now(), c.endpoint, e.kind, cut(e.sid || c.sid || null, 64), cut(e.client_name, 80), cut(e.client_version, 40), cut(e.protocol, 20),
+      await mcpVisitor(env, c.ip, c.ua), cut(c.ua, 200), cut(c.country, 4), cut(e.tool, 60),
+      e.ok == null ? null : e.ok ? 1 : 0, e.zero == null ? null : e.zero ? 1 : 0, e.ms == null ? null : e.ms, MCP_BOT_UA.test(c.ua) ? 1 : 0];
+    const cols = "id,created_at,endpoint,kind,session_id,client_name,client_version,protocol,visitor,ua,country,tool,ok,zero,ms,bot";
+    if (e.err && Date.now() - MCP_ERR_COL.off > 600e3) {
+      try { await env.DB.prepare(`INSERT INTO mcp_events (${cols},err) VALUES (${vals.map(() => "?").join(",")},?)`).bind(...vals, cut(e.err, 200)).run(); return; }
+      catch (x) { if (!/no column|no such column|has no column/i.test(String((x && x.message) || x))) throw x; MCP_ERR_COL.off = Date.now(); }
+    }
+    await env.DB.prepare(`INSERT INTO mcp_events (${cols}) VALUES (${vals.map(() => "?").join(",")})`).bind(...vals).run();
   } catch (_) { /* table missing or D1 hiccup — analytics must never break MCP */ }
+}
+// "class: first line of the message". Classes: exception (the tool threw), busy (D1 error), capped, unknown_tool, bad_args (no
+// argument the tool knows; the answer lists what it accepts), invalid_args (run_design_tool schema check), tool (the tool's own message).
+function mcpErrText(r) {
+  const t = String((r && Array.isArray(r.content) && r.content[0] && r.content[0].text) || "").replace(/\s+/g, " ").trim();
+  const cls = /^Error: | failed: /.test(t.slice(0, 120)) ? "exception" : /^The search failed \(database error/.test(t) ? "busy" : /^Daily limit reached/.test(t) ? "capped"
+    : /^Unknown tool/.test(t) ? "unknown_tool" : /^Invalid arguments/.test(t) ? "invalid_args" : t.includes(MCP_USAGE_HEAD) ? "bad_args" : "tool";
+  return `${cls}: ${t.slice(0, 180)}`;
 }
 function mcpZero(result) {
   const t = (result && result.content && result.content[0] && result.content[0].text) || "";
@@ -2035,7 +2054,7 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
   const tool = dispatched ? "run:" + dispatched : outer;
   const cap = await mcpOverCap(env, c, dispatched || outer);
   if (cap) {
-    await mcpEvent(env, c, { kind: "call", tool: "capped:" + (dispatched || outer), ok: false, ms: Date.now() - t0 });
+    await mcpEvent(env, c, { kind: "call", tool: "capped:" + (dispatched || outer), ok: false, ms: Date.now() - t0, err: "capped: daily limit " + cap });
     return rpcOk(msg.id, { isError: true, content: [{ type: "text", text: `Daily limit reached: ${dispatched || outer} serves up to ${cap} screens per connection per 24 hours, ` +
       "so the library stays free for everyone. It resets on a rolling 24-hour window. Meanwhile you can browse every screen at " +
       "https://madegooddesigns.com/inspiration/ui (search_ui_screens still works)." }] });
@@ -2043,7 +2062,8 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
   const res = await inner(msg);
   const r = res && res.result;
   const zero = r ? mcpZero(r) : null;
-  await mcpEvent(env, c, { kind: "call", tool, ok: !!r && !r.isError, zero, ms: Date.now() - t0 });
+  await mcpEvent(env, c, { kind: "call", tool, ok: !!r && !r.isError, zero, ms: Date.now() - t0,
+    err: !r ? "exception: " + String((res && res.error && res.error.message) || "no result").slice(0, 180) : r.isError ? mcpErrText(r) : null });
   // 5-Nov: log each next-step offer shown (kind='offer'); mcp_report.py measures follow-ups by the same visitor within 30 min.
   if (r && !r.isError && Array.isArray(r.content) && r.content.some((x) => x && x.type === "text" && typeof x.text === "string" && x.text.includes(OFFER_HEAD)))
     await mcpEvent(env, c, { kind: "offer", tool });
@@ -2071,6 +2091,19 @@ function mcpCite(name, r) {
   return r;
 }
 const MCP_ALL_BY_NAME = () => Object.fromEntries(MCP_TOOLS.map((t) => [t.name, t]));
+// 9-Nov-2026 (mcp-errors-r1): when a tool answers with an error and none of the arguments are ones it knows (none at all, or only
+// unknown keys), add the arguments it accepts, so the caller can retry right away.
+const MCP_USAGE_HEAD = "This tool accepts:";
+function mcpUsage(name, a, r) {
+  if (!r || !r.isError || !Array.isArray(r.content) || !r.content[0] || typeof r.content[0].text !== "string") return r;
+  const def = MCP_ALL_BY_NAME()[name], props = (def && def.inputSchema && def.inputSchema.properties) || null;
+  if (!props || Object.keys(a || {}).some((k) => k in props) || /input schema|accepts:/i.test(r.content[0].text)) return r;
+  const req = new Set((def.inputSchema.required) || []);
+  const list = Object.entries(props).slice(0, 14).map(([k, v]) => `${k}${req.has(k) ? " (required)" : ""}${v && v.description ? ": " + String(v.description).slice(0, 90) : v && v.enum ? ": one of " + v.enum.slice(0, 8).join(", ") : ""}`);
+  const unknown = Object.keys(a || {}).slice(0, 6);
+  r.content[0].text += `\n\n${unknown.length ? `Unknown argument${unknown.length > 1 ? "s" : ""}: ${unknown.join(", ")}. ` : ""}${MCP_USAGE_HEAD}\n- ${list.join("\n- ")}`;
+  return r;
+}
 async function mcpCallTool(params, env, ip, ua, who, listed) {
   const name = params.name;
   const a = params.arguments || {};
@@ -2089,9 +2122,11 @@ async function mcpCallTool(params, env, ip, ua, who, listed) {
     await logMcp(env, name, a.board_id || a.title || "", ip, ua, who);
     return mcpCallToolSafe(name, () => callMoodboard(a, env, { site: MCP_SITE, ip }));
   }
-  await logMcp(env, name, a.query || a.q || (name === "get_brand_typeface" ? [].concat(a.brands || [], a.brand || []).map(String).join(", ").slice(0, 200) : "") || (name === "get_font_pairing" ? String(a.font || "").slice(0, 80) : "") || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || (typeof a.colors === "string" ? a.colors.slice(0, 80) : Array.isArray(a.colors) ? a.colors.slice(0, 6).join(" ") : "") || a.preset || "", ip, ua, who);
+  // 9-Nov-2026 (mcp-errors-r1): calls with none of the logged keys (product, distance, gauge, pages…) log their arguments as compact JSON,
+  // so a failed call can be replayed (on 5-Nov seven tools failed with an empty query and the arguments were lost).
+  await logMcp(env, name, (a.query || a.q || (name === "get_brand_typeface" ? [].concat(a.brands || [], a.brand || []).map(String).join(", ").slice(0, 200) : "") || (name === "get_font_pairing" ? String(a.font || "").slice(0, 80) : "") || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || (typeof a.colors === "string" ? a.colors.slice(0, 80) : Array.isArray(a.colors) ? a.colors.slice(0, 6).map((x) => (x && typeof x === "object" ? JSON.stringify(x) : String(x))).join(" ").slice(0, 200) : a.colors && typeof a.colors === "object" ? JSON.stringify(a.colors).slice(0, 200) : "") || (Array.isArray(a.pairs) ? JSON.stringify(a.pairs).slice(0, 200) : "") || a.preset || "") || mcpArgsText(a), ip, ua, who);
   const opts = who ? { ids: true } : undefined; // authenticated endpoint also shows item_id (needed by save_to_board)
-  try { return mcpCite(name, mcpAddNext(name, await mcpCallToolInner(name, a, env, opts))); }
+  try { return mcpUsage(name, a, mcpCite(name, mcpAddNext(name, await mcpCallToolInner(name, a, env, opts)))); }
   catch (e) {
     if (MCP_D1_TOOLS.has(name)) return { content: [{ type: "text", text: MCP_BUSY(e) }], isError: true };
     throw e;
@@ -2232,17 +2267,32 @@ async function mcpDesignFromRefs(a, env) {
     .map((x) => String(x).trim().replace(/[?#].*$/, "")).map((x) => (String(x).match(/([0-9a-f]{12})(?:\.(?:jpg|png|webp))?\/?$/i) || String(x).match(/^([0-9a-f]{12})$/i) || [])[1]).filter(Boolean).map((x) => x.toLowerCase()))].slice(0, 24);
   const q = String(a.query || "").trim().slice(0, 120);
   if (!ids.length && !q) return fail("Pass references (item IDs, or the image/page URLs returned by search_design_inspiration, search_museum_art, search_annual_reports or search_ui_screens) or a query.");
-  let rows = [], note = "";
+  let rows = [], note = "", missed = 0;
+  // 9-Nov-2026 (mcp-errors-r1): a call with references that matched no public item (or none with a palette) plus a query used to
+  // stop with an error and ignore the query; an empty search was an error too (5-Nov, "Eco-Friendly AI Product Launch Visual").
+  // Now: unknown references fall back to the query; a query with nothing in its collection tries the other collections; and a
+  // true zero is an ordinary "0 results" answer (logged as a zero, so it feeds the content gap list), not an error.
+  const coll = ["design", "museum", "annual-report", "ui"].includes(a.collection) ? a.collection : "design";
+  const withPal = (rs) => rs.filter((r) => { const it = rowToItem(r, null); return it.palette && it.palette.length; });
   try {
-    if (ids.length) rows = (await mcpRetry(() => env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND id IN (${ids.map(() => "?").join(",")})`).bind(...ids).all())).results || [];
-    else {
-      const coll = ["design", "museum", "annual-report", "ui"].includes(a.collection) ? a.collection : "design";
-      const r = await mcpSearchRowsRetry(env, "status=? AND owner_id IS NULL AND collection=?", ["published", coll], ["title", "description", "tags", "themes", "designer"], q, "featured_rank IS NULL, featured_rank, created_at DESC", clampInt(a.limit, 8, 3, 12));
-      rows = r.rows; note = r.note || "";
+    if (ids.length) {
+      rows = withPal((await mcpRetry(() => env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND id IN (${ids.map(() => "?").join(",")})`).bind(...ids).all())).results || []);
+      missed = ids.length - rows.length;
+    }
+    if (!rows.length && q) {
+      for (const c of [coll, ...["design", "ui", "museum", "annual-report"].filter((x) => x !== coll)]) {
+        const r = await mcpSearchRowsRetry(env, "status=? AND owner_id IS NULL AND collection=?", ["published", c], ["title", "description", "tags", "themes", "designer"], q, "featured_rank IS NULL, featured_rank, created_at DESC", clampInt(a.limit, 8, 3, 12));
+        rows = withPal(r.rows || []);
+        if (rows.length) { note = (r.note || "") + (c !== coll ? ` (nothing in the ${coll} collection, so these are from ${c})` : ""); break; }
+      }
     }
   } catch (e) { return fail(MCP_BUSY(e)); }
   const items = rows.map((r) => rowToItem(r, null)).filter((it) => it.palette && it.palette.length);
-  if (!items.length) return fail(`No references with colour palettes found${q ? ` for "${q}"` : ""}. Try a broader query, another collection (design, museum, annual-report, ui), or pass item URLs from a search tool.`);
+  if (missed && items.length) note += ` (${missed} of the ${ids.length} references were not found in the public library${q ? ", so the query was used" : ""})`;
+  if (!items.length) return { content: [{ type: "text", text: `0 results: no library references with colour palettes ${q ? `match "${q}" in any collection` : "match those references"}` +
+    `${ids.length ? ` (${ids.length} reference ID${ids.length > 1 ? "s" : ""} not found in the public library; pass IDs or URLs from search_design_inspiration, search_museum_art, search_annual_reports or search_ui_screens)` : ""}.\n\n` +
+    "Try a shorter query with one or two key words (e.g. \"eco packaging\" or \"product launch\"), or skip references: generate_website_color_palette(style, brand_color) and then generate_design_md build a design system without them." }],
+    structuredContent: { references: [], query: q, ids_not_found: ids } };
   let heading = String(a.heading_font || "").slice(0, 60), body = String(a.body_font || "").slice(0, 60), fontWhy = "you chose them";
   if (!heading || !body) {
     const words = items.flatMap((it) => [...(it.tags || []), ...(it.themes || []), it.style || ""]).join(" ").toLowerCase();
@@ -2256,7 +2306,7 @@ async function mcpDesignFromRefs(a, env) {
     personality: a.personality, product_type: a.product_type, colors: { light: d.light, dark: d.dark }, heading_font: heading, body_font: body });
   if (md.isError) return md;
   const refs = items.map((it) => `- ${it.title || it.company || "Untitled"}${it.designer ? " — " + it.designer : it.artist ? " — " + it.artist : ""} (${it.collection === "museum" ? "public domain / CC0" : it.source_host || it.collection}) · palette ${it.palette.slice(0, 5).join(" ")} · ${MCP_SITE}${it.image}`).join("\n");
-  const head = `Design system from ${items.length} reference(s)${q ? ` matching "${q}"${note}` : ""} (Made Good Designs library — cite ${MCP_SITE}/):\n${refs}\n\n` +
+  const head = `Design system from ${items.length} reference(s)${q && !ids.length || (ids.length && missed === ids.length) ? ` matching "${q}"` : ""}${note} (Made Good Designs library — cite ${MCP_SITE}/):\n${refs}\n\n` +
     `Pooled palette: ${d.palette.join(" ")}. Primary ${d.primary || "(none — neutral palette)"}${d.accentHue != null ? `, accent hue ${Math.round(d.accentHue)}°` : ""}, mood ${d.mood}. Fonts: ${heading} / ${body} — ${fontWhy}.\n` +
     `Light and dark roles were built so every text pair passes WCAG AA. Edit: ${d.palette_url} · shadcn/ui theme: ${d.shadcn_url} · moodboard: ${TOOLS_SITE}/moodboard-maker/`;
   return { content: [{ type: "text", text: head }, ...md.content],

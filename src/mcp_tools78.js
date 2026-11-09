@@ -94,8 +94,31 @@ export const NEXT78 = {
 
 // ---- letter height vs distance
 function letterHeight(a) {
+  // 9-Nov-2026 (mcp-errors-r1): common spellings of the two inputs; no input → the rule of thumb and the size table (5-Nov: two
+  // calls with no arguments failed with "Give either distance or cap_height"); both → distance wins, and the answer says so.
+  a = { ...a };
+  for (const k of ["viewing_distance", "distance_ft", "reading_distance"]) if (a.distance === undefined && a[k] !== undefined) a.distance = a[k];
+  if (a.distance === undefined && a.distance_m !== undefined) { a.distance = a.distance_m; a.distance_unit = a.distance_unit || "m"; }
+  for (const k of ["letter_height", "cap", "height", "text_height"]) if (a.cap_height === undefined && a[k] !== undefined) a.cap_height = a[k];
+  const UW = { feet: "ft", foot: "ft", "'": "ft", meters: "m", metres: "m", meter: "m", metre: "m", inch: "in", inches: "in", '"': "in", millimeters: "mm", millimetres: "mm", centimeters: "cm", centimetres: "cm" };
+  const unitW = (u) => (u === undefined ? u : UW[String(u).toLowerCase().trim()] || String(u).toLowerCase().trim());
+  a.distance_unit = unitW(a.distance_unit); a.height_unit = unitW(a.height_unit);
+  if (a.unit !== undefined) { const u = unitW(a.unit); if (DUNIT[u] && a.distance_unit === undefined) a.distance_unit = u; else if (HUNIT[u] && a.height_unit === undefined) a.height_unit = u; }
+  const split = (v) => { if (typeof v !== "string") return [v, undefined]; const m = v.trim().toLowerCase().match(/^(\d+(?:\.\d+)?)\s*([a-z'"]+)?\.?$/); return m ? [Number(m[1]), unitW(m[2])] : [v, undefined]; };
+  { const [d, du] = split(a.distance); a.distance = d; if (du && a.distance_unit === undefined) a.distance_unit = du; }
+  { const [c, cu] = split(a.cap_height); a.cap_height = c; if (cu && a.height_unit === undefined) a.height_unit = cu; }
   const hasD = a.distance !== undefined, hasC = a.cap_height !== undefined;
-  if (hasD === hasC) return err("Give either distance or cap_height (not both).");
+  if (!hasD && !hasC) {
+    const rows = caps(), page = `${T}/yard-sale-sign/`;
+    const lines = [`**Letter height for signs: about 1 in of capital-letter height per ${M.READ.best} ft of viewing distance reads easily; 1 in per ${M.READ.max} ft is the limit of legibility.**`,
+      `For example 20 ft (6 m) needs ${r2(20 / M.READ.best)} in (${Math.round(20 / M.READ.best * IN)} mm) letters; 100 ft (30 m) needs ${r2(100 / M.READ.best)} in.`,
+      "Title height of a short two-word title (e.g. YARD SALE) on landscape signs:",
+      ...rows.map((r) => `- ${r.label}: ${r.cap_in} in (${Math.round(r.cap_mm)} mm), easy to ${r.easy_ft} ft (${r.easy_m} m), max ${r.max_ft} ft (${r.max_m} m)`),
+      "For your sign, pass distance (ft, or distance_unit=\"m\") or cap_height (in, or height_unit=\"mm\"/\"cm\").", `Sources: ${SRC}.`, "Lay out the sign: " + page];
+    return ok(lines.join("\n"), { mode: "overview", rules_ft_per_inch: { easy: M.READ.best, max: M.READ.max }, sizes: rows, page });
+  }
+  const both = hasD && hasC;
+  if (both) delete a.cap_height;
   if (a.distance_unit !== undefined && !DUNIT[a.distance_unit]) return err("distance_unit must be ft or m.");
   if (a.height_unit !== undefined && !HUNIT[a.height_unit]) return err("height_unit must be in, mm or cm.");
   const page = `${T}/yard-sale-sign/`, rows = caps();
@@ -104,7 +127,7 @@ function letterHeight(a) {
     const du = a.distance_unit || "ft", ft = num(a.distance) * DUNIT[du], easyIn = ft / M.READ.best, minIn = ft / M.READ.max;
     const rec = rows.find((r) => r.cap_in >= easyIn) || null, fits = rows.filter((r) => r.cap_in >= minIn).map((r) => r.size);
     const dtxt = du === "m" ? `${r1(num(a.distance))} m (${Math.round(ft)} ft)` : `${r1(ft)} ft (${r1(ft * FT)} m)`;
-    const lines = [`**At ${dtxt}: capital letters ${r2(easyIn)} in (${Math.round(easyIn * IN)} mm) tall read easily; ${r2(minIn)} in (${Math.round(minIn * IN)} mm) is the minimum legible.**`,
+    const lines = [...(both ? ["(Both distance and cap_height were given: this answer uses the distance.)"] : []), `**At ${dtxt}: capital letters ${r2(easyIn)} in (${Math.round(easyIn * IN)} mm) tall read easily; ${r2(minIn)} in (${Math.round(minIn * IN)} mm) is the minimum legible.**`,
       rec ? `Smallest standard sign whose two-word title is tall enough to read easily: ${rec.label} (title ≈ ${rec.cap_in} in).` : "None of the standard sign sizes (up to A1 / 24 × 36 in) has a title that tall: use a banner or fewer, bigger words.",
       "Title height of a short two-word title (e.g. YARD SALE) on landscape signs; longer titles shrink:",
       ...rows.map((r) => `- ${r.label}: ${r.cap_in} in (${Math.round(r.cap_mm)} mm), easy to ${r.easy_ft} ft (${r.easy_m} m), max ${r.max_ft} ft (${r.max_m} m)`),

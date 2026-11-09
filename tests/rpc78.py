@@ -113,6 +113,7 @@ check("yard 18 × 24 landscape with your lines; title height → 10 ft per inch"
 s = call("make_sign", {"kind": "reserved", "preset": "wedding"}).get("structuredContent") or {}
 check("reserved wedding: 2 tent pages (one per name)", s.get("pages") == 2 and s.get("layout") == "tent", s.get("pages"))
 check("same input → identical sign", (call("make_sign", {"kind": "reserved", "preset": "wedding"}).get("structuredContent") or {}) == s)
-for n, a in [("get_sign_letter_height", {}), ("get_sign_letter_height", {"distance": 10, "cap_height": 1}), ("plan_sign_tiling", {"size": "a0"}), ("make_sign", {"kind": "exit"}), ("make_sign", {"kind": "yard", "layout": "tent"})]:
+# 9-Nov-2026 (mcp-errors-r1): no-argument and synonym inputs now get an answer, not an error (tests/mcp_errors_r1_rpc.py covers them)
+for n, a in [("get_sign_letter_height", {"distance": -5}), ("plan_sign_tiling", {"size": "a0"}), ("make_sign", {"kind": "exit"}), ("make_sign", {"kind": "yard", "layout": "tent"})]:
     check(f"bad input → isError: {n} {a}", call(n, a).get("isError"), a)
 print(f"{ok} passed, {fail} failed"); raise SystemExit(1 if fail else 0)

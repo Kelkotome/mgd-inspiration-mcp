@@ -31,7 +31,9 @@ r = await callTools50Tool("get_book_cover_size", { trim: "6x9", pages: 60 });
 t("60 pages: no spine text + warning", r.structuredContent.spine_text.allowed === false && /spine/i.test(txt(r)));
 r = await callTools50Tool("get_book_cover_size", { trim: "6x9", pages: 2000 });
 t("2000 pages → isError with the KDP range", r.isError && /24.828|24–828/.test(txt(r)), txt(r));
-t("no pages → isError", (await callTools50Tool("get_book_cover_size", { trim: "6x9" })).isError);
+// 9-Nov-2026 (mcp-errors-r1): no page count is now a spine-formula table for common page counts, not an error
+{ const q = await callTools50Tool("get_book_cover_size", { trim: "6x9" }); t("no pages → spine table, not an error", !q.isError && /spine = pages/.test(q.content[0].text)); }
+t("pages not a number → isError", (await callTools50Tool("get_book_cover_size", { trim: "6x9", pages: "many" })).isError);
 t("bad trim → isError", (await callTools50Tool("get_book_cover_size", { trim: "banana", pages: 100 })).isError);
 r = await callTools50Tool("get_book_cover_size", { binding: "ebook" });
 t("ebook: 1600 × 2560", !r.isError && r.structuredContent.ebook.width === 1600 && r.structuredContent.ebook.height === 2560, r.structuredContent);

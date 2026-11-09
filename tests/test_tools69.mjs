@@ -75,6 +75,12 @@ r = await call("get_mockup_print_area", { product: "billboard" }); s = r.structu
 t("billboards: bulletin 48 × 14 ft (14.63 × 4.27 m), no px without dpi", s.areas.length === 3 && s.areas[0].ft.join() === "48,14" && near(s.areas[0].m[0], 14.63) && s.areas[0].px === null && s.dpi === null, s.areas[0]);
 r = await call("get_mockup_print_area", { product: "billboard", size: "poster8", dpi: 72 }); t("8-sheet 11 × 5 ft at 72 dpi = 9504 × 4320 px", r.structuredContent.areas[0].px.join() === "9504,4320", r.structuredContent.areas[0].px);
 t("page link per product", /tools\/billboard-mockup\//.test(txt(r)) && /tools\/tote-bag-mockup\//.test(txt(await call("get_mockup_print_area", { product: "tote" }))));
-for (const [n, a] of [["no product", {}], ["bad product", { product: "cap" }], ["bad area", { product: "tshirt", area: "sleeve" }], ["bad mug", { product: "mug", size: "20" }], ["bad poster", { product: "poster", size: "a0" }], ["dpi 10", { product: "poster", dpi: 10 }], ["bad tote style", { product: "tote", style: "mini" }]])
+// 9-Nov-2026 (mcp-errors-r1): no product → the main area of every product; an unknown area / size / tote style lists every option
+// with a note; only an unknown product and a bad dpi are still errors.
+for (const [n, a] of [["bad product", { product: "spaceship" }], ["dpi 10", { product: "poster", dpi: 10 }]])
   t(`mockup ${n} → isError`, (await call("get_mockup_print_area", a)).isError === true, n);
+r = await call("get_mockup_print_area", {}); t("no product → main area of all 16 products", !r.isError && Object.keys(r.structuredContent.main_areas).length === 16, r.structuredContent && Object.keys(r.structuredContent.main_areas || {}));
+for (const [n, a, len] of [["bad area", { product: "tshirt", area: "sleeve" }, 4], ["bad mug", { product: "mug", size: "20" }, 2], ["bad poster", { product: "poster", size: "a0" }, 9], ["bad tote style", { product: "tote", style: "mini" }, 3]]) {
+  const q = await call("get_mockup_print_area", a); t(`mockup ${n} → every option with a note`, !q.isError && q.structuredContent.areas.length === len && /every option is listed|standard is used/.test(txt(q)), txt(q).slice(0, 200)); }
+r = await call("get_mockup_print_area", { product: "cap" }); t("b73 product through the b69 entry point", !r.isError && /Cap print area/.test(txt(r)), txt(r).slice(0, 120));
 console.log(`\n${ok} passed, ${fail} failed`); process.exit(fail ? 1 : 0);

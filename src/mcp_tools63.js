@@ -107,12 +107,11 @@ export const TOOL_DEFS = [
     inputSchema: {
       type: "object",
       properties: {
-        height: { type: "number", description: "Body height (stature)." }, unit: { type: "string", enum: ["cm", "in"], description: "Default cm." },
+        height: { type: "number", description: "Body height (stature). Omit for a chart of common heights." }, unit: { type: "string", enum: ["cm", "in"], description: "Default cm." },
         mode: { type: "string", enum: ["both", "sit", "stand"] }, shoe: { type: "number", description: "Shoe allowance (default 2.5 cm)." },
         elbow_sit: { type: "number", description: "Measured seated elbow height from the floor (optional, more accurate)." },
         elbow_stand: { type: "number", description: "Measured standing elbow height (optional)." },
       },
-      required: ["height"],
     },
     annotations: RO("Desk ergonomics"),
   },
@@ -134,10 +133,28 @@ function file(lines, sc, fmt, svgFn, dxfFn, svgLabel, dxfLabel) {
   lines.push(fmt === "svg" ? svgLabel : dxfLabel, fence(fmt, f)); sc[fmt] = f;
 }
 
+// 9-Nov-2026 (mcp-errors-r1): "16 ga", "16ga", "#16" and "1.5 mm" / "0.06 in" strings are read as numbers (the unit in the text wins)
+const leadNum = (v) => { if (typeof v !== "string") return num(v); const m = v.match(/-?\d+(?:\.\d+)?|-?\.\d+/); return m ? Number(m[0]) : undefined; };
 function gauge(a) {
+  a = { ...a };
+  if (a.gauge === undefined && a.ga !== undefined) a.gauge = a.ga;
+  if (typeof a.thickness === "string" && a.unit === undefined) { const u = a.thickness.match(/\b(mm|in)\b|"|inch/i); if (u) a.unit = /mm/i.test(u[0]) ? "mm" : "in"; }
+  a.gauge = leadNum(a.gauge); a.thickness = leadNum(a.thickness);
   const material = str(a.material, 20).trim().toLowerCase() || "steel", unit = unitOf(a.unit);
   const page = `${T}/sheet-metal-gauge-chart/`;
   let r, sc;
+  if (a.gauge === undefined && a.thickness === undefined) {
+    // no gauge and no thickness (5-Nov: a call with no arguments failed): the common gauges of the material as a chart
+    const all = M.table(material) || [], pick = all.filter((x) => [10, 11, 12, 14, 16, 18, 20, 22, 24, 26].includes(x.gauge));
+    const rowsT = pick.length ? pick : all.slice(0, 12);
+    if (!rowsT.length) return err(`Unknown material "${material}". Use one of: ${MATS.join(", ")}.`);
+    const name = rowsT[0].name;
+    const lines = [`**Common ${name} gauges** (pass gauge for one, or thickness for the nearest gauge):`, "",
+      "| Gauge | in | mm |" + (rowsT[0].kg_m2 ? " kg/m² |" : ""), "|---|---|---|" + (rowsT[0].kg_m2 ? "---|" : ""),
+      ...rowsT.map((x) => `| ${x.gauge} | ${x.inch} | ${r3(x.mm)} |` + (x.kg_m2 ? ` ${x.kg_m2} |` : "")), "",
+      `Other materials: ${MATS.join(", ")} (gauges differ by material). Full charts: ${page}`];
+    return ok(lines.join("\n"), { mode: "chart", material: rowsT[0].material, name, gauges: rowsT, page });
+  }
   if (num(a.thickness) !== undefined) {
     r = M.nearest({ material, thickness: num(a.thickness), unit });
     if (!r || !r.ok) return err((r && r.error) || `Unknown material "${material}". Use one of: ${MATS.join(", ")}.`);
@@ -149,7 +166,7 @@ function gauge(a) {
     sc = { mode: "nearest", material: b.material, thickness_mm: r.thickness_mm, thickness_in: r.thickness_in, best: b, thinner: r.thinner || null, thicker: r.thicker || null, page };
     r = { ...b, lines };
   } else {
-    if (num(a.gauge) === undefined) return err("Give a gauge number, or a measured thickness for the nearest gauge.");
+    if (!Number.isFinite(num(a.gauge))) return err("Give a gauge number (e.g. 16), or a measured thickness for the nearest gauge.");
     r = M.lookup({ material, gauge: num(a.gauge) });
     if (!r || !r.ok) return err((r && r.error) || `No gauge ${a.gauge} for "${material}". Materials: ${MATS.join(", ")}.`);
     r.lines = [`**${r.gauge} gauge ${r.name}: ${r.inch} in = ${r3(r.mm)} mm**` + (r.kg_m2 ? `, ${r.kg_m2} kg/m² (${r.lb_ft2} lb/ft²).` : ".")];
@@ -267,9 +284,38 @@ function nutrition(a) {
   return ok(lines.join("\n"), sc);
 }
 
+// 9-Nov-2026 (mcp-errors-r1): height as text ("175 cm", "5'10\"", "5 ft 10 in", "1.75 m") and common key names; no height
+// (5-Nov: a call with no arguments failed with "height must be a positive number") → the chart for 150-195 cm / 59-77 in.
+function ergoHeight(a) {
+  let h = a.height, unit = a.unit;
+  for (const k of ["stature", "body_height", "user_height"]) if (h === undefined && a[k] !== undefined) h = a[k];
+  if (h === undefined && a.height_cm !== undefined) { h = a.height_cm; unit = "cm"; }
+  if (h === undefined && a.height_in !== undefined) { h = a.height_in; unit = "in"; }
+  if (typeof h === "string") {
+    const t = h.trim().toLowerCase(), ftin = t.match(/^(\d+(?:\.\d+)?)\s*(?:'|ft|feet|foot)\s*(?:(\d+(?:\.\d+)?)\s*(?:"|''|in|inch|inches)?)?$/);
+    if (ftin) { h = Number(ftin[1]) * 12 + Number(ftin[2] || 0); unit = "in"; }
+    else { const m = t.match(/^(\d+(?:\.\d+)?)\s*(cm|mm|m|in|inch|inches|")?$/); if (m) { h = Number(m[1]); const u = m[2] || ""; if (u === "mm") { h /= 10; unit = "cm"; } else if (u === "m") { h *= 100; unit = "cm"; } else if (u === "cm") unit = "cm"; else if (u) unit = "in"; } }
+  }
+  h = num(h);
+  const uw = unit === undefined ? undefined : String(unit).toLowerCase().trim();
+  if (["ft", "feet", "foot"].includes(uw) && Number.isFinite(h)) { h *= 12; unit = "in"; }
+  else if (["m", "meter", "meters", "metre", "metres"].includes(uw) && Number.isFinite(h)) { h *= 100; unit = "cm"; }
+  else if (["inch", "inches", '"'].includes(uw)) unit = "in";
+  if (Number.isFinite(h) && unit === undefined && h > 0 && h < 3) { h *= 100; unit = "cm"; }   // 1.75 → metres
+  return { h, unit: unit === "in" ? "in" : "cm" };
+}
+function ergoChart(unit) {
+  const hs = unit === "in" ? [59, 62, 65, 68, 71, 74, 77] : [150, 155, 160, 165, 170, 175, 180, 185, 190, 195], page = `${T}/desk-height-calculator/`;
+  const rows = E.table(hs, { unit });
+  const lines = [`**Desk and chair heights by body height (${unit}, with shoes; ANSUR II body ratios):** pass height for one person, or a measured elbow height for more accuracy.`, "",
+    `| Height | Seat | Sitting desk | Monitor top (sitting) | Standing desk | Monitor top (standing) |`, "|---|---|---|---|---|---|",
+    ...rows.map((r) => `| ${r[0]} | ${r[1]} | ${r[2]} | ${r[3]} | ${r[4]} | ${r[5]} |`), "", "Side-view diagram and chart: " + page];
+  return ok(lines.join("\n"), { unit, mode: "chart", rows: rows.map((r) => ({ height: r[0], seat: r[1], sit_desk: r[2], sit_monitor_top: r[3], stand_desk: r[4], stand_monitor_top: r[5] })), page });
+}
 function ergo(a) {
-  const unit = a.unit === "in" ? "in" : "cm", h = num(a.height);
-  if (!(h > 0)) return err("height must be a positive number.");
+  const { h, unit } = ergoHeight(a);
+  if (a.height === undefined && h === undefined) return ergoChart(unit);
+  if (!(h > 0)) return err("height must be a positive number (body height in cm, or in with unit=\"in\"; text like \"175 cm\" or \"5'10\\\"\" also works). Omit it for a chart of common heights.");
   const spec = { height: h, unit, mode: ["sit", "stand", "both"].includes(a.mode) ? a.mode : "both" };
   if (num(a.shoe) !== undefined) spec.shoe = num(a.shoe);
   if (num(a.elbow_sit) > 0) spec.elbowSit = num(a.elbow_sit);

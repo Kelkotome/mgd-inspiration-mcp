@@ -77,9 +77,13 @@ for (const a of [{ product: "mug" }, { product: "tshirt", area: "pocket" }, { pr
 
 // ---- bad inputs
 for (const [n, a] of [["get_brochure_panels", { fold: "gate" }], ["get_brochure_panels", { paper: "b5" }], ["get_brochure_panels", { dpi: 5 }],
-  ["get_banner_spec", {}], ["get_banner_spec", { preset: "9x9" }], ["get_banner_spec", { width: 200, height: 2 }], ["get_banner_spec", { width: 3, height: 2, unit: "yd" }], ["get_banner_spec", { preset: "3x8", spacing: 2 }],
-  ["get_mockup_print_area", { product: "canvas", size: "7x7" }], ["get_mockup_print_area", { product: "canvas", depth: "deep" }], ["get_mockup_print_area", { product: "polo", area: "pocket" }], ["get_mockup_print_area", { product: "banner", dpi: 9999 }]])
+  ["get_banner_spec", { preset: "huge" }], ["get_banner_spec", { width: 200, height: 2 }], ["get_banner_spec", { width: 3, height: 2, unit: "yd" }], ["get_banner_spec", { preset: "3x8", spacing: 2 }],
+  ["get_mockup_print_area", { product: "canvas", depth: "deep" }], ["get_mockup_print_area", { product: "banner", dpi: 9999 }]])
   t(`bad input → isError: ${n} ${JSON.stringify(a)}`, (await call(n, a)).isError === true);
+// 9-Nov-2026 (mcp-errors-r1): {} → the preset table; an unknown size / area lists every option with a note
+{ const q = await call("get_banner_spec", { preset: "9x9" }); t("a size that is not a preset is read as width × height ft", !q.isError && q.structuredContent.in.join() === "108,108"); }
+{ const q = await call("get_banner_spec", {}); t("get_banner_spec {} → preset table", !q.isError && q.structuredContent.presets.length === 7); }
+for (const a of [{ product: "canvas", size: "7x7" }, { product: "polo", area: "pocket" }]) { const q = await call("get_mockup_print_area", a); t(`unknown key lists every option: ${JSON.stringify(a)}`, !q.isError && /every option is listed/.test(txt(q)) && q.structuredContent.areas.length > 1, txt(q).slice(0, 160)); }
 t("unknown tool → isError", (await call("nope", {})).isError === true);
 
 console.log(`\n${ok} passed, ${fail} failed`); process.exit(fail ? 1 : 0);

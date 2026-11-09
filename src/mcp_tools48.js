@@ -210,7 +210,8 @@ export const TOOL_DEFS = [
       properties: {
         foreground: { type: "string", description: "Text/icon colour." },
         background: { type: "string", description: "Background colour." },
-        colors: COLOR_LIST,
+        colors: { description: "Colours for a full contrast matrix (2-64): an array of CSS colour strings, one string (comma/newline separated), or a {name: colour} map. One colour is checked on white and black.", anyOf: [{ type: "array", items: { type: "string" } }, { type: "string" }, { type: "object" }] },
+        pairs: { type: "array", items: { type: "object", properties: { foreground: { type: "string" }, background: { type: "string" } } }, description: "Several foreground/background pairs to check at once, e.g. [{\"foreground\": \"#333\", \"background\": \"#fff\"}]." },
         target: { type: "number", enum: [3, 4.5, 7], description: "Ratio the fix should reach: 4.5 AA text (default), 3 AA large text / UI, 7 AAA." },
       },
     },
@@ -275,16 +276,49 @@ function colorScale(a) {
 
 // Colour lists arrive as arrays, {name, hex} objects, JSON text ('["#111", ...]') or space-separated oklch()/rgb() strings (4-Nov-2026 MCP logs).
 function colorList(x, max) {
-  if (typeof x === "string" && /^\s*\[/.test(x)) { try { x = JSON.parse(x); } catch (e) { /* not JSON: parse as text */ } }
+  if (typeof x === "string" && /^\s*[[{]/.test(x)) { try { x = JSON.parse(x); } catch (e) { /* not JSON: parse as text */ } }
+  // 9-Nov-2026 (mcp-errors-r1): a {name: colour} map (as COLOR_LIST in other tools documents) gives its values
+  if (x && typeof x === "object" && !Array.isArray(x)) x = Object.values(x);
   if (Array.isArray(x)) return x.map((c) => (c && typeof c === "object" ? c.hex || c.value || c.color || c.colour || "" : c)).map((s) => str(s, 80).trim()).filter(Boolean).slice(0, max);
   if (typeof x !== "string") return [];
   const toks = x.match(/#[0-9a-fA-F]{3,8}\b|[a-zA-Z]+\([^)]*\)/g);
   return toks ? toks.map((s) => s.trim()).slice(0, max) : list(x, max);
 }
 
+// 9-Nov-2026 (mcp-errors-r1): pairs sent as objects ({foreground, background} / {fg, bg} / {text, background}), in `pairs`
+// or in `colors` (a client sent colors=[{…},{…}] on 3-Nov and got "Pass foreground + background…"). Returns [[fg, bg], …] or null.
+const PAIR_FG = ["foreground", "fg", "text", "color", "colour"], PAIR_BG = ["background", "bg", "on", "surface"];
+function pairList(x) {
+  if (typeof x === "string" && /^\s*\[/.test(x)) { try { x = JSON.parse(x); } catch (e) { return null; } }
+  if (!Array.isArray(x) || !x.length) return null;
+  const pick = (o, ks) => { for (const k of ks) if (typeof o[k] === "string" && o[k].trim()) return o[k].trim(); return ""; };
+  const out = x.map((o) => (Array.isArray(o) && o.length === 2 ? [str(o[0], 80), str(o[1], 80)] : o && typeof o === "object" ? [pick(o, PAIR_FG), pick(o, PAIR_BG)] : null));
+  return out.every((p) => p && p[0] && p[1]) ? out.slice(0, 40) : null;
+}
+const CONTRAST_HELP = "check_contrast accepts: foreground + background (one pair, e.g. foreground=\"#333333\", background=\"#ffffff\"); " +
+  "colors = 2 to 64 colours for a matrix (an array like [\"#111111\", \"#f5f3ee\"], a JSON or comma-separated string, or a {name: colour} map); " +
+  "or pairs = [{foreground, background}, …]. HEX, rgb(), hsl(), oklch(), lab() and colour names all work.";
+function contrastPairs(pairs, target) {
+  const rows = [], bad = [];
+  for (const [f, b] of pairs) {
+    let c = null; try { c = MGDContrast.check(f, b); } catch (e) { c = null; }
+    if (!c || c.ratio == null) { bad.push(`${f} on ${b}`); continue; }
+    rows.push({ fg: c.fg, bg: c.bg, ratio: c.ratio, aa_normal: !!c.aa_normal, aa_large: !!c.aa_large, aaa_normal: !!c.aaa_normal, pass_target: c.ratio_exact >= target });
+  }
+  if (!rows.length) return err("Couldn't read any of those colour pairs (" + bad.slice(0, 3).join("; ") + "). " + CONTRAST_HELP);
+  const mark = (b) => (b ? "✅" : "❌");
+  const text = `Contrast for ${rows.length} pair${rows.length > 1 ? "s" : ""} (WCAG 2.2):\n\n| Foreground | Background | Ratio | AA text | AA large/UI | AAA text |\n|---|---|---|---|---|---|\n` +
+    rows.map((r) => `| \`${r.fg}\` | \`${r.bg}\` | ${r.ratio}:1 | ${mark(r.aa_normal)} | ${mark(r.aa_large)} | ${mark(r.aaa_normal)} |`).join("\n") +
+    `\n\n${rows.filter((r) => r.pass_target).length} of ${rows.length} reach ${target}:1.` + (bad.length ? ` Skipped (unreadable): ${bad.slice(0, 5).join("; ")}.` : "") +
+    " For the nearest passing colour of a failing pair, call check_contrast with that foreground and background." + `\n\nCheck more pairs visually: ${T}/contrast-checker/`;
+  return ok(text, { pairs: rows, skipped: bad });
+}
+
 function contrast(a) {
   const target = [3, 4.5, 7].includes(Number(a.target)) ? Number(a.target) : 4.5;
   const yes = (b) => (b ? "✅ pass" : "❌ fail");
+  const pairs = pairList(a.pairs) || pairList(a.colors);
+  if (pairs && !(a.foreground && a.background)) return contrastPairs(pairs, target);
   if (a.foreground && a.background) {
     let c;
     try { c = MGDContrast.check(str(a.foreground, 80), str(a.background, 80)); } catch (e) { return err("Couldn't read those colours: " + str(e && e.message, 200)); }
@@ -303,7 +337,11 @@ function contrast(a) {
     return ok(lines.join("\n"), { ...c, fix });
   }
   const cols = colorList(a.colors, 64);
-  if (cols.length < 2) return err("Pass foreground + background, or colors with at least 2 colours for a matrix.");
+  if (cols.length < 2) {
+    // 9-Nov-2026 (mcp-errors-r1): one colour only → check it on white and on black instead of failing
+    if (cols.length === 1) return contrastPairs([[cols[0], "#ffffff"], [cols[0], "#000000"]], target);
+    return err((a.foreground || a.background ? "Pass both foreground and background. " : "No colours given. ") + CONTRAST_HELP);
+  }
   let m;
   try { m = MGDContrast.matrix(cols); } catch (e) { return err("Couldn't read those colours: " + str(e && e.message, 200)); }
   const hexes = m.colors.map((c) => c.hex || c);

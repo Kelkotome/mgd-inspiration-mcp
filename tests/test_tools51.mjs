@@ -67,7 +67,8 @@ t("1/4-20 (UNC) found, 20 TPI", !r.isError && /20/.test(txt(r)), txt(r).slice(0,
 r = await callTools51Tool("get_screw_specs", { size: "M7.3" });
 t("bogus size → isError", r.isError, txt(r));
 r = await callTools51Tool("get_screw_specs", {});
-t("no input → isError", r.isError);
+// 9-Nov-2026 (mcp-errors-r1): no input is now the ISO metric chart with how to ask for one size
+t("no input → metric chart, not an error", !r.isError && /No size given/.test(txt(r)) && /M3/.test(txt(r)));
 
 // ---- get_hand_anthropometrics
 r = await callTools51Tool("get_hand_anthropometrics", { measure: "handlength", value: 190, sex: "male" });

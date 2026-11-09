@@ -3,7 +3,7 @@
 // xstitch-core-69c.js, ribbon-core-69c.js, mockup-core-69.js) — one source of truth with the /tools/ pages
 // ribbon-banner, cross-stitch-pattern-maker and the t-shirt / hoodie / tote-bag / mug / poster / billboard mockups. Stateless: no D1/R2, no fetch.
 import { MGD69C, MGD69M as MK } from "./tools_core69.js";
-import { PRODUCTS73 } from "./mcp_tools73.js";
+import { PRODUCTS73, normMockupProduct, callMockup73 } from "./mcp_tools73.js";
 
 const T = "https://madegooddesigns.com/tools";
 const ok = (text, structuredContent) => ({ content: [{ type: "text", text }], structuredContent });
@@ -76,7 +76,6 @@ export const TOOL_DEFS = [
         style: { type: "string", enum: ["standard", "wide"], description: "Tote bag (default standard)." },
         dpi: { type: "number", description: "72-1200 (default 300; billboards: px only when given)." },
       },
-      required: ["product"],
     },
     annotations: RO("Mockup print area"),
   },
@@ -144,36 +143,67 @@ function xstitch(a) {
 
 // ---- mockup print areas
 const inRow = (label, w, h, dpi, extra, px0) => { const px = px0 || (dpi ? MK.printPx(w, h, dpi) : null); return Object.assign({ name: label, in: [r2(w), r2(h)], cm: [r2(w * 2.54), r2(h * 2.54)], px }, extra || {}); };
+// 9-Nov-2026 (mcp-errors-r1): no product (5-Nov: a client called with no arguments three times) → the main print area of every
+// product in one answer, instead of an error. An unknown product still gets the list, as an error.
+function mockupOverview(dpi) {
+  const lines = [`**Main print area of each product (${dpi} dpi; pass product, and area or size, for every option):**`], areas = {};
+  for (const pr of PRODUCTS.concat(PRODUCTS73)) {
+    const r = PRODUCTS73.includes(pr) ? callMockup73({ product: pr, dpi }) : mockup({ product: pr, dpi });
+    const row = r && !r.isError && r.structuredContent && r.structuredContent.areas && r.structuredContent.areas[0];
+    if (!row) continue;
+    areas[pr] = row;
+    lines.push(`- ${pr}: ${row.label || row.name}, ${row.in[0]} × ${row.in[1]} in (${row.cm[0]} × ${row.cm[1]} cm)${row.px ? `, ${row.px[0]} × ${row.px[1]} px` : ""}`);
+  }
+  lines.push("Example: get_mockup_print_area(product=\"tshirt\", area=\"center\") or (product=\"poster\", size=\"18x24\"). Mockups: " + `${T}/t-shirt-mockup/`);
+  return ok(lines.join("\n"), { product: null, dpi, products: PRODUCTS.concat(PRODUCTS73), main_areas: areas });
+}
 function mockup(a) {
+  if (a.product !== undefined) a = { ...a, product: normMockupProduct(a.product) };
+  if ((a.product === undefined || a.product === "") && (a.dpi === undefined || (fin(a.dpi) && num(a.dpi) >= 72 && num(a.dpi) <= 1200))) return mockupOverview(fin(a.dpi) ? Math.round(num(a.dpi)) : 300);
   // 7-Nov-2026: list the b73 products too (index.js routes those to mcp_tools73.js before this runs)
+  if (PRODUCTS73.includes(a.product)) return callMockup73(a);
   if (!PRODUCTS.includes(a.product)) return err("product must be one of: " + PRODUCTS.concat(PRODUCTS73).join(", ") + ".");
   if (a.dpi !== undefined && !(fin(a.dpi) && num(a.dpi) >= 72 && num(a.dpi) <= 1200)) return err("dpi must be 72-1200.");
   const pr = a.product, page = `${T}/${MOCK_PAGES[pr]}/`, dpi = fin(a.dpi) ? Math.round(num(a.dpi)) : pr === "billboard" ? null : 300;
-  const pick = (table, key) => { if (key === undefined) return Object.keys(table); if (!(key in table)) return null; return [key]; };
-  let rows = [], notes = [];
+  // 9-Nov-2026 (mcp-errors-r1): "front", "back", "left chest", "11oz", "A3", "18 x 24" map to the table keys; a key that is still
+  // unknown lists every area of the product with a note, instead of an error.
+  let notes = [];
+  const AREA_ALIAS = { tshirt: { front: "full", back: "full", fullfront: "full", fullback: "full", standard: "full", chest: "center", centerchest: "center", centrechest: "center", centre: "center", leftchest: "pocket", small: "pocket", large: "oversize", oversized: "oversize" },
+    hoodie: { front: "full", back: "full", fullfront: "full", fullback: "full", centerchest: "chest", centrechest: "chest", center: "chest", centre: "chest", leftchest: "pocket", kangaroo: "pocket" },
+    tote: { front: "large", back: "large", full: "large", standard: "medium", center: "medium", centre: "medium" } };
+  const norm = (k) => (k === undefined || k === null ? undefined : String(k).toLowerCase().replace(/\s+|oz|ounces?|inch(es)?|\bin\b|"/g, "").replace(/[×*]/g, "x"));
+  const pick = (table, key, aliases) => {
+    if (key === undefined || key === "") return Object.keys(table);
+    let k = norm(key); if (aliases && aliases[k]) k = aliases[k];
+    if (k in table) return [k];
+    const m = k.match(/^(\d+)x(\d+)$/); if (m && `${m[2]}x${m[1]}` in table) return [`${m[2]}x${m[1]}`];
+    notes.push(`"${str(key, 30)}" is not one of ${Object.keys(table).join(", ")}, so every option is listed.`);
+    return Object.keys(table);
+  };
+  let rows = [];
   if (pr === "tshirt" || pr === "hoodie") {
-    const A = pr === "tshirt" ? MK.TEE_AREAS : MK.HOOD_AREAS, keys = pick(A, a.area);
+    const A = pr === "tshirt" ? MK.TEE_AREAS : MK.HOOD_AREAS, keys = pick(A, a.area === undefined ? a.size : a.area, AREA_ALIAS[pr]);
     if (!keys) return err("area must be one of: " + Object.keys(A).join(", ") + ".");
     rows = keys.map((k) => inRow(k, A[k][0], A[k][1], dpi, { below_collar_in: A[k][2] }));
     notes.push("Typical adult sizes; small and youth garments take smaller areas. Top of the print sits the given inches below the collar seam.");
   } else if (pr === "tote") {
-    if (a.style !== undefined && !(a.style in MK.TOTE)) return err("style must be standard or wide.");
-    const bag = MK.TOTE[a.style || "standard"], keys = pick(MK.TOTE_AREAS, a.area);
+    if (a.style !== undefined && !(a.style in MK.TOTE)) { notes.push(`style "${str(a.style, 20)}" is not standard or wide, so standard is used.`); a = { ...a, style: undefined }; }
+    const bag = MK.TOTE[a.style || "standard"], keys = pick(MK.TOTE_AREAS, a.area === undefined ? a.size : a.area, AREA_ALIAS.tote);
     if (!keys) return err("area must be one of: " + Object.keys(MK.TOTE_AREAS).join(", ") + ".");
     rows = keys.map((k) => { const s = Math.min(MK.TOTE_AREAS[k], bag.w - 3); return inRow(k, s, s, dpi); });
     notes.push(`On the ${a.style || "standard"} tote (${bag.w} × ${bag.h} in), keeping 1.5 in clear of the side seams.`);
   } else if (pr === "mug") {
-    const keys = pick(MK.MUGS, a.size === undefined ? undefined : String(a.size));
+    const keys = pick(MK.MUGS, a.size === undefined ? a.area : String(a.size));
     if (!keys) return err("size must be 11 or 15 (oz).");
     rows = keys.map((k) => { const m = MK.mugWrap(k, dpi); return inRow(`${k} oz wrap`, m.wrap_in[0], m.wrap_in[1], dpi, { mug_mm: { diameter: m.diameter_mm, height: m.height_mm, circumference: m.circumference_mm }, handle_gap_in: m.handle_gap_in }, m.wrap_px); });
     notes.push("Typical sublimation blanks; the wrap leaves a gap at the handle. Check your blank's own template before printing.");
   } else if (pr === "poster") {
-    const keys = pick(MK.POSTERS, a.size);
+    const keys = pick(MK.POSTERS, a.size === undefined ? a.area : a.size);
     if (!keys) return err("size must be one of: " + Object.keys(MK.POSTERS).join(", ") + ".");
     rows = keys.map((k) => { const p = MK.POSTERS[k], f = p[2] === "mm" ? 1 / 25.4 : 1; return inRow(k, p[0] * f, p[1] * f, dpi, p[2] === "mm" ? { mm: [p[0], p[1]] } : {}); });
     notes.push("Trim sizes (portrait); add bleed if the printer asks for it.");
   } else {
-    const keys = pick(MK.BILLBOARDS, a.size);
+    const keys = pick(MK.BILLBOARDS, a.size === undefined ? a.area : a.size, { "30sheet": "poster30", "8sheet": "poster8", "48x14": "bulletin", "14x48": "bulletin" });
     if (!keys) return err("size must be one of: " + Object.keys(MK.BILLBOARDS).join(", ") + ".");
     rows = keys.map((k) => { const b = MK.BILLBOARDS[k]; return inRow(b[2], b[0] * 12, b[1] * 12, dpi, { key: k, ft: [r2(b[0]), r2(b[1])], m: [r2(b[0] * 0.3048), r2(b[1] * 0.3048)] }); });
     notes.push("Typical US out-of-home sizes (visible area). Large-format files are usually built at a reduced scale: ask the vendor for their spec and dpi.");

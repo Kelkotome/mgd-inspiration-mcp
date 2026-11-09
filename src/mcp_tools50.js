@@ -48,6 +48,9 @@ export const TOOL_DEFS = [
   },
 ];
 
+// 9-Nov-2026 (mcp-errors-r1): trim sizes by name (KDP trims and ISO A/B sizes)
+const TRIM_NAMES = { a5: "148x210mm", a4: "210x297mm", a6: "105x148mm", b5: "176x250mm", b6: "125x176mm", digest: "5.5x8.5", ustrade: "6x9", trade: "6x9",
+  masssmarket: "4.25x6.87", massmarket: "4.25x6.87", pocket: "4.25x6.87", letter: "8.5x11", usletter: "8.5x11", novella: "5x8", royal: "6.14x9.21", crown: "7.44x9.69", executive: "7x10", square: "8.5x8.5" };
 // ---- book cover ---------------------------------------------------------------------------------------------------
 function bookCover(a) {
   const binding = ["paperback", "ebook", "hardcover"].includes(a.binding) ? a.binding : "paperback";
@@ -60,7 +63,25 @@ function bookCover(a) {
     const r = MGDBookCover.hardcoverRules();
     return ok(`Hardcover (case laminate): ${r.note}\n\nPublished rules: wrap ${r.wrap} in, hinge ${r.hinge} in, keep text ${r.safeFromEdge} in from the edges, barcode ${r.barcode.join(" × ")} in placed ${r.barcodeFromBottom} in from the bottom and ${r.barcodeFromHinge} in from the hinge; ${r.pages[0]}–${r.pages[1]} pages. Source: ${r.source}\n\nFor paperbacks call get_book_cover_size(binding="paperback", trim, pages, paper).`, { hardcover: r });
   }
-  if (a.pages == null) return err("Pass pages (the interior page count) for a paperback cover, plus trim (e.g. '6x9') and paper (white, cream, color-standard, color-premium).");
+  // 9-Nov-2026 (mcp-errors-r1): page_count / page_count text ("300 pages") accepted; no page count (5-Nov: a call with no arguments
+  // failed) → KDP's spine formula and a 6 × 9 in table for common page counts, instead of an error.
+  if (a.pages == null) for (const k of ["page_count", "pagecount", "num_pages", "page"]) if (a[k] != null) { a = { ...a, pages: a[k] }; break; }
+  if (a.trim == null) for (const k of ["trim_size", "trimsize", "size", "book_size"]) if (typeof a[k] === "string" && a[k]) { a = { ...a, trim: a[k] }; break; }
+  if (a.trim == null && Number(a.width) > 0 && Number(a.height) > 0) a = { ...a, trim: `${Number(a.width)}x${Number(a.height)}${a.unit === "mm" ? "mm" : a.unit === "cm" ? "cm" : ""}` };
+  if (typeof a.trim === "string") { const t = TRIM_NAMES[a.trim.toLowerCase().replace(/[^a-z0-9.]/g, "")]; if (t) a = { ...a, trim: t }; }
+  if (typeof a.paper === "string" && !PAPERS.includes(a.paper)) { const p = a.paper.toLowerCase(); a = { ...a, paper: /cream/.test(p) ? "cream" : /premium/.test(p) ? "color-premium" : /colou?r/.test(p) ? "color-standard" : "white" }; }
+  if (typeof a.pages === "string" && /\d/.test(a.pages)) a = { ...a, pages: Number((a.pages.match(/\d+/) || [""])[0]) };
+  if (a.pages == null) {
+    const trim = str(a.trim, 40) || "6x9", paper = PAPERS.includes(a.paper) ? a.paper : "white";
+    const P = MGDBookCover.listPapers().find((x) => x.id === paper) || { inchesPerPage: 0.002252, label: paper };
+    const rows = [100, 200, 300, 400].map((n) => { const r = MGDBookCover.compute({ trim, pages: n, paper, binding: "paperback", dpi, direction: "ltr" }); return r.ok ? { pages: n, spine_in: r.size.spine.in, width_in: r.size.width.in, height_in: r.size.height.in, px: [r.size.width.px, r.size.height.px] } : null; }).filter(Boolean);
+    if (!rows.length) return err(`Couldn't size a ${trim} paperback: pass trim like '6x9', '5.5x8.5' or '152x229mm', plus pages (the interior page count) and paper (${PAPERS.join(", ")}).`);
+    const lines = [`**KDP paperback cover = back + spine + front + ${MGDBookCover.constants.bleed} in bleed on the outside edges; spine = pages × ${P.inchesPerPage} in (${P.label.toLowerCase()}).** Pass pages (the interior page count) for your exact size, template and barcode box.`, "",
+      `| ${trim} in, pages | Spine (in) | Full cover (in) | px at ${dpi} DPI |`, "|---|---|---|---|",
+      ...rows.map((r) => `| ${r.pages} | ${r.spine_in} | ${r.width_in} × ${r.height_in} | ${r.px[0]} × ${r.px[1]} |`), "",
+      `Other papers: ${PAPERS.join(", ")}. binding="ebook" gives the Kindle cover (1600 × 2560 px). Not affiliated with Amazon. Calculator: ${T}/kdp-cover-calculator/`];
+    return ok(lines.join("\n"), { mode: "table", trim, paper, inches_per_page: P.inchesPerPage, rows });
+  }
   const opts = { trim: str(a.trim, 40) || "6x9", pages: Number(a.pages), paper: PAPERS.includes(a.paper) ? a.paper : "white", binding: "paperback", dpi, direction: a.direction === "rtl" ? "rtl" : "ltr" };
   const res = MGDBookCover.compute(opts);
   if (!res.ok) return err(`Cannot size this cover: ${res.errors.map((e) => e.message).join(" ")}${res.warnings.length ? " (" + res.warnings.map((w) => w.message).join(" ") + ")" : ""}`);

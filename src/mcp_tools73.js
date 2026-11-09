@@ -47,10 +47,38 @@ function brochure(a) {
 
 // ---- banner spec
 const BAN = X.BANNERS, TO_IN = { in: 1, ft: 12, cm: 1 / 2.54, m: 100 / 2.54 };
+// 9-Nov-2026 (mcp-errors-r1): presets as people write them ("3x8 ft", "3' x 8'", "roll-up", "8x3") and width/height text ("3 ft");
+// no preset and no size (5-Nov: a call with no arguments failed) → every preset in one answer, instead of an error.
+function bannerPreset(p) {
+  if (typeof p !== "string") return p;
+  const k = p.toLowerCase().replace(/\s+/g, "").replace(/(ft|feet|foot|')/g, "").replace(/[×*]/g, "x");
+  if (BAN[k]) return k;
+  if (/^roll-?up|^retractable|^pull-?up/.test(k)) return "rollup";
+  if (/^pole|^street|^lamp/.test(k)) return "pole";
+  const m = k.match(/^(\d+)x(\d+)/); if (m) { if (BAN[`${m[1]}x${m[2]}`]) return `${m[1]}x${m[2]}`; if (BAN[`${m[2]}x${m[1]}`]) return `${m[2]}x${m[1]}`; }
+  return p;
+}
+const leadNum = (v) => { if (typeof v !== "string") return v; const m = v.match(/-?\d+(?:\.\d+)?/); return m ? Number(m[0]) : v; };
+function bannerOverview() {
+  const rows = Object.keys(BAN).map((k) => { const v = BAN[k]; return { key: k, name: v[2], in: [r2(v[0]), r2(v[1])], ft: [r2(v[0] / 12), r2(v[1] / 12)], px150: [px(v[0], 150), px(v[1], 150)], grommets: k === "rollup" || k === "pole" ? 0 : X.grommets(v[0], v[1]).total }; });
+  const lines = ["**Standard banner sizes** (pass preset for grommet positions, or width + height with unit ft/in/cm/m for any size):", "",
+    "| preset | size | in | px at 150 dpi | grommets |", "|---|---|---|---|---|",
+    ...rows.map((r) => `| ${r.key} | ${r.name} | ${r.in[0]} × ${r.in[1]} | ${r.px150[0].toLocaleString("en-US")} × ${r.px150[1].toLocaleString("en-US")} | ${r.grommets || "none"} |`), "",
+    "Grommets every 2 ft, 1 in from the edge; keep text about 2 in clear of grommets and hems. See it hung: " + `${T}/banner-mockup/`];
+  return ok(lines.join("\n"), { presets: rows, page: `${T}/banner-mockup/` });
+}
 function banner(a) {
+  a = { ...a, preset: bannerPreset(a.preset), width: leadNum(a.width), height: leadNum(a.height) };
+  if (a.preset === undefined && a.width === undefined && a.height === undefined && a.size !== undefined) a.preset = bannerPreset(String(a.size));
+  if (a.preset === undefined && a.width === undefined && a.height === undefined) return bannerOverview();
+  if (a.unit !== undefined) { const u = String(a.unit).toLowerCase().replace(/\s|\./g, ""); a.unit = { feet: "ft", foot: "ft", "'": "ft", inch: "in", inches: "in", '"': "in", centimeters: "cm", centimetres: "cm", meters: "m", metres: "m", meter: "m", metre: "m" }[u] || u; }
+  // a size that is not a preset ("3x6", "2.5 x 6 ft", "36x72 in") is read as width × height
+  if (typeof a.preset === "string" && !BAN[a.preset]) { const m = a.preset.toLowerCase().replace(/\s+/g, "").match(/^(\d+(?:\.\d+)?)[x×*](\d+(?:\.\d+)?)(ft|feet|'|in|inches|"|cm|m)?$/);
+    if (m) { a.width = Number(m[1]); a.height = Number(m[2]); if (m[3] && a.unit === undefined) a.unit = { feet: "ft", "'": "ft", inches: "in", '"': "in" }[m[3]] || m[3]; a.preset = undefined; } }
+  if ((a.width === undefined) !== (a.height === undefined) && a.preset === undefined) return err(`Give both width and height${a.unit ? "" : " (default unit ft)"}, or a preset (${Object.keys(BAN).join(", ")}), or neither for the size table.`);
   let W, H, name, kind = "vinyl";
   if (a.preset !== undefined) {
-    if (!BAN[a.preset]) return err("preset must be one of: " + Object.keys(BAN).join(", ") + ".");
+    if (!BAN[a.preset]) return err("preset must be one of: " + Object.keys(BAN).join(", ") + " (or give width and height, or omit both for the size table).");
     [W, H, name] = BAN[a.preset]; if (a.preset === "rollup") kind = "rollup"; if (a.preset === "pole") kind = "pole";
   } else {
     const unit = str(a.unit || "ft", 4);
@@ -104,21 +132,39 @@ function tableFor(pr, a) {
     default: return [X.PAPER_BAGS, "size", (k, v, dpi) => row(v[3], v[0] * 0.8, v[1] * 0.62, dpi, { key: k, bag_in: { width: v[0], gusset: v[2], height: v[1] }, gusset_area_in: [r2(v[2] * 0.7), r2(v[1] * 0.62)] }), "Front print area (about 80% of the width × 62% of the height, clear of the top fold and bottom crease)."];
   }
 }
-export function isMockup73Call(name, a) { return name === "get_mockup_print_area" && !!a && typeof a === "object" && PRODUCTS73.includes(a.product); }
+// 9-Nov-2026 (mcp-errors-r1): product names as people write them ("T-shirt", "tote bag", "mugs", "paper bag") map to the keys
+const PRODUCT_ALIASES = { tee: "tshirt", shirt: "tshirt", tshirts: "tshirt", tees: "tshirt", hoody: "hoodie", sweatshirt: "hoodie", totebag: "tote", bag: "tote",
+  coffeemug: "mug", cup: "mug", billboards: "billboard", canvasprint: "canvas", magazinecover: "magazine", leaflet: "flyer", flier: "flyer", pamphlet: "brochure",
+  journal: "notebook", poloshirt: "polo", hat: "cap", baseballcap: "cap", label: "sticker", decal: "sticker", vinylbanner: "banner", shoppingbag: "paperbag", giftbag: "paperbag" };
+export function normMockupProduct(p) {
+  if (typeof p !== "string") return p;
+  let k = p.toLowerCase().replace(/[^a-z]/g, "");
+  if (PRODUCT_ALIASES[k]) return PRODUCT_ALIASES[k];
+  if (k.endsWith("s") && !k.endsWith("ss")) { const one = k.slice(0, -1); if (PRODUCT_ALIASES[one]) return PRODUCT_ALIASES[one]; k = ["tshirt", "hoodie", "tote", "mug", "poster", "billboard", ...PRODUCTS73].includes(one) ? one : k; }
+  return k || p;
+}
+export function isMockup73Call(name, a) { return name === "get_mockup_print_area" && !!a && typeof a === "object" && PRODUCTS73.includes(normMockupProduct(a.product)); }
 export function callMockup73(a) {
-  const pr = a.product;
+  const pr = normMockupProduct(a.product);
   if (a.dpi !== undefined && !(fin(a.dpi) && num(a.dpi) >= 72 && num(a.dpi) <= 1200)) return err("dpi must be 72-1200.");
   const dpi = fin(a.dpi) ? Math.round(num(a.dpi)) : pr === "banner" ? 150 : 300, tf = tableFor(pr, a);
   if (tf.length === 1) return err(tf[0]);
   const [table, keyName, build, note] = tf, key = a[keyName] === undefined ? (keyName === "size" ? a.area : a.size) : a[keyName];
-  let keys = Object.keys(table);
-  if (key !== undefined) { if (!(String(key) in table)) return err(`${keyName} must be one of: ${keys.join(", ")}.`); keys = [String(key)]; }
+  let keys = Object.keys(table), miss = "";
+  if (key !== undefined && key !== "") {
+    // 9-Nov-2026 (mcp-errors-r1): "16 x 20", "A5", "4 in", "3x8 ft" map to the keys; still unknown → every option, with a note
+    let k = String(key).toLowerCase().replace(/\s+|inch(es)?|\bin\b|"|ft|feet/g, "").replace(/[×*]/g, "x");
+    if (pr === "banner") k = bannerPreset(String(key));
+    const m = k.match(/^(\d+)x(\d+)$/);
+    if (!(k in table) && m && `${m[2]}x${m[1]}` in table) k = `${m[2]}x${m[1]}`;
+    if (k in table) keys = [k]; else miss = `"${str(key, 30)}" is not one of ${keys.join(", ")}, so every option is listed.`;
+  }
   const rows = keys.map((k) => build(k, table[k], dpi)), page = `${T}/${PAGES73[pr]}/`;
   const label = { paperbag: "Paper bag", polo: "Polo shirt" }[pr] || pr[0].toUpperCase() + pr.slice(1);
   const fmt = (r) => `${r.label || r.name}: ${r.in[0]} × ${r.in[1]} in (${r.cm[0]} × ${r.cm[1]} cm)${r.px ? `, ${r.px[0].toLocaleString("en-US")} × ${r.px[1].toLocaleString("en-US")} px at ${dpi} dpi` : ""}` +
     (r.wrap_artwork_in ? `; wrap artwork ${r.wrap_artwork_in[0]} × ${r.wrap_artwork_in[1]} in` : "") + (r.outside_panels_in ? `; outside panels ${r.outside_panels_in.join(" / ")} in, cover = panel ${r.cover_panel}` : "") +
     (r.grommets ? `; ${r.grommets} grommets` : "") + (r.bag_in ? ` on a ${r.bag_in.width} × ${r.bag_in.gusset} × ${r.bag_in.height} in bag` : "");
-  const lines = [`**${label} print area${rows.length > 1 ? "s" : ""}:**`].concat(rows.map((r) => "- " + fmt(r)), note, "Place your design on the product and download the mockup: " + page);
+  const lines = [`**${label} print area${rows.length > 1 ? "s" : ""}:**`].concat(rows.map((r) => "- " + fmt(r)), miss ? [miss] : [], note, "Place your design on the product and download the mockup: " + page);
   return ok(lines.join("\n"), { product: pr, dpi, areas: rows, page });
 }
 // adds the ten b73 products to the existing get_mockup_print_area definition (mcp_tools69.js) in the list index.js builds

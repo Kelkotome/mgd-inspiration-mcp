@@ -116,7 +116,7 @@ r2 = call("run_design_tool", {"name": "get_mockup_print_area", "arguments": {"pr
 check("run_design_tool validates the extended enum: polo left chest 1200 × 1200 px", not r2.get("isError") and ((r2.get("structuredContent") or {}).get("areas") or [{}])[0].get("px") == [1200, 1200], text(r2)[:200])
 for p in ["canvas", "magazine", "flyer", "brochure", "notebook", "polo", "cap", "sticker", "banner", "paperbag"]:
     r = call("get_mockup_print_area", {"product": p}); check(f"print area {p}: answers with areas + page", not r.get("isError") and len((r.get("structuredContent") or {}).get("areas", [])) >= 2 and "-mockup/" in (r.get("structuredContent") or {}).get("page", ""), text(r)[:150])
-for n, a in [("get_brochure_panels", {"fold": "gate"}), ("get_brochure_panels", {"paper": "b5"}), ("get_banner_spec", {}), ("get_banner_spec", {"width": 300, "height": 1}),
-             ("get_mockup_print_area", {"product": "canvas", "size": "7x7"}), ("get_mockup_print_area", {"product": "polo", "area": "pocket"})]:
+for n, a in [("get_brochure_panels", {"fold": "gate"}), ("get_brochure_panels", {"paper": "b5"}), ("get_banner_spec", {"preset": "huge"}), ("get_banner_spec", {"width": 300, "height": 1}),
+             ("get_mockup_print_area", {"product": "canvas", "dpi": 5})]:  # 9-Nov-2026 (mcp-errors-r1): {} / unknown size or area now answer (mcp_errors_r1_rpc.py)
     check(f"bad input → isError: {n} {json.dumps(a)}", call(n, a).get("isError"), a)
 print(f"{ok} passed, {fail} failed"); raise SystemExit(1 if fail else 0)

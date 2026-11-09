@@ -99,7 +99,8 @@ check("nutrition %DV: iron 45%, potassium 6%", row.get("iron", {}).get("dvText")
 check("nutrition SVG + regulator caveat", "Nutrition Facts" in s.get("svg", "") and "confirm with your regulator" in text(r), text(r)[-300:])
 r = call("get_desk_ergonomics", {"height": 175}); s = r.get("structuredContent") or {}
 check("desk 175 cm: seat 44.8, sit desk 66.5, stand desk 109.6 (ANSUR II ratios)", near(s.get("sit", {}).get("seat"), 44.8, 0.11) and near(s.get("sit", {}).get("desk"), 66.5, 0.11) and near(s.get("stand", {}).get("desk"), 109.6, 0.11), s.get("sit"))
-for n, a in [("get_sheet_metal_gauge", {}), ("calc_sheet_metal_bend", {"thickness": 0, "radius": 1}), ("make_cone_pattern", {"d1": 100, "d2": 50}),
+# 9-Nov-2026 (mcp-errors-r1): no-argument and synonym inputs now get an answer, not an error (tests/mcp_errors_r1_rpc.py covers them)
+for n, a in [("get_sheet_metal_gauge", {"gauge": 99}), ("calc_sheet_metal_bend", {"thickness": 0, "radius": 1}), ("make_cone_pattern", {"d1": 100, "d2": 50}),
              ("make_living_hinge", {"pitch": 0}), ("make_nutrition_label", {"nutrients": {"foo": 1}}), ("get_desk_ergonomics", {"height": 0})]:
     check(f"bad input → isError: {n}", call(n, a).get("isError"), a)
 print(f"{ok} passed, {fail} failed"); raise SystemExit(1 if fail else 0)

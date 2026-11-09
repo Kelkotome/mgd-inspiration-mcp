@@ -63,7 +63,9 @@ check("cover: svg template", (sc.get("svg") or "").startswith("<svg"))
 r = call("get_book_cover_size", {"binding": "ebook"})
 check("cover: ebook 1600 × 2560", "1600 × 2560" in text(r), text(r)[:200])
 check("cover: 5000 pages → isError", call("get_book_cover_size", {"trim": "6x9", "pages": 5000}).get("isError"))
-check("cover: no pages → isError", call("get_book_cover_size", {"trim": "6x9"}).get("isError"))
+# 9-Nov-2026 (mcp-errors-r1): no-argument and synonym inputs now get an answer, not an error (tests/mcp_errors_r1_rpc.py covers them)
+check("cover: no pages → spine table, not an error", not call("get_book_cover_size", {"trim": "6x9"}).get("isError"))
+check("cover: bad page count → isError", call("get_book_cover_size", {"trim": "6x9", "pages": "many"}).get("isError"))
 # --- make_affinity_diagram
 r = call("make_affinity_diagram", {"title": "Interviews", "groups": [{"name": "Pricing", "notes": ["Too expensive", {"text": "Tiers unclear", "participant": "P3", "votes": 2}]}, {"name": "Speed", "notes": ["Export is slow"]}]})
 sc = r.get("structuredContent") or {}

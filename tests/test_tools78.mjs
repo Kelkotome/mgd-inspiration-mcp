@@ -101,7 +101,10 @@ t("scheme changes the colours", sc2.scheme === "red" && sc2.svgs[0] !== s.svgs[0
 t("deterministic", JSON.stringify((await call("make_sign", {})).structuredContent) === JSON.stringify(s));
 
 // ---- bad inputs
-for (const [n, a] of [["get_sign_letter_height", {}], ["get_sign_letter_height", { distance: 10, cap_height: 1 }], ["get_sign_letter_height", { distance: -5 }], ["get_sign_letter_height", { distance: 10, distance_unit: "yd" }],
+{ const q = await call("get_sign_letter_height", {}); t("{} → rule of thumb and size table", !q.isError && q.structuredContent.mode === "overview" && q.structuredContent.sizes.length === 9); }
+{ const q = await call("get_sign_letter_height", { distance: 10, cap_height: 1 }); t("distance + cap_height → uses the distance and says so", !q.isError && q.structuredContent.mode === "distance" && /uses the distance/.test(txt(q))); }
+// 9-Nov-2026 (mcp-errors-r1): {} is now the size table and distance + cap_height uses the distance (tested below)
+for (const [n, a] of [["get_sign_letter_height", { distance: -5 }], ["get_sign_letter_height", { distance: 10, distance_unit: "yd" }],
   ["get_sign_letter_height", { cap_height: 0 }], ["get_sign_letter_height", { cap_height: 2, height_unit: "pt" }], ["plan_sign_tiling", { size: "a0" }], ["plan_sign_tiling", { sheet: "a3" }],
   ["plan_sign_tiling", { width: 20 }], ["plan_sign_tiling", { size: "18x24", width: 10, height: 10 }], ["plan_sign_tiling", { overlap: 50 }], ["plan_sign_tiling", { width: 1, height: 1 }],
   ["make_sign", { kind: "exit" }], ["make_sign", { kind: "dnd", preset: "zzz" }], ["make_sign", { size: "a0" }], ["make_sign", { kind: "yard", layout: "tent" }],

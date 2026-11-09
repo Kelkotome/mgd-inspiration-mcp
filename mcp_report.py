@@ -18,7 +18,11 @@ EV = f"FROM mcp_events WHERE {BOT} AND {W}{NOT_BOT_CLIENT}"
 CALLS_EX = "1=1" if "--include-bots" in sys.argv else "ip!='129.126.14.17' AND ua NOT LIKE 'curl/%'"
 
 
-def sql(q, tries=4):
+def sql(q, tries=4, soft=False):
+    # soft=True: return None on an SQL error (e.g. a column a migration has not added yet) instead of exiting
+    if soft:
+        try: return sql(q, tries)
+        except SystemExit: return None
     # D1 over the API intermittently answers 7403 / network errors (the "first query errors" seen 1–2 Nov-2026): retry with backoff.
     for i in range(tries):
         p = subprocess.run(["npx", "wrangler", "d1", "execute", "mgd-inspiration", "--remote", "--json", "--command", q],
@@ -94,6 +98,21 @@ table("Zero-result searches (content gaps; each row matched to its own call by s
     f"SELECT {SG} t, tool, substr(query,1,70) query, "
     f"(SELECT COUNT(*) FROM mcp_calls c2 WHERE c2.tool=mcp_calls.tool AND c2.ua=mcp_calls.ua AND ABS(c2.created_at-mcp_calls.created_at)<=3000) parallel "
     f"FROM mcp_calls WHERE {CALLS_EX} AND {W} AND query != '' AND EXISTS (SELECT 1 FROM mcp_events e WHERE {ZM}) ORDER BY created_at DESC LIMIT 40"))
+# 9-Nov-2026 (mcp-errors-r1): failed calls with the Worker's short error (mcp_events.err, migrate_mcp_events_err.sql; "class: message",
+# classes exception / busy / capped / unknown_tool / bad_args / invalid_args / tool) and the call's own query, matched by start time
+# as above (created_at - ms = mcp_calls.created_at, nearest call of the same tool and UA within 25 ms). Before the migration the
+# column does not exist: the table is then shown without it.
+_ERRQ = ("(SELECT substr(c.query,1,60) FROM mcp_calls c WHERE c.tool=REPLACE(e.tool,'run:','') AND c.ua=e.ua AND e.ms IS NOT NULL "
+         "AND ABS((e.created_at - e.ms) - c.created_at) <= 25 ORDER BY ABS((e.created_at - e.ms) - c.created_at) LIMIT 1)")
+_EV_E = EV.replace("FROM mcp_events WHERE", "FROM mcp_events e WHERE e.", 1).replace(" AND visitor NOT IN", " AND e.visitor NOT IN").replace(f" AND {W}", f" AND e.{W}", 1)
+def _errors(with_err):
+    return sql(f"SELECT datetime(e.created_at/1000,'unixepoch','+8 hours') t, e.tool, {'substr(e.err,1,110) err, ' if with_err else ''}{_ERRQ} query, "
+               f"CASE WHEN e.ua LIKE 'Claude-User%' THEN 'claude.ai' ELSE substr(e.ua,1,20) END app {_EV_E} AND e.kind='call' AND e.ok=0 ORDER BY e.created_at DESC LIMIT 40", soft=True)
+_er = _errors(True)
+if _er is None:
+    _er = _errors(False) or []
+    print("\n(mcp_events.err not there yet: apply migrate_mcp_events_err.sql to see why calls failed)")
+table("Failed calls (error class and message from the Worker; query = the call's own arguments, matched by start time)", _er)
 table("What people searched for (all queries)", sql(
     f"SELECT {SG} t, tool, substr(query,1,90) query, CASE WHEN ua LIKE 'Claude-User%' THEN 'claude.ai' ELSE substr(ua,1,20) END app "
     f"FROM mcp_calls WHERE {CALLS_EX} AND {W} AND query != '' AND ua NOT LIKE 'AMP-Server%' AND ua NOT LIKE 'undici%' AND ua NOT LIKE 'Go-http%' "

@@ -29,7 +29,9 @@ r = await call("get_sheet_metal_gauge", { thickness: 1.5, unit: "mm" }); s = r.s
 t("nearest steel gauge to 1.5 mm = 16 ga", s.mode === "nearest" && s.best.gauge === 16, s.best);
 r = await call("get_sheet_metal_gauge", { gauge: 10, length: 1000, width: 2000 }); s = r.structuredContent;
 t("sheet weight 1×2 m of 10 ga steel = MSG 5.625 lb/ft² × 4.88243 kg/m² per lb/ft² × 2 m²", near(s.sheet_weight_kg, 5.625 * 4.88243 * 2, 0.3), [s.sheet_weight_kg, 5.625 * 4.88243 * 2]);
-t("errors: no gauge/thickness, bad material, missing gauge → isError", (await call("get_sheet_metal_gauge", {})).isError && (await call("get_sheet_metal_gauge", { material: "unobtanium", gauge: 16 })).isError && (await call("get_sheet_metal_gauge", { gauge: 99 })).isError);
+// 9-Nov-2026 (mcp-errors-r1): no gauge/thickness is now the common-gauge chart
+t("no gauge/thickness → chart, not an error", !(await call("get_sheet_metal_gauge", {})).isError);
+t("errors: bad material, missing gauge → isError", (await call("get_sheet_metal_gauge", { material: "unobtanium", gauge: 16 })).isError && (await call("get_sheet_metal_gauge", { gauge: 99 })).isError);
 
 // ---- bend: BA = π/180·A·(R + K·T); OSSB = tan(A/2)(R+T); BD = 2·OSSB − BA
 r = await call("calc_sheet_metal_bend", { thickness: 2, radius: 2, angle: 90, k: 0.33, flanges: [50, 30], width: 40, format: "svg" }); s = r.structuredContent;

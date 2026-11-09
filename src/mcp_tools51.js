@@ -278,12 +278,27 @@ def({
   annotations: RO("Screw / bolt / thread specs"),
 }, (a) => {
   const F = C.MGDFastener; if (!F) return err("Fastener data is not available on this server yet.");
-  if (!a.size && a.diameter == null && !a.chart) return err("Pass size (e.g. 'M3', '1/4-20', '#6-32'), or diameter (+ unit, pitch_mm/tpi) to identify a screw, or chart='metric'|'unified'|'drills'.");
+  // 9-Nov-2026 (mcp-errors-r1): no size, diameter or chart (5-Nov: a call with no arguments failed) → the ISO metric chart, with how to ask for one size
+  a = { ...a }; if (a.size === undefined && typeof a.thread === "string") a.size = a.thread; if (a.size === undefined && typeof a.screw === "string") a.size = a.screw;
+  if (a.chart !== undefined && !["metric", "unified", "drills"].includes(a.chart)) { const c = String(a.chart).toLowerCase(); a.chart = /unc|unf|unified|imperial|inch|sae/.test(c) ? "unified" : /drill/.test(c) ? "drills" : "metric"; }
+  if (typeof a.diameter === "string") { const m = a.diameter.trim().toLowerCase().match(/^(\d+(?:\.\d+)?)\s*(mm|in|inch|inches|")?/); if (m) { a.diameter = Number(m[1]); if (m[2] && a.unit === undefined) a.unit = m[2] === "mm" ? "mm" : "in"; } }
+  let lenNote = "";
+  if (typeof a.size === "string") {
+    // "M6 socket head", "M3 x 10", "#8 wood screw", "1/4-20 x 1 in": the thread designation is the first token; a metric "× n" too
+    // big to be a pitch (above 4 mm) is the screw length, which does not change the thread data.
+    const t = a.size.trim(), mm = t.match(/^M\s*(\d+(?:\.\d+)?)\s*[x×]\s*(\d+(?:\.\d+)?)\s*(mm)?/i);
+    if (mm && Number(mm[2]) > 4) { a.size = "M" + mm[1]; lenNote = `(${mm[2]} mm read as the screw length; thread data does not depend on it.)\n\n`; }
+    else { const tok = t.match(/^(M\s*\d+(?:\.\d+)?(?:\s*[x×]\s*\d+(?:\.\d+)?)?|#\s*\d+(?:\s*-\s*\d+)?|\d+\/\d+(?:\s*-\s*\d+)?"?|\d+\s*-\s*\d+)/i);
+      if (tok && tok[0].length < t.length) { const um = t.match(/^(\d+\/\d+|#\s*\d+)\s*-\s*(\d+)\s*[x×]\s*(\S+)/); if (um) lenNote = `(${um[3]} read as the screw length; thread data does not depend on it.)\n\n`; a.size = tok[0].replace(/\s+/g, ""); } }
+  }
+  const none = !a.size && a.diameter == null && !a.chart;
+  if (none) a.chart = "metric";
   const args = {}; ["size", "diameter", "unit", "pitch_mm", "tpi", "chart", "drill", "percent"].forEach((k) => { if (a[k] != null && a[k] !== "") args[k] = typeof a[k] === "string" ? str(a[k], 40) : a[k]; });
   const r = F.get(args);
   if (!r || r.ok === false || (r.spec && r.spec.ok === false)) { const e = (r && (r.error || (r.spec && r.spec.error))) || "Unknown size."; const cand = (r && (r.candidates || (r.spec && r.spec.candidates))) || []; return err(e + (cand.length ? " Did you mean: " + cand.slice(0, 6).join(", ") + "?" : "")); }
   const src = (r.sources || []).map((x) => `${x.title} (${x.url})`).join("; ");
-  return ok(`${r.text}\n\nSources: ${src}\n\nCharts, % thread calculator and printable PDF: ${T}/screw-size-chart/ and ${T}/tap-drill-chart/`, r);
+  const lead = none ? "No size given, so here is the ISO metric coarse chart. For one screw pass size (e.g. 'M3', '1/4-20', '#6-32'); to identify one pass diameter (+ unit, pitch_mm or tpi); chart='unified' or 'drills' for the other charts.\n\n" : "";
+  return ok(`${lead}${lenNote}${r.text}\n\nSources: ${src}\n\nCharts, % thread calculator and printable PDF: ${T}/screw-size-chart/ and ${T}/tap-drill-chart/`, r);
 }, "Next step: for 3D-printed parts, get_print_clearance for fits and make_extruded_part / make_box_template with the clearance or insert hole sizes; printable charts at https://madegooddesigns.com/tools/screw-size-chart/.");
 
 // ---- get_hand_anthropometrics -------------------------------------------------------------------------------------------
