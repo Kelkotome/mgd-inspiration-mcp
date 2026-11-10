@@ -4,6 +4,7 @@
 // with the /tools/ pages star-map, fantasy-map-generator and paper-bag-template. Stateless: no D1/R2, no fetch.
 // Star data: Yale Bright Star Catalogue 5th Revised Ed. (SAO TDC / NASA HEASARC); constellation lines: d3-celestial (BSD 3-Clause, (c) 2015 Olaf Frohn).
 import { MGD72A, MGD72A_DATA as SD, MGD72B as FM, MGD72D } from "./tools_core72.js";
+import { findCity, CITY_CREDIT } from "./cities.js";
 
 const T = "https://madegooddesigns.com/tools";
 const ok = (text, structuredContent) => ({ content: [{ type: "text", text }], structuredContent });
@@ -31,7 +32,7 @@ export const TOOL_DEFS = [
       properties: {
         date: { type: "string", description: "YYYY-MM-DD." },
         time: { type: "string", description: "Local HH:MM (default 21:00)." },
-        city: { type: "string", description: "e.g. London, Tokyo (sets lat/lon/zone)." },
+        city: { type: "string", description: "Any city of 100k+ people or capital, e.g. Hamburg, 'Portland, Maine', 'São Paulo, Brazil' (sets lat/lon/zone)." },
         lat: { type: "number" }, lon: { type: "number", description: "East +." },
         tz: { type: "string", description: "IANA zone." }, utc_offset: { type: "number", description: "Hours." },
         size: { type: "string", enum: SIZES },
@@ -109,11 +110,26 @@ function starMap(a) {
     mag_limit: fin(a.mag_limit) ? num(a.mag_limit) : 4.5, constellations: a.constellations, names: a.names, grid: a.grid, moon: a.moon,
   };
   if (args.city !== undefined && args.lat !== undefined) { delete args.city; }
+  // mcp-gaps-r1 (10-Nov-2026): the page's own ~40 cities first (unchanged names and zones), then the GeoNames list (src/cities.js).
+  // The city is resolved here and handed to the core as lat/lon/tz/place, so the core's short list never sees it.
+  let cty = null, geo = null;
+  if (args.city !== undefined) {
+    const q = args.city.toLowerCase();
+    cty = S.CITIES.find((x) => x[0].toLowerCase().startsWith(q) || x[0].toLowerCase().split(",")[0] === q) || null;
+    if (!cty) {
+      geo = findCity(args.city);
+      if (!geo) return err(`Unknown city "${args.city}"; pass lat and lon instead. Cities of 100,000+ people and capitals are known; "City, Country" or "City, State" helps with shared names.`);
+      cty = [geo.name, geo.lat, geo.lon, geo.tz];
+    }
+    args.lat = cty[1]; args.lon = cty[2];
+    if (args.tz === undefined && args.utc_offset === undefined) args.tz = cty[3];
+    if (args.place === undefined) args.place = cty[0];
+    delete args.city;
+  }
   Object.keys(args).forEach((k) => args[k] === undefined && delete args[k]);
   let r;
   try { r = MGD72A.mcp.make_star_map(args); } catch (e) { return err(str(e && e.message, 300)); }
-  const cty = args.city ? S.CITIES.find((x) => x[0].toLowerCase().startsWith(args.city.toLowerCase()) || x[0].toLowerCase().split(",")[0] === args.city.toLowerCase()) : null;
-  const lat = cty ? cty[1] : args.lat, lon = cty ? cty[2] : args.lon, L = r.local_sidereal_time_hours * 15;
+  const lat = args.lat, lon = args.lon, L = r.local_sidereal_time_hours * 15;
   const bright = Object.keys(SD.NAMES).map((hr) => { const s = SD.STARS.find((x) => x[0] === +hr); if (!s) return null; const h = S.eqToHor(s[1] / 100, s[2] / 100, lat, L); return { name: SD.NAMES[hr], mag: s[3] / 10, alt: r1(h.alt), az: r1(h.az), dir: dir(h.az) }; })
     .filter((x) => x && x.alt > 0).sort((p, q) => p.mag - q.mag).slice(0, 8);
   const svg = roundSky(r.svg), page = `${T}/star-map/`, off = r.utc_offset_hours, offs = "UTC" + (off < 0 ? "-" : "+") + Math.abs(off);
@@ -121,8 +137,9 @@ function starMap(a) {
   const lines = [`**Star map: ${cty ? cty[0] : `${r2(lat)}°, ${r2(lon)}°`}, ${a.date} ${args.time || "21:00"} local (${offs}) = ${r.utc.slice(0, 16).replace("T", " ")} UTC; local sidereal time ${lsts}; ${r.visible_stars.toLocaleString("en-US")} stars to magnitude ${args.mag_limit} above the horizon.**`,
     `Moon: ${r.moon.name.toLowerCase()}, ${Math.round(r.moon.fraction * 100)}% lit, ${r.moon.alt > 0 ? `up at ${r.moon.alt}° ${dir(r.moon.az)}` : "below the horizon"}.`,
     bright.length ? "Brightest named stars up: " + bright.map((b) => `${b.name} ${b.alt}° ${b.dir}`).join(", ") + "." : "None of the brightest named stars is up."];
+  if (geo) lines.push(`${geo.match === "fuzzy" ? `Closest city name match for "${a.city}". ` : ""}${CITY_CREDIT}`);
   if (r.warnings.length) lines.push("Note: " + r.warnings.join(" "));
-  const sc = { place: cty ? cty[0] : null, lat, lon, utc: r.utc, utc_offset_hours: off, local_sidereal_time_hours: lst, visible_stars: r.visible_stars, mag_limit: args.mag_limit,
+  const sc = { place: cty ? cty[0] : null, ...(geo ? { city_match: geo.match, city_source: "GeoNames (geonames.org), CC BY 4.0" } : {}), lat, lon, utc: r.utc, utc_offset_hours: off, local_sidereal_time_hours: lst, visible_stars: r.visible_stars, mag_limit: args.mag_limit,
     constellation_segments: r.constellation_segments, moon: r.moon, bright_stars: bright, size: r.size, warnings: r.warnings, page };
   if (svg.length <= OUT_CAP) { lines.push(`Poster SVG (${r.size.name}, ${Math.round(svg.length / 1024)} KB, vector stars in mm; text uses system fonts):`, fence("svg", svg)); sc.svg = svg; }
   else { lines.push("The poster SVG is too large to return inline (lower mag_limit, or download it from the page)."); sc.svg_too_large = true; }

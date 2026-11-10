@@ -2,6 +2,7 @@
 // ready-to-paste Google Fonts link + CSS. Data = font_pairings.json, built read-only from the live posts by
 // DnG Flooring/mgd-kit/extract_pilot.py (pilot: the top-50 font pages by engaged sessions). Nothing here names a pairing our pages don't.
 import PAIRINGS from "./font_pairings.json";
+import { CURATED, GF_FAMILIES } from "./font_pairings_curated.js";
 import { gfLink, btKey, btLev } from "./search_extras.js";
 
 export const FONT_PAIRING_TOOL = {
@@ -21,7 +22,13 @@ export const FONT_PAIRING_TOOL = {
   annotations: { title: "Font pairings for a typeface", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
 };
 
+// mcp-gaps-r1 (10-Nov-2026): + 30 popular Google Fonts without a guide (font_pairings_curated.js, page: null). Guides come first.
 const INDEX = Object.values(PAIRINGS).map((v) => ({ key: btKey(v.font), v }));
+for (const v of Object.values(CURATED)) if (!INDEX.some((x) => x.key === btKey(v.font))) INDEX.push({ key: btKey(v.font), v });
+// A query that is itself a Google Fonts family we have no entry for ("Play", "Inder", "Exo") is never stretched to another family by
+// the forward-prefix or the fuzzy step ("Play" used to answer with Playfair Display, "Inder" would get Inter).
+const GF_KEYS = new Set(GF_FAMILIES.map(btKey));
+const GENERATOR = "https://madegooddesigns.com/font-pairing-generator/";
 const BY_KEY = new Map(INDEX.map((x) => [x.key, x]));
 // 9-Nov-2026 (round 2): lookup is case/space/punctuation-proof via btKey ("Jetbrains mono", "JETBRAINS-MONO", "jet brains mono" all →
 // "jetbrainsmono"). ALIASES maps renamed or alternate family names to the guide's font. The prefix step no longer crosses into a sibling
@@ -33,6 +40,7 @@ const ALIASES = {
   ibmplex: "ibmplexsans", plusjakarta: "plusjakartasans", jakartasans: "plusjakartasans", jakarta: "plusjakartasans", geistsans: "geist",
   googlesanstext: "googlesans", garamondeb: "ebgaramond", jetbrains: "jetbrainsmono", jetbrainsmononl: "jetbrainsmono",
   robotocondensed: "robotocondensed", fjalla: "fjallaone", alfaslab: "alfaslabone", titillium: "titilliumweb", librefranklin: "librefranklin",
+  googlesansflex: "googlesans", redhat: "redhatdisplay", playfair: "playfairdisplay", playfair2: "playfairdisplay",
 };
 const SIBLING = /sans|serif|slab|mono|code|condensed|narrow|compressed|expanded|extended|rounded|tight|flex|stencil|inline|outline|script|alternates|grotesk|gothic/;
 export const fontKey = (q) => btKey(String(q || "").replace(/\b(font|fonts|typeface|typefaces|pairing|pairings|pair|pairs|with|for|what|goes|go)\b/gi, " "));
@@ -43,10 +51,11 @@ export function fpFind(q, { fuzzy = true } = {}) {
   if (exact) return { v: exact.v, how: "exact" };
   const al = ALIASES[key] && BY_KEY.get(ALIASES[key]);
   if (al) return { v: al.v, how: "alias" };
-  const pre = INDEX.filter((x) => (key.length >= 4 && x.key.startsWith(key)) || (key.startsWith(x.key) && !SIBLING.test(key.slice(x.key.length))))
+  const isGf = GF_KEYS.has(key);
+  const pre = INDEX.filter((x) => (key.length >= 4 && !isGf && x.key.startsWith(key)) || (key.startsWith(x.key) && !SIBLING.test(key.slice(x.key.length))))
     .sort((a, b) => a.key.length - b.key.length)[0];
   if (pre) return { v: pre.v, how: "prefix" };
-  if (!fuzzy) return null;
+  if (!fuzzy || isGf) return null;
   const max = key.length >= 8 ? 2 : 1;
   const fz = INDEX.map((x) => ({ x, d: btLev(key, x.key, max) })).filter((y) => y.d <= max).sort((a, b) => a.d - b.d)[0];
   return fz ? { v: fz.x.v, how: "fuzzy" } : null;
@@ -108,7 +117,10 @@ export function fontPairing(a) {
       ? `not on Google Fonts: ${[p.heading_gf === false && p.heading, p.body_gf === false && p.body].filter(Boolean).join(", ")} (licence or self-host it)` : null;
     return { heading: p.heading, body: p.body, group: p.group, why: p.why, google_fonts_url: link, css, note };
   });
-  const lines = [`${pairs.length} pairing(s) for ${f.v.font}${f.how !== "exact" ? ` (closest match for "${a.font}")` : ""}. Source: ${f.v.page} — please cite it.`];
+  const closest = f.how !== "exact" ? ` (closest match for "${a.font}")` : "";
+  const lines = [f.v.page
+    ? `${pairs.length} pairing(s) for ${f.v.font}${closest}. Source: ${f.v.page} — please cite it.`
+    : `${pairs.length} pairing(s) for ${f.v.font}${closest}. Made Good Designs has no dedicated ${f.v.font} guide yet; these are its editorial pairings (cite madegooddesigns.com). Try them live in the font pairing generator: ${GENERATOR}`];
   const about = aboutLine(f.v);
   if (about) lines.push(about);
   for (const p of pairs) {
@@ -118,5 +130,5 @@ export function fontPairing(a) {
     lines.push(p.css.split("\n").map((l) => "  " + l).join("\n"));
     if (p.note) lines.push(`  note: ${p.note}`);
   }
-  return { content: [{ type: "text", text: lines.join("\n") }], structuredContent: { font: f.v.font, page: f.v.page, match: f.how, about: f.v.about || null, pairs } };
+  return { content: [{ type: "text", text: lines.join("\n") }], structuredContent: { font: f.v.font, page: f.v.page, match: f.how, about: f.v.about || null, ...(f.v.page ? {} : { curated: true, try_url: GENERATOR }), pairs } };
 }

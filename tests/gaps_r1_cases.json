@@ -1,0 +1,583 @@
+{
+ "about": "mcp-gaps-r1 (10-Nov-2026) replay cases: tests/gaps_r1_rpc.py runs them against a local wrangler dev or live",
+ "cases": [
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Big Shoulders Display"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for ",
+   "min_pairs": 1,
+   "note": "zero 5-9 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Anton"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for ",
+   "min_pairs": 1,
+   "note": "zero 5-9 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Bricolage Grotesque"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for ",
+   "min_pairs": 1,
+   "note": "zero 5-9 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Figtree"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for ",
+   "min_pairs": 1,
+   "note": "zero 5-9 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Lexend"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for ",
+   "min_pairs": 1,
+   "note": "zero 5-9 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Instrument Serif"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for ",
+   "min_pairs": 1,
+   "note": "zero 5-9 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Newsreader"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for ",
+   "min_pairs": 1,
+   "note": "zero 5-9 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Unbounded"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for ",
+   "min_pairs": 1,
+   "note": "zero 5-9 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Bebas Neue"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for ",
+   "min_pairs": 1,
+   "note": "zero 5-9 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Nunito Sans"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for ",
+   "min_pairs": 1,
+   "note": "zero 5-9 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Roboto Flex"
+   },
+   "want_re": "^5 pairing\\(s\\) for Roboto Flex\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Red Hat Display"
+   },
+   "want_re": "^5 pairing\\(s\\) for Red Hat Display\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Dosis"
+   },
+   "want_re": "^5 pairing\\(s\\) for Dosis\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Exo 2"
+   },
+   "want_re": "^5 pairing\\(s\\) for Exo 2\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Oxygen"
+   },
+   "want_re": "^5 pairing\\(s\\) for Oxygen\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Epilogue"
+   },
+   "want_re": "^5 pairing\\(s\\) for Epilogue\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Faustina"
+   },
+   "want_re": "^5 pairing\\(s\\) for Faustina\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Pacifico"
+   },
+   "want_re": "^5 pairing\\(s\\) for Pacifico\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Hanken Grotesk"
+   },
+   "want_re": "^5 pairing\\(s\\) for Hanken Grotesk\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Arvo"
+   },
+   "want_re": "^5 pairing\\(s\\) for Arvo\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Overpass"
+   },
+   "want_re": "^5 pairing\\(s\\) for Overpass\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "DM Mono"
+   },
+   "want_re": "^5 pairing\\(s\\) for DM Mono\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Lobster"
+   },
+   "want_re": "^5 pairing\\(s\\) for Lobster\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Comfortaa"
+   },
+   "want_re": "^5 pairing\\(s\\) for Comfortaa\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Be Vietnam Pro"
+   },
+   "want_re": "^5 pairing\\(s\\) for Be Vietnam Pro\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Abel"
+   },
+   "want_re": "^5 pairing\\(s\\) for Abel\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Maven Pro"
+   },
+   "want_re": "^5 pairing\\(s\\) for Maven Pro\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Shadows Into Light"
+   },
+   "want_re": "^5 pairing\\(s\\) for Shadows Into Light\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Lilita One"
+   },
+   "want_re": "^5 pairing\\(s\\) for Lilita One\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Domine"
+   },
+   "want_re": "^5 pairing\\(s\\) for Domine\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Asap"
+   },
+   "want_re": "^5 pairing\\(s\\) for Asap\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Questrial"
+   },
+   "want_re": "^5 pairing\\(s\\) for Questrial\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Albert Sans"
+   },
+   "want_re": "^5 pairing\\(s\\) for Albert Sans\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Marcellus"
+   },
+   "want_re": "^5 pairing\\(s\\) for Marcellus\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Geologica"
+   },
+   "want_re": "^5 pairing\\(s\\) for Geologica\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Onest"
+   },
+   "want_re": "^5 pairing\\(s\\) for Onest\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Archivo Narrow"
+   },
+   "want_re": "^5 pairing\\(s\\) for Archivo Narrow\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Great Vibes"
+   },
+   "want_re": "^5 pairing\\(s\\) for Great Vibes\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Varela Round"
+   },
+   "want_re": "^5 pairing\\(s\\) for Varela Round\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "League Spartan"
+   },
+   "want_re": "^5 pairing\\(s\\) for League Spartan\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "curated"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Play"
+   },
+   "not_re": "pairing\\(s\\) for Playfair",
+   "note": "guard",
+   "want_re": "^0 results"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Google Sans Flex"
+   },
+   "want_re": "pairing\\(s\\) for Google Sans \\(closest match",
+   "min_pairs": 1,
+   "note": "alias"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Hamburg",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Hamburg, Germany",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Hamburg, Germany",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Hamburg, Germany",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "München",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Munich, Germany",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Cologne",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Köln, Germany",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "sao paulo",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "São Paulo, Brazil",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Reykjavik",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Reykjavik, Iceland",
+   "note": "city",
+   "legacy": true
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Portland, OR",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Portland, Oregon, USA",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "London, Ontario",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "London, Ontario, Canada",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Cape Town",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Cape Town, South Africa",
+   "note": "city",
+   "legacy": true
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Kiev",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Kyiv, Ukraine",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "St. Petersburg",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Saint Petersburg, Russia",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Bangalore",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Bengaluru, India",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Zurich",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Zürich, Switzerland",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Den Haag",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "The Hague, The Netherlands",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Wellington, NZ",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Wellington, New Zealand",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Honolulu, HI",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Honolulu, Hawaii, USA",
+   "note": "city"
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Tokyo",
+    "date": "2026-06-21",
+    "time": "22:00",
+    "mag_limit": 3
+   },
+   "place": "Tokyo, Japan",
+   "note": "city",
+   "legacy": true
+  },
+  {
+   "tool": "make_star_map",
+   "args": {
+    "city": "Atlantis",
+    "date": "2026-06-21"
+   },
+   "err": true,
+   "want_re": "^Unknown city \"Atlantis\"; pass lat and lon instead\\.",
+   "note": "unknown city"
+  }
+ ]
+}

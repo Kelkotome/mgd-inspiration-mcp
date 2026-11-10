@@ -143,6 +143,11 @@ Supports an optional `BASE_PATH` var to mount at `madegooddesigns.com/inspiratio
 **Design decisions** — niche = typography/brand design · attribution = store URL,
 display source as plain text (no outbound link, anti-spam) · stack = Cloudflare serverless.
 
+**Bundled third-party data** — star map: Yale Bright Star Catalogue (SAO TDC / NASA HEASARC) and d3-celestial
+constellation lines (BSD 3-Clause, © 2015 Olaf Frohn), see `src/tools_core72.js`; star map city lookup: GeoNames
+(https://www.geonames.org/, CC BY 4.0), built by `build_cities.py` into `src/cities_geonames.js`, credited in every
+answer that uses it.
+
 ---
 
 Built by [Made Good Designs](https://madegooddesigns.com) · a privacy-first, ad-free design resource.
