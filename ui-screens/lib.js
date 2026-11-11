@@ -55,6 +55,8 @@ const FAMILIES = {
   crm: { name: "Pipeloom", cat: "crm", desc: "a sales CRM for small B2B teams", type: { web: "SaaS web app", mobile: "Mobile app" } },
   // 9-Nov-2026 gap round r2 (mcp-gap-r2): "loyalty stamp card / wallet pass" queries. Same bakery-café as the cafe website family, as its customer app.
   cafeapp: { name: "Kiln & Crumb", cat: "food", desc: "the rewards and order-ahead app of a bakery-café with three locations", type: { web: "Customer web app", mobile: "Mobile app" } },
+  // 11-Nov-2026 MCP gaps r2: real zero searches "mobile dating swipe dark luxury" / "dating app swipe". Invented name (no dating app found by that name).
+  dating: { name: "Duskwell", cat: "dating", desc: "a dating app for people who would rather meet in person soon, with daily picks, prompts and date plans", type: { web: "Web app", mobile: "Mobile app" } },
   homeservices: { name: "Handmere", cat: "services", desc: "on-demand plumbers, electricians and cleaners booked by arrival window", type: { web: "Marketplace web app", mobile: "Mobile app" } },
   // 5-Nov-2026 template round (n12): industry website templates (type "page", full-length home pages). Keyword Planner:
   // "{industry} website template" / "{industry} website design" worldwide. ecommerce/saas/ai reuse commerce/marketing/ai.

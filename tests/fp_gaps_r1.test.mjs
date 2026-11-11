@@ -40,7 +40,7 @@ try {
 
   // 3. the 30 curated fonts
   const C = Object.values(CURATED);
-  ok(C.length === 30, `30 curated fonts (got ${C.length})`);
+  ok(C.length === 67, `67 curated fonts: 30 r1 + 37 mcp-gaps-r2 (got ${C.length})`);
   for (const v of C) {
     ok(!DATA[v.font.toLowerCase()], `${v.font}: not also a guide font`);
     ok(GF.has(v.font) && v.page === null && v.curated === true, `${v.font}: Google Fonts family, page null, curated`);

@@ -11,6 +11,11 @@ import { nestedPatternPath, INDUSTRIES, PLATFORMS } from "./ui_tree.js";
 
 // pattern id -> [slug, H1]. The H1 carries the searched phrase; the slug is that phrase without "design/examples".
 export const PATTERN_SEO = {
+  // 11-Nov-2026 MCP gaps r2: dating app set, slugs chosen by hand (not checked in Keyword Planner).
+  "dating-swipe": ["dating-app-ui", "Dating app UI examples: swipe cards and match screens"],
+  "dating-profile": ["dating-profile-ui", "Dating profile and filters UI examples"],
+  "dating-chat": ["dating-app-chat-ui", "Dating app chat and matches UI examples"],
+  "dating-onboarding": ["dating-app-onboarding-ui", "Dating app onboarding UI examples"],
   // 9-Nov-2026 gap round r2 (mcp-gap-r2): slugs chosen by hand (not checked in Keyword Planner).
   "payroll": ["payroll-ui", "Payroll UI examples"],
   "timesheet": ["timesheet-ui", "Timesheet UI examples"],

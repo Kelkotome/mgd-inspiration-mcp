@@ -4636,5 +4636,81 @@
     "Put the outline up when tickets go on sale and fill in sessions as speakers confirm. Mark anything still to be confirmed."
    ]
   ]
+ },
+ "dating-swipe": {
+  "intro": "Dating app UI examples: swipe cards and match screens. These examples show a discover screen with a stack of swipeable profile cards (full-bleed photo, name, age, a photo-verified badge, job, distance and interest chips), undo, pass, save and like buttons with swipe and keyboard hints, a profile details panel on desktop, and the screen people see when they both like each other, with suggested openers taken from the other profile and a message box, in eight visual styles, light and dark, on desktop and mobile. Everything is original: an invented app, invented people and illustrated photos, not a copy of any real dating app.",
+  "tips": [
+   "Keep pass and like the two largest buttons and the same size, so neither choice feels pushed.",
+   "Put name, age, distance and two or three interests on the card itself; the rest belongs one tap away.",
+   "Offer undo for the last pass, because swipes are fast and mistakes are common.",
+   "On a match, suggest openers drawn from the other person's own answers instead of a blank box."
+  ],
+  "faq": [
+   [
+    "What does a dating app swipe screen need?",
+    "A card with a large photo and photo position dots, the name, age, distance and a few interests, clear pass and like buttons that mirror the swipe gestures, an undo for the last swipe and a way to open the full profile."
+   ],
+   [
+    "What should a match screen show?",
+    "Both photos, a short line saying you both liked each other, how long the match stays open, what you have in common and a message box with suggested first lines, plus a way to keep browsing."
+   ]
+  ]
+ },
+ "dating-profile": {
+  "intro": "Dating profile and filters UI examples. These examples show a full dating profile with a large photo and more photos, a photo-verified badge, a short bio, basics such as height, job, education and what someone is looking for, prompt answer cards and interests with the shared ones highlighted, and discovery filters with an age range slider, a distance slider, who to show, looking-for chips and verified-only toggles, in eight visual styles, light and dark, on desktop and mobile.",
+  "tips": [
+   "Lead with the photo, then the facts people check first: name, age, distance and when they were last active.",
+   "Use prompts to give people something to reply to; a free-text bio alone rarely starts a conversation.",
+   "Show how many people the current filters match, so narrowing them never ends in an empty feed.",
+   "Keep report and block on every profile, small but always in the same place."
+  ],
+  "faq": [
+   [
+    "What goes on a dating app profile?",
+    "Photos, first name and age, distance, a short bio, basics such as height, work, education and what the person is looking for, two to four prompt answers and a set of interests."
+   ],
+   [
+    "Which filters should a dating app offer?",
+    "Age range, distance and who to show at minimum, then what people are looking for and a verified-only switch; finer preferences such as height or drinking can sit one level down."
+   ]
+  ]
+ },
+ "dating-chat": {
+  "intro": "Dating app chat and matches UI examples. These examples show a matches inbox with a row of new matches and the days each one has left, a searchable conversation list with previews, unread counts and your-turn badges, and a chat thread with a reply that quotes a profile prompt, a voice note, a date plan card both people accepted, a read receipt and a typing indicator, in eight visual styles, light and dark, on desktop and mobile.",
+  "tips": [
+   "Separate new matches from ongoing conversations, and show which matches are about to expire.",
+   "Let people reply to a specific prompt or photo; the quote gives the first message context.",
+   "Make a planned date a structured card with time and place, so both people see the same details.",
+   "Keep safety actions such as share plans, unmatch and report within one tap of the thread."
+  ],
+  "faq": [
+   [
+    "What should a dating app chat list show?",
+    "New matches as a row of photos, then conversations with the name, a one-line preview, the time, unread counts and a hint when it is your turn to reply."
+   ],
+   [
+    "How should a date plan look in a chat?",
+    "As a card in the thread with the activity, day, time and place, whether both people have said yes, and an option to share the plan with a friend."
+   ]
+  ]
+ },
+ "dating-onboarding": {
+  "intro": "Dating app onboarding UI examples. These examples show sign-up steps for a dating app: an about-you step with first name, birthday (only the age is shown), gender, who to show and what someone is looking for, and a photos step with a 3 by 2 photo grid, a main photo, drag-to-reorder and remove controls, photo tips and a first profile prompt, in eight visual styles, light and dark, on desktop and mobile.",
+  "tips": [
+   "Say what other people will see and what stays private, such as the birthday and surname.",
+   "Ask for a minimum number of photos and explain that the first one appears in other people's picks.",
+   "Use option cards for what people are looking for; they read faster than a dropdown.",
+   "Show the step count, and let people skip steps that can wait until later."
+  ],
+  "faq": [
+   [
+    "What does dating app onboarding ask for?",
+    "First name, birthday, gender, who to show, what the person is looking for, photos, one or more prompt answers and interests, often followed by a selfie check for a verified badge."
+   ],
+   [
+    "How many photo slots should a dating profile have?",
+    "Six slots in a 3 by 2 grid is common, with two required, the first marked as the main photo and the order changeable by dragging."
+   ]
+  ]
  }
 }

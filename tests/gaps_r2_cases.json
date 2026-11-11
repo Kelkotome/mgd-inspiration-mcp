@@ -1,0 +1,535 @@
+{
+ "about": "mcp-gaps-r2 (11-Nov-2026) replay cases: tests/gaps_r2_rpc.py runs them against a local wrangler dev or live. Fonts: the 7 real zeros of 10/11 Nov + 30 popular display/serif families (tests/gaps_r2_fonts.json); UI: the 2 real dating zeros + phrasings, first pattern must be the dating one (hit@1).",
+ "cases": [
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Forum"
+   },
+   "want_re": "^5 pairing\\(s\\) for Forum\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "real zero 10/11 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Prata"
+   },
+   "want_re": "^5 pairing\\(s\\) for Prata\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "real zero 10/11 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Bellefair"
+   },
+   "want_re": "^5 pairing\\(s\\) for Bellefair\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "real zero 10/11 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Tenor Sans"
+   },
+   "want_re": "^5 pairing\\(s\\) for Tenor\\ Sans\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "real zero 10/11 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Gilda Display"
+   },
+   "want_re": "^5 pairing\\(s\\) for Gilda\\ Display\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "real zero 10/11 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Libre Caslon Text"
+   },
+   "want_re": "^5 pairing\\(s\\) for Libre\\ Caslon\\ Text\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "real zero 10/11 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Italiana"
+   },
+   "want_re": "^5 pairing\\(s\\) for Italiana\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "real zero 10/11 Nov"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Titan One"
+   },
+   "want_re": "^5 pairing\\(s\\) for Titan\\ One\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Fugaz One"
+   },
+   "want_re": "^5 pairing\\(s\\) for Fugaz\\ One\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Sanchez"
+   },
+   "want_re": "^5 pairing\\(s\\) for Sanchez\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Righteous"
+   },
+   "want_re": "^5 pairing\\(s\\) for Righteous\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Vollkorn"
+   },
+   "want_re": "^5 pairing\\(s\\) for Vollkorn\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Cardo"
+   },
+   "want_re": "^5 pairing\\(s\\) for Cardo\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Arapey"
+   },
+   "want_re": "^5 pairing\\(s\\) for Arapey\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Bree Serif"
+   },
+   "want_re": "^5 pairing\\(s\\) for Bree\\ Serif\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "DM Serif Text"
+   },
+   "want_re": "^5 pairing\\(s\\) for DM\\ Serif\\ Text\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Alegreya"
+   },
+   "want_re": "^5 pairing\\(s\\) for Alegreya\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Gelasio"
+   },
+   "want_re": "^5 pairing\\(s\\) for Gelasio\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Aleo"
+   },
+   "want_re": "^5 pairing\\(s\\) for Aleo\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Libre Caslon Display"
+   },
+   "want_re": "^5 pairing\\(s\\) for Libre\\ Caslon\\ Display\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Patua One"
+   },
+   "want_re": "^5 pairing\\(s\\) for Patua\\ One\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "STIX Two Text"
+   },
+   "want_re": "^5 pairing\\(s\\) for STIX\\ Two\\ Text\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Quattrocento"
+   },
+   "want_re": "^5 pairing\\(s\\) for Quattrocento\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Gabarito"
+   },
+   "want_re": "^5 pairing\\(s\\) for Gabarito\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Playball"
+   },
+   "want_re": "^5 pairing\\(s\\) for Playball\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Ultra"
+   },
+   "want_re": "^5 pairing\\(s\\) for Ultra\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Sorts Mill Goudy"
+   },
+   "want_re": "^5 pairing\\(s\\) for Sorts\\ Mill\\ Goudy\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Concert One"
+   },
+   "want_re": "^5 pairing\\(s\\) for Concert\\ One\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Limelight"
+   },
+   "want_re": "^5 pairing\\(s\\) for Limelight\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Kreon"
+   },
+   "want_re": "^5 pairing\\(s\\) for Kreon\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Cantata One"
+   },
+   "want_re": "^5 pairing\\(s\\) for Cantata\\ One\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Frank Ruhl Libre"
+   },
+   "want_re": "^5 pairing\\(s\\) for Frank\\ Ruhl\\ Libre\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Calistoga"
+   },
+   "want_re": "^5 pairing\\(s\\) for Calistoga\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Hepta Slab"
+   },
+   "want_re": "^5 pairing\\(s\\) for Hepta\\ Slab\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Petrona"
+   },
+   "want_re": "^5 pairing\\(s\\) for Petrona\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Gloock"
+   },
+   "want_re": "^5 pairing\\(s\\) for Gloock\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Baskervville"
+   },
+   "want_re": "^5 pairing\\(s\\) for Baskervville\\. Made Good Designs has no dedicated",
+   "min_pairs": 5,
+   "note": "popular display/serif, 0 results before"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "forum font pairing"
+   },
+   "want_re": "^5 pairing\\(s\\) for Forum\\.",
+   "min_pairs": 5,
+   "note": "spelling"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "prata font pairing"
+   },
+   "want_re": "^5 pairing\\(s\\) for Prata\\.",
+   "min_pairs": 5,
+   "note": "spelling"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "bellefair font pairing"
+   },
+   "want_re": "^5 pairing\\(s\\) for Bellefair\\.",
+   "min_pairs": 5,
+   "note": "spelling"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "tenor sans font pairing"
+   },
+   "want_re": "^5 pairing\\(s\\) for Tenor\\ Sans\\.",
+   "min_pairs": 5,
+   "note": "spelling"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "gilda display font pairing"
+   },
+   "want_re": "^5 pairing\\(s\\) for Gilda\\ Display\\.",
+   "min_pairs": 5,
+   "note": "spelling"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "libre caslon text font pairing"
+   },
+   "want_re": "^5 pairing\\(s\\) for Libre\\ Caslon\\ Text\\.",
+   "min_pairs": 5,
+   "note": "spelling"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "italiana font pairing"
+   },
+   "want_re": "^5 pairing\\(s\\) for Italiana\\.",
+   "min_pairs": 5,
+   "note": "spelling"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Play"
+   },
+   "want_re": "^0 results",
+   "note": "guard: a Google Fonts family without an entry is not stretched (the one font zero)"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Playfair Display"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for Playfair Display\\. Source: https://madegooddesigns\\.com/",
+   "min_pairs": 5,
+   "note": "guide font unchanged"
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Cormorant Garamond"
+   },
+   "want_re": "^\\d+ pairing\\(s\\) for Cormorant \\(closest match",
+   "min_pairs": 5,
+   "note": "user query 10-Nov, unchanged"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "mobile dating swipe dark luxury"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-swipe",
+   "note": "real zero 10/11 Nov"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "dating app swipe"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-swipe",
+   "note": "real zero 10/11 Nov, still 0 live after gaps r1"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "tinder-like swipe cards"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-swipe",
+   "note": "brand folding"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "swipe"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-swipe",
+   "note": "phrasing"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "dating match screen"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-swipe",
+   "note": "phrasing"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "it's a match screen"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-swipe",
+   "note": "phrasing"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "dating profile prompts"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-profile",
+   "note": "phrasing"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "dating app filters age range distance"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-profile",
+   "note": "phrasing"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "dating app chat"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-chat",
+   "note": "phrasing"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "new matches list"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-chat",
+   "note": "phrasing"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "dating app onboarding photos"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-onboarding",
+   "note": "phrasing"
+  },
+  {
+   "tool": "search_ui_screens",
+   "args": {
+    "query": "dating app sign up"
+   },
+   "want_re": "^[1-9]\\d* UI screen",
+   "top": "dating-onboarding",
+   "note": "phrasing"
+  }
+ ]
+}

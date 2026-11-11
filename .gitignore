@@ -36,3 +36,5 @@ wrangler.gap2.jsonc
 wrangler.err.jsonc
 wrangler.gaps.jsonc
 gaps-e2e.*
+ui-screens/out-gaps2
+wrangler.gaps2.jsonc

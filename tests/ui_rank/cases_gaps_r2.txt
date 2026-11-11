@@ -1,0 +1,45 @@
+# MCP gaps r2 (11-Nov-2026): the dating app set. The first two are the real zero-result searches of 10/11 Nov (mcp_report.py 7); the rest are
+# phrasings written by the agent that built the screens (overfit risk). Valid once ui-screens/out-gaps2 is in the row dump
+# (with_pending.mjs, UI_OUTS=ui-screens/out-gaps2). hit@1 = the first result's pattern.
+mobile dating swipe dark luxury | dating-swipe
+dating app swipe | dating-swipe
+dating app | dating-swipe
+dating app ui | dating-swipe
+swipe | dating-swipe
+swipe cards | dating-swipe
+swipe card stack | dating-swipe
+tinder-like swipe cards | dating-swipe
+tinder like app | dating-swipe
+tinder clone ui | dating-swipe
+bumble style dating app | dating-swipe
+hinge style profile prompts | dating-profile
+swipe left swipe right | dating-swipe
+swipe right to like | dating-swipe
+dating match screen | dating-swipe
+it's a match screen | dating-swipe
+match screen | dating-swipe
+mutual match dating | dating-swipe
+dating app match | dating-swipe
+dating app swipe dark mode | dating-swipe
+dating app luxury | dating-swipe
+dating discover cards mobile | dating-swipe
+dating profile | dating-profile
+dating app profile with photos and prompts | dating-profile
+dating profile prompts | dating-profile
+dating app filters age range distance | dating-profile
+dating preferences settings | dating-profile
+age range slider | dating-profile
+dating chat | dating-chat
+dating app chat | dating-chat
+dating app messages | dating-chat
+new matches list | dating-chat
+dating inbox matches and conversations | dating-chat
+chat with match plan a date | dating-chat
+dating app chat thread voice note | dating-chat
+dating onboarding | dating-onboarding
+dating app sign up | dating-onboarding
+dating app onboarding photos | dating-onboarding
+add profile photos grid | dating-onboarding
+create dating profile | dating-onboarding
+dating app | dating-swipe | platform=web
+dating app chat | dating-chat | platform=mobile

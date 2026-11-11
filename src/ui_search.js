@@ -244,6 +244,11 @@ export const PATTERN_ALIASES = {
   "plan-checkout": ["subscription checkout", "saas checkout", "plan checkout", "upgrade checkout", "seats checkout", "free trial checkout", "start free trial", "trial card required", "annual billing toggle", "billing checkout dark", "order summary tax", "trial timeline"],
   "compact-header": ["compact header", "dark header", "logo badge", "compact logo badge dark header", "pill navigation", "pill nav header", "app top bar", "app header", "workspace switcher", "environment switcher", "top bar with breadcrumbs", "header with command k search"],
   "loyalty-card": ["loyalty card", "stamp card", "digital stamp card", "coffee stamp card", "loyalty program app", "rewards app", "punch card", "wallet pass", "loyalty wallet pass", "membership pass with qr code", "loyalty stamp card wallet pass on phone", "cafe rewards"],
+  // 11-Nov-2026 MCP gaps r2: dating app set (real zeros "mobile dating swipe dark luxury", "dating app swipe"). Brand names are folded in SYN_PHRASES.
+  "dating-swipe": ["dating app", "dating app ui", "dating swipe", "swipe cards", "swipe card stack", "swipeable cards", "swipe to like", "swipe left swipe right", "swipe right to like", "card stack", "profile card stack", "dating discover", "match screen", "mutual match", "new match screen", "you matched", "daily picks"],
+  "dating-profile": ["dating profile", "dating app profile", "dating profile prompts", "profile prompts", "dating filters", "dating preferences", "discovery filters", "age range slider", "distance filter", "match preferences", "dating settings"],
+  "dating-chat": ["dating chat", "dating app chat", "dating messages", "dating inbox", "new matches", "matches list", "match list", "matches and messages", "chat with a match", "date plan", "plan a date", "date proposal"],
+  "dating-onboarding": ["dating onboarding", "dating app onboarding", "dating sign up", "dating app signup", "create dating profile", "dating profile setup", "add your photos", "photo upload grid", "upload profile photos"],
 };
 // Words that only point at a nearby pattern (used for suggestions when nothing matches, never as matches).
 const HINTS = { homeservices: ["pro-directory", "service-booking", "booking-details", "class-schedule"], shoe: ["product-detail", "cart"], sneaker: ["product-detail", "cart"], shirt: ["product-detail"], dress: ["product-detail"],
@@ -291,6 +296,10 @@ export const SYN_PHRASES = [
   [/\bpay[\s-]?runs?\b|\bpay[\s-]?rolls?\b|\bsalary[\s-]runs?\b/g, "payroll"],
   [/\btime[\s-]?sheets?\b|\btime[\s-]?cards?\b|\btime[\s-]track(?:ing|er)\b|\bclock[\s-]?ins?(?:[\s-](?:and|\/)[\s-]?clock[\s-]?outs?)?\b|\bhours[\s-]logged\b|\bhours[\s-]log\b/g, "timesheet"],
   [/\bnav[\s-]?bars?\b|\bnavigation[\s-]bars?\b|\btop[\s-]?bars?\b|\bapp[\s-]?bars?\b|\bmenu[\s-]?bars?\b|\bheader[\s-]bars?\b/g, "navbar"],
+  // 11-Nov-2026 MCP gaps r2: dating app brand names in a query mean "a dating app like that" (none of our screens copy one).
+  [/\btinder(?:[\s-]*(?:like|style|esque|type|clone|inspired))?\b/g, "dating app swipe"],
+  [/\b(?:bumble|hinge|badoo|okcupid|grindr|feeld|happn)(?:[\s-]*(?:like|style|esque|type|clone|inspired))?\b/g, "dating app"],
+  [/\bswipe[\s-]?(?:left|right)(?:[\s-]+(?:or|and|\/)[\s-]*(?:left|right))?\b/g, "swipe"], [/\bit['’]?s a match\b/g, "mutual match"],
   [/\bpop[\s-]ups?\b/g, "popup"], [/\blight[\s-]?box(?:es)?\b/g, "lightbox"],
 ];
 export const SYN_GROUPS = [
