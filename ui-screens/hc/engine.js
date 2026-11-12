@@ -48,6 +48,15 @@ const GLYPH = {
   flower: '<circle cx="32" cy="22" r="6"/><path d="M32 16c-3-8 9-8 6 0M38 22c8-3 8 9 0 6M32 28c3 8-9 8-6 0M26 22c-8 3-8-9 0-6"/><path d="M32 28v30M32 46c-8 0-14-6-14-12 8 0 14 6 14 12zM32 40c8 0 14-6 14-12-8 0-14 6-14 12z"/>',
   confetti: '<path d="M8 56l12-34 22 22z"/><path d="M14 40l8 8M18 30l14 14"/><path d="M40 8v8M36 12h8M52 22l4-4M50 34h8M30 14c4 2 4 6 8 6"/><circle cx="48" cy="12" r="2"/><circle cx="56" cy="44" r="2"/>',
   lanyard: '<path d="M16 6l16 22 16-22"/><rect x="18" y="28" width="28" height="30" rx="3"/><circle cx="32" cy="40" r="5"/><path d="M24 52h16"/>',
+  // portfolios and creative studios (13-Nov-2026, sixth industry)
+  brackets: '<path d="M22 14L8 32l14 18M42 14l14 18-14 18"/><path d="M36 10L28 54"/>',
+  pentool: '<path d="M32 6l16 26-10 22H26L16 32z"/><circle cx="32" cy="30" r="4"/><path d="M32 6v20M24 58h16"/>',
+  aperture: '<circle cx="32" cy="32" r="24"/><path d="M32 8l10 18M56 32l-20 2M44 52l-10-16M20 52l10-18M8 32l20-2M20 12l12 16"/>',
+  compass: '<circle cx="32" cy="10" r="4"/><path d="M30 14L14 56M34 14l16 42M20 40h24"/><path d="M8 58h48"/>',
+  lamp: '<path d="M20 8h24l8 22H12z"/><path d="M32 30v20M20 56h24M32 50v6"/>',
+  megaphone: '<path d="M8 26h10l26-14v40L18 38H8z"/><path d="M18 38l4 16h8l-4-16M52 24v16"/>',
+  frameart: '<rect x="8" y="8" width="48" height="48"/><rect x="16" y="16" width="32" height="32"/><path d="M16 40l10-10 8 8 6-6 8 8"/>',
+  person: '<circle cx="32" cy="20" r="10"/><path d="M12 56c2-12 10-20 20-20s18 8 20 20"/>',
 };
 const glyph = (c, size, sw = 2.2) => `<svg class="i" width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPH[c.motif]}</svg>`;
 // Abstract illustration, drawn from the niche's glyph. Original artwork; a site owner swaps it for a real photo.
@@ -927,6 +936,184 @@ const progL = (p, st, c) => { const O = c.occasion, P = c.programme;
 <section class="pg-end" id="visit"><div class="sk-wrap pg-endgrid"><div class="sk-stack"><h2 class="sk-h2">${esc(c.cta.h2)}</h2><p class="muted">${esc(c.cta.lede)}</p><a class="btn sk-btn-lg" href="#reply">${esc(c.hero.cta)}</a></div>${c.visit.locations.map((l) => `<div class="pg-loc"><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></div>`).join("")}</div></section>
 </main>${notice(c)}${foot(p, c)}`, BASE + WD_BASE + progCss); };
 
+// ==== portfolio and creative studio layouts (13-Nov-2026, sixth industry). Unique to portfolios: they need c.work, c.caseStudy, c.cv and c.art. ====
+// Project images are drawn in theme tokens (posters, books, screens, rooms, buildings, photos), so every style variation recolours them and no page
+// carries a real client's work. Owners swap in their own images.
+const PF_ART = ["poster", "book", "screen", "phone", "building", "room", "chair", "photo", "letter", "mark", "pack", "plan"];
+const pfArt = (kind, w, h, i, label) => {
+  const a = MIX("var(--accent)", 62, "var(--text)"), b = MIX("var(--primary)", 52), cc = MIX("var(--accent)", 30), dark = MIX("var(--primary)", 74, "var(--text)"), pale = MIX("var(--bg)", 88, "var(--accent)"), paper = MIX("var(--bg)", 96, "var(--text)");
+  const f = (x) => `style="fill:${x}"`, s = (x, wd) => `style="fill:none;stroke:${x};stroke-width:${wd};stroke-linecap:round;stroke-linejoin:round"`;
+  const lines = (x, y, n, wd, gap = 12, c = dark) => Array.from({ length: n }, (_, k) => `<rect x="${x}" y="${y + k * gap}" width="${wd - (k % 3) * 14}" height="5" rx="2" ${f(c)}/>`).join("");
+  const k = {
+    poster: `<rect x="96" y="22" width="132" height="190" ${f(paper)}/><rect x="108" y="34" width="108" height="108" ${f(b)}/><circle cx="162" cy="88" r="34" ${f(a)}/><path d="M108 142l40-46 28 30 14-14 26 30z" ${f(dark)}/>${lines(108, 156, 3, 96)}<rect x="244" y="52" width="92" height="132" ${f(paper)}/><rect x="254" y="62" width="72" height="26" ${f(dark)}/><rect x="254" y="96" width="72" height="72" ${f(cc)}/><path d="M254 168l36-44 36 44z" ${f(a)}/>`,
+    book: `<path d="M70 70h120v140H70z" ${f(paper)}/><path d="M190 70h120v140H190z" ${f(pale)}/><path d="M190 70v140" ${s(dark, 3)}/>${lines(84, 92, 7, 92)}<rect x="204" y="88" width="92" height="64" ${f(b)}/><circle cx="250" cy="120" r="18" ${f(a)}/>${lines(204, 166, 3, 92)}<rect x="40" y="186" width="30" height="40" ${f(dark)}/><rect x="330" y="160" width="34" height="66" ${f(cc)}/>`,
+    screen: `<rect x="60" y="28" width="280" height="176" rx="10" ${f(dark)}/><rect x="72" y="40" width="256" height="152" rx="4" ${f(paper)}/><rect x="72" y="40" width="256" height="22" ${f(pale)}/><circle cx="84" cy="51" r="4" ${f(a)}/><rect x="88" y="78" width="110" height="14" rx="3" ${f(dark)}/>${lines(88, 102, 3, 100, 11, b)}<rect x="88" y="142" width="54" height="22" rx="11" ${f(a)}/><rect x="214" y="74" width="98" height="98" rx="6" ${f(cc)}/><path d="M228 158l26-34 18 22 12-10 14 22z" ${f(b)}/><path d="M160 204h80l14 24H146z" ${f(dark)}/>`,
+    phone: `<rect x="144" y="18" width="112" height="222" rx="18" ${f(dark)}/><rect x="152" y="30" width="96" height="198" rx="10" ${f(paper)}/><rect x="164" y="46" width="72" height="54" rx="6" ${f(cc)}/>${lines(164, 112, 4, 72, 12, b)}<rect x="164" y="170" width="72" height="20" rx="10" ${f(a)}/><rect x="270" y="60" width="96" height="150" rx="12" ${f(pale)}/>${lines(282, 80, 6, 72, 14, dark)}<rect x="34" y="80" width="96" height="130" rx="12" ${f(b)}/><circle cx="82" cy="130" r="24" ${f(paper)}/>`,
+    building: `<path d="M80 212V96l80-48 80 48v116z" ${f(pale)}/><path d="M80 96l80-48 80 48" ${s(dark, 4)}/><rect x="240" y="120" width="96" height="92" ${f(b)}/>${[0, 1, 2].map((r) => [0, 1, 2].map((c2) => `<rect x="${100 + c2 * 40}" y="${110 + r * 30}" width="22" height="18" ${f(r === 2 && c2 === 1 ? dark : cc)}/>`).join("")).join("")}${[0, 1].map((r) => [0, 1, 2].map((c2) => `<rect x="${252 + c2 * 28}" y="${134 + r * 34}" width="16" height="22" ${f(paper)}/>`).join("")).join("")}<path d="M40 212h330" ${s(dark, 4)}/><circle cx="56" cy="186" r="20" ${f(MIX("var(--primary)", 40))}/><circle cx="356" cy="190" r="16" ${f(MIX("var(--primary)", 40))}/>`,
+    room: `<rect y="0" width="400" height="176" ${f(MIX("var(--primary)", 16))}/><rect x="250" y="30" width="96" height="110" ${f(paper)}/><path d="M298 30v110M250 85h96" ${s(dark, 3)}/><rect x="60" y="120" width="160" height="44" rx="12" ${f(b)}/><rect x="60" y="100" width="160" height="34" rx="12" ${f(MIX("var(--primary)", 64))}/><rect x="70" y="164" width="8" height="20" ${f(dark)}/><rect x="202" y="164" width="8" height="20" ${f(dark)}/><path d="M276 176v-50M262 126h28l-6-26h-16z" ${f(a)}/><rect x="96" y="40" width="70" height="46" ${f(cc)}/><ellipse cx="150" cy="214" rx="110" ry="14" ${f(MIX("var(--accent)", 24, "var(--bg)"))}/>`,
+    chair: `<path d="M150 70h100v70H150z" ${f(b)}/><path d="M140 140h120v24H140z" ${f(dark)}/><path d="M150 164l-16 52M250 164l16 52M176 164l-6 46M224 164l6 46" ${s(dark, 6)}/><circle cx="320" cy="96" r="30" ${f(cc)}/><path d="M320 126v86M296 212h48" ${s(dark, 5)}/><rect x="40" y="150" width="70" height="62" ${f(pale)}/><path d="M60 150c0-30 30-30 30 0" ${s(a, 6)}/>`,
+    photo: `<rect x="40" y="30" width="200" height="150" ${f(paper)}/><rect x="50" y="40" width="180" height="120" ${f(b)}/><circle cx="190" cy="70" r="16" ${f(pale)}/><path d="M50 160l60-62 40 40 26-24 54 46z" ${f(dark)}/><rect x="226" y="80" width="140" height="110" ${f(paper)}/><rect x="234" y="88" width="124" height="80" ${f(cc)}/><path d="M234 168l42-40 30 26 18-14 34 28z" ${f(a)}/>`,
+    letter: `<text x="64" y="196" style="fill:${dark};font:700 190px var(--font-h)">Aa</text><path d="M60 200h290" ${s(a, 3)}/><path d="M60 64h290M60 132h290" style="fill:none;stroke:${cc};stroke-width:1.5;stroke-dasharray:5 6"/><rect x="300" y="30" width="60" height="60" ${f(b)}/><text x="314" y="74" style="fill:${paper};font:700 36px var(--font-h)">g</text>`,
+    mark: `${[[70, 50], [170, 50], [270, 50]].map(([x, y], j) => `<rect x="${x}" y="${y}" width="80" height="80" rx="${[40, 8, 0][j]}" ${f([b, dark, a][j])}/>`).join("")}<path d="M90 90l20-20 20 20-20 20z" ${f(paper)}/><circle cx="210" cy="90" r="18" style="fill:none;stroke:${paper};stroke-width:6"/><path d="M290 110l20-40 20 40z" ${f(paper)}/>${lines(70, 156, 1, 280, 0, dark)}<rect x="70" y="176" width="120" height="16" ${f(cc)}/><rect x="200" y="176" width="70" height="16" ${f(b)}/><rect x="280" y="176" width="70" height="16" ${f(a)}/>`,
+    pack: `<path d="M90 88l60-30 60 30v116l-60 30-60-30z" ${f(b)}/><path d="M90 88l60 30 60-30M150 118v116" ${s(dark, 3)}/><rect x="108" y="128" width="28" height="44" ${f(paper)}/><rect x="236" y="70" width="70" height="140" rx="30" ${f(cc)}/><rect x="236" y="110" width="70" height="44" ${f(paper)}/><rect x="252" y="50" width="38" height="26" rx="4" ${f(dark)}/><rect x="318" y="150" width="52" height="60" rx="6" ${f(a)}/>`,
+    plan: `<rect x="40" y="26" width="320" height="200" ${f(paper)}/><path d="M60 46h160v110H60zM220 46h120v70H220zM220 116h120v90H220zM60 156h160v50H60z" ${s(dark, 4)}/><path d="M120 156v-14M220 82h-14M260 116v14" ${s(paper, 8)}/><rect x="80" y="70" width="60" height="30" rx="6" ${f(cc)}/><circle cx="290" cy="160" r="22" ${f(b)}/><rect x="244" y="62" width="40" height="22" ${f(a)}/><path d="M76 186h128" ${s(cc, 3)}/>`,
+  }[kind] || "";
+  return `<svg width="${w}" height="${h}" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(label || "Illustration of a project")}"><rect width="400" height="260" style="fill:${[MIX("var(--primary)", 12), MIX("var(--accent)", 14, "var(--bg)"), MIX("var(--primary)", 20, "var(--bg)")][((i % 3) + 3) % 3]}"/>${k}</svg>`;
+};
+const PF_BASE = `<style>
+.pf-chips{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+.pf-legend{float:left;padding:8px 4px 8px 0;font-size:14px;font-weight:600;color:var(--muted)}
+.pf-chip{position:relative;display:inline-flex}
+.pf-chip input{position:absolute;opacity:0;width:1px;height:1px}
+.pf-chip span{padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:var(--bg);font-weight:600;font-size:14px;cursor:pointer}
+.pf-chip input:checked+span{background:var(--text);color:var(--bg);border-color:var(--text)}
+.pf-chip input:focus-visible+span{outline:2px solid var(--primary);outline-offset:2px}
+</style>`;
+// Discipline filter: radio chips and :has() rules hide the cards of other disciplines (no script; without :has() every card stays visible).
+const pfFilter = (c, id) => `<fieldset class="pf-chips"><legend class="pf-legend">${esc(c.work.filterLabel)}</legend><label class="pf-chip"><input type="radio" name="${id}" id="${id}-all" checked><span>${esc(c.work.allLabel)}</span></label>${c.work.filters.map(([k, l]) => `<label class="pf-chip"><input type="radio" name="${id}" id="${id}-${k}"><span>${esc(l)}</span></label>`).join("")}</fieldset>`;
+const pfFilterCss = (c, id, card) => `<style>${c.work.filters.map(([k]) => `.${id}:has(#${id}-${k}:checked) .${card}:not([data-d~="${k}"]){display:none}`).join("")}</style>`;
+const discLabel = (c, k) => (c.work.filters.find((x) => x[0] === k) || [k, k])[1];
+
+// ---- work: the work first. A type-led hero over a ruled availability strip, filterable project cards, one case study told in steps ----
+const workCss = `<style>
+.wk-hero{padding-block:72px 40px;display:grid;gap:22px}
+.wk-h1{font-size:calc(84px * var(--hs));line-height:.98;max-width:1100px;letter-spacing:-.02em}
+.wk-heroin{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:40px;align-items:end}
+.wk-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:2px solid var(--text);margin-top:12px}
+.wk-strip>div{padding:16px 18px 16px 0;display:grid;gap:4px}
+.wk-strip>div+div{padding-left:18px;border-left:2px solid var(--text)}
+.wk-bar{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;margin-bottom:26px}
+.wk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 24px}
+.wk-card{display:grid;gap:10px;align-content:start}
+.wk-card .sk-photo{aspect-ratio:4/3;border:2px solid var(--text)}
+.wk-card:nth-child(1){grid-column:span 2;grid-row:span 2}
+.wk-card:nth-child(1) .sk-photo{aspect-ratio:16/11}
+.wk-meta{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:14px}
+.wk-case{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:56px;align-items:start}
+.wk-case .sk-photo{aspect-ratio:4/5;position:sticky;top:24px;border:2px solid var(--text)}
+.wk-brief{padding:20px 22px;border:2px solid var(--text);margin:22px 0 28px;display:grid;gap:6px}
+.wk-steps{list-style:none;counter-reset:w;display:grid;gap:0}
+.wk-steps li{counter-increment:w;display:grid;grid-template-columns:64px minmax(0,1fr);gap:4px 16px;padding:20px 0;border-top:2px solid var(--text)}
+.wk-steps li::before{content:counter(w,decimal-leading-zero);grid-row:span 2;font:var(--hw) calc(34px * var(--hs))/1 var(--font-h)}
+.wk-got{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.wk-svc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px}
+.wk-svc article{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 14px;padding:22px 0;border-top:2px solid var(--text)}
+.wk-svc .ic{grid-row:span 3;width:40px;height:40px;display:grid;place-items:center;background:var(--text);color:var(--bg)}
+.wk-svc .badge{justify-self:start}
+.wk-tags{display:flex;flex-wrap:wrap;gap:10px}
+.wk-tags span{padding:10px 16px;border:2px solid var(--text);font-weight:700}
+.wk-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:2px solid var(--text)}
+.wk-flow article{padding:24px 22px;display:grid;gap:8px;align-content:start}
+.wk-flow article+article{border-left:2px solid var(--text)}
+.wk-flow b{font:var(--hw) calc(40px * var(--hs))/1 var(--font-h)}
+.wk-t{width:100%;border-collapse:collapse;margin-top:18px}
+.wk-t th,.wk-t td{text-align:left;padding:14px 16px 14px 0;border-bottom:2px solid var(--text);vertical-align:top}
+.wk-t thead th{font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.wk-people{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.wk-people article{display:grid;gap:8px;align-content:start;padding:20px;border:2px solid var(--text)}
+.wk-people .avatar{width:52px;height:52px;border-radius:0}
+.wk-say{font:var(--hw) calc(40px * var(--hs))/1.15 var(--font-h);max-width:1000px}
+.wk-faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px}
+.wk-faq details{padding:18px 0;border-top:2px solid var(--text)}
+.wk-faq p{margin-top:8px;color:var(--muted)}
+.wk-contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:48px;align-items:start}
+.wk-locs{display:grid;gap:16px;margin-top:24px}
+.wk-locs article{display:grid;gap:2px;padding-top:14px;border-top:2px solid var(--text)}
+.wk-end{background:var(--text);color:var(--bg);padding:64px 0}
+.wk-end .muted{color:inherit;opacity:.72}
+.wk-end .btn{background:var(--bg);color:var(--text);border-color:var(--bg)}
+.wk-endin{display:flex;flex-wrap:wrap;gap:24px;align-items:end;justify-content:space-between}
+@media (max-width:1024px){.wk-heroin,.wk-case,.wk-contact{grid-template-columns:minmax(0,1fr);gap:28px}.wk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wk-case .sk-photo{position:static;aspect-ratio:16/10}.wk-card:nth-child(1){grid-row:auto}.wk-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.wk-flow article:nth-child(3){border-left:0}.wk-flow article:nth-child(n+3){border-top:2px solid var(--text)}.wk-people{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.wk-hero{padding-block:32px 28px}.wk-h1{font-size:calc(46px * var(--hs))}.wk-strip{grid-template-columns:minmax(0,1fr)}.wk-strip>div+div{padding-left:0;border-left:0;border-top:2px solid var(--text)}.wk-grid,.wk-svc,.wk-faq,.wk-people,.wk-flow{grid-template-columns:minmax(0,1fr)}.wk-card:nth-child(1){grid-column:auto}.wk-card:nth-child(1) .sk-photo{aspect-ratio:4/3}.wk-flow article+article{border-left:0;border-top:2px solid var(--text)}.wk-say{font-size:calc(26px * var(--hs))}.wk-t th:nth-child(3),.wk-t td:nth-child(3){display:none}}
+</style>`;
+const workL = (p, st, c) => { const W = c.work, S = c.caseStudy;
+  return K.page(st, `${alert(c)}${K.nav(p, [], c.hero.cta, null).replace('<nav class="sk-links" aria-label="Main"></nav>', navLinks(c)).replace('href="#' + K.slug(c.hero.cta) + '"', 'href="#visit"')}
+<main class="wk">
+<section class="sk-wrap wk-hero"><span class="sk-eyebrow">${esc(c.hero.eyebrow)}</span><h1 class="wk-h1">${esc(c.hero.h1)}</h1><div class="wk-heroin"><p class="sk-lede">${esc(c.hero.lede)}</p><div class="sk-row"><a class="btn primary sk-btn-lg" href="#visit">${esc(c.hero.cta)}</a><a class="btn sk-btn-lg" href="#work">${esc(c.hero.alt)}</a></div></div>
+<div class="wk-strip">${c.facts.map((f) => `<div><b>${esc(f.t)}</b><span class="muted">${esc(f.d)}</span></div>`).join("")}</div></section>
+<section class="sk-sec" id="work"><div class="sk-wrap wkf"><div class="sk-head"><div><span class="sk-eyebrow">${esc(W.eyebrow)}</span><h2 class="sk-h2">${esc(W.h2)}</h2></div><p class="muted">${esc(W.lede)}</p></div>
+<div class="wk-bar">${pfFilter(c, "wkf")}<span class="muted">${esc(W.note)}</span></div>
+<div class="wk-grid">${W.items.map((x, i) => `<article class="wk-card" data-d="${esc(x.disc)}"><div class="sk-photo">${pfArt(x.art, i ? 480 : 960, i ? 360 : 540, i, `Illustration: ${x.t}`)}</div><h3 class="sk-h3">${esc(x.t)}</h3><p class="muted">${esc(x.d)}</p><p class="wk-meta"><span class="badge">${esc(discLabel(c, x.disc))}</span><span>${esc(x.role)}</span><span class="muted">${esc(x.year)}</span></p></article>`).join("")}</div></div></section>
+<section class="sk-sec sk-alt"><div class="sk-wrap wk-case"><div class="sk-photo">${pfArt(c.art[0], 560, 700, 1, `Illustration: ${S.t}`)}</div><div><span class="sk-eyebrow">${esc(S.eyebrow)}</span><h2 class="sk-h2">${esc(S.t)}</h2><p class="sk-lede" style="margin-top:12px">${esc(S.lede)}</p>
+<div class="wk-brief"><b>${esc(S.briefLabel)}</b><span>${esc(S.brief)}</span></div><ol class="wk-steps">${S.steps.map(([h, d]) => `<li><b>${esc(h)}</b><span class="muted">${esc(d)}</span></li>`).join("")}</ol>
+<div class="wk-got">${S.delivered.map((x) => `<span class="badge">${esc(x)}</span>`).join("")}</div><p class="muted" style="margin-top:14px;font-size:13.5px">${esc(S.note)}</p></div></div></section>
+<section class="sk-sec" id="services"><div class="sk-wrap"><div class="sk-head"><div><span class="sk-eyebrow">${esc(c.services.eyebrow)}</span><h2 class="sk-h2">${esc(c.services.h2)}</h2></div><p class="muted">${esc(c.services.lede)}</p></div><div class="wk-svc">${c.services.items.map((s) => `<article><span class="ic">${ic(s.icon, 20)}</span><h3 class="sk-h3">${esc(s.t)}</h3><span class="muted">${esc(s.d)}</span><span class="badge">${esc(s.who)}</span></article>`).join("")}</div></div></section>
+<section class="sk-sec sk-alt"><div class="sk-wrap"><h2 class="sk-h2" style="margin-bottom:20px">${esc(c.index.h2)}</h2><p class="muted" style="margin-bottom:20px">${esc(c.index.lede)}</p><div class="wk-tags">${c.index.items.map((x) => `<span>${esc(x)}</span>`).join("")}</div></div></section>
+<section class="sk-sec" id="process"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.process.h2)}</h2></div><p class="muted">${esc(c.process.lede)}</p></div><div class="wk-flow">${c.process.steps.map((s, i) => `<article><b>${i + 1}</b><h3 class="sk-h3">${esc(s.t)}</h3><p class="muted">${esc(s.d)}</p></article>`).join("")}</div>
+<h2 class="sk-h2" style="margin-top:56px">${esc(c.table.h2)}</h2><p class="muted">${esc(c.table.lede)}</p><table class="wk-t"><thead><tr>${c.table.cols.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${c.table.rows.map((r) => `<tr>${r.map((x, i) => `<td>${i ? esc(x) : `<b>${esc(x)}</b>`}</td>`).join("")}</tr>`).join("")}</tbody></table>${c.table.note ? `<p class="muted" style="margin-top:12px;font-size:13px">${esc(c.table.note)}</p>` : ""}</div></section>
+<section class="sk-sec sk-alt" id="team"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.team.h2)}</h2></div><p class="muted">${esc(c.team.lede)}</p></div><div class="wk-people">${c.team.people.map((m) => `<article><span class="avatar">${esc(initials(m.n))}</span><h3 class="sk-h3">${esc(m.n)}</h3><p class="muted">${esc(m.r)}</p><p>${esc(m.b)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec"><div class="sk-wrap"><p class="wk-say">${esc(c.statement)}</p></div></section>
+<section class="sk-sec sk-alt" id="faq"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.faq.h2)}</h2></div></div><div class="wk-faq">${faqItems(c)}</div></div></section>
+<section class="sk-sec" id="visit"><div class="sk-wrap wk-contact"><div><h2 class="sk-h2">${esc(c.visit.h2)}</h2><p class="sk-lede">${esc(c.visit.lede)}</p><div class="wk-locs">${c.visit.locations.map((l) => `<article><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></article>`).join("")}<article><b>Email</b><span>${esc(c.visit.email)}</span></article></div></div>${contactForm(c)}</div></section>
+<section class="wk-end"><div class="sk-wrap wk-endin"><div class="sk-stack"><h2 class="sk-h2">${esc(c.cta.h2)}</h2><p class="muted">${esc(c.cta.lede)}</p></div><a class="btn sk-btn-lg" href="#visit">${esc(c.hero.cta)}</a></div></section>
+</main>${notice(c)}${foot(p, c)}`, BASE + PF_BASE + pfFilterCss(c, "wkf", "wk-card") + workCss); };
+
+// ---- index: the list first. A masthead name set large, a full-width numbered project index that opens row by row, a CV column ----
+const indexCss = `<style>
+.ix-mast{padding-block:64px 28px;border-bottom:1px solid var(--text)}
+.ix-name{font:var(--hw) calc(112px * var(--hs))/.92 var(--font-h);letter-spacing:-.035em;overflow-wrap:anywhere}
+.ix-sub{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:28px;margin-top:28px;align-items:start}
+.ix-sub h1{font-size:calc(26px * var(--hs));line-height:1.2}
+.ix-av{display:grid;gap:4px;padding-left:16px;border-left:3px solid var(--primary)}
+.ix-arts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;background:var(--text)}
+.ix-arts .sk-photo{aspect-ratio:3/2;border-radius:0}
+.ix-head{display:grid;grid-template-columns:72px minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) 80px;gap:16px;padding:12px 0;border-bottom:1px solid var(--text);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ix-list details{border-bottom:1px solid var(--border)}
+.ix-list summary{list-style:none;display:grid;grid-template-columns:72px minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) 80px;gap:16px;padding:22px 0;align-items:baseline}
+.ix-list summary::-webkit-details-marker{display:none}
+.ix-list summary b{font:var(--hw) calc(28px * var(--hs))/1.15 var(--font-h)}
+.ix-list summary .n{font-variant-numeric:tabular-nums;color:var(--muted)}
+.ix-list details[open] summary b{color:color-mix(in oklab,var(--primary) 82%,var(--text))}
+.ix-open{display:grid;grid-template-columns:72px minmax(0,1fr) minmax(0,1.3fr);gap:16px;padding:0 0 28px}
+.ix-open .sk-photo{aspect-ratio:16/10;grid-column:3}
+.ix-open p{grid-column:2;align-self:start}
+.ix-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;align-items:start}
+.ix-three h2{font-size:calc(22px * var(--hs));margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--text)}
+.ix-cv{list-style:none;display:grid;gap:0}
+.ix-cv li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.ix-cv time{grid-row:span 2;font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
+.ix-dl{display:grid;gap:0}
+.ix-dl div{padding:12px 0;border-bottom:1px solid var(--border);display:grid;gap:2px}
+.ix-big{font:var(--hw) calc(46px * var(--hs))/1.1 var(--font-h);max-width:1060px;letter-spacing:-.01em}
+.ix-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;counter-reset:s}
+.ix-steps article{counter-increment:s;display:grid;gap:8px;align-content:start;padding-top:14px;border-top:3px solid var(--text)}
+.ix-steps article::before{content:counter(s,upper-roman);font-weight:700;color:var(--muted);font-size:14px}
+.ix-t{width:100%;border-collapse:collapse;margin-top:18px}
+.ix-t th,.ix-t td{text-align:left;padding:13px 16px 13px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.ix-t thead th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--text)}
+.ix-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+.ix-faq details{padding:16px 0;border-bottom:1px solid var(--border)}
+.ix-faq p{margin-top:8px;color:var(--muted)}
+.ix-pts{list-style:none;display:grid;gap:0;margin-top:18px}
+.ix-pts li{padding:12px 0;border-bottom:1px solid var(--border)}
+.ix-pts li::before{content:"→ ";color:color-mix(in oklab,var(--primary) 80%,var(--text))}
+.ix-foot{border-top:1px solid var(--text);padding-top:28px;margin-top:56px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start}
+.ix-foot div{display:grid;gap:4px}
+@media (max-width:1024px){.ix-name{font-size:calc(76px * var(--hs))}.ix-sub,.ix-three{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ix-sub>:first-child,.ix-three>:first-child{grid-column:1/-1}.ix-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.ix-two{grid-template-columns:minmax(0,1fr);gap:32px}.ix-foot{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ix-foot>:first-child{grid-column:1/-1}}
+@media (max-width:760px){.ix-mast{padding-block:28px 22px}.ix-name{font-size:calc(52px * var(--hs))}.ix-sub,.ix-three,.ix-steps,.ix-foot{grid-template-columns:minmax(0,1fr)}.ix-arts{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ix-arts .sk-photo:last-child{display:none}.ix-head{display:none}.ix-list summary{grid-template-columns:40px minmax(0,1fr);gap:4px 12px;padding:18px 0}.ix-list summary b{font-size:calc(22px * var(--hs))}.ix-list summary span:nth-child(n+3){grid-column:2;font-size:14px}.ix-open{grid-template-columns:minmax(0,1fr)}.ix-open .sk-photo,.ix-open p{grid-column:1}.ix-big{font-size:calc(28px * var(--hs))}.ix-t th:nth-child(3),.ix-t td:nth-child(3){display:none}}
+</style>`;
+const indexL = (p, st, c) => { const W = c.work, CV = c.cv;
+  return K.page(st, `${alert(c)}<header class="sk-nav"><div class="sk-wrap"><a class="logo" href="#"><b></b>${esc(p.name)}</a>${navLinks(c)}<div class="sk-navend"><a class="btn primary" href="#visit">${esc(c.hero.cta)}</a></div>${menu(c)}</div></header>
+<main class="ix">
+<section class="sk-wrap ix-mast"><p class="ix-name" aria-hidden="true">${esc(p.name)}</p><div class="ix-sub"><div class="sk-stack"><span class="sk-eyebrow">${esc(c.hero.eyebrow)}</span><h1>${esc(c.hero.h1)}</h1></div><p class="muted">${esc(c.hero.lede)}</p><div class="ix-av">${c.facts.map((f) => `<span><b>${esc(f.t)}</b> <span class="muted">${esc(f.d)}</span></span>`).join("")}<div class="sk-row" style="margin-top:10px"><a class="btn primary" href="#visit">${esc(c.hero.cta)}</a><a class="btn" href="#work">${esc(c.hero.alt)}</a></div></div></div></section>
+<section class="ix-arts">${c.art.map((k, i) => `<div class="sk-photo">${pfArt(k, 480, 320, i, `Illustration for ${c.kind}`)}</div>`).join("")}</section>
+<section class="sk-sec" id="work"><div class="sk-wrap ixf"><div class="sk-head"><div><span class="sk-eyebrow">${esc(W.eyebrow)}</span><h2 class="sk-h2">${esc(W.h2)}</h2></div><p class="muted">${esc(W.lede)}</p></div>
+<div style="margin-bottom:18px">${pfFilter(c, "ixf")}</div><div class="ix-head" aria-hidden="true"><span>No.</span><span>${esc(W.cols[0])}</span><span>${esc(W.cols[1])}</span><span>${esc(W.cols[2])}</span><span>${esc(W.cols[3])}</span></div>
+<div class="ix-list">${W.items.map((x, i) => `<details class="ix-row" data-d="${esc(x.disc)}"${i ? "" : " open"}><summary><span class="n">${String(i + 1).padStart(2, "0")}</span><b>${esc(x.t)}</b><span>${esc(discLabel(c, x.disc))}</span><span class="muted">${esc(x.role)}</span><span class="muted">${esc(x.year)}</span></summary><div class="ix-open"><span></span><p>${esc(x.d)}</p><div class="sk-photo">${pfArt(x.art, 640, 400, i, `Illustration: ${x.t}`)}</div></div></details>`).join("")}</div><p class="muted" style="margin-top:14px;font-size:13.5px">${esc(W.note)}</p></div></section>
+<section class="sk-sec sk-alt"><div class="sk-wrap"><p class="ix-big">${esc(c.statement)}</p></div></section>
+<section class="sk-sec" id="services"><div class="sk-wrap ix-three"><div><h2>${esc(c.caseStudy.t)}</h2><p>${esc(c.caseStudy.lede)}</p><p class="muted" style="margin-top:12px"><b>${esc(c.caseStudy.briefLabel)}</b> ${esc(c.caseStudy.brief)}</p><ul class="ix-pts">${c.caseStudy.steps.map(([h, d]) => `<li><b>${esc(h)}.</b> ${esc(d)}</li>`).join("")}</ul><p class="muted" style="margin-top:12px;font-size:13px">${esc(c.caseStudy.note)}</p></div>
+<div><h2>${esc(CV.h2)}</h2><p class="muted" style="margin-bottom:8px">${esc(CV.lede)}</p><ol class="ix-cv">${CV.rows.map(([t, h, d]) => `<li><time>${esc(t)}</time><b>${esc(h)}</b><span class="muted">${esc(d)}</span></li>`).join("")}</ol></div>
+<div><h2>${esc(c.services.h2)}</h2><div class="ix-dl">${c.services.items.map((s) => `<div><b>${esc(s.t)}</b><span class="muted">${esc(s.d)}</span></div>`).join("")}</div></div></div></section>
+<section class="sk-sec sk-alt" id="process"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.process.h2)}</h2></div><p class="muted">${esc(c.process.lede)}</p></div><div class="ix-steps">${c.process.steps.map((s) => `<article><h3 class="sk-h3">${esc(s.t)}</h3><p class="muted">${esc(s.d)}</p></article>`).join("")}</div>
+<table class="ix-t" style="margin-top:48px"><caption style="text-align:left"><b class="sk-h3">${esc(c.table.h2)}</b> <span class="muted">${esc(c.table.lede)}</span></caption><thead><tr>${c.table.cols.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${c.table.rows.map((r) => `<tr>${r.map((x, i) => `<td>${i ? esc(x) : `<b>${esc(x)}</b>`}</td>`).join("")}</tr>`).join("")}</tbody></table>${c.table.note ? `<p class="muted" style="margin-top:12px;font-size:13px">${esc(c.table.note)}</p>` : ""}</div></section>
+<section class="sk-sec" id="team"><div class="sk-wrap ix-two"><div><h2 class="sk-h2">${esc(c.team.h2)}</h2><p class="muted">${esc(c.team.lede)}</p><div class="ix-dl" style="margin-top:16px">${c.team.people.map((m) => `<div><b>${esc(m.n)} <span class="muted">· ${esc(m.r)}</span></b><span>${esc(m.b)}</span></div>`).join("")}</div></div>
+<div><span class="sk-eyebrow">${esc(c.audience.eyebrow)}</span><h2 class="sk-h2">${esc(c.audience.h2)}</h2><p class="muted">${esc(c.audience.lede)}</p><ul class="ix-pts">${c.audience.points.map((x) => `<li>${esc(x)}</li>`).join("")}</ul><h3 class="sk-h3" style="margin-top:28px">${esc(c.index.h2)}</h3><p class="muted" style="margin-top:6px">${c.index.items.map((x) => esc(x)).join(" · ")}</p></div></div></section>
+<section class="sk-sec sk-alt" id="faq"><div class="sk-wrap ix-two"><div><h2 class="sk-h2">${esc(c.faq.h2)}</h2></div><div class="ix-faq">${faqItems(c)}</div></div></section>
+<section class="sk-sec" id="visit"><div class="sk-wrap"><div class="ix-two"><div><h2 class="sk-h2">${esc(c.visit.h2)}</h2><p class="sk-lede">${esc(c.visit.lede)}</p><p style="margin-top:18px"><b>${esc(c.visit.email)}</b></p><h3 class="sk-h3" style="margin-top:28px">${esc(c.cta.h2)}</h3><p class="muted">${esc(c.cta.lede)}</p></div>${contactForm(c)}</div>
+<div class="ix-foot">${[`<div><b>${esc(p.name)}</b><span class="muted">${esc(c.footer.blurb)}</span></div>`, ...c.visit.locations.map((l) => `<div><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></div>`)].join("")}</div></div></section>
+</main>${notice(c)}${foot(p, c)}`, BASE + PF_BASE + pfFilterCss(c, "ixf", "ix-row") + indexCss); };
+
+
 const LAYOUTS = {
   atlas: { fn: atlas, style: "corporate", name: "Atlas", about: "split hero with a next-step card, card grids and a contact form" },
   folio: { fn: folio, style: "editorial", name: "Folio", about: "magazine layout: centred masthead, large type, numbered contents, ruled lists, no cards" },
@@ -943,5 +1130,8 @@ const LAYOUTS = {
   // wedding and event layouts: only for content with an occasion, a reply form, a programme and venue drawings (weddings and events)
   invite: { fn: inviteL, style: "luxury", name: "Invite", about: "the occasion first: an invitation card hero between two drawings, the order of the day as a timeline, a reply form with choices and a places section", needs: "occasion", webH: 8000, mobileH: 12800 },
   programme: { fn: progL, style: "monochrome", name: "Programme", about: "the schedule first: a split hero with a programme card, day columns of time slots, a drawn site plan with a numbered legend, an options table and a reply form", needs: "occasion", webH: 8000, mobileH: 12800 },
+  // portfolio and creative studio layouts: only for content with a project list, a case study and a CV (portfolios and creative studios)
+  work: { fn: workL, style: "brutalist", name: "Work", about: "the work first: a type-led hero over a ruled availability strip, project cards with a discipline filter, one case study told in steps", needs: "work", webH: 9200, mobileH: 14400 },
+  index: { fn: indexL, style: "monochrome", name: "Index", about: "the list first: the name set large as a masthead, a numbered project index that opens row by row with a discipline filter, then a CV, services and contact in columns", needs: "work", webH: 9200, mobileH: 14400 },
 };
-module.exports = { LAYOUTS, GLYPH, prop, dish, SAMPLE_KEY, wdArt, WD_ART };
+module.exports = { LAYOUTS, GLYPH, prop, dish, SAMPLE_KEY, wdArt, WD_ART, pfArt, PF_ART };

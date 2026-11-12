@@ -8,7 +8,7 @@ Applies to website templates under `/inspiration/ui/`. Healthcare is the pilot (
 |---|---|---|
 | Platform | HTML, WordPress | Path: `/ui/wordpress-themes/...`. HTML is the default and has no path segment of its own |
 | Type | one-page, website, landing page | Filter. A chip appears only when a page has more than one value |
-| Industry | Healthcare, Real estate, Restaurant, Weddings and events | Path |
+| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios | Path |
 | Sub-niche | Cardiology, Dental... | Path, under its industry |
 
 Web and mobile are the **Device** filter, renamed so that Platform is free. The database column stays `country`, and `?platform=web|mobile` still works.
@@ -126,6 +126,29 @@ Hub `wedding-website-templates`, WordPress segment `wedding`. Chosen on demand a
 **hubFirst.** "wedding website template" is answered with the hub, then the couple's set.
 
 **Words.** No real wedding platforms, registries, magazines, venues, fashion or camera brands, no awards, reviews or ratings, no "stress-free" or "perfect day" promises, no promotions of excess. Licence, legal-ceremony, green, accessibility and CPD wording appears only in a sentence that says "sample" or tells the owner to check or add their own. Checked by `tests/wd_lint.py`. Theme readmes carry the wedding "Before you publish" section (`industries.wedding` in `src/tpl_copy.json`).
+
+## Portfolios and creative studios tree (13-Nov-2026, sixth industry, option A: awaiting the user's decision)
+
+Hub `portfolio-website-templates`, WordPress segment `portfolio`. Demand (Keyword Planner, worldwide, 12-Nov-2026): "portfolio website template" 18,100/mo (the hub, hubFirst), "personal portfolio website template" 2,400, "photography website template" 1,300, "interior design website template" 1,000, "graphic designer portfolio template" 880, "developer portfolio template" 720 (plus "developer portfolio" 590), "agency website template" 720, "architecture website template" 590, "marketing agency website template" 260. Artist and illustrator portfolios (260 / 210 / 70) were dropped. A new industry is the user's call (architecture memory, 7-Nov-2026); this branch builds it as a proposal.
+
+| Sub-niche | id | Pattern | HTML segment | WordPress segment | Layouts |
+|---|---|---|---|---|---|
+| Personal portfolio | personal-portfolio | personal-portfolio-website | personal-portfolio-website-template | personal | work, index, folio, bento, band, concierge |
+| Developer portfolio | developer-portfolio | developer-portfolio-website | developer-portfolio-template | developer | index, work, ledger, bento, atlas, band |
+| Graphic designer | graphic-designer | graphic-designer-website | graphic-designer-portfolio-template | graphic-designer | work, index, folio, band, bento, concierge |
+| Photography | photography | photography-website | photography-website-template | photography | work, index, folio, concierge, band, atlas |
+| Interior design | interior-design | interior-design-website | interior-design-website-template | interior-design | work, index, concierge, folio, atlas, bento |
+| Architecture | architecture | architecture-website (n12) | architecture-website-template | architecture | index, work, ledger, folio, atlas, band |
+| Creative agency | agency | agency-website (n12) | agency-website-template | agency | work, index, bento, band, atlas, ledger |
+| Marketing agency | marketing-agency | marketing-agency-website | marketing-agency-website-template | marketing-agency | work, index, atlas, ledger, bento, concierge |
+
+**n12 homepages.** agency-website (Quarry & Kite) and architecture-website (Atelier Obra) were flat n12 patterns with one hand-built homepage each. Those pages carry invented metrics, ratings and client quotes, so they are not signatures here (not in `SIGNATURE`, not in the catalog): the nested pages show the six new designs, the n12 rows stay live as plain items until a fix is approved. The flat URLs keep their slugs, which equal the nested segments, and 301 once.
+
+**Portfolio layouts.** `work` (brutalist: a type-led hero over a ruled availability strip, project cards with a no-JS discipline filter, one case study told in steps) and `index` (monochrome: the name set large as a masthead, a numbered project index that opens row by row with the same filter, then CV, services and contact in columns) exist only for content with `work`, `caseStudy`, `cv` and `art`. Project pictures are drawn placeholders (`pfArt`), never photographs.
+
+**hubFirst.** No niche is named like the industry, so tplHint answers any "portfolio" template query that names no niche with the hub (`GENERAL.portfolio`). `portfolio-home` and `case-study` stay flat app patterns, listed as the hub's app patterns.
+
+**Words.** No real software, social, portfolio, stock or marketing platforms, camera, furniture or paint brands, design press or award schemes, no awards, shortlists, reviews, testimonials or "trusted by", no invented metrics (followers, ROI, traffic or sales growth), no guarantees or "rank first" promises. Professional status (registered, chartered, licensed, insured, accredited) appears only in a sentence that says "add your own" or "sample". Checked by `tests/pf_lint.py`.
 
 ## Adding an industry
 

@@ -80,6 +80,14 @@ export const INDUSTRY_PHRASES = {
   "florist-website": ["an independent florist", "a florist"],
   "event-planner-website": ["an event planning company", "a company"],
   "conference-website": ["a conference, summit or community event", "an event"],
+  // portfolios and creative studios, 13-Nov-2026: drafted as option A, NOT yet approved (deploy-bundle-2026-11-09/r4-copy-templates.md, approval item).
+  // agency-website and architecture-website keep their n12 phrases (unchanged, so the live n12 specs do not move).
+  "personal-portfolio-website": ["a freelancer or creative showing their own work", "a freelancer"],
+  "developer-portfolio-website": ["a software developer showing their projects", "a developer"],
+  "graphic-designer-website": ["an independent graphic designer", "a designer"],
+  "photography-website": ["an independent photographer", "a photographer"],
+  "interior-design-website": ["an interior design studio", "a studio"],
+  "marketing-agency-website": ["a small marketing agency", "an agency"],
 };
 
 // Hand-written exceptions where the default audience reads oddly with the style: "pattern|style" → [best, notIdeal]

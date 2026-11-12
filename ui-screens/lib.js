@@ -122,6 +122,15 @@ const FAMILIES = {
   florist: { name: "Thimblewort Flowers", cat: "florist", desc: "a florist shop with wedding and event flowers, everyday bouquets and workshops", type: { web: "Website", mobile: "Mobile website" } },
   eventplanner: { name: "Corrowby Events", cat: "event-planner", desc: "an event planning company for private parties, company events and launches", type: { web: "Website", mobile: "Mobile website" } },
   conference: { name: "Understorey Forum 2027", cat: "conference", desc: "a two-day conference for people who look after city parks and street trees", type: { web: "Website", mobile: "Mobile website" } },
+  // 13-Nov-2026 sixth industry, portfolios and creative studios. Names web-searched as exact phrases (deploy-bundle-2026-11-09/r4-templates.md).
+  personalpf: { name: "Tamsin Oyelaran", cat: "personal-portfolio", desc: "the personal portfolio of an independent product designer", type: { web: "Website", mobile: "Mobile website" } },
+  devpf: { name: "Ilyas Brandvold", cat: "developer-portfolio", desc: "the portfolio of an independent software developer who builds web apps", type: { web: "Website", mobile: "Mobile website" } },
+  graphicpf: { name: "Petra Quillon", cat: "graphic-designer", desc: "the portfolio of an independent graphic designer working on identity, print and packaging", type: { web: "Website", mobile: "Mobile website" } },
+  photopf: { name: "Corvina Ashby Photography", cat: "photography", desc: "a photographer for portraits, interiors and editorial commissions, with print sales", type: { web: "Website", mobile: "Mobile website" } },
+  interiorpf: { name: "Fallowmere Interiors", cat: "interior-design", desc: "a small interior design studio for homes and hospitality", type: { web: "Website", mobile: "Mobile website" } },
+  archpf: { name: "Okelund Architects", cat: "architecture", desc: "a small architecture practice for homes, extensions and community buildings", type: { web: "Website", mobile: "Mobile website" } },
+  agencypf: { name: "Tallowfield Studio", cat: "agency", desc: "an independent creative agency for brand identity, websites and campaigns", type: { web: "Website", mobile: "Mobile website" } },
+  marketingpf: { name: "Quellmarsh Marketing", cat: "marketing-agency", desc: "a marketing agency for content, search, email and paid campaigns", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 

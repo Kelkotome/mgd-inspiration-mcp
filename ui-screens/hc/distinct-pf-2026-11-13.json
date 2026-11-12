@@ -1,0 +1,122 @@
+{
+ "personal-portfolio": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "index",
+   "work"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.383,
+  "failedPairs": []
+ },
+ "developer-portfolio": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "index",
+   "ledger",
+   "work"
+  ],
+  "maxTreeSimilarity": 0.646,
+  "maxLayoutOverlap": 0.423,
+  "failedPairs": []
+ },
+ "graphic-designer": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "index",
+   "work"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.369,
+  "failedPairs": []
+ },
+ "photography": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "concierge",
+   "folio",
+   "index",
+   "work"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.413,
+  "failedPairs": []
+ },
+ "interior-design": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "bento",
+   "concierge",
+   "folio",
+   "index",
+   "work"
+  ],
+  "maxTreeSimilarity": 0.646,
+  "maxLayoutOverlap": 0.38,
+  "failedPairs": []
+ },
+ "architecture": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "folio",
+   "index",
+   "ledger",
+   "work"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.441,
+  "failedPairs": []
+ },
+ "agency": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "index",
+   "ledger",
+   "work"
+  ],
+  "maxTreeSimilarity": 0.646,
+  "maxLayoutOverlap": 0.41,
+  "failedPairs": []
+ },
+ "marketing-agency": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "bento",
+   "concierge",
+   "index",
+   "ledger",
+   "work"
+  ],
+  "maxTreeSimilarity": 0.648,
+  "maxLayoutOverlap": 0.377,
+  "failedPairs": []
+ }
+}

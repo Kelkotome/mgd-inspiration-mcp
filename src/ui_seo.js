@@ -236,6 +236,13 @@ export const PATTERN_SEO = {
   "florist-website": ["florist-website-template", "Florist website templates"],
   "event-planner-website": ["event-planner-website-template", "Event planner website templates"],
   "conference-website": ["event-website-template", "Event and conference website templates"],
+  // 13-Nov-2026 portfolios and creative studios: new niches (agency-website and architecture-website keep their n12 slugs). These only ever live under the industry hub.
+  "personal-portfolio-website": ["personal-portfolio-website-template", "Personal portfolio website templates"],
+  "developer-portfolio-website": ["developer-portfolio-template", "Developer portfolio templates"],
+  "graphic-designer-website": ["graphic-designer-portfolio-template", "Graphic designer portfolio templates"],
+  "photography-website": ["photography-website-template", "Photography website templates"],
+  "interior-design-website": ["interior-design-website-template", "Interior design website templates"],
+  "marketing-agency-website": ["marketing-agency-website-template", "Marketing agency website templates"],
   // UI components round 1 (7-Nov-2026; Keyword Planner "ui design" + "html css" + "examples", deploy-bundle-2026-11-07/components-audit.md)
   tabs: ["tabs-ui", "Tabs UI design examples"],
   cards: ["card-ui", "Card UI design examples"],

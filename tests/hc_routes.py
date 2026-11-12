@@ -5,9 +5,9 @@ usage: hc_routes.py http://127.0.0.1:8873/inspiration"""
 import json, re, sys, urllib.request, urllib.error, os
 BASE = sys.argv[1].rstrip("/"); ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 cat = json.load(open(f"{ROOT}/src/tpl_catalog.json")); tree = open(f"{ROOT}/src/ui_tree.js").read(); seo = open(f"{ROOT}/src/ui_seo.js").read()
-# IND=real-estate tests the second industry (7-Nov-2026); default healthcare. The niche rows are read from that industry's block in ui_tree.js.
+# IND=real-estate tests the second industry (7-Nov-2026); default healthcare. IND=portfolio (13-Nov-2026): two niches use a "-portfolio-template" segment. The niche rows are read from that industry's block in ui_tree.js.
 IND = os.environ.get("IND", "healthcare"); blk = (tree.split(f'"{IND}": {{', 1) if f'"{IND}": {{' in tree else tree.split(f"{IND}: {{", 1))[1].split("appPatterns", 1)[0]
-NICHES = re.findall(r'\["([a-z-]+)", "([a-z-]+-website)", "[^"]+", "([a-z-]+-website-template)", "([a-z-]+)"\]', blk); HUB = f"{IND}-website-templates"; WP = "wordpress-themes"; ISEG = IND
+NICHES = re.findall(r'\["([a-z-]+)", "([a-z-]+-website)", "[^"]+", "([a-z-]+-template)", "([a-z-]+)"\]', blk); HUB = f"{IND}-website-templates"; WP = "wordpress-themes"; ISEG = IND
 class NoRedir(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *a): return None
 op = urllib.request.build_opener(NoRedir)
@@ -74,7 +74,7 @@ s, h, b = text("/ui/chat-ai-assistant"); ck(s == 301, "old flat id still one hop
 s, h, b = text("/ui/chat-ai-assistant/"); ck(s == 301 and (h.get("Location") or "").endswith("/ui/chatbot-ui"), "old flat id with slash one hop")
 # item URLs do not move
 IT = NICHES[0]; s, h, b = text(f"/ui/{HUB}/{IT[2]}"); items = re.findall(r'href="[^"]*(/ui/' + IT[1] + r'-[a-z-]+-[0-9a-f]{12})"', b); ck(bool(items), "item link on niche page")
-LAY = re.compile(r"-website-(atlas|folio|ledger|bento|band|concierge|listing|showcase|menu|reserve|invite|programme)-"); gen = [x for x in items if LAY.search(x)]; sig = [x for x in items if not LAY.search(x)]  # signature rows have no layout segment
+LAY = re.compile(r"-website-(atlas|folio|ledger|bento|band|concierge|listing|showcase|menu|reserve|invite|programme|work|index)-"); gen = [x for x in items if LAY.search(x)]; sig = [x for x in items if not LAY.search(x)]  # signature rows have no layout segment
 if gen: s, _, ib = text(gen[0]); ck(s == 200 and f"{HUB}/{IT[2]}" in ib, "item page links nested pattern"); ck("Also for WordPress" in ib, f"item page sibling ({gen[0]})")
 # a signature with no theme (themes.mjs NO_THEME: real-estate) must not claim a WordPress sibling
 if sig and IND in ("real-estate", "restaurant", "wedding"): s, _, ib = text(sig[0]); ck(s == 200 and "Also for WordPress" not in ib, "signature item has no WordPress sibling")
