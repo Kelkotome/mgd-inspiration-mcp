@@ -41,16 +41,20 @@ const dupes = (a) => a.length - new Set(a).size;
 
 // ---------- sitemaps (base vs new) ----------
 const sm = {};
+// r4 (13-Nov): with templates r3 merged the /ui HTML and the UI sitemap change on purpose (portfolio hub; agency/architecture nested), which
+// the template suites check. SEO1_SKIP_UI=1 (run_r4.sh with templates) skips only the "same as base" comparisons for /ui; tag, JSON-LD and
+// width/height checks still run on every /ui page. The MCP-only run keeps every check.
+const SKIP_UI = process.env.SEO1_SKIP_UI === "1";
 for (const s of ["/museum/sitemap.xml", "/annual-reports/sitemap.xml", "/ui/sitemap.xml"]) {
   const o = await req(OLD, s), n = await req(NEW, s);
   sm[s] = { old: locs(o.body), neu: locs(n.body), o, n };
   t(`${s}: 200 + urlset`, n.status === 200 && /<urlset/.test(n.body), n.status);
   t(`${s}: no duplicate <loc> (base had ${dupes(sm[s].old)})`, dupes(sm[s].neu) === 0, dupes(sm[s].neu));
-  t(`${s}: same set of URLs as base for facets/hubs (dedupe only)`, (() => { const a = new Set(sm[s].old.filter((u) => !/[0-9a-f]{12}$/.test(u))), b = new Set(sm[s].neu.filter((u) => !/[0-9a-f]{12}$/.test(u))); return a.size === b.size && [...a].every((u) => b.has(u)); })(), "facet set differs");
+  if (!(SKIP_UI && s === "/ui/sitemap.xml")) t(`${s}: same set of URLs as base for facets/hubs (dedupe only)`, (() => { const a = new Set(sm[s].old.filter((u) => !/[0-9a-f]{12}$/.test(u))), b = new Set(sm[s].neu.filter((u) => !/[0-9a-f]{12}$/.test(u))); return a.size === b.size && [...a].every((u) => b.has(u)); })(), "facet set differs");
   t(`${s}: same D1 statements as base`, JSON.stringify(o.sql) === JSON.stringify(n.sql), `${o.sql.join(" | ")} vs ${n.sql.join(" | ")}`);
 }
 console.log(`sitemap entries base -> new: museum ${sm["/museum/sitemap.xml"].old.length} -> ${sm["/museum/sitemap.xml"].neu.length}, annual ${sm["/annual-reports/sitemap.xml"].old.length} -> ${sm["/annual-reports/sitemap.xml"].neu.length}, ui ${sm["/ui/sitemap.xml"].old.length} -> ${sm["/ui/sitemap.xml"].neu.length}`);
-t("/ui/sitemap.xml unchanged byte for byte", sm["/ui/sitemap.xml"].o.body === sm["/ui/sitemap.xml"].n.body, "ui sitemap changed");
+if (!SKIP_UI) t("/ui/sitemap.xml unchanged byte for byte", sm["/ui/sitemap.xml"].o.body === sm["/ui/sitemap.xml"].n.body, "ui sitemap changed");
 
 // E: every item URL in the new annual + museum sitemaps = the canonical its page prints (and the base's mismatches, for the record)
 const FULL = process.env.SEO1_FULL !== "0";
@@ -92,12 +96,12 @@ let n200 = 0, nCrumb = 0, nDims = 0, nImg = 0;
 const why = { tags: [], diff: [], ld: [], crumb: [], dims: [], sql: [], head: [] };
 for (const p of pages) {
   const o = await req(OLD, p), n = await req(NEW, p);
-  if (o.status !== n.status) { why.diff.push(`${p} status ${o.status}/${n.status}`); continue; }
+  if (o.status !== n.status && !(SKIP_UI && p.startsWith("/ui") && o.status === 404 && n.status === 200)) { why.diff.push(`${p} status ${o.status}/${n.status}`); continue; }
   if (JSON.stringify(o.sql) !== JSON.stringify(n.sql)) why.sql.push(`${p}: ${o.sql.length} vs ${n.sql.length}`);
   if (n.status !== 200 || !/text\/html/.test(n.headers)) continue;
   n200++;
   const h = n.body.slice(0, n.body.indexOf("</head>"));
-  if (strip(o.body) !== strip(n.body)) { const a = strip(o.body), b = strip(n.body); let i = 0; while (a[i] === b[i]) i++; why.diff.push(`${p} @${i}: …${a.slice(i - 40, i + 60)}… vs …${b.slice(i - 40, i + 60)}…`); }
+  if (strip(o.body) !== strip(n.body) && !(SKIP_UI && p.startsWith("/ui"))) { const a = strip(o.body), b = strip(n.body); let i = 0; while (a[i] === b[i]) i++; why.diff.push(`${p} @${i}: …${a.slice(i - 40, i + 60)}… vs …${b.slice(i - 40, i + 60)}…`); }
   const indexable = /<link rel="canonical"/.test(h);
   if (indexable) {
     const img = /<meta property="og:image"/.test(h);
@@ -107,7 +111,7 @@ for (const p of pages) {
     if (count(h, /<meta property="og:image"/g) > 1) why.tags.push(`${p} og:image twice`);
     if (/\/(museum|annual-reports)\/(artist|culture|theme|type|museum|company|country|designer|industry)\//.test(p) && /<img\b/.test(n.body) && !img) why.tags.push(`${p} listing without og:image`);
     // og:title/og:description filled from the page's own <title> / meta description
-    if (!/<meta property="og:title"/.test(o.body)) {
+    if (!/<meta property="og:title"/.test(o.body) && o.status === 200) {   // r4: a page new in this tree (base 404) sets its own og tags
       const title = (h.match(/<title>([^<]*)<\/title>/) || [])[1], ogt = (h.match(/<meta property="og:title" content="([^"]*)"/) || [])[1];
       if (title !== ogt) why.tags.push(`${p} og:title "${ogt}" != <title> "${title}"`);
       const d = (h.match(/<meta name="description" content="([^"]*)"/) || [])[1], ogd = (h.match(/<meta property="og:description" content="([^"]*)"/) || [])[1];
