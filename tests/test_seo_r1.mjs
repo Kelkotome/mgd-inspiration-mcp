@@ -27,7 +27,11 @@ async function req(w, path, method = "GET") {
   const r = await w.fetch(new Request(SITE + B + path, { method, headers: { "User-Agent": "seo1-test", Accept: "*/*" } }), E.env, { waitUntil() {}, passThroughOnException() {} });
   const body = await r.text();
   // the one intended SQL change: the annual sitemap also reads `collection` (so rowToItem builds the canonical company-year-id path)
-  return { status: r.status, headers: [...r.headers.entries()].sort().map((x) => x.join(": ")).join("\n"), body, sql: E.dbStats.sql.slice(s0).map((q) => q.replace("image_key,collection FROM", "image_key FROM").slice(0, 140)) };
+  return { status: r.status, headers: [...r.headers.entries()].sort().map((x) => x.join(": ")).join("\n"), body, sql: E.dbStats.sql.slice(s0)
+    // MCP r4: museum/annual facet pages read the slug -> value map once per isolate (cached), not per view, and their item query got
+    // deterministic tiebreakers; both are normalised away here so the rest of every page's D1 work is still compared with base.
+    .filter((q) => !/^SELECT DISTINCT (designer|company|industry|country|category|artist|culture|museum|theme|\w+) AS v FROM items WHERE status='published' AND collection='(museum|annual-report)'/.test(q) && !/^SELECT DISTINCT \w+ FROM items WHERE status='published' AND collection='(museum|annual-report)'/.test(q))
+    .map((q) => q.replace(/, owner_id, created_at DESC, rowid/, "").replace("image_key,collection FROM", "image_key FROM").slice(0, 140)) };
 }
 const locs = (xml) => [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].replace(/&amp;/g, "&"));
 const rel = (u) => u.replace(SITE + B, "");

@@ -314,7 +314,14 @@ export const GENERIC_WORDS = new Set(["design", "designs", "ui", "ux", "screen",
   "clean", "minimal", "minimalist", "simple", "website", "websites", "template", "templates", "layout", "layouts", "style", "beautiful", "nice"]);
 export const GENERIC_W = 0.25;
 export const isGeneric = (w) => GENERIC_WORDS.has(String(w || "").toLowerCase());
-export function ftsTiers(words, cols) {
+// MCP r4 (13-Nov-2026): words whose porter stem is in more than 5,000 of the ~98k indexed items (5 %), taken from the local copy of
+// live D1 (fts5vocab, 12-Nov; surface forms mapped to their stem with the same tokenizer). An OR over them matches most of the
+// library: "editorial typography marketing proposal black cream red" matched 78,961 items, and the "any" tier then read 219,375
+// D1 rows and ran 1.6 s on D1 for its 120 candidates. When a query also has rarer words, the "any" tier now ORs only those
+// (same query: 8,141 rows, 25 ms) and still ranks the candidates by how many of ALL the words they have. If that pool leaves the
+// answer short of the limit, the full OR runs as before ("any+"), so an answer is never cut short. The other tiers are unchanged.
+export const FTS_DOMINANT = new Set(["american", "an", "and", "annual", "art", "arts", "background", "beverage", "black", "blue", "brand", "branding", "brands", "british", "brown", "canada", "center", "centered", "color", "colored", "colorful", "colors", "colour", "coloured", "companies", "company", "corporate", "corporation", "cover", "dark", "design", "designed", "designs", "editorial", "electronic", "electronics", "features", "featuring", "field", "food", "for", "from", "good", "goods", "green", "grey", "grid", "guide", "guidelines", "hand", "home", "identity", "illustrated", "illustration", "illustrations", "in", "industrial", "kingdom", "kitchen", "layout", "light", "lighting", "lights", "made", "maker", "makers", "minimal", "minimalism", "monochrome", "of", "on", "one", "orange", "outdoor", "outdoors", "palette", "print", "printed", "printing", "prints", "product", "productivity", "products", "red", "report", "retro", "serif", "showing", "shows", "specimen", "state", "states", "style", "teal", "technology", "text", "that", "the", "to", "tool", "tools", "type", "typeface", "typefaces", "typography", "united", "vintage", "white", "with", "yellow"]);
+export function ftsTiers(words, cols, opts = {}) {
   const fc = cols && cols.length ? `{${cols.join(" ")}} : ` : "";
   const qt = (w) => `"${w}"`;
   const t = [];
@@ -322,7 +329,11 @@ export function ftsTiers(words, cols) {
   if (words.length > 1) t.push({ tier: "phrase", expr: fc + `"${words.join(" ")}"` });
   t.push({ tier: "all", expr: fc + "(" + words.map(qt).join(" AND ") + ")" });
   if (core.length && core.length < words.length) t.push({ tier: core.length > 1 ? "core" : "core1", expr: fc + "(" + core.map(qt).join(" AND ") + ")" });
-  if (opt.length > 1) t.push({ tier: "any", expr: fc + "(" + opt.map(qt).join(" OR ") + ")" });
+  const rare = opts.rare === false ? opt : opt.filter((w) => !FTS_DOMINANT.has(w));   // Worker var FTS_RARE=0 turns the rule off
+  if (opt.length > 1 && rare.length && rare.length < opt.length) {
+    t.push({ tier: "any", expr: fc + "(" + rare.map(qt).join(" OR ") + ")", rare: true });
+    t.push({ tier: "any+", expr: fc + "(" + opt.map(qt).join(" OR ") + ")", ifShort: true });
+  } else if (opt.length > 1) t.push({ tier: "any", expr: fc + "(" + opt.map(qt).join(" OR ") + ")" });
   const pre = opt.filter((w) => w.length >= 3);
   if (pre.length) t.push({ tier: "prefix", expr: fc + "(" + pre.map((w) => qt(w) + "*").join(" OR ") + ")" });
   return t;
@@ -363,18 +374,26 @@ export async function ftsSearch(env, where, binds, cols, q, order, limit, stop) 
     // museum: the 48 hand-featured works (featured_rank) get a small bump, as the LIKE search ordered them first among equal hits.
     const rank = `bm25(items_fts, ${FTS_W.join(", ")})` + (/^featured_rank/.test(order) ? " - (CASE WHEN items.featured_rank IS NOT NULL THEN 3 ELSE 0 END)" : "");
     const out = [], seen = new Set(), from = {}; let last = "";
-    for (const t of ftsTiers(words, cols)) {
+    const tiers = ftsTiers(words, cols, { rare: String(env.FTS_RARE || "") !== "0" });
+    const isAny = (t) => /^any/.test(t.tier) || (t.tier === "prefix" && words.filter((x) => !isGeneric(x)).length !== 1 && words.length > 1);
+    const stmt = (t, n) => env.DB.prepare(`SELECT items.* FROM items_fts JOIN items ON items.rowid = items_fts.rowid WHERE items_fts MATCH ? AND ${w} ORDER BY ${rank}, ${ord} LIMIT ?`)
+      .bind(t.expr, ...binds, n);
+    // MCP r4: the AND tiers before the first OR tier (phrase, all, core) go to D1 in ONE batch: one round trip instead of up to three
+    // (~0.2 s each from the US or Europe). The first asks LIMIT limit, the others 2 x limit. The sequential code asked limit + the rows
+    // already taken, which is always below 2 x limit (a tier only runs while fewer than limit rows are taken), so the rows taken are the same.
+    const head = tiers.filter((t) => !isAny(t) && t.tier !== "prefix");
+    const pre = head.length > 1 ? (await env.DB.batch(head.map((t, i) => stmt(t, i ? 2 * limit : limit)))).map((r) => (r && r.results) || []) : null;
+    for (const t of tiers) {
       if (out.length >= limit) break;
       if (t.tier === "prefix" && out.length) break;   // prefixes only when no whole-word hit at all
-      const any = t.tier === "any" || (t.tier === "prefix" && words.filter((x) => !isGeneric(x)).length !== 1 && words.length > 1);
-      let rows = await env.DB.prepare(`SELECT items.* FROM items_fts JOIN items ON items.rowid = items_fts.rowid WHERE items_fts MATCH ? AND ${w} ORDER BY ${rank}, ${ord} LIMIT ?`)
-        .bind(t.expr, ...binds, any ? Math.max(120, limit * 15) : limit + seen.size).all().then((r) => r.results || []);
+      const any = isAny(t), hi = pre ? head.indexOf(t) : -1;
+      let rows = hi >= 0 ? pre[hi] : await stmt(t, any ? Math.max(120, limit * 15) : limit + seen.size).all().then((r) => r.results || []);
       // OR-matches: bm25 alone lets one rare word win ("emerald" → the Emerald brand tiles for "dark luxury landscape emerald green"),
       // so rank by how many of the query words a row has (as before 5-Nov), bm25 order breaking ties.
       if (any) rows = ftsCoverageSort(rows, words, cols && cols.length ? cols : FTS_COLS, t.tier === "prefix");
       let added = 0;
       for (const r of rows) { if (!seen.has(r.id) && out.length < limit) { seen.add(r.id); out.push(r); added++; } }
-      if (added) { last = t.tier; from[t.tier] = added; }
+      if (added) { const k = t.tier === "any+" ? "any" : t.tier; last = k; from[k] = (from[k] || 0) + added; }
     }
     if (!out.length) return null;   // zero via FTS → let the LIKE search try (substrings, CJK, rows the index may lack)
     const full = (from.phrase || 0) + (from.all || 0), ws = words.join(", "), cw = words.filter((x) => !isGeneric(x)).join(", ");

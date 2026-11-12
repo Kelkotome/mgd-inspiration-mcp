@@ -1,0 +1,13 @@
+# MCP r4 (13-Nov-2026): directory queries from codex / openai-mcp on 12-Nov got the doctor directory first. Hit@1 = first result's pattern.
+employee directory | team-members
+staff directory | team-members
+people directory | team-members
+team directory | team-members
+company directory | team-members
+corporate employee directory or organization chart hierarchy visualization with clean data | team-members
+organization chart employee directory hierarchy reporting structure | team-members
+doctor directory | doctor-directory
+find a doctor directory | doctor-directory
+directory of specialists | doctor-directory
+find a plumber directory | pro-directory
+searchable data table for directory with record details and filters | data-table

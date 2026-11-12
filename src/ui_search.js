@@ -110,7 +110,9 @@ export const PATTERN_ALIASES = {
   "settings": ["settings", "preferences", "switches", "settings toggles", "settings toggle switches", "account settings", "settings list", "configuration", "settings panel"],
   "profile": ["profile", "member profile", "user profile", "account page", "profile header"],
   "notifications-center": ["notifications", "notification center", "notification", "alerts", "activity feed"],
-  "team-members": ["team members", "members", "invite", "teammates", "users", "staff", "team"],
+  "team-members": ["team members", "members", "invite", "teammates", "users", "staff", "team",
+    // MCP r4 (13-Nov-2026): codex / openai-mcp asked for these 12-Nov and got the doctor directory first (via "directory")
+    "employee directory", "staff directory", "people directory", "team directory", "company directory", "member directory", "employees"],
   "roles-permissions": ["roles", "permissions", "roles and permissions", "access control", "rbac"],
   "audit-log": ["audit log", "activity log", "log", "events log", "security log"],
   "api-keys": ["api keys", "api key", "tokens", "secret key", "developer keys"],

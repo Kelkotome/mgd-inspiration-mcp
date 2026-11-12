@@ -254,6 +254,7 @@ async function mcpCacheDropOnWrite(env, collection, id, themes) {
   try {
     if (collection === "ui") { uiIndexReset(); await dropShared(env, ["ui-rows", ...["both", "html", "design_md", "copy"].map((f) => `screen:${id}:${f}`)]); }
     else if (collection === "design") await dropShared(env, ["theme-counts", ...(Array.isArray(themes) ? themes : []).map((t) => "theme-rows:" + t)]);
+    else if (collection === "museum" || collection === "annual-report") await dropShared(env, facetCacheNames(collection));   // MCP r4
   } catch (_) { /* never fails a write */ }
 }
 async function addItem(request, env) {
@@ -756,15 +757,31 @@ ${section("Industries", "industry", tally("industry"))}
   return html(body);
 }
 
+// MCP r4 (13-Nov-2026): facet pages resolved a slug by reading every distinct value of the column on each view (D1 insights 12-Nov,
+// 1 day: museum artist 11.8M rows, annual company 12.8M, museum culture 3.8M, museum type 2.8M; crawlers hit thousands of distinct
+// facet URLs, so the 30-min edge cache rarely helps). The slug -> value map is now kept 1 h per isolate and per colo (shared(), same
+// cache as the MCP tools; every deploy starts empty; an item write in this colo drops it). Same SQL, same "first value wins" rule as
+// distinct.find() before. The page's own item query is unchanged; the r4 staged SQL adds partial indexes so it reads only its rows.
+const FACET_COLLECTIONS = { "annual-report": ["designer", "company", "industry", "country"], museum: ["designer", "company", "industry", "country", "category"] };
+async function facetValue(env, collection, col, slug) {
+  if (!(FACET_COLLECTIONS[collection] || []).includes(col)) return undefined;
+  const map = await shared(env, `facet:${collection}:${col}`, 3600, async () => {
+    const rows = (await env.DB.prepare(`SELECT DISTINCT ${col} AS v FROM items WHERE status='published' AND collection='${collection}' AND ${col} IS NOT NULL AND ${col}<>''`).all()).results || [];
+    const m = {};
+    for (const r of rows) { const k = slugify(r.v); if (!Object.prototype.hasOwnProperty.call(m, k)) m[k] = r.v; }
+    return m;
+  });
+  return map && Object.prototype.hasOwnProperty.call(map, slug) ? map[slug] : undefined;
+}
+const facetCacheNames = (collection) => (FACET_COLLECTIONS[collection] || []).map((c) => `facet:${collection}:${c}`);
+
 // Facet listing: /annual-reports/{designer|company|industry}/<slug>
 async function annualFacetPage(kind, slug, env, base) {
   const col = kind === "designer" ? "designer" : kind === "industry" ? "industry" : kind === "country" ? "country" : "company";
   const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
-  const distinct = (await env.DB.prepare(`SELECT DISTINCT ${col} AS v FROM items WHERE status='published' AND collection='annual-report' AND ${col} IS NOT NULL AND ${col}<>''`).all()).results || [];
-  const match = distinct.find((r) => slugify(r.v) === slug);
-  if (!match) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
-  const value = match.v;
-  const rows = ((await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND collection='annual-report' AND ${col}=? ORDER BY report_year, company`).bind(value).all()).results || []).filter(isPublicRow);
+  const value = await facetValue(env, "annual-report", col, slug);
+  if (value === undefined) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
+  const rows = ((await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND collection='annual-report' AND ${col}=? ORDER BY report_year, company, owner_id, created_at DESC, rowid`).bind(value).all()).results || []).filter(isPublicRow);
   const items = rows.map((r) => rowToItem(r, env));
   const heading = kind === "designer" ? `Designed by ${value}` : kind === "country" ? `Annual reports from ${value}` : `${value} annual reports`;
   const canonical = `${site}${base}/annual-reports/${kind}/${slugify(value)}`;
@@ -1035,11 +1052,11 @@ async function museumFacetPage(kind, slug, env, base) {
   const col = MUSEUM_FACET_COL[kind];
   if (!col) return new Response("not found", { status: 404 });
   const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
-  const distinct = (await env.DB.prepare(`SELECT DISTINCT ${col} AS v FROM items WHERE status='published' AND collection='museum' AND ${col} IS NOT NULL AND ${col}<>''`).all()).results || [];
-  const match = distinct.find((r) => slugify(r.v) === slug);
-  if (!match) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
-  const value = match.v;
-  const rows = (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND collection='museum' AND ${col}=? ORDER BY featured_rank IS NULL, featured_rank, report_year, title LIMIT 400`).bind(value).all()).results || [];
+  // MCP r4: ties broken in the order the old plan returned them (idx_items_feed: owner_id, created_at DESC, rowid), so the page stays
+  // the same whichever index D1 picks (the r4 partial index or the old one).
+  const value = await facetValue(env, "museum", col, slug);
+  if (value === undefined) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
+  const rows = (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND collection='museum' AND ${col}=? ORDER BY featured_rank IS NULL, featured_rank, report_year, title, owner_id, created_at DESC, rowid LIMIT 400`).bind(value).all()).results || [];
   const items = rows.map((r) => rowToItem(r, env));
   const label = kind === "theme" ? museumThemeLabel(value) : value;
   const heading = kind === "artist" ? `Works by ${label}` : kind === "culture" ? `Artworks from ${label}` : kind === "museum" ? `From the ${label}` : `${label}`;

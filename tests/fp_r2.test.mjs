@@ -58,7 +58,7 @@ try {
   for (const [q, want] of Object.entries(alias)) { const r = sc(q); ok(r.font === want, `alias "${q}" -> ${r.font} (want ${want})`); }
   for (const q of ["Roboto Serif", "Josefin Slab", "PT Sans Narrow", "Open Sans Condensed", "Fira Code", "Noto Sans", "Barlow Semi Condensed"]) {
     const r = sc(q), base = q.split(" ")[0];
-    ok(r.font !== base && !(r.font || "").startsWith(base + " ") || r.match === "partner" || r.font === null, `sibling "${q}" must not become ${r.font}`);
+    ok(r.font !== base && !(r.font || "").startsWith(base + " ") || r.match === "partner" || r.font === null || r.font === q, `sibling "${q}" must not become ${r.font}`);   // mcp r4: Noto Sans has its own entry now
   }
   ok(fpFind("Lato").how === "exact" && fpFind("Latto").how === "fuzzy", "fuzzy still works");
   ok(/^0 results/.test(head("Zzyzx Display")), "unknown font is a zero result");

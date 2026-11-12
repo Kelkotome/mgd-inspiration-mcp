@@ -41,7 +41,16 @@ const ALIASES = {
   googlesanstext: "googlesans", garamondeb: "ebgaramond", jetbrains: "jetbrainsmono", jetbrainsmononl: "jetbrainsmono",
   robotocondensed: "robotocondensed", fjalla: "fjallaone", alfaslab: "alfaslabone", titillium: "titilliumweb", librefranklin: "librefranklin",
   googlesansflex: "googlesans", redhat: "redhatdisplay", playfair: "playfairdisplay", playfair2: "playfairdisplay",
+  // MCP r4 (13-Nov-2026): the Noto CJK families under their OTF / Source Han names and spelled-out script names
+  notosanscjksc: "notosanssc", notosanscjktc: "notosanstc", notosanscjkjp: "notosansjp", notosanscjkkr: "notosanskr",
+  notoserifcjksc: "notoserifsc", notoserifcjktc: "notoseriftc", notoserifcjkjp: "notoserifjp", notoserifcjkkr: "notoserifkr",
+  notosanssimplifiedchinese: "notosanssc", notoserifsimplifiedchinese: "notoserifsc", notosanstraditionalchinese: "notosanstc",
+  notoseriftraditionalchinese: "notoseriftc", notosansjapanese: "notosansjp", notoserifjapanese: "notoserifjp", notosanskorean: "notosanskr",
+  notoserifkorean: "notoserifkr",
 };
+// MCP r4: a Noto family for another script ("Noto Sans Thai", "Noto Serif Devanagari", "Noto Sans HK") is not stretched to the Latin or
+// another script's Noto entry by the prefix step: different script, different pairing advice. Only a display cut of the same family is.
+const NOTO_OTHER_SCRIPT = (key, base) => /^noto/.test(base) && key !== base && !/^display$/.test(key.slice(base.length));
 const SIBLING = /sans|serif|slab|mono|code|condensed|narrow|compressed|expanded|extended|rounded|tight|flex|stencil|inline|outline|script|alternates|grotesk|gothic/;
 export const fontKey = (q) => btKey(String(q || "").replace(/\b(font|fonts|typeface|typefaces|pairing|pairings|pair|pairs|with|for|what|goes|go)\b/gi, " "));
 export function fpFind(q, { fuzzy = true } = {}) {
@@ -52,7 +61,7 @@ export function fpFind(q, { fuzzy = true } = {}) {
   const al = ALIASES[key] && BY_KEY.get(ALIASES[key]);
   if (al) return { v: al.v, how: "alias" };
   const isGf = GF_KEYS.has(key);
-  const pre = INDEX.filter((x) => (key.length >= 4 && !isGf && x.key.startsWith(key)) || (key.startsWith(x.key) && !SIBLING.test(key.slice(x.key.length))))
+  const pre = INDEX.filter((x) => (key.length >= 4 && !isGf && x.key.startsWith(key)) || (key.startsWith(x.key) && !SIBLING.test(key.slice(x.key.length)) && !NOTO_OTHER_SCRIPT(key, x.key)))
     .sort((a, b) => a.key.length - b.key.length)[0];
   if (pre) return { v: pre.v, how: "prefix" };
   if (!fuzzy || isGf) return null;

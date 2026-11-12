@@ -682,6 +682,9 @@ async function uiSearchIndex(env) {
 }
 
 // h = { mcpSearchRows, rowToItem, clampInt, site } from index.js
+// MCP r4: first line of a get_ui_flow answer when the text matched no flow but did match screens. WORDING = r4-copy.md item 2, option A (placeholder).
+export const FLOW_FALLBACK_HEAD = (txt, flowList) => `No step-by-step flow matches "${txt}", so here are the closest single screens instead. ` +
+  `For a full flow, call get_ui_flow with one of these ids: ${flowList}.`;
 export async function callUiTool(name, a, env, h) {
   const site = h.site;
   const flowsLine = (it) => (it.flows || []).filter((f) => UI_FLOWS[f.id]).map((f) => `${f.id} step ${f.step}`).join(", ");
@@ -750,7 +753,21 @@ export async function callUiTool(name, a, env, h) {
   }
   if (name === "get_ui_flow") {
     const fr = resolveName(a.flow, Object.keys(UI_FLOWS), Object.fromEntries(Object.entries(UI_FLOWS).map(([k, v]) => [k, [v, ...((FLOW_DEFS[k] || {}).aliases || [])]])));
-    if (!fr) return { content: [{ type: "text", text: `No flow matches "${a.flow || ""}". Available: ` + Object.entries(UI_FLOWS).map(([k, v]) => `${k} (${v.toLowerCase()})`).join(", ") }], isError: true };
+    const flowList = Object.entries(UI_FLOWS).map(([k, v]) => `${k} (${v.toLowerCase()})`).join(", ");
+    if (!fr) {
+      // MCP r4 (13-Nov-2026): agents pass a description instead of a flow id ("employee directory browse and view team hierarchy",
+      // 12-Nov). That was an error with the flow list; a description of 2+ words now gets the closest single screens (the
+      // search_ui_screens answer for the same text, device and style) after the flow list. A bare unknown id stays an error.
+      const txt = String(a.flow || "").trim();
+      if (txt.split(/[\s_-]+/).filter((w) => w.length > 1).length >= 2) {
+        const alt = await callUiTool("search_ui_screens", { query: txt, device: a.device || a.platform, style: a.style, limit: 4 }, env, h);
+        const first = alt && !alt.isError && alt.content && alt.content[0] && alt.content[0].text;
+        if (first && !/^No screen in the library matches/.test(first)) {
+          return { content: [{ type: "text", text: FLOW_FALLBACK_HEAD(txt, flowList) + "\n\n" + first }, ...alt.content.slice(1)] };
+        }
+      }
+      return { content: [{ type: "text", text: `No flow matches "${a.flow || ""}". Available: ` + flowList }], isError: true };
+    }
     const id = fr.id;
     const platform = resolvePlatform(a.device || a.platform) || "web", style = resolveStyle(a.style) || "minimal";
     const steps = await flowSteps(env, h, id, platform, style, { noErrors: a.include_errors === false });

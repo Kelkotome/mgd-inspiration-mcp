@@ -108,6 +108,21 @@ ABOUT = {
     "Gloock": ["Serif", ["Duarte Pinto"], 2023],
     "Baskervville": ["Serif", ["ANRT"], 2019],
     # --- end mcp-gaps-r2
+    # --- mcp r4 (13-Nov-2026): the Noto family. Real-user zeros on 12-Nov: Noto Serif SC, Noto Sans SC (r1/r2 skipped Noto on purpose).
+    # Designers = "Google" (google/fonts METADATA.pb). No year: not cross-checked against METADATA.pb date_added this round.
+    "Noto Sans": ["Sans Serif", ["Google"], None],
+    "Noto Serif": ["Serif", ["Google"], None],
+    "Noto Sans SC": ["Sans Serif", ["Google"], None],
+    "Noto Serif SC": ["Serif", ["Google"], None],
+    "Noto Sans TC": ["Sans Serif", ["Google"], None],
+    "Noto Serif TC": ["Serif", ["Google"], None],
+    "Noto Sans JP": ["Sans Serif", ["Google"], None],
+    "Noto Serif JP": ["Serif", ["Google"], None],
+    "Noto Sans KR": ["Sans Serif", ["Google"], None],
+    "Noto Serif KR": ["Serif", ["Google"], None],
+    "Noto Sans Arabic": ["Sans Serif", ["Google"], None],
+    "Noto Sans Devanagari": ["Sans Serif", ["Google"], None],
+    # --- end mcp r4
 }
 
 # (heading, body, why). The page font is one of the two.
@@ -583,6 +598,93 @@ PAIRS = {
         ("Baskervville", "Lato", "Lato gives a neutral, friendly sans for captions and menus beside Baskervville headings in books and editorial design."),
     ],
     # --- end mcp-gaps-r2
+    # --- mcp r4 (13-Nov-2026): Noto. CJK, Arabic and Devanagari rows say how the pair is used: a Latin face first in the font stack
+    # with the Noto face after it for the other script, or the matching Noto serif/sans of the same script.
+    "Noto Sans": [
+        ("Noto Sans", "Noto Serif", "Noto Serif belongs to the same Noto family as Noto Sans, so serif body text and sans headings share proportions."),
+        ("Playfair Display", "Noto Sans", "Playfair Display adds high-contrast headlines while Noto Sans keeps body text plain and covers many languages."),
+        ("Noto Sans", "Source Serif 4", "Source Serif 4 gives a crisp text serif for articles under neutral Noto Sans headings on documentation and news sites."),
+        ("Montserrat", "Noto Sans", "Montserrat's wide geometric capitals give character to headings above the even, neutral Noto Sans body text."),
+        ("Merriweather", "Noto Sans", "Merriweather brings sturdy serif headings, and Noto Sans supplies a calm, widely supported sans for paragraphs and labels."),
+    ],
+    "Noto Serif": [
+        ("Noto Sans", "Noto Serif", "Noto Sans comes from the same Noto family as Noto Serif, so sans headings and serif body text share one design."),
+        ("Montserrat", "Noto Serif", "Montserrat's geometric headlines give a modern frame to Noto Serif, a sturdy text serif for long articles."),
+        ("Noto Serif", "Inter", "Inter's neutral, tall x-height sans keeps interface labels and captions clear beside Noto Serif headings."),
+        ("Playfair Display", "Noto Serif", "Playfair Display brings high-contrast display headings while the plainer Noto Serif carries the body text."),
+        ("Noto Serif", "Lato", "Lato's warm, rounded sans gives a friendly secondary voice for captions and navigation next to Noto Serif headings."),
+    ],
+    "Noto Sans SC": [
+        ("Noto Serif SC", "Noto Sans SC", "Noto Serif SC is the matching Simplified Chinese serif, so Song style headings sit above Noto Sans SC body text."),
+        ("Inter", "Noto Sans SC", "Inter sets Latin headings and numbers, and Noto Sans SC follows it in the font stack for Chinese body text on bilingual sites."),
+        ("Playfair Display", "Noto Sans SC", "Playfair Display gives English headlines high contrast while Noto Sans SC keeps Chinese paragraphs plain and readable."),
+        ("Montserrat", "Noto Sans SC", "Montserrat's geometric Latin headings pair with Noto Sans SC, whose even strokes suit Chinese text in apps and product pages."),
+        ("Noto Sans SC", "Source Serif 4", "Source Serif 4 adds an English serif body under bold Noto Sans SC headings on bilingual reports and articles."),
+    ],
+    "Noto Serif SC": [
+        ("Noto Serif SC", "Noto Sans SC", "Noto Sans SC is the matching Simplified Chinese sans, so Noto Serif SC headings and sans body text share one design."),
+        ("Noto Serif SC", "Inter", "Inter sets English body text and labels cleanly beside Noto Serif SC headings on bilingual editorial pages."),
+        ("Playfair Display", "Noto Serif SC", "Playfair Display gives English titles high contrast, and Noto Serif SC carries Chinese long-form text in a matching serif tone."),
+        ("Source Serif 4", "Noto Serif SC", "Source Serif 4 sets English headings and numbers, and Noto Serif SC follows in the font stack for the Chinese reading text."),
+        ("Cormorant Garamond", "Noto Serif SC", "Cormorant Garamond adds elegant Latin display headings above Noto Serif SC body text for cultural and literary sites."),
+    ],
+    "Noto Sans TC": [
+        ("Noto Serif TC", "Noto Sans TC", "Noto Serif TC is the matching Traditional Chinese serif, so Ming style headings sit above Noto Sans TC body text."),
+        ("Inter", "Noto Sans TC", "Inter sets Latin headings and numbers, and Noto Sans TC follows it in the font stack for Traditional Chinese body text."),
+        ("Lora", "Noto Sans TC", "Lora's calligraphic serif headings give English titles warmth while Noto Sans TC keeps Traditional Chinese paragraphs plain."),
+        ("Montserrat", "Noto Sans TC", "Montserrat's geometric Latin headings pair with Noto Sans TC, whose even strokes suit Traditional Chinese text in apps."),
+        ("Noto Sans TC", "Merriweather", "Merriweather gives English articles a sturdy serif body under Noto Sans TC headings on bilingual news and report pages."),
+    ],
+    "Noto Serif TC": [
+        ("Noto Serif TC", "Noto Sans TC", "Noto Sans TC is the matching Traditional Chinese sans, so Noto Serif TC headings and sans body text share one design."),
+        ("Noto Serif TC", "Inter", "Inter sets English body text and interface labels cleanly beside Noto Serif TC headings on bilingual editorial pages."),
+        ("Source Serif 4", "Noto Serif TC", "Source Serif 4 sets English headings and numbers, and Noto Serif TC follows in the font stack for Traditional Chinese text."),
+        ("Playfair Display", "Noto Serif TC", "Playfair Display gives English titles high contrast, and Noto Serif TC carries long Traditional Chinese text in a serif tone."),
+        ("Cormorant Garamond", "Noto Serif TC", "Cormorant Garamond adds refined Latin display headings above Noto Serif TC body text for museum and literary sites."),
+    ],
+    "Noto Sans JP": [
+        ("Noto Serif JP", "Noto Sans JP", "Noto Serif JP is the matching Japanese Mincho style serif, so its headings sit above Noto Sans JP body text in one family."),
+        ("Inter", "Noto Sans JP", "Inter sets Latin headings and numbers, and Noto Sans JP follows it in the font stack for Japanese body text on bilingual sites."),
+        ("Montserrat", "Noto Sans JP", "Montserrat's geometric Latin headings pair with Noto Sans JP, a clean Gothic style face for Japanese text in apps."),
+        ("Noto Sans JP", "Lora", "Lora's soft serif body text gives English articles warmth under bold Noto Sans JP headings on bilingual blogs."),
+        ("Playfair Display", "Noto Sans JP", "Playfair Display gives English headlines high contrast while Noto Sans JP keeps Japanese paragraphs even and readable."),
+    ],
+    "Noto Serif JP": [
+        ("Noto Serif JP", "Noto Sans JP", "Noto Sans JP is the matching Japanese Gothic style sans, so Noto Serif JP headings and sans body text share one design."),
+        ("Noto Serif JP", "Inter", "Inter sets English body text and labels cleanly beside Mincho style Noto Serif JP headings on bilingual editorial pages."),
+        ("Source Serif 4", "Noto Serif JP", "Source Serif 4 sets English headings and numbers, and Noto Serif JP follows in the font stack for Japanese reading text."),
+        ("Cormorant Garamond", "Noto Serif JP", "Cormorant Garamond adds elegant Latin display headings above Noto Serif JP body text for tea, craft and hotel brands."),
+        ("Playfair Display", "Noto Serif JP", "Playfair Display gives English titles high contrast, and Noto Serif JP carries long Japanese text in a matching serif tone."),
+    ],
+    "Noto Sans KR": [
+        ("Noto Serif KR", "Noto Sans KR", "Noto Serif KR is the matching Korean serif, so Myeongjo style headings sit above Noto Sans KR body text in one family."),
+        ("Inter", "Noto Sans KR", "Inter sets Latin headings and numbers, and Noto Sans KR follows it in the font stack for Korean body text on bilingual sites."),
+        ("Montserrat", "Noto Sans KR", "Montserrat's geometric Latin headings pair with Noto Sans KR, whose even Gothic style strokes suit Korean text in apps."),
+        ("Noto Sans KR", "Merriweather", "Merriweather gives English articles a sturdy serif body under bold Noto Sans KR headings on bilingual news and report pages."),
+        ("Playfair Display", "Noto Sans KR", "Playfair Display gives English headlines high contrast while Noto Sans KR keeps Korean paragraphs plain and readable."),
+    ],
+    "Noto Serif KR": [
+        ("Noto Serif KR", "Noto Sans KR", "Noto Sans KR is the matching Korean sans, so Noto Serif KR headings and sans body text share one design across both styles."),
+        ("Noto Serif KR", "Inter", "Inter sets English body text and labels cleanly beside Myeongjo style Noto Serif KR headings on bilingual editorial pages."),
+        ("Source Serif 4", "Noto Serif KR", "Source Serif 4 sets English headings and numbers, and Noto Serif KR follows in the font stack for Korean reading text."),
+        ("Playfair Display", "Noto Serif KR", "Playfair Display gives English titles high contrast, and Noto Serif KR carries long Korean text in a matching serif tone."),
+        ("Cormorant Garamond", "Noto Serif KR", "Cormorant Garamond adds refined Latin display headings above Noto Serif KR body text for cultural and literary sites."),
+    ],
+    "Noto Sans Arabic": [
+        ("Noto Sans Arabic", "Noto Naskh Arabic", "Noto Naskh Arabic is a traditional Naskh face for long reading text under modern, low-contrast Noto Sans Arabic headings."),
+        ("Inter", "Noto Sans Arabic", "Inter sets Latin headings and numbers, and Noto Sans Arabic follows it in the font stack for Arabic text on bilingual sites."),
+        ("Noto Sans", "Noto Sans Arabic", "Noto Sans comes from the same Noto family as Noto Sans Arabic, so English and Arabic pages keep a similar weight and tone."),
+        ("Montserrat", "Noto Sans Arabic", "Montserrat's geometric Latin headings pair with Noto Sans Arabic, a clear, low-contrast face for Arabic interface text."),
+        ("Playfair Display", "Noto Sans Arabic", "Playfair Display gives English headlines high contrast while Noto Sans Arabic keeps Arabic paragraphs plain and readable."),
+    ],
+    "Noto Sans Devanagari": [
+        ("Noto Sans Devanagari", "Noto Serif Devanagari", "Noto Serif Devanagari gives Hindi and Marathi articles a more traditional reading text under Noto Sans Devanagari headings."),
+        ("Inter", "Noto Sans Devanagari", "Inter sets Latin headings and numbers, and Noto Sans Devanagari follows it in the font stack for Hindi text on bilingual sites."),
+        ("Noto Sans", "Noto Sans Devanagari", "Noto Sans comes from the same Noto family as Noto Sans Devanagari, so English and Hindi pages keep a similar weight and tone."),
+        ("Poppins", "Noto Sans Devanagari", "Poppins has geometric Latin headings, and Noto Sans Devanagari gives the Devanagari body text an even, plain texture beside them."),
+        ("Playfair Display", "Noto Sans Devanagari", "Playfair Display gives English headlines high contrast while Noto Sans Devanagari keeps Hindi paragraphs plain and readable."),
+    ],
+    # --- end mcp r4
 }
 
 # --- copied from fonts-r2/src/build_r2.py (pair_group, itself from mgd-kit/build_sitewide.py) so groups match the guides
@@ -647,9 +749,9 @@ if errors:
 # Every Google Fonts family name, so the lookup can tell "Play" (a real family with no guide) from a partial "Play…" for Playfair Display.
 families = sorted(GFM)
 with open(OUT, "w", encoding="utf-8") as fh:
-    fh.write("// GENERATED by build_font_pairings_curated.py (mcp-gaps-r1, 10-Nov-2026; mcp-gaps-r2, 11-Nov-2026). Do not edit by hand.\n"
-             "// Editorial pairings for 67 Google Fonts without an MGD guide yet (page: null): r1 added 30; mcp-gaps-r2 added 37\n"
-             "// (7 real zeros from 10-11 Nov + 30 popular display/serif). Facts from google/fonts METADATA.pb.\n")
+    fh.write("// GENERATED by build_font_pairings_curated.py (mcp-gaps-r1, 10-Nov-2026; mcp-gaps-r2, 11-Nov-2026; mcp r4, 13-Nov-2026). Do not edit by hand.\n"
+             "// Editorial pairings for 79 Google Fonts without an MGD guide yet (page: null): r1 added 30; mcp-gaps-r2 added 37\n"
+             "// (7 real zeros from 10-11 Nov + 30 popular display/serif); mcp r4 added 12 Noto families (real zeros 12-Nov). Facts from google/fonts METADATA.pb.\n")
     fh.write("export const CURATED = " + json.dumps(out, ensure_ascii=False, separators=(",", ":")) + ";\n")
     fh.write("export const GF_FAMILIES = " + json.dumps("|".join(families), ensure_ascii=False) + ".split(\"|\");\n")
 print(f"{len(out)} fonts, {sum(len(v['pairs']) for v in out.values())} pairs, {len(families)} Google Fonts names, "

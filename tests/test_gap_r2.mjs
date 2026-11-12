@@ -43,8 +43,10 @@ t("ftsTiers: phrase, all, core (non-generic AND), any/prefix over non-generic wo
   tiers.map((x) => x.tier).join(",") === "phrase,all,core,any,prefix" && tiers[2].expr === '("jazz" AND "poster")' && tiers[3].expr === '("jazz" OR "poster")' && tiers[4].expr === '("jazz"* OR "poster"*)', tiers);
 const t1 = ftsTiers(["minimal", "poster"], ["title"]);
 t("ftsTiers: one core word → core1, no any tier", t1.map((x) => x.tier).join(",") === "phrase,all,core1,prefix" && t1[2].expr === '{title} : ("poster")', t1);
-const t2 = ftsTiers(["minimal", "modern"], null);
+const t2 = ftsTiers(["minimal", "modern"], null, { rare: false });   // MCP r4: rare:false = the pre-r4 tiers (FTS_RARE=0)
 t("ftsTiers: only generic words behave as before", t2.map((x) => x.tier).join(",") === "phrase,all,any,prefix", t2);
+const t2r = ftsTiers(["minimal", "modern"], null);   // r4: "minimal" is a dominant word -> any = the rare word only, then the full OR if short
+t("ftsTiers r4: a dominant word splits the any tier into any (rare) + any+ (full OR, only if short)", t2r.map((x) => x.tier).join(",") === "phrase,all,any,any+,prefix" && t2r[3].ifShort === true, t2r);
 const t3 = ftsTiers(["klimt", "gold"], ["title", "tags"]);
 t("ftsTiers: no generic word → unchanged (n11 shape)", t3.map((x) => x.tier).join(",") === "phrase,all,any,prefix" && t3[1].expr === '{title tags} : ("klimt" AND "gold")', t3);
 t("isGeneric", isGeneric("Modern") && isGeneric("ui") && isGeneric("template") && !isGeneric("poster") && GENERIC_W < 0.5);

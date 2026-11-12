@@ -44,3 +44,7 @@ r3-e2e.*
 tests/seo1/.base/
 wrangler.seo1.jsonc
 seo1-e2e.*
+tests/r4/.base/
+wrangler.r4.jsonc
+r4-e2e.*
+tests/r4/.data/

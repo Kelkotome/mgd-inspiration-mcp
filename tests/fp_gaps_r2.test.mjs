@@ -30,7 +30,7 @@ try {
 
   // 1. the list: 7 + 30 = 37 distinct fonts, all new in CURATED (none a guide or an r1 font), 67 curated in total
   ok(LIST.zeros7.length === 7 && LIST.popular30.length === 30 && new Set(NEW37).size === 37, "7 + 30 distinct fonts");
-  ok(Object.keys(CURATED).length === 67, `67 curated fonts (got ${Object.keys(CURATED).length})`);
+  ok(Object.keys(CURATED).length === 79, `79 curated fonts, 67 + 12 mcp r4 Noto (got ${Object.keys(CURATED).length})`);
   for (const f of NEW37) {
     const v = CURATED[f.toLowerCase()];
     ok(v && v.font === f && !BASE_CURATED[f.toLowerCase()] && !DATA[f.toLowerCase()], `${f}: new curated entry, not a guide or r1 font`);
