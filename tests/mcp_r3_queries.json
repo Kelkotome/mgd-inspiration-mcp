@@ -1,0 +1,3060 @@
+{
+"source": "mcp_calls, 7 days to 12-Nov-2026 12:20 SGT, read-only; bots/curl and our own IP excluded; tool + logged query text + count only",
+"rows": [
+{
+"tool": "browse_inspiration_by_theme",
+"query": "",
+"n": 1
+},
+{
+"tool": "browse_inspiration_by_theme",
+"query": "brutalist",
+"n": 1
+},
+{
+"tool": "browse_inspiration_by_theme",
+"query": "luxury",
+"n": 4
+},
+{
+"tool": "browse_inspiration_by_theme",
+"query": "minimal",
+"n": 2
+},
+{
+"tool": "browse_inspiration_by_theme",
+"query": "pastel",
+"n": 1
+},
+{
+"tool": "browse_inspiration_by_theme",
+"query": "swiss",
+"n": 7
+},
+{
+"tool": "browse_inspiration_by_theme",
+"query": "typographic",
+"n": 1
+},
+{
+"tool": "design_md_from_references",
+"query": "Eco-Friendly AI Product Launch Visual",
+"n": 1
+},
+{
+"tool": "design_md_from_references",
+"query": "Healing Through Expression",
+"n": 1
+},
+{
+"tool": "design_md_from_references",
+"query": "industrial trade brand slate orange",
+"n": 1
+},
+{
+"tool": "get_brand_typeface",
+"query": "Airbnb, Rimowa, Belmond, British Airways, Tourism New Zealand, Destination Canada, Tourism Australia",
+"n": 1
+},
+{
+"tool": "get_brand_typeface",
+"query": "Booking.com, Expedia, Airbnb, British Airways",
+"n": 1
+},
+{
+"tool": "get_brand_typeface",
+"query": "Clinique",
+"n": 1
+},
+{
+"tool": "get_brand_typeface",
+"query": "MAC, HAY, Smeg, Kartell, Powerade",
+"n": 1
+},
+{
+"tool": "get_brand_typeface",
+"query": "Pronovias, Jenny Packham, Monique Lhuillier, Four Seasons, Rosewood, Tiffany, Cartier, Dior, Chanel, Ralph Lauren",
+"n": 1
+},
+{
+"tool": "get_brand_typeface",
+"query": "Stripe, Linear, Vercel, Notion, Cash App",
+"n": 1
+},
+{
+"tool": "get_brand_typeface",
+"query": "Vera Wang, Valentino, Bottega Veneta, Loro Piana, Aman, Belmond, Vogue, Harper's Bazaar, Brunello Cucinelli, Jacquemus",
+"n": 1
+},
+{
+"tool": "get_brand_typeface",
+"query": "Volleyball World, FIVB, Nike, Adidas, Red Bull",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "",
+"n": 3
+},
+{
+"tool": "get_font_pairing",
+"query": "Anton",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Archivo",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Bebas Neue",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Bellefair",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Big Shoulders Display",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Bodoni Moda",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Bricolage Grotesque",
+"n": 2
+},
+{
+"tool": "get_font_pairing",
+"query": "Cinzel",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Cormorant Garamond",
+"n": 3
+},
+{
+"tool": "get_font_pairing",
+"query": "DM Sans",
+"n": 2
+},
+{
+"tool": "get_font_pairing",
+"query": "DM Serif Display",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "EB Garamond",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Figtree",
+"n": 2
+},
+{
+"tool": "get_font_pairing",
+"query": "Forum",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Fraunces",
+"n": 4
+},
+{
+"tool": "get_font_pairing",
+"query": "Geist",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Gilda Display",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Helvetica font pairing",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Instrument Serif",
+"n": 5
+},
+{
+"tool": "get_font_pairing",
+"query": "Inter",
+"n": 4
+},
+{
+"tool": "get_font_pairing",
+"query": "Italiana",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "JetBrains Mono",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Josefin Sans",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Lato",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Lexend",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Libre Baskerville",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Libre Caslon Text",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Lora",
+"n": 2
+},
+{
+"tool": "get_font_pairing",
+"query": "Manrope",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Marcellus",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Newsreader",
+"n": 2
+},
+{
+"tool": "get_font_pairing",
+"query": "Nunito Sans",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Oswald",
+"n": 2
+},
+{
+"tool": "get_font_pairing",
+"query": "Outfit",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Playfair Display",
+"n": 3
+},
+{
+"tool": "get_font_pairing",
+"query": "Plus Jakarta Sans",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Poppins",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Prata",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Public Sans",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Space Grotesk",
+"n": 3
+},
+{
+"tool": "get_font_pairing",
+"query": "Tenor Sans",
+"n": 1
+},
+{
+"tool": "get_font_pairing",
+"query": "Unbounded",
+"n": 1
+},
+{
+"tool": "get_ui_flow",
+"query": "",
+"n": 2
+},
+{
+"tool": "get_ui_flow",
+"query": "{\"flow\":\"first-run\",\"style\":\"editorial\"}",
+"n": 1
+},
+{
+"tool": "get_ui_flow",
+"query": "{\"flow\":\"first-run\"}",
+"n": 2
+},
+{
+"tool": "get_ui_flow",
+"query": "{\"flow\":\"magic-link-login\"}",
+"n": 2
+},
+{
+"tool": "get_ui_flow",
+"query": "{\"flow\":\"open-an-account\",\"device\":\"mobile\"}",
+"n": 1
+},
+{
+"tool": "get_ui_flow",
+"query": "{\"flow\":\"open-an-account\"}",
+"n": 2
+},
+{
+"tool": "get_ui_flow",
+"query": "{\"flow\":\"sign-up\",\"style\":\"editorial\"}",
+"n": 1
+},
+{
+"tool": "get_ui_flow",
+"query": "{\"flow\":\"sign-up\"}",
+"n": 2
+},
+{
+"tool": "get_ui_flow",
+"query": "{\"flow\":\"upgrade-plan\",\"include_errors\":false}",
+"n": 1
+},
+{
+"tool": "get_ui_flow",
+"query": "{\"flow\":\"upgrade-plan\"}",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "02c69db43ad8",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "2403357195f4",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "2b3d80dc7c74",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "2c36544f331c",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "2c8d0ddb1087",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "369f55dd0c80",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "3962e50d9aa5",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "40d8a85979ce",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "490f4fa0c9bd",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "4ccb97249a46",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "61d3bdbfb0aa",
+"n": 4
+},
+{
+"tool": "get_ui_screen_code",
+"query": "679d6c96880e",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "6e02aee902d7",
+"n": 2
+},
+{
+"tool": "get_ui_screen_code",
+"query": "721f5b505bf6",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "77bd21f0bd00",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "7868dc63e109",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "80594917519a",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "8132c715d952",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "8f08269e2f80",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "93c6a16244fe",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "9597dc774b65",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "97d37f2cfd04",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "b93054d27069",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "c0b8b8ab4e6e",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "c71243509427",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "ce723d87167f",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "cf97b2e973e0",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "d19b4a4b131e",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "d84ccb481eee",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "d91f3987d337",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "e44b1b829603",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "faa6a23a91a6",
+"n": 1
+},
+{
+"tool": "get_ui_screen_code",
+"query": "fc8dfdbd0410",
+"n": 1
+},
+{
+"tool": "list_inspiration_themes",
+"query": "",
+"n": 7
+},
+{
+"tool": "list_ui_patterns",
+"query": "",
+"n": 7
+},
+{
+"tool": "list_ui_patterns",
+"query": "{\"kind\":\"all\"}",
+"n": 1
+},
+{
+"tool": "list_ui_patterns",
+"query": "{\"kind\":\"flows\"}",
+"n": 1
+},
+{
+"tool": "list_ui_patterns",
+"query": "{\"kind\":\"screens\"}",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "1970s geometric bold color blocks modernist",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "Herbert Bayer",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "Paul Rand",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "arrow symbol geometric corporate mark",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "bank insurance modernist",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "bank seal trust",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "castle tower crenellated logo",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "computer IBM data processing",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "concentric squares geometric frames",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "cube three-dimensional isometric",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "diamond rotated square symbol",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "duotone pink violet cover",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "electric company geometric hexagon modernist",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "horizontal stripes logo striped letters",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "hospital health",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "modernist geometric cover bright colour",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "modernist typographic minimal white",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "monogram letter symbol trademark 1960s",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "pharmaceutical",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "railway toll highway",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "telephone communications network modernist",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "transit authority blue red white",
+"n": 1
+},
+{
+"tool": "search_annual_reports",
+"query": "two-color duotone bold modernist cover",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "",
+"n": 4
+},
+{
+"tool": "search_design_inspiration",
+"query": "Airbnb",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Belmond",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Booking.com Expedia travel",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "British Airways",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Carefree plum lavender palette",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Christmas poster bold condensed typography",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "CooperVision brand guidelines watercolour wordmark",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Expedia",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Intrepid",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Italian coffee typography geometric poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Italian espresso red black editorial poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Italian geometric collage product poster red black",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Orient Express",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Porto",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Rimowa",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Swiss editorial product brochure geometric infographics typography business",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Tourism New Zealand",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "VFS Global",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "Visit Iceland",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "abstract healthcare identity warm luminous minimal symbol",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "abstract rounded paper shapes warm color overlapping branding",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "all caps wordmark",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "annual report foundation sustainability",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "arched lettering athletic block numerals",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "architecture brand guidelines swiss",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "architecture color palette muted pastel concrete",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "architecture timber natural",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "art deco luxury brass green editorial paper tags",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "asymmetric rounded corner shape brand device overlapping translucent circles",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "beach surf summer brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "beauty packaging shopping bag typographic",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "blue night city lights cinematic",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "blue poster bold typography grid",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "bold flat color big typography brand",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "bold interactive studio landing page navy editorial",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "bold typographic poster black and yellow",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "bold typography winner celebration black gold",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "brass gold accent elegant serif brand calm",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "brik",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "calm wellness therapy brand sage earth tones serif",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "car dashboard instrument cluster data display",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "clean air fresh blue service brand",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "clinical white serif brand",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "coffee packaging bold type",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "color swatch typography print bold",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "condensed bold logotype stripe",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "condensed serif wedding",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "continuous line monogram",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "cookbook recipe editorial layout",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "cosmetic product label ingredients typography",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "counseling wellness brand guidelines purple",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "dark blue glow night brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "dark fleet tracking dashboard mobile telemetry",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "dark premium brand one accent color",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "dental clinic branding",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "dermatology skincare clinic",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "developer tool",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "developer tool terminal dark circuit",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "dog logo animal mark",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "door checkpoint stop sign",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "dotted particle data network corporate technology brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "duotone photo poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "editorial education presentation typography grid",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "editorial instruction manual index technical guide wayfinding typography",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "editorial magazine cover",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "editorial one-page brochure soft serif mint minimal print",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "editorial personal typography large statement",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "editorial serif minimal",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "endorsed brand architecture sub-brands same logo descriptor",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "engineering blueprint grid poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "engineering industrial brochure blue",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "flowing ribbon line pattern healthcare wellness branding",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "friendly local community brand identity warm",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "geometric minimal wordmark security technology brand",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "geometric symbol logo mark",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "guest list ticket stamp",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "gym80 brand guidelines",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "hairline rule grid layout",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "hand painted shop sign lettering",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "healthcare hospital brand guidelines",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "healthcare hospital identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "holiday gift box ribbon poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "holographic iridescent gradient",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "hospital wayfinding signage",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "hospital wordmark lowercase rounded",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "hotel residence real estate brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "image inside letters knockout type",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "impossible figure optical illusion geometric",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "industrial signage orange trade workshop wordmark",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "isometric black and white dot illustration",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "isometric cube logo",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "italian tile pattern geometric mosaic",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "italic sports wordmark speed motion",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "keys locks hardware brand identity red",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "kinetic logo motion sport broadcast",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "kite",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "knot logo rope line mark",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "lowercase logo",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "lowercase rounded wordmark ligature",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "lowercase wordmark",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "luxury monochrome typography",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "material swatches color samples brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "medical clinic brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "merch t-shirt graphic",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "military insignia badge shield navy gold",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "minimal geometric symbol logo positive negative space",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "minimal typography leaderboard",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "minimal typography red black",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "mint green petrol brand identity architecture",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "modern Italian product photography editorial red black poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "monochrome typographic logo with single accent color, technical, grid",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "monogram minimal geometric",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "monogram pattern all-over luxury bag",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "museum identity typographic system",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "narrow tall serif editorial elegant",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "negative space letter logo",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "neighborhood shop brand blue cream",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "newspaper sports front page layout",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "numbered process diagram",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "pastel nature editorial magazine",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "perfume fragrance packaging bottle label",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "pharmaceutical brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "pharmaceutical identity minimal",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "pictogram arrow sign wayfinding",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "playful tech brand typographic",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "plum coral brand palette",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "plum lavender identity serif wordmark",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "premium B2B flyer bold typography",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "quiet editorial serif notebook personal page warm paper",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "receipt ticket stamp punch card",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "sage green wellness clinic branding",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "scientific technical typography grid",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "serif wordmark",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "serif wordmark minimal calm",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "service company flyer photo layout clean",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "sign painting lettering storefront blue",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "single brushstroke enso circle brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "skincare packaging",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "social media campaign",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "soft muted luxury identity warm neutral serif",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "soft pink minimal typography",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "sports athlete poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "sports athlete wordmark jersey lettering",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "sports brand logo mark monogram",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "sports monogram logo custom letterform",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "square frame nested squares",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "star map night sky poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "sunset gradient wordmark summer",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "swiss corporate annual report",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "swiss editorial typography green brand presentation",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "swiss grid poster bold type",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "swiss grid typographic poster index",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "swiss poster bold flat colour white",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "swiss typographic grid poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "swiss typographic poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "swiss typography poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "teal mint brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "tech service poster minimal grid",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "technical diagram halftone dots monochrome",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "thermal receipt monospace",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "ticket boarding pass layout",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "timber firewood sawmill forestry brand",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "travel brand identity warm",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "travel poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "travel tourism destination branding",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "two color poster high contrast duotone",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "two colour print riso cobalt",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "velvet rope nightclub door",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "water engineering infrastructure brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "wavy squiggle line pattern brand identity",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "weather app interface hourly forecast",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "white wordmark dark background",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "winter night typographic poster",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "wordmark logo",
+"n": 1
+},
+{
+"tool": "search_design_inspiration",
+"query": "woven lattice weave pattern brand identity",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Anatolian Turkish carpet",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Anatolian kilim rug",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Art Deco poster geometric",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Attic amphora terracotta",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Bauhaus color study abstract composition",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Bauhaus poster geometric",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Braque cubist still life",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Carceri Piranesi",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Greek vase black-figure warrior",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Horatius Cocles",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Iznik Ottoman tile",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Japanese woodblock indigo vermilion",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Peter Behrens AEG",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Picasso cubist",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Roman coin bridge",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Roman fresco Pompeii",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Roman inscription lettering",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "Vienna Secession poster",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "architectural drawing elevation section",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "armor helmet sword",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "art deco poster pink light blue",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "astronomy moon planet stars",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "bold poster lettering",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "bridge Rome Tiber Piranesi",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "bright sky blue flat colour woodblock",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "bronze medal profile ancient Roman",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "castle fortress plan bastion",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "celestial map star chart constellations",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "constructivist poster two color",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "coral sea creatures natural history plate",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "cubism still life Juan Gris Gleizes Metzinger",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "dog guarding sheep",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "dog poster Art Nouveau",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "dog woodcut",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "fish woodblock print",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "flowers bouquet engraving",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "gate guard sentry",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "geese goose",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "hound dog sculpture bronze",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "key iron medieval lock",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "kolam rangoli south india pattern",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "lantern night",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "lemon citrus engraving hand-coloured",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "lock key escutcheon keyhole",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "machine engraving bridge construction",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "map South America Strait of Magellan engraving ship",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "oak leaves acorns",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "painted shield heraldry medieval",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "pointing hand manicule",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "polyhedron geometric solid",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "portolan chart rhumb lines",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "ukiyo-e indigo",
+"n": 1
+},
+{
+"tool": "search_museum_art",
+"query": "woven rug geometric wool natural",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "",
+"n": 2
+},
+{
+"tool": "search_ui_screens",
+"query": "3D fitness tracker dashboard with trophy milestones, gamified workout app immersive 3D depth, premium dark gaming aesthetic, neon accent highlights mobile app U",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "3D fitness tracker dashboard with trophy milestones, holographic trophies premium dark metallic, neon accents, futuristic 3D rendered mobile app UI make fitness",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "3D fitness tracker dashboard with trophy milestones, immersive gamified workout app bold 3D depth, metallic accents, dark tech with neon highlights, gaming aest",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "AI meal planner dashboard, grocery list organizer warm minimal, friendly productivity, soft greens and neutrals mobile app UI make Meal Planner Grocery List Gen",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "Brik",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "CRM contact detail page with header actions and more menu",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "Create photo post",
+"n": 3
+},
+{
+"tool": "search_ui_screens",
+"query": "QR code scanner result success state mobile",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "SaaS dashboard home with task inbox and KPI cards",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "SaaS dashboard with KPI cards and activity table",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "SaaS landing page hero for a small business tool with phone mockup",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "SaaS landing page with how it works steps and feature tour",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "account access overview, workspace membership list with role",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "activity tracking ride summary with route map and stats, mobile",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "admin analytics dashboard with KPI cards bar chart donut",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "admin subscription management subscribers table filter",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "agency operations dashboard with revenue chart and workload charts",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "analytics dashboard KPI charts",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "app home today activity rings next workout weekly chart",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "application download section brand illustration large typography",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "architecture studio interior design website home",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "architecture studio portfolio home",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "architecture studio portfolio home with projects, editorial",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "article page with stat tiles, sticky on this page rail, and card sections",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "balanced two column privacy comparison clean typography",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "booking travel activity rental mobile date",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "café bakery small business landing page warm editorial",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "career progress stepper with current level, stat tiles and checklist",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "case study project page with large images and facts",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "cash register closing, cash count reconciliation, end of day POS report",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "checkout",
+"n": 2
+},
+{
+"tool": "search_ui_screens",
+"query": "choose a template gallery for new site onboarding",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "clinic appointment booking",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "clinic homepage",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "collectible marketplace with featured auction, price trend, product grid",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "compact FAQ support contact call to action",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "compact centered mobile login sign up authentication",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "compact logo badge dark header",
+"n": 2
+},
+{
+"tool": "search_ui_screens",
+"query": "compact spreadsheet-like dashboard with table tabs and formula grid, dark minimal",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "compact subscription upgrade banner locked feature inline callout dark",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "comparison of options with salary range bars and detail rail",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "component preview playground segmented control dark canvas",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "connected accounts integration settings live status progress goal",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "construction company website home page",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "course catalog with study plan weeks checklist and comparison",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "course comparison with cost, duration and pros/cons",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "course library dashboard with progress tracking and certificates",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "creative approval workspace gallery sidebar clean minimal",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "creative studio image editor canvas with tools panel, bold colourful",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "custom fields manager settings with expandable table rows",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "customer onboarding operations dashboard with assignee, progress status, time overdue table and funnel analytics",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "daily habit tracker log mobile history",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "dark SaaS landing page hero with product preview, how it works steps, pricing teaser, FAQ",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "dark minimal landing hero with pill buttons and glass frame product screenshot",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "dark monitoring dashboard with stat tiles, sparklines and live data table",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "dark settings editor audio file",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "dashboard KPI metric cards with empty or unavailable state",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "dashboard data table",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "dashboard with sidebar and vertical scrollbar",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "data table with expandable rows and review checkboxes",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "data table with filters and side panel detail",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "day timeline home screen with events on hours",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "delete confirmation dialog with image preview",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "dense monochrome landing hero with real product UI",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "dental clinic appointment booking",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "dental practice website",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "design system foundations tokens palette swatches typography scale radius shadows",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "destructive confirm dialog",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "developer",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "device pairing QR code confirmation connected devices settings",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "digital marketing agency landing page hero",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "document viewer sidebar steps editorial",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "e-commerce product category page with filters for auto parts",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "e-commerce product grid dark streetwear",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "e-commerce product grid streetwear store",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "editor preview toolbar",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "editor toolbar formatting block insert",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "editorial pricing",
+"n": 2
+},
+{
+"tool": "search_ui_screens",
+"query": "editorial product presentation split hero large title interface screenshot strict two column grid",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "editorial product showcase interactive feature cards dark technology",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "electric car companion app home with battery range and charging",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "empty state",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "empty state first run checklist",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "enterprise SaaS onboarding trial status empty error",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "event conference landing page schedule speakers ticket tiers",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "feminine wellness self care pink rose botanical journal mobile",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "file preview modal with zoom toolbar and side details",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "finance dashboard with data table of transactions",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "finance dashboard with spending summary and recent transactions",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "fitness activity dashboard with daily readiness score",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "fitness tracker dashboard with 3D trophies and milestones dark moody cinematic, cyan and purple neon accents, deep 3D layering mobile app UI PreviewError live p",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "fitness tracker dashboard, 3D trophies and milestones dark metallic, premium 3D, athletic mobile app UI PreviewError live phone preview failed esbuild",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "fitness tracker home dashboard with trophy milestones dark metallic minimal, premium athletic mobile app UI more time make before asked make",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "free trial checkout no card required",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "friends on map with bottom sheet list",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "guide page with factor cards checklist and comparison columns",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "gym sports website home with hero and classes",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "handmade ceramics online shop home, soft rounded product cards, warm",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "health report dashboard sidebar minimal white",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "hero code terminal",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "home dashboard widgets weather tasks soft cards",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "home screen with full-bleed photo hero and cards below",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "hourly sales bars by location operations today",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "how it works process timeline steps icons",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "iOS grouped settings mobile list clean",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "iOS health daily tracking calendar insights settings",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "inbox work queue list of items to review with status badges and amounts",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "instagram carousel cover bold headline",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "interior design studio portfolio full-bleed image hero editorial",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "invoice",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "invoice line items with total and budget meter",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "invoice with line items, subtotal, totals",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "invoices list table with status, simple small business billing",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "knowledge base documentation help center sidebar article search",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "knowledge base documentation sidebar learning articles",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "knowledge base help center documentation with search article sidebar",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "landing page hero with live product UI, bold grotesk",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "leaderboard list left aligned names",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "learning path course roadmap with modules, time estimates and resources",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "legal document privacy policy terms table of contents long-form reading",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "live map with arrival time and status steps",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "loan terms summary card, fintech, key figures with labels",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "local service business landing page hero with phone call button and quote request",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "login",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "logo cloud as seen in press logos band",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "loyalty program settings editor with card preview and rewards list",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "loyalty stamp card customer wallet pass",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "loyalty stamp card wallet pass on phone",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "marketplace listing grid with live auction and price trends",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "meditation sleep app home with sessions and streak",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "minimal dark billing settings subscription cards",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "minimal dark creative client review gallery",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "minimal dark product landing hero navigation demo",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "minimal dark subscription billing plan checkout",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "minimal download installation requirements text list disclosure",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "minimal editorial product landing FAQ download privacy footer",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "minimal workspace profile settings",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile activity feed transaction detail empty loading account settings",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile app dashboard transaction history account settings",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile centered sign in compact minimal",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile dark login onboarding device pairing QR code enter code",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile dating swipe dark luxury",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile equipment rental booking checkout participants",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile habit tracker dashboard showing daily completion, prayer log and weekly progress",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile home dashboard daily status weather widgets",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile map bottom sheet form",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile map location full screen",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile minimal utility app settings list device connection",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "mobile time tracking clock in shift timer dark dashboard",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "motorcycle ride tracking app home",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "multi-step form wizard with live preview",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "music festival website line-up tickets stages",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "onboarding checklist with progress and numbered steps",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "onboarding learning course lesson reader knowledge base editorial step-by-step training",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "onboarding wizard choose template personalize",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "onboarding-step",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "online learning course lesson with progress, quiz or practice question",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "outdoor activity equipment rental booking mobile",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "patient timeline of visits and admissions",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "payment dark",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "payroll",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "personal morning dashboard soft cards one warm light calm numbers",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "personal notes page daily planner habits checklist",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "plant care app my plants detail with watering schedule",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "point of sale checkout register cart order panel product grid",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "premium upgrade benefit feature preview",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "pricing page",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "pricing page plans comparison table",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "pricing section single plan monthly yearly toggle",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "privacy permissions comparison horizontal rows editorial typography",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "private wellness cycle tracker calendar dashboard",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "product catalog navigation trial eligibility status",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "product feature showcase horizontal tabs large preview minimal",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "professional profile page with contact call to action, directory listing detail",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "profile account settings",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "project list table with status badges, detailed project overview, sequential onboarding course progress and one-time code authentication",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "publish site domain settings success",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "published milestone celebration success",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "ranking leaderboard table",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "real estate home hero with street photo and search",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "receive stock count quantities expected vs counted",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "report reader sidebar navigation luxury",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "risk matrix dashboard with likelihood impact and mitigation list",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "roles and permissions matrix settings page",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "savings goal dark",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "scored comparison with score rings and bars",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "search results list with filters and a docked detail side panel, three-pane workspace",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "security findings audit report dashboard",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "security investigation progress dashboard task owners blockers",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "select dialog with searchable list, radio cards and confirm button",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "settings account security billing preferences",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "settings destructive action inline confirmation reset progress",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "settings form inline validation input",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "settings form unsaved changes fixed bottom save cancel bar",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "settings page with an enable toggle at the top and a list of cards to pick and edit below",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "settings page with sidebar sections and toggles",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "settings screen for developer tool app",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "settings sidebar nav monochrome minimal",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "shared support inbox with conversation list, thread, AI reply draft and customer details panel",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "shared support inbox, conversation list, thread and customer details",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "side drawer form to add an expense over a dashboard",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "sidebar navigation dashboard",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "sign up form with terms consent checkbox",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "skills matrix by level with tags and checklist",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "skills matrix or competency gap dashboard with priority and progress",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "skincare beauty app product detail clean modern sans-serif",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "sleep or recovery score today with hourly timeline chart",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "sleep tracker stages chart dark app",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "small business dashboard overview stats",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "smart home device status energy dashboard",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "social feed create post composer with audience selector and formatting toolbar",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "sports court booking slot picker",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "stat cards with range bar and footnoted sources",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "step by step quote calculator with range slider and choice cards",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "store sales by location, payments totals, end of shift summary",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "student personal profile documents portal settings",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "subscription plan benefits premium feature card",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "subscription pricing premium upgrade clean dark billing",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "support contact help center",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "support inbox conversation list with message thread and detail panel",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "team dashboard overview KPI metrics task list activity",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "team members roles permissions settings",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "team roles and permissions settings, what a member can do",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "template gallery picker choose a design",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "template gallery with filters and large preview pane",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "template picker onboarding step choose style",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "timesheet",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "to-do task list with comments and status filters",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "today home screen weather verdict activity forecast friends nearby",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "top navigation bar with search, notifications pill and user avatar dropdown menu",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "transfer money",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "travel booking landing page hero with destinations",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "two-factor verification code screen",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "typographic feature list thin dividers no icons",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "upcoming bills timeline with calendar and list",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "uppercase labels",
+"n": 2
+},
+{
+"tool": "search_ui_screens",
+"query": "vehicle fleet delivery driver route tracking map",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "video creator dashboard, media library, thumbnails grid, fun vibrant",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "visual editor builder canvas with template picker and properties panel",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "wallet top up dark",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "weather app with hourly forecast chart",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "weather forecast today temperature rain",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "website builder canvas editor with sections and properties panel",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "website builder editor with page canvas and blocks",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "wedding invitation RSVP event website",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "wedding website",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "widget gallery settings",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "workspace dashboard permissions status next action",
+"n": 1
+},
+{
+"tool": "search_ui_screens",
+"query": "{\"pattern\":\"login\",\"device\":\"web\"}",
+"n": 1
+}
+]
+}

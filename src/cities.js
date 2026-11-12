@@ -59,10 +59,26 @@ function qualifier(q) {
 }
 const passes = (c, quals) => quals.every((q) => q.cc.includes(c[3]) || q.rg.includes(c[3] + "." + c[4]));
 
+// MCP r3 (12-Nov-2026): short forms and local names the GeoNames alternates (kept only for 1M+ cities) do not carry. Folded keys →
+// the name to look up. A short form wins over a same-named small place ("NOLA" = New Orleans, not Nola in the CAR).
+const CITY_ALIAS = {
+  nyc: "new york city", "ny city": "new york city", la: "los angeles", sf: "san francisco", "san fran": "san francisco", dc: "washington",
+  "d c": "washington", "washington d c": "washington", nola: "new orleans", philly: "philadelphia", vegas: "las vegas", atl: "atlanta",
+  kl: "kuala lumpur", hk: "hong kong", sg: "singapore", hcmc: "ho chi minh city", bkk: "bangkok", rio: "rio de janeiro",
+  cdmx: "mexico city", joburg: "johannesburg", jozi: "johannesburg", jhb: "johannesburg", calcutta: "kolkata",
+  firenze: "florence", venezia: "venice", genova: "genoa", geneve: "geneva", genf: "geneva", lyons: "lyon", marseilles: "marseille",
+  sevilla: "seville", "den bosch": "s hertogenbosch", "frankfurt a m": "frankfurt am main", hanover: "hannover", brunswick: "braunschweig",
+  "st petersburg russia": "saint petersburg", leningrad: "saint petersburg", canton: "guangzhou", "abu dhabi city": "abu dhabi",
+};
+// German/Scandinavian transliterations: "Koeln", "Duesseldorf", "Zuerich", "Goeteborg" → the folded "koln", "dusseldorf", …
+const translit = (k) => k.replace(/ae/g, "a").replace(/oe/g, "o").replace(/ue/g, "u");
 function candidates(name) {
-  const { names } = index(), k = cityFold(name);
-  if (!k) return [];
-  for (const v of [k, k.replace(/^the /, ""), k + " city", k.replace(/ city$/, "")]) { const hit = names.get(v); if (hit) return hit; }
+  const { names } = index(), k0 = cityFold(name);
+  if (!k0) return [];
+  const keys = CITY_ALIAS[k0] ? [CITY_ALIAS[k0], k0] : [k0];
+  for (const k of keys) for (const v of [k, k.replace(/^the /, ""), k + " city", k.replace(/ city$/, "")]) { const hit = names.get(v); if (hit) return hit; }
+  const t = translit(k0);
+  if (t !== k0) for (const v of [t, t + " city"]) { const hit = names.get(v); if (hit) return hit; }
   return [];
 }
 

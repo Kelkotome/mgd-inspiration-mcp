@@ -1,0 +1,574 @@
+{
+ "source": "fdf92f8 (live Worker 9a4267d5, mcp gaps r2)",
+ "bytes": {
+  "mcp": 163204,
+  "mcp_structured": 164213,
+  "core": 37803
+ },
+ "instructions": {
+  "mcp": 1491,
+  "core": 1392
+ },
+ "tools": [
+  {
+   "name": "search_design_inspiration",
+   "schema": "f6b8a8a53e050424",
+   "desc_len": 378
+  },
+  {
+   "name": "list_inspiration_themes",
+   "schema": "8243f0af367f188a",
+   "desc_len": 255
+  },
+  {
+   "name": "browse_inspiration_by_theme",
+   "schema": "48c2f91cfb116ec7",
+   "desc_len": 234
+  },
+  {
+   "name": "search_annual_reports",
+   "schema": "684e86852d954e93",
+   "desc_len": 611
+  },
+  {
+   "name": "search_museum_art",
+   "schema": "f6ed816eb769d687",
+   "desc_len": 817
+  },
+  {
+   "name": "get_share_feedback",
+   "schema": "914b02f2d87fafeb",
+   "desc_len": 550
+  },
+  {
+   "name": "generate_website_color_palette",
+   "schema": "5cf5b0a5e5c8dbab",
+   "desc_len": 742
+  },
+  {
+   "name": "generate_design_md",
+   "schema": "2b85f358e140d16c",
+   "desc_len": 918
+  },
+  {
+   "name": "style_text_unicode",
+   "schema": "239d25015b01a6b0",
+   "desc_len": 581
+  },
+  {
+   "name": "count_characters",
+   "schema": "7af7313b5ccc11e8",
+   "desc_len": 496
+  },
+  {
+   "name": "diff_text",
+   "schema": "ca3730a27863c151",
+   "desc_len": 346
+  },
+  {
+   "name": "generate_color_combinations",
+   "schema": "12539c71486e0bbb",
+   "desc_len": 436
+  },
+  {
+   "name": "generate_upc_barcode",
+   "schema": "ae922e5823c45245",
+   "desc_len": 376
+  },
+  {
+   "name": "text_to_diagram",
+   "schema": "9118d7a564475b81",
+   "desc_len": 464
+  },
+  {
+   "name": "generate_logo_concepts",
+   "schema": "5f1e3a91380124c1",
+   "desc_len": 454
+  },
+  {
+   "name": "passport_photo_size",
+   "schema": "734d3a21e746d85e",
+   "desc_len": 421
+  },
+  {
+   "name": "make_word_search",
+   "schema": "0a96b2427676181e",
+   "desc_len": 526
+  },
+  {
+   "name": "make_crossword",
+   "schema": "0a037abb056b53bb",
+   "desc_len": 495
+  },
+  {
+   "name": "make_bingo_cards",
+   "schema": "544a3202552a141e",
+   "desc_len": 440
+  },
+  {
+   "name": "generate_usernames",
+   "schema": "2d9e3f60ce42e1d3",
+   "desc_len": 598
+  },
+  {
+   "name": "schedule_gantt_chart",
+   "schema": "5db47f8705409c62",
+   "desc_len": 519
+  },
+  {
+   "name": "get_public_holidays",
+   "schema": "00d1c5a1eca77bc8",
+   "desc_len": 509
+  },
+  {
+   "name": "make_weekly_schedule",
+   "schema": "ed2a0c1fcabb73ba",
+   "desc_len": 466
+  },
+  {
+   "name": "text_to_timeline",
+   "schema": "fd53c01db081c96b",
+   "desc_len": 486
+  },
+  {
+   "name": "make_org_chart",
+   "schema": "6bdc4dbd2fc2d03f",
+   "desc_len": 458
+  },
+  {
+   "name": "make_venn_diagram",
+   "schema": "77ab5decd0c6c02c",
+   "desc_len": 454
+  },
+  {
+   "name": "make_pie_chart",
+   "schema": "d5181c79391c30f3",
+   "desc_len": 400
+  },
+  {
+   "name": "generate_data_matrix",
+   "schema": "cd1058fc82f94de0",
+   "desc_len": 527
+  },
+  {
+   "name": "make_color_swatches",
+   "schema": "5f7c7ef0ec3ff5f0",
+   "desc_len": 598
+  },
+  {
+   "name": "make_graph",
+   "schema": "7d146fec3434cc67",
+   "desc_len": 534
+  },
+  {
+   "name": "convert_subtitles",
+   "schema": "77436777a2865cd8",
+   "desc_len": 472
+  },
+  {
+   "name": "image_size_calculator",
+   "schema": "36311ee68337f0fe",
+   "desc_len": 641
+  },
+  {
+   "name": "convert_text_case",
+   "schema": "54da4840aaefcd01",
+   "desc_len": 520
+  },
+  {
+   "name": "search_ui_screens",
+   "schema": "45801d2685d276ff",
+   "desc_len": 809
+  },
+  {
+   "name": "get_ui_flow",
+   "schema": "a1c1cd156bf8f6d8",
+   "desc_len": 911
+  },
+  {
+   "name": "get_ui_screen_code",
+   "schema": "212bbd8fbda118c7",
+   "desc_len": 488
+  },
+  {
+   "name": "list_ui_patterns",
+   "schema": "ca10bd0162ba3f38",
+   "desc_len": 315
+  },
+  {
+   "name": "make_brand_board",
+   "schema": "a42d8862750032df",
+   "desc_len": 433
+  },
+  {
+   "name": "generate_slogans",
+   "schema": "2da232b406221c8d",
+   "desc_len": 307
+  },
+  {
+   "name": "generate_shadcn_theme",
+   "schema": "dafb3e9948d5a14a",
+   "desc_len": 667
+  },
+  {
+   "name": "export_design_tokens",
+   "schema": "8b9f931f4f66c5eb",
+   "desc_len": 434
+  },
+  {
+   "name": "search_icons",
+   "schema": "2b4e4af100a95ae4",
+   "desc_len": 399
+  },
+  {
+   "name": "get_screen_sizes",
+   "schema": "f0dc45bf144d79c6",
+   "desc_len": 437
+  },
+  {
+   "name": "convert_color",
+   "schema": "888dd366e8df54bc",
+   "desc_len": 464
+  },
+  {
+   "name": "design_md_from_references",
+   "schema": "0de98aa4a288aa35",
+   "desc_len": 639
+  },
+  {
+   "name": "generate_type_scale",
+   "schema": "5758297e84883b81",
+   "desc_len": 388
+  },
+  {
+   "name": "generate_color_scale",
+   "schema": "4152833cc39d4a83",
+   "desc_len": 395
+  },
+  {
+   "name": "check_contrast",
+   "schema": "f3f101df96b3c9ec",
+   "desc_len": 488
+  },
+  {
+   "name": "lint_design_md",
+   "schema": "0ebdc80bb76dd772",
+   "desc_len": 395
+  },
+  {
+   "name": "get_paper_sizes",
+   "schema": "6df9914851f1c523",
+   "desc_len": 470
+  },
+  {
+   "name": "make_grid_paper",
+   "schema": "50ce70bbce9f2315",
+   "desc_len": 446
+  },
+  {
+   "name": "make_storyboard",
+   "schema": "ca935b41022bad79",
+   "desc_len": 449
+  },
+  {
+   "name": "generate_llms_txt",
+   "schema": "7f596dbb387bd523",
+   "desc_len": 391
+  },
+  {
+   "name": "get_book_cover_size",
+   "schema": "0fe7d3371533fda1",
+   "desc_len": 569
+  },
+  {
+   "name": "make_affinity_diagram",
+   "schema": "3a9b64532ed4bbaa",
+   "desc_len": 605
+  },
+  {
+   "name": "make_extruded_part",
+   "schema": "45df91e7fa6ad723",
+   "desc_len": 725
+  },
+  {
+   "name": "analyze_3d_model",
+   "schema": "e71e08b75455eeb3",
+   "desc_len": 612
+  },
+  {
+   "name": "get_print_clearance",
+   "schema": "41804b9bf2711599",
+   "desc_len": 588
+  },
+  {
+   "name": "get_screw_specs",
+   "schema": "5e2a12852c696625",
+   "desc_len": 613
+  },
+  {
+   "name": "get_hand_anthropometrics",
+   "schema": "2b7345dbe030be2e",
+   "desc_len": 694
+  },
+  {
+   "name": "make_box_template",
+   "schema": "f0677ba624be9133",
+   "desc_len": 420
+  },
+  {
+   "name": "make_gear",
+   "schema": "5f9564362536d586",
+   "desc_len": 415
+  },
+  {
+   "name": "lookup_character",
+   "schema": "bdcc452ce9ffb7a9",
+   "desc_len": 502
+  },
+  {
+   "name": "fix_typography",
+   "schema": "6bbaa808645f3e27",
+   "desc_len": 458
+  },
+  {
+   "name": "make_dieline",
+   "schema": "f33a0b1fb4db6b90",
+   "desc_len": 424
+  },
+  {
+   "name": "get_sheet_metal_gauge",
+   "schema": "8d03c7ac8a7970e8",
+   "desc_len": 347
+  },
+  {
+   "name": "calc_sheet_metal_bend",
+   "schema": "2e6c4722cdbf430c",
+   "desc_len": 315
+  },
+  {
+   "name": "make_cone_pattern",
+   "schema": "9dfb4f361f4e99e1",
+   "desc_len": 308
+  },
+  {
+   "name": "make_living_hinge",
+   "schema": "556f11248f649f97",
+   "desc_len": 312
+  },
+  {
+   "name": "make_nutrition_label",
+   "schema": "69a15677525c17c3",
+   "desc_len": 396
+  },
+  {
+   "name": "get_desk_ergonomics",
+   "schema": "69a47212488d6a27",
+   "desc_len": 321
+  },
+  {
+   "name": "calc_quilt",
+   "schema": "411da327e84a83ad",
+   "desc_len": 409
+  },
+  {
+   "name": "calc_fabric_yardage",
+   "schema": "b7ceb92eb82d1e06",
+   "desc_len": 406
+  },
+  {
+   "name": "optimize_cut_list",
+   "schema": "88a1f121c0aa1256",
+   "desc_len": 392
+  },
+  {
+   "name": "make_jigsaw_puzzle",
+   "schema": "01cbafe447b2fdf1",
+   "desc_len": 375
+  },
+  {
+   "name": "convert_drawing_scale",
+   "schema": "3ad3962fe6f58cc7",
+   "desc_len": 337
+  },
+  {
+   "name": "get_logo_placement",
+   "schema": "501131de69961607",
+   "desc_len": 466
+  },
+  {
+   "name": "make_cd_case_template",
+   "schema": "7ecd329c540aaac1",
+   "desc_len": 367
+  },
+  {
+   "name": "make_paper_piecing_template",
+   "schema": "993a2e746ea8ec53",
+   "desc_len": 390
+  },
+  {
+   "name": "make_voronoi_pattern",
+   "schema": "50b28170ed13bf42",
+   "desc_len": 345
+  },
+  {
+   "name": "edit_svg_path",
+   "schema": "90a0116e16f43950",
+   "desc_len": 362
+  },
+  {
+   "name": "calc_depth_of_field",
+   "schema": "dff008c57d61332a",
+   "desc_len": 355
+  },
+  {
+   "name": "make_speech_bubble",
+   "schema": "5338574c527a1aee",
+   "desc_len": 340
+  },
+  {
+   "name": "make_coat_of_arms",
+   "schema": "e38dd0d58893e99b",
+   "desc_len": 184
+  },
+  {
+   "name": "make_jcard_template",
+   "schema": "4492f7c736daa59b",
+   "desc_len": 326
+  },
+  {
+   "name": "calc_field_of_view",
+   "schema": "5b97c4becba9e27f",
+   "desc_len": 351
+  },
+  {
+   "name": "calc_exposure_value",
+   "schema": "c9c040b6168e06a8",
+   "desc_len": 281
+  },
+  {
+   "name": "make_certificate_border",
+   "schema": "6bda7767d476b0c0",
+   "desc_len": 263
+  },
+  {
+   "name": "calc_kitchen_work_triangle",
+   "schema": "d6371fa4c8674c49",
+   "desc_len": 328
+  },
+  {
+   "name": "plan_square_foot_garden",
+   "schema": "2c78c650c646de0f",
+   "desc_len": 306
+  },
+  {
+   "name": "make_ribbon_banner",
+   "schema": "a6f165d97caf9832",
+   "desc_len": 250
+  },
+  {
+   "name": "calc_cross_stitch",
+   "schema": "294f0d0037a073bd",
+   "desc_len": 338
+  },
+  {
+   "name": "get_mockup_print_area",
+   "schema": "a3cfac9943054294",
+   "desc_len": 390
+  },
+  {
+   "name": "make_star_map",
+   "schema": "2c271acd44a885c2",
+   "desc_len": 291
+  },
+  {
+   "name": "make_fantasy_map",
+   "schema": "56c222fcf5d3141f",
+   "desc_len": 336
+  },
+  {
+   "name": "make_paper_bag_template",
+   "schema": "abe8cecd3410e58f",
+   "desc_len": 364
+  },
+  {
+   "name": "get_brochure_panels",
+   "schema": "c348dcead74cfbbe",
+   "desc_len": 340
+  },
+  {
+   "name": "get_banner_spec",
+   "schema": "1770184086976d1d",
+   "desc_len": 319
+  },
+  {
+   "name": "make_maze",
+   "schema": "9c4dd463540c7031",
+   "desc_len": 321
+  },
+  {
+   "name": "make_dungeon",
+   "schema": "461f8a6d0ff483b1",
+   "desc_len": 339
+  },
+  {
+   "name": "make_paper_airplane_template",
+   "schema": "3f07ca5bf3cd1d8f",
+   "desc_len": 370
+  },
+  {
+   "name": "make_crown_template",
+   "schema": "a17b918656a0d633",
+   "desc_len": 334
+  },
+  {
+   "name": "get_sign_letter_height",
+   "schema": "c5bd555e9f108578",
+   "desc_len": 393
+  },
+  {
+   "name": "plan_sign_tiling",
+   "schema": "a82c54b079d4efb9",
+   "desc_len": 294
+  },
+  {
+   "name": "make_sign",
+   "schema": "a04f70f5ffbe78f7",
+   "desc_len": 330
+  },
+  {
+   "name": "get_frame_size",
+   "schema": "6cebacb66e79bb57",
+   "desc_len": 324
+  },
+  {
+   "name": "calc_label_wrap",
+   "schema": "9fa9f49ecc478c86",
+   "desc_len": 380
+  },
+  {
+   "name": "make_habit_tracker",
+   "schema": "7667708d7a9a84b5",
+   "desc_len": 402
+  },
+  {
+   "name": "make_badge",
+   "schema": "e8a8a8bd1c5d7fe5",
+   "desc_len": 340
+  },
+  {
+   "name": "save_moodboard",
+   "schema": "b28d5359e0bc7985",
+   "desc_len": 586
+  },
+  {
+   "name": "get_brand_typeface",
+   "schema": "be89abf08abdf208",
+   "desc_len": 587
+  },
+  {
+   "name": "get_font_pairing",
+   "schema": "3aaef7b2f37cc6db",
+   "desc_len": 367
+  }
+ ]
+}

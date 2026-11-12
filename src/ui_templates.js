@@ -41,7 +41,7 @@ const LOCAL_CSS = `.tg{display:grid;grid-template-columns:repeat(auto-fill,minma
 
 async function nicheImages(env, h, x, niches) {
   const ids = niches.map((n) => n.pattern); if (!ids.length) return {};
-  const rows = await x.uiRows(env, ` AND category IN (${ids.map(() => "?").join(",")}) AND country='web'`, ids);
+  const rows = await x.uiRows(env, (r) => ids.includes(r.category) && r.country === "web");   // MCP r3: cached UI rows, filtered in JS
   const out = {}; for (const r of rows) { const it = h.rowToItem(r, env); if (!out[it.pattern]) out[it.pattern] = it; } return out;
 }
 const nicheCard = (n, img, href, h, base, sub) => `<a class="card page" href="${h.escHtml(href)}">${img ? `<div class="th"><img loading="lazy" src="${h.escHtml(base + img)}" alt="${h.escHtml(n.label)} template"/></div>` : ""}<div class="meta"><b>${h.escHtml(n.label)}</b><span>${h.escHtml(sub)}</span></div></a>`;
@@ -127,7 +127,7 @@ ${n.services && n.services.length ? `<h2 class="s">Written for ${h.escHtml(n.lab
 export async function themePage(n, d, env, base, h, x) {
   const site = x.siteOf(env), ind = INDUSTRIES[n.industry], t = d.theme, rel = themePath(n, d), url = `${site}${base}/ui/${rel}`, crumbs = [...wpNicheCrumbs(n), [t.name, rel]], m = catalogMeta();
   const blueprint = `${site}${base}/ui/download/wordpress/${t.slug}.blueprint.json`, play = `https://playground.wordpress.net/?blueprint-url=${encodeURIComponent(blueprint)}`;
-  const row = (await x.uiRows(env, " AND category=? AND country='web' AND style=?", [n.pattern, d.style])).map((r) => h.rowToItem(r, env)).find((i) => (i.variant || "homepage") === d.variant);
+  const row = (await x.uiRows(env, (r) => r.category != null && r.category === n.pattern && r.country === "web" && r.style != null && r.style === d.style)).map((r) => h.rowToItem(r, env)).find((i) => (i.variant || "homepage") === d.variant);
   const desc = `${t.name} is a free ${n.label.toLowerCase()} WordPress block theme: ${d.about}. ${count(t.patterns, "block pattern")}, ${t.variations} style variations, ${kb(t.zipBytes)} zip.`;
   const jsonld = [{ "@context": "https://schema.org", "@type": "SoftwareSourceCode", name: t.name, url, description: desc, codeRepository: url, programmingLanguage: "PHP, HTML, CSS", runtimePlatform: `WordPress ${t.requiresWp}+`, version: t.version, author: x.MGD_ORG(site), license: "https://www.gnu.org/licenses/gpl-2.0.html" }, crumbLd(site, base, crumbs)];
   const facts = [["Sub-niche", n.label], ["Layout", `${d.layoutName}: ${d.about}`], ["Default style", d.style], ["Style variations", String(t.variations)], ["Block patterns", String(t.patterns)], ["Blocks on the front page", `${t.blocks}, of which ${t.htmlBlocks} ${t.htmlBlocks === 1 ? "is" : "are"} Custom HTML (forms and small decoration)`], ["Requires", `WordPress ${t.requiresWp} or later, PHP 7.4 or later`], ["Tested on", `WordPress ${m.wp}, PHP ${m.php}, ${m.tested}`], ["Download", `${kb(t.zipBytes)} zip`], ["SHA-256", t.sha256]];

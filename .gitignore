@@ -38,3 +38,6 @@ wrangler.gaps.jsonc
 gaps-e2e.*
 ui-screens/out-gaps2
 wrangler.gaps2.jsonc
+tests/r3/.data/
+wrangler.r3.jsonc
+r3-e2e.*

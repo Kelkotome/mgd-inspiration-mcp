@@ -15,6 +15,7 @@ import { UI_COMPONENT_PATTERNS, componentMeta, componentParts, componentDemoHtml
 import { resolveTree, treePaths, assertTree, nicheOfPattern, nicheOfFlatSeg, MIN_DESIGNS, PLATFORMS, liveDesigns } from "./ui_tree.js";
 import { industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
 import { patternSlug, flatSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
+import { shared, exact, cacheOff } from "./mcp_cache.js"; // MCP r3 (12-Nov-2026)
 
 export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts", "login", "sign-up", "forgot-password", "two-factor",
   "welcome", "onboarding-step", "permissions-request", "home", "feed", "list-view", "detail-view", "kanban-board", "calendar",
@@ -257,8 +258,17 @@ const licenceLd = (site, base) => ({ creator: MGD_ORG(site), copyrightHolder: MG
   copyrightNotice: "© Made Good Designs. Free to use and adapt; credit required only when republishing the screens.", license: `${site}${base}/ui/terms`, acquireLicensePage: `${site}${base}/ui/terms` });
 const siteOf = (env) => (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
 
-async function uiRows(env, where, binds) {
-  const rows = (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='ui'${where || ""}`).bind(...(binds || [])).all()).results || [];
+// MCP r3 (12-Nov-2026): the UI pages read the same cached UI rows as the MCP tools (uiAllRows) and filter them here, instead of one
+// D1 query per page view. D1 insights, 11/12-Nov (1 day): the item pages' "related" query alone read 39.9M rows (8,483 runs × 4,705, a
+// scan of every UI row), the gallery/sitemap 11.4M, the pattern pages 10.7M. keep(row) = the old WHERE as a predicate; eq() keeps SQL's
+// "NULL never equals" rule. The order is the same: the cached rows come in the old query's order and the sort below is unchanged.
+export const uiEq = (a, b) => a != null && b != null && a === b;
+async function uiAllRows(env) {
+  return shared(env, "ui-rows", 900, async () => (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='ui'`).all()).results || []);
+}
+async function uiRows(env, keep) {
+  const all = await uiAllRows(env);
+  const rows = typeof keep === "function" ? all.filter(keep) : all.slice();   // never sort the cached array in place
   const si = (s) => UI_STYLES.indexOf(s);
   return rows.sort((a, b) => order(a.category) - order(b.category) || (a.country === b.country ? 0 : a.country === "web" ? -1 : 1) || si(a.style) - si(b.style) || String(a.title).localeCompare(String(b.title)));
 }
@@ -357,7 +367,7 @@ async function uiItemPage(id, env, base, h) {
   const canonical = site + uiItemPath(it, base), imgAbs = site + base + it.image;
   const isSection = UI_SECTION_PATTERNS.includes(it.pattern) || UI_PAGE_PATTERNS.includes(it.pattern), isPage = UI_PAGE_PATTERNS.includes(it.pattern), isComp = UI_COMPONENT_PATTERNS.includes(it.pattern);
   const name = `${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""} ${kindWord(it.pattern)} — ${it.platform}, ${it.style} style`;
-  const related = (await uiRows(env, " AND category=? AND id<>? AND (country=? OR style=?)", [it.pattern, it.id, it.platform, it.style])).map((r) => h.rowToItem(r, env)).slice(0, 12);
+  const related = (await uiRows(env, (r) => uiEq(r.category, it.pattern) && r.id !== it.id && (uiEq(r.country, it.platform) || uiEq(r.style, it.style)))).map((r) => h.rowToItem(r, env)).slice(0, 12);
   const facts = [["Pattern", label(it.pattern), `${base}/ui/${patternSlug(it.pattern)}`], ["Device", label(it.platform), cleanUiUrl({ platform: it.platform }, base)],
     ["Style", label(it.style), cleanUiUrl({ style: it.style }, base)], ["Product (fictional)", it.product, null], ["Category", label(it.app_category), null]];
   const flows = (it.flows || []).filter((f) => UI_FLOWS[f.id]);
@@ -415,7 +425,7 @@ ${THEME_JS}${tokens ? UI_KIT_JS : ""}${h.saveWidget(base)}</body></html>`;
 
 // ---- Pattern landing pages (/ui/<pattern>) ------------------------------------------------------
 async function uiPatternPage(pattern, env, base, h) {
-  const items = (await uiRows(env, " AND category=?", [pattern])).map((r) => h.rowToItem(r, env));
+  const items = (await uiRows(env, (r) => uiEq(r.category, pattern))).map((r) => h.rowToItem(r, env));
   if (!items.length) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
   const site = siteOf(env), url = `${site}${base}/ui/${patternSlug(pattern)}`, isSection = UI_SECTION_PATTERNS.includes(pattern), tn = nicheOfPattern(pattern);
   const c = UI_COPY[pattern] || {}, lab = label(pattern), kind = kindWord(pattern).replace("email ", "");
@@ -657,11 +667,15 @@ async function availableFlows(env) { const fake = { rowToItem: (r) => r }; const
 // Patterns that have published screens (crawlable pattern links must not point at a pattern before its screens are ingested).
 async function uiPopulated(env) { const idx = await uiSearchIndex(env); return new Set(idx.docs.map((d) => d.pattern)); }
 
-// All published UI rows + their search index, cached per isolate (the library is ~1.6k rows and changes only on ingest).
+// All published UI rows + their search index, cached per isolate (the library is ~4.7k rows and changes only on ingest).
+// MCP r3 (12-Nov-2026): the rows also sit in the colo's Cache API for 15 min (src/mcp_cache.js), so a cold isolate no longer pulls
+// ~8 MB / ~4.7k rows from D1 (≈1.5 s from the US or Europe) before search_ui_screens, get_ui_flow or list_ui_patterns can answer.
+// An ingest in this colo drops both (uiIndexReset + dropShared); an empty library is never cached.
 let UI_IDX = null;
+export function uiIndexReset() { UI_IDX = null; }
 async function uiSearchIndex(env) {
-  if (UI_IDX && Date.now() - UI_IDX.at < 10 * 60 * 1000) return UI_IDX.idx;
-  const rows = (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='ui'`).all()).results || [];
+  if (UI_IDX && Date.now() - UI_IDX.at < 10 * 60 * 1000 && !cacheOff(env)) return UI_IDX.idx;
+  const rows = await uiAllRows(env);
   const idx = buildIndex(rows, UI_PATTERNS, UI_ELEMENTS);
   UI_IDX = { at: Date.now(), idx };
   return idx;
@@ -786,6 +800,15 @@ export async function callUiTool(name, a, env, h) {
   if (name === "get_ui_screen_code") {
     const m = String(a.screen_id || "").match(/([0-9a-f]{12})\/?$/);
     if (!m) return { content: [{ type: "text", text: "Pass screen_id from search_ui_screens (12 hex characters) or the screen's page URL." }], isError: true };
+    // MCP r3: exact cache by screen id + format (30 min); errors, unknown ids and answers with a missing file are never kept
+    const fmtKey = ["copy", "html", "design_md"].includes(a.format) ? a.format : "both";
+    return exact(env, `screen:${m[1]}:${fmtKey}`, 1800, () => uiScreenCode(m[1], a, env, h, site), { keep: (r) => !/```html\n\(missing\)\n```|## DESIGN\.md\n\n\(missing\)/.test(r.content[0].text) });
+  }
+  return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
+}
+async function uiScreenCode(id, a, env, h, site) {
+  {
+    const m = [null, id];
     const row = await env.DB.prepare(`SELECT * FROM items WHERE id=? AND status='published' AND collection='ui'`).bind(m[1]).first();
     if (!row) return { content: [{ type: "text", text: "No UI screen with that id. Find one with search_ui_screens." }], isError: true };
     const it = h.rowToItem(row, env), fmt = a.format || "both";
@@ -798,9 +821,10 @@ export async function callUiTool(name, a, env, h) {
       return { content: [{ type: "text", text: `Copy deck for ${it.title} (all names, people and figures are fictional). Replace the strings with the user's own copy, or translate them, then pass them back into the HTML from get_ui_screen_code. ${CITE}\n\n\`\`\`json\n${JSON.stringify(deck, null, 1)}\n\`\`\`` }] };
     }
     const parts = [`${it.title} — ${pageUrl}\n${CITE} Keep the credit comment at the top of each file.`];
-    if (fmt !== "design_md") { const t = await get("index.html"); parts.push("## index.html\n\n```html\n" + (t ? withCredit(t, "html", pageUrl, site) : "(missing)") + "\n```"); }
-    if (fmt !== "html") { const t = await get("DESIGN.md"); parts.push("## DESIGN.md\n\n" + (t ? withCredit(t, "md", pageUrl, site) : "(missing)")); }
+    // MCP r3: both files are fetched at once (they used to be fetched one after the other)
+    const [th, tm] = await Promise.all([fmt !== "design_md" ? get("index.html") : null, fmt !== "html" ? get("DESIGN.md") : null]);
+    if (fmt !== "design_md") parts.push("## index.html\n\n```html\n" + (th ? withCredit(th, "html", pageUrl, site) : "(missing)") + "\n```");
+    if (fmt !== "html") parts.push("## DESIGN.md\n\n" + (tm ? withCredit(tm, "md", pageUrl, site) : "(missing)"));
     return { content: [{ type: "text", text: parts.join("\n\n") }] };
   }
-  return { content: [{ type: "text", text: "Unknown tool: " + name }], isError: true };
 }

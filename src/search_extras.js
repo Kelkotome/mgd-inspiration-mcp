@@ -3,6 +3,7 @@
 //  (B) get_brand_typeface (brand → typeface facts we already publish), see brandTypeface() below,
 //  (C) FTS5 candidate search with bm25 (see ftsCandidates()), with a fallback to the LIKE search on any error.
 // Pure helpers are exported for tests/test_search_n11.mjs.
+import { shared } from "./mcp_cache.js"; // MCP r3 (12-Nov-2026)
 
 // ---- (A) icon intent -------------------------------------------------------------------------------------------------
 // "bold icon", "settings icons", "icon for delete", "trash glyph" → yes. "app icon", "iconic poster", "logo icon",
@@ -265,11 +266,17 @@ export async function brandTypeface(a, env, site, retry) {
   const inputs = btInputs(a || {});
   if (!inputs.length) return { content: [{ type: "text", text: "Pass brand (e.g. 'Supreme') or brands (a list of up to 10 names)." }], isError: true };
   const found = [], missing = [], blocks = [];
-  for (const inp of inputs) {
+  // MCP r3 (12-Nov-2026): the brands are looked up at the same time (each lookup is 1–4 D1 round trips; a 10-brand call used to
+  // run them one after the other), then assembled in the order given, so the answer is unchanged.
+  const looked = await Promise.all(inputs.map(async (inp) => {
     let rows = [], how = "";
     try { ({ rows, how } = await btFind(env, inp.key, retry)); }
     catch (e) { if (!/no such table/i.test(String((e && e.message) || e))) throw e; }   // brand_type not loaded yet → tiles only
     if (!rows.length) { rows = await btTile(env, inp.clean, retry); how = rows.length ? "tile" : ""; }
+    return { rows, how };
+  }));
+  for (const [n, inp] of inputs.entries()) {
+    const { rows, how } = looked[n];
     if (!rows.length) { missing.push(inp.q); continue; }
     const seen = new Set();
     for (const r of rows) {
@@ -339,7 +346,8 @@ async function ftsReady(env) {
   if (FTS_STATE.errAt && now - FTS_STATE.errAt < 600e3) return false;          // an error in the last 10 min: stay on LIKE
   if (FTS_STATE.ok !== null && now - FTS_STATE.at < 600e3) return FTS_STATE.ok;
   try {
-    const r = await env.DB.prepare("SELECT 1 AS x FROM sqlite_master WHERE type='table' AND name='items_fts'").first();
+    // MCP r3: "the index exists" is also kept 60 min in the colo's Cache API (a cold isolate skipped one D1 round trip); "missing" is not kept
+    const r = await shared(env, "fts-ready", 3600, async () => ((await env.DB.prepare("SELECT 1 AS x FROM sqlite_master WHERE type='table' AND name='items_fts'").first()) ? true : null));
     FTS_STATE.ok = !!r; FTS_STATE.at = now;
   } catch (_) { FTS_STATE.ok = false; FTS_STATE.at = now; }
   return FTS_STATE.ok;
