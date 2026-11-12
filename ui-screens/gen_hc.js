@@ -53,6 +53,18 @@ function need(c) {
     req(Array.isArray(g.days) && g.days.length >= 2 && g.days.length <= 3 && g.days.every((d) => d.t && d.sub && Array.isArray(d.slots) && d.slots.length >= 3 && d.slots.length <= 5 && d.slots.every((x) => x.length === 3 && x.every(Boolean))), "programme.days: 2-3 of { t, sub, 3-5 slots [time, title, where] }");
     req(Array.isArray(c.art) && c.art.length === 3 && c.art.every((a) => WART.includes(a)), "art: 3 event drawings");
   }
+  // portfolio and creative studio layouts (work, index) need a project list with a discipline filter, a case study, a CV and project drawings: portfolio content only
+  const PART = require("./hc/engine").PF_ART || [];
+  if ((c.layouts || []).some((l) => l === "work" || l === "index")) {
+    const w = c.work || {}; req(w.eyebrow && w.h2 && w.lede && w.note && /sample/i.test(w.note) && w.filterLabel && w.allLabel && Array.isArray(w.cols) && w.cols.length === 4, "work: eyebrow, h2, lede, note (says sample), filterLabel, allLabel, 4 cols");
+    req(Array.isArray(w.filters) && w.filters.length >= 3 && w.filters.length <= 4 && w.filters.every((x) => x.length === 2 && /^[a-z]+$/.test(x[0]) && x[1]), "work.filters: 3-4 of [id, label]");
+    const ids = new Set((w.filters || []).map((x) => x[0]));
+    req(Array.isArray(w.items) && w.items.length === 6 && w.items.every((x) => x.t && x.d && x.role && x.year && ids.has(x.disc) && PART.includes(x.art)), "work.items: exactly 6 of { t, d, disc (a filter id), role, year, art }");
+    for (const k of ids) req((w.items || []).some((x) => x.disc === k), `work: filter ${k} has no project`);
+    const cs = c.caseStudy || {}; req(cs.eyebrow && cs.t && cs.lede && cs.briefLabel && cs.brief && cs.note && /sample/i.test(cs.note) && Array.isArray(cs.steps) && cs.steps.length === 3 && cs.steps.every((x) => x.length === 2 && x.every(Boolean)) && Array.isArray(cs.delivered) && cs.delivered.length >= 3 && cs.delivered.length <= 6, "caseStudy: eyebrow, t, lede, briefLabel, brief, note (says sample), 3 steps [h, d], 3-6 delivered");
+    const cv = c.cv || {}; req(cv.h2 && cv.lede && Array.isArray(cv.rows) && cv.rows.length >= 4 && cv.rows.length <= 6 && cv.rows.every((r) => r.length === 3 && r.every(Boolean)), "cv: h2, lede, 4-6 of [years, title, detail]");
+    req(Array.isArray(c.art) && c.art.length === 3 && c.art.every((a) => PART.includes(a)), "art: 3 project drawings");
+  }
   for (const [k, n] of [["visit.fields", c.visit.fields], ["footer.cols", c.footer.cols], ["services.cols", c.services.cols]]) if (n) req(Array.isArray(n) && n.length === 3 && n.every(Boolean), `${k}: 3 labels`);
   if (/—/.test(JSON.stringify(c))) miss.push("em dash");
   if (miss.length) throw new Error(`${c.niche}: ${miss.join(", ")}`);

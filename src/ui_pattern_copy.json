@@ -2557,7 +2557,7 @@
  },
  "agency-website": {
   "h1": "Agency website templates",
-  "intro": "An agency site sells with its work. These templates lead with a positioning line and a project brief button, then selected work with client and discipline, services, process, the studio, results and an enquiry form with budget and timeline.",
+  "intro": "An agency site sells with its work. These templates lead with a positioning line and a start-a-project button, then selected work with a filter by discipline, one project told as a case study, services, process, the studio and an enquiry form.",
   "tips": [
    "Show three to six projects you’d happily do again, not everything you’ve ever made.",
    "Name the services in the words clients use when they search.",
@@ -4634,6 +4634,126 @@
    [
     "When should a conference programme go online?",
     "Put the outline up when tickets go on sale and fill in sessions as speakers confirm. Mark anything still to be confirmed."
+   ]
+  ]
+ },
+ "personal-portfolio-website": {
+  "h1": "Personal portfolio website templates",
+  "intro": "A personal portfolio has one job: show your work and make it easy to get in touch. These templates lead with your name and what you do, then selected projects with a filter by kind of work, one project told as a short case study, a CV, services or rates, and a contact form.",
+  "tips": [
+   "Show four to eight projects you would happily do again.",
+   "Give each project your role, the year and one line on the problem.",
+   "Tell one project in full: brief, steps and what was delivered.",
+   "Say whether you are available and how to reach you."
+  ],
+  "faq": [
+   [
+    "What should a personal portfolio website include?",
+    "Your name and what you do, selected projects with your role, one case study, a short CV or background, services or rates if you freelance, and a contact form."
+   ],
+   [
+    "How many projects should a portfolio show?",
+    "Usually four to eight. Fewer, well-explained projects read better than a long grid with no context."
+   ]
+  ]
+ },
+ "developer-portfolio-website": {
+  "h1": "Developer portfolio website templates",
+  "intro": "A developer portfolio shows what you built and how you think. These templates include a project index with a filter for apps, tools, data and open source, a case study told in steps, a CV with roles and years, what you can help with, and a contact form.",
+  "tips": [
+   "Describe each project by the problem it solved, not only the stack.",
+   "Link to code or a demo where you can, and say what was yours.",
+   "Keep the CV to roles, years and one line each.",
+   "Say whether you want a job, contract work or neither."
+  ],
+  "faq": [
+   [
+    "What should a developer portfolio include?",
+    "Projects with your role and what they solved, a case study, a short CV, the kind of work you want and a way to get in touch."
+   ],
+   [
+    "Should a developer portfolio list every technology?",
+    "No. Group skills in a few lines and let the projects show them in use."
+   ]
+  ]
+ },
+ "graphic-designer-website": {
+  "h1": "Graphic designer portfolio templates",
+  "intro": "A graphic designer's portfolio is a piece of design in itself. These templates include a type-led hero, a project grid or numbered index with a filter for identity, print and editorial work, a case study from brief to delivery, a CV, services with from-prices and a commission form.",
+  "tips": [
+   "Lead with the kind of work you want more of.",
+   "Show the brief and the outcome, not only the final image.",
+   "Filter work by discipline so clients find what they need.",
+   "Give a starting price or a budget question in the form."
+  ],
+  "faq": [
+   [
+    "What should a graphic designer portfolio include?",
+    "Selected projects by discipline, one or two case studies, services, a short CV or background and a simple way to commission you."
+   ],
+   [
+    "Should a designer portfolio show prices?",
+    "A from-price or a typical budget per service helps clients decide. Quote properly after the brief."
+   ]
+  ]
+ },
+ "photography-website": {
+  "h1": "Photography website templates",
+  "intro": "A photography website sells with pictures and answers practical questions. These templates include a gallery grid or numbered index with a filter by kind of shoot, one commission told as a story, how a shoot works, day rates and prints, usage terms and a date enquiry.",
+  "tips": [
+   "Group work by kind of shoot so clients see work like theirs.",
+   "Explain how a shoot works and when the gallery arrives.",
+   "Say how usage and copyright work in plain words.",
+   "Ask for the date, place and purpose in the enquiry form."
+  ],
+  "faq": [
+   [
+    "What should a photography website include?",
+    "A portfolio grouped by kind of shoot, how a shoot works, prices or from-prices, usage terms, an about section and a date enquiry form."
+   ],
+   [
+    "How many photos should a photography portfolio show?",
+    "A tight edit of your best work per category. Ten strong images say more than a hundred similar ones."
+   ]
+  ]
+ },
+ "interior-design-website": {
+  "h1": "Interior design website templates",
+  "intro": "An interior designer's site has to look calm and answer what working together costs. These templates include projects with a filter for homes, hospitality and single rooms, one project story, services from a consultation to full design, fees by stage, the studio and a consultation form.",
+  "tips": [
+   "Show finished rooms with a line on the brief.",
+   "Start with a paid consultation so new clients have an easy first step.",
+   "Give fees by stage and say furniture is paid separately.",
+   "Explain how you work with builders and trades."
+  ],
+  "faq": [
+   [
+    "What should an interior design website include?",
+    "Projects with a short brief, services, how a project works, fees or from-prices, the studio and a way to book a consultation."
+   ],
+   [
+    "Should interior designers show fees?",
+    "A from-price per stage helps clients plan. Say clearly what is included and what is paid separately."
+   ]
+  ]
+ },
+ "marketing-agency-website": {
+  "h1": "Marketing agency website templates",
+  "intro": "A marketing agency's site should explain what it does in plain words. These templates include services for search, content, email and paid campaigns, work with a filter by discipline, one programme told as a case study, how monthly work and reporting run, fees and a call booking form.",
+  "tips": [
+   "Name services in the words clients use, not internal jargon.",
+   "Explain how reporting works and how often.",
+   "Say what is in your fee and what is paid directly, like ad spend.",
+   "Only publish results your clients agree to share."
+  ],
+  "faq": [
+   [
+    "What should a marketing agency website include?",
+    "Services, selected work, how you work and report, fees or from-prices, the team and a way to book a first call."
+   ],
+   [
+    "Should a marketing agency promise results?",
+    "No honest agency can promise results. Explain your process and show real work your clients agree to share."
    ]
   ]
  },

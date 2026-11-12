@@ -1,0 +1,21 @@
+# Portfolios and creative studios tree, 13-Nov-2026 (templates r3). Run with the pending rows (tests/ui_rank/with_pending.mjs-style dump incl. out-hc).
+personal portfolio website template | personal-portfolio-website
+personal portfolio website | personal-portfolio-website
+freelancer portfolio website template | personal-portfolio-website
+developer portfolio template | developer-portfolio-website
+developer portfolio | developer-portfolio-website
+software engineer portfolio website | developer-portfolio-website
+graphic designer portfolio template | graphic-designer-website
+graphic design portfolio website | graphic-designer-website
+photography website template | photography-website
+photographer portfolio website | photography-website
+interior design website template | interior-design-website
+interior designer website | interior-design-website
+architecture website template | architecture-website
+architect website for a practice | architecture-website
+agency website template | agency-website
+creative agency website template | agency-website
+marketing agency website template | marketing-agency-website
+digital marketing agency website | marketing-agency-website
+photography website template | photography-website | platform=mobile
+marketing agency website template | marketing-agency-website | style=brutalist

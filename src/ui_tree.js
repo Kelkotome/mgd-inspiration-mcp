@@ -90,6 +90,26 @@ export const INDUSTRIES = {
     ],
     appPatterns: [],
   },
+  // 13-Nov-2026 sixth industry (templates r3, option A: a new industry is the user's call). Demand (Keyword Planner, worldwide, 12-Nov-2026):
+  // "portfolio website template" 18,100/mo (the hub), "personal portfolio website template" 2,400, "photography website template" 1,300,
+  // "interior design website template" 1,000, "graphic designer portfolio template" 880, "developer portfolio template" 720 (+ "developer portfolio" 590),
+  // "agency website template" 720, "architecture website template" 590, "marketing agency website template" 260. Artist and illustrator (260/210/70) dropped.
+  // agency-website and architecture-website were flat n12 patterns; their hand-built n12 homepages are not in the catalog (invented metrics and
+  // client quotes, approval item), so the nested pages show the six new designs only.
+  portfolio: {
+    id: "portfolio", label: "Portfolios and creative studios", hub: "portfolio-website-templates", seg: "portfolio", h1: "Portfolio and creative studio website templates", hubFirst: true,
+    niches: [
+      ["personal-portfolio", "personal-portfolio-website", "Personal portfolio", "personal-portfolio-website-template", "personal"],
+      ["developer-portfolio", "developer-portfolio-website", "Developer portfolio", "developer-portfolio-template", "developer"],
+      ["graphic-designer", "graphic-designer-website", "Graphic designer", "graphic-designer-portfolio-template", "graphic-designer"],
+      ["photography", "photography-website", "Photography", "photography-website-template", "photography"],
+      ["interior-design", "interior-design-website", "Interior design", "interior-design-website-template", "interior-design"],
+      ["architecture", "architecture-website", "Architecture", "architecture-website-template", "architecture"],
+      ["agency", "agency-website", "Creative agency", "agency-website-template", "agency"],
+      ["marketing-agency", "marketing-agency-website", "Marketing agency", "marketing-agency-website-template", "marketing-agency"],
+    ],
+    appPatterns: ["portfolio-home", "case-study"],
+  },
 };
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };

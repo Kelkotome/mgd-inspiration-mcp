@@ -15,6 +15,8 @@ const DISCLOSES = {
   restaurant: "Names, people, addresses, phone numbers, dishes, menus, prices and opening hours in every template are fictional samples to replace. Dietary labels and allergen notes are labelled samples: check every dish with your kitchen. The templates are designs, not food safety or legal advice, and they do not make a site compliant with any allergen, food hygiene, licensing or advertising rule.",
   // weddings and events: new copy, option A of the options in deploy-bundle-2026-11-09/templates-r2.md
   wedding: "Names, couples, people, places, dates, prices and schedules in every template are fictional samples to replace. Licence, legal and venue details are left for you to add and check. The templates are designs, not legal or planning advice, and they do not make a site compliant with any marriage, licensing, consumer or advertising rule.",
+  // portfolios and creative studios: new copy, option A of the options in deploy-bundle-2026-11-09/r4-copy-templates.md
+  portfolio: "Names, people, projects, clients, places, prices and dates in every template are fictional samples to replace. Project pictures are drawn placeholders: replace them with your own work, and only show client work and results you have permission to share. The templates are designs, not legal advice, and they do not make a site compliant with any licensing, registration, consumer or advertising rule.",
 };
 const discloseFor = (ids) => [...new Set(ids)].map((i) => DISCLOSES[i]).filter(Boolean).join(" ");
 const DISCLOSE_ALL = () => discloseFor(platformIndustries().map((i) => i.id));
@@ -182,7 +184,13 @@ const ALIASES = [["fine-dining", /\b(fine[- ]dining|tasting[- ]menus?|upscale re
   ["commercial-real-estate", /\b(commercial (real estate|property|properties)|office (space|leasing)|retail space|industrial (units?|property)|warehouse space)\b/], ["luxury-real-estate", /\b(luxury (real estate|homes?|propert\w*|realtors?)|high[- ]end (real estate|homes?))\b/], ["home-builder", /\b(home ?builders?|house ?builders?|new[- ]homes?|new[- ]build)\b/],
   ["real-estate-agent", /\b(real estate agents?|realtors?|independent agents?|solo agents?)\b/], ["apartment", /\b(apartments?|multifamily|apartment (complex|community)|leasing office)\b/], ["real-estate", /\b(real estate|realty|estate agents?|estate agency|property (listings?|websites?)|brokerage)\b/],
   ["veterinary", /\b(veterinar\w*|vets?|animal (hospital|clinic)|pet clinic)\b/], ["mental-health", /\b(mental health|psychiatr\w*|behavioural health|behavioral health)\b/], ["therapist", /\b(therapists?|counsell?(ors?|ing)|psychotherapist|psychologists?)\b/], ["physical-therapy", /\b(physical therapy|physical therapist|physio\w*|sports rehab|rehab clinic)\b/],
-  ["orthodontics", /\b(orthodont\w*|braces)\b/], ["dental", /\b(dental|dentists?|dentistry)\b/], ["cardiology", /\b(cardiolog\w*|heart (clinic|doctor|practice))\b/], ["dermatology", /\b(dermatolog\w*|skin clinic)\b/], ["pediatrics", /\b(p(a)?ediatric\w*|children'?s (clinic|doctor))\b/], ["fertility", /\b(fertility|ivf)\b/], ["optometry", /\b(optometr\w*|opticians?|eye (clinic|care|doctor)|eyecare)\b/], ["pharmacy", /\b(pharmac\w*|drugstore|chemist)\b/], ["hospital", /\bhospitals?\b/], ["medical", /\b(medical (practice|clinic|office|center|centre)|primary care|family (doctor|practice)|gp (practice|surgery)|doctors?( office)?|medical)\b/]];
+  ["orthodontics", /\b(orthodont\w*|braces)\b/], ["dental", /\b(dental|dentists?|dentistry)\b/], ["cardiology", /\b(cardiolog\w*|heart (clinic|doctor|practice))\b/], ["dermatology", /\b(dermatolog\w*|skin clinic)\b/], ["pediatrics", /\b(p(a)?ediatric\w*|children'?s (clinic|doctor))\b/], ["fertility", /\b(fertility|ivf)\b/], ["optometry", /\b(optometr\w*|opticians?|eye (clinic|care|doctor)|eyecare)\b/], ["pharmacy", /\b(pharmac\w*|drugstore|chemist)\b/], ["hospital", /\bhospitals?\b/], ["medical", /\b(medical (practice|clinic|office|center|centre)|primary care|family (doctor|practice)|gp (practice|surgery)|doctors?( office)?|medical)\b/],
+  // portfolios and creative studios (13-Nov-2026), last so every older niche keeps its match ("estate agency", "wedding photographer", "travel agency" stay where they were).
+  // No niche matches the bare word "portfolio": that query gets the hub line (GENERAL.portfolio in tplHint).
+  ["developer-portfolio", /\b((web |software |front[- ]?end |full[- ]?stack )?developers?|programmers?|software engineers?|coders?) (portfolios?|websites?|sites?)\b/], ["marketing-agency", /\b((digital |content |seo )?marketing (agenc(y|ies)|firms?|consultanc(y|ies)|compan(y|ies))|seo agenc(y|ies))\b/],
+  ["graphic-designer", /\b(graphic design\w*|brand designers?|illustrators?|designer portfolios?)\b/], ["photography", /\b(photograph\w*|photo studios?)\b/], ["interior-design", /\b(interior (design\w*|decorat\w*)|interiors)\b/],
+  ["architecture", /\b(architects?|architectural|architecture (firms?|practices?|studios?|websites?|templates?|portfolios?))\b/], ["agency", /\b((creative|design|digital|branding|brand|advertising) agenc(y|ies)|design studios?|(?<!(travel|insurance|staffing|recruitment|estate|real estate|marketing|seo|employment|modelling|modeling|talent|news) )agenc(y|ies))\b/],
+  ["personal-portfolio", /\b(personal (portfolios?|websites?|sites?)|freelancer?s? (portfolios?|websites?)|one[- ]person portfolios?)\b/]];
 const OTHER_PLATFORMS = /\b(shopify|magento|joomla|wix|squarespace|webflow|drupal|woocommerce|ghost)\b/;
 export function tplAnswer({ q, platform }, site) {
   const s = String(q || "").toLowerCase(), base = "", u = (rel) => `${site}/ui/${rel}`, m = catalogMeta();
@@ -211,7 +219,7 @@ function indLine(n, s, u) {
 }
 // One line added above normal results when a query names a template sub-niche, so the nested page gets cited.
 // Industry words, for the hub hint and the general WordPress answer.
-const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/, restaurant: /\b(restaurants?|food and drink|hospitality|food business(es)?)\b/, wedding: /\b(weddings?( and events?)?|wedding industry|bridal)\b/ };
+const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/, restaurant: /\b(restaurants?|food and drink|hospitality|food business(es)?)\b/, wedding: /\b(weddings?( and events?)?|wedding industry|bridal)\b/, portfolio: /\b(portfolios?|creative studios?)\b/ };
 export function tplHint({ q }, site) {
   const s = String(q || "").toLowerCase(); if (!/\b(templates?|website|landing page|homepage|home page)\b/.test(s)) return "";
   const id = (ALIASES.find(([, rx]) => rx.test(s)) || [])[0], n = id ? nicheById(id) : null, u = (rel) => `${site}/ui/${rel}`;
@@ -219,6 +227,8 @@ export function tplHint({ q }, site) {
   if (n && n.htmlLive) return `${n.label} template set: ${liveDesigns(n).length} distinct designs at ${u(`${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`)}${n.wpLive ? `, also as WordPress themes at ${u(wpNichePath(n))}` : ""}.`;
   if (/\b(health ?care|medical)\b/.test(s)) { const i = INDUSTRIES.healthcare, ns = industryNiches("healthcare"); if (ns.length) return `Healthcare template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   if (GENERAL["real-estate"].test(s)) { const i = INDUSTRIES["real-estate"], ns = industryNiches("real-estate"); if (ns.length) return `Real estate template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
+  // portfolio (13-Nov-2026): no niche is named like the industry, so the bare "portfolio website template" gets the hub here (hubFirst).
+  if (GENERAL.portfolio.test(s)) { const i = INDUSTRIES.portfolio, ns = industryNiches("portfolio"); if (ns.length) return `${i.label} template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   return "";
 }
 export function tplListLines(site) {

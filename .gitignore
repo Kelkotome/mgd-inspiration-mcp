@@ -22,11 +22,13 @@ tests/ui_rank/.cache/
 wrangler.n13.jsonc
 ui-screens/out-hc
 ui-screens/out-wp
+ui-screens/out-r2-r4
 ui-screens/wp-export/node_modules
 wrangler.hc.jsonc
 wrangler.ind2.jsonc
 wrangler.ind3.jsonc
 wrangler.ind5.jsonc
+wrangler.ind6.jsonc
 ui-screens/out-comp
 wrangler.comp.jsonc
 ui-screens/out-gap

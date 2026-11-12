@@ -31,6 +31,10 @@ A niche is one file, `hc/content/<niche>.js`. `node gen_hc.js --only <niche>` po
 | reply | wedding and event layouts only: h2, lede, choicesLabel, choices (2 to 4), selectLabel, options (3 to 6), askLabel, button, note. When present, the shared layouts use this RSVP or enquiry form in place of the contact form. |
 | programme | wedding and event layouts only: h2, lede, note (must say "sample"), mapH2, mapLede, mapNote, spots: exactly 6 (numbered pins on the site plan), days: 2 or 3 of { t, sub, slots: 3 to 5 of [time, title, where] }. |
 | art (weddings) | exactly 3 drawings from barn, arch, table, hall, bouquet, marquee, camera, cake. |
+| work | portfolio layouts only (`work`, `index`): eyebrow, h2, lede, note (must say "sample"), filterLabel, allLabel, cols (4 column titles for the project index), filters: 3 or 4 of [id, label] (id a-z only), items: exactly 6 of { t, d, disc, role, year, art }. disc must be a filter id, every filter needs a project, art comes from the portfolio drawings. |
+| caseStudy | portfolio layouts only: eyebrow, t, lede, briefLabel, brief, note (must say "sample"), steps: exactly 3 of [heading, detail], delivered: 3 to 6 strings. |
+| cv | portfolio layouts only: h2, lede, rows: 4 to 6 of [years, title, detail] (a CV, a studio or a practice history). |
+| art (portfolios) | exactly 3 drawings from poster, book, screen, phone, building, room, chair, photo, letter, mark, pack, plan. Project cards draw them as placeholders, never as photographs of real work. |
 | optional labels | visit.fields, footer.cols and services.cols: exactly 3 strings each, to rename the form fields, footer column titles and ledger table headers (a couple's site is not a business). |
 | notice | names the business as fictional, and for health says "general information" and "not medical advice" |
 
