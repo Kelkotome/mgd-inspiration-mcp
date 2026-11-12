@@ -41,3 +41,6 @@ wrangler.gaps2.jsonc
 tests/r3/.data/
 wrangler.r3.jsonc
 r3-e2e.*
+tests/seo1/.base/
+wrangler.seo1.jsonc
+seo1-e2e.*

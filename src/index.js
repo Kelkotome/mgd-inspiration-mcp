@@ -50,6 +50,7 @@ import { REF_FONTS, OFFER_HEAD, buildNextStep } from "./next_offer.js";
 import { shared, exact, dropShared } from "./mcp_cache.js"; // MCP r3 (12-Nov-2026): cache for slow-changing data behind the tools
 import { mcpExcText, mcpErrText, mcpNoBlankError, MCP_USAGE_HEAD } from "./mcp_err.js"; // MCP r3: error text helpers (moved out of index.js so tests can import them)
 import { uiIndexReset } from "./ui_screens.js";
+import { seoTags, imgDims } from "./seo_pages.js"; // SEO r1 (12-Nov-2026): og/twitter/breadcrumb head tags + <img> dimensions
 
 // Aggressive AI-training / SEO / bulk crawlers that spider the JSON read API (which is
 // meant for the SPA running in real browsers) and can burn the D1 read quota on cache
@@ -58,7 +59,20 @@ import { uiIndexReset } from "./ui_screens.js";
 const BLOCKED_BOT_RE = /(GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|anthropic-ai|CCBot|Google-Extended|Applebot-Extended|PerplexityBot|Perplexity-User|Bytespider|Amazonbot|meta-externalagent|FacebookBot|Diffbot|DataForSeoBot|AhrefsBot|SemrushBot|MJ12bot|DotBot|PetalBot|Bytedance|YandexBot|Timpibot|ImagesiftBot|Omgili|magpie-crawler|Scrapy|python-requests|node-fetch|Go-http-client)/i;
 
 export default {
+  // SEO r1 (12-Nov-2026): HEAD is answered exactly like GET (same status + headers), without the body. Before, no route matched
+  // HEAD, so every page answered 404 to HEAD while GET was 200 (~31k URLs in the 12-Nov audit). The GET goes through the same
+  // edge cache, so a HEAD on a cached page reads no D1 row.
   async fetch(request, env, ctx) {
+    if (request.method !== "HEAD") return route(request, env, ctx);
+    const res = await route(new Request(request, { method: "GET" }), env, ctx);
+    if (res.body) res.body.cancel().catch(() => {});
+    return new Response(null, { status: res.status, statusText: res.statusText, headers: res.headers });
+  },
+  scheduled: (event, env, ctx) => scheduled(event, env, ctx),
+};
+
+async function route(request, env, ctx) {
+  {
     const url = new URL(request.url);
     const method = request.method;
     // Optional mount prefix so the Worker can live at e.g. madegooddesigns.com/inspiration
@@ -114,7 +128,7 @@ export default {
       if (path === "/" && method === "GET") return html(injectBase(GALLERY_HTML, base));
       if (path === "/add" && method === "GET") return html(injectBase(ADD_HTML, base));
       if (path === "/annual-reports" && method === "GET") return html(injectBase(ANNUAL_HTML, base));
-      if (path === "/annual-reports/sitemap.xml" && method === "GET") return annualSitemap(env, base);
+      if (path === "/annual-reports/sitemap.xml" && method === "GET") return edgeCache(request, ctx, 3600, () => annualSitemap(env, base)); // SEO r1: edge-cached (9.7k rows a build)
       // One index of every collection sitemap; WordPress (robots.txt + RankMath) points only here, so new collections need no WP change.
       if (path === "/sitemap_index.xml" && method === "GET") {
         const origin = env.PUBLIC_ORIGIN || url.origin, today = new Date().toISOString().slice(0, 10);
@@ -132,7 +146,7 @@ export default {
       if (path === "/save" && method === "GET") return html(injectBase(SAVE_HTML, base));
       if (path === "/assets/board-canvas.js" && method === "GET")
         return new Response(BOARD_CANVAS_JS, { headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
-      if (path === "/museum/sitemap.xml" && method === "GET") return museumSitemap(env, base);
+      if (path === "/museum/sitemap.xml" && method === "GET") return edgeCache(request, ctx, 3600, () => museumSitemap(env, base)); // SEO r1: edge-cached (8.9k rows a build)
       if (path === "/museum/index" && method === "GET") return edgeCache(request, ctx, 1800, () => museumIndexPage(env, base));
       { const mm = path.match(/^\/museum\/(artist|museum|type|culture|theme)\/([^/]+)$/);
         if (mm && method === "GET") return edgeCache(request, ctx, 1800, () => museumFacetPage(mm[1], decodeURIComponent(mm[2]), env, base)); }
@@ -218,18 +232,18 @@ export default {
     } catch (err) {
       return json({ error: "server_error", message: String(err && err.message || err) }, 500, env, request);
     }
-  },
+  }
+}
 
-  // Daily cron (wrangler.jsonc "triggers"): MCP call logs are kept 12 months, as the MCP privacy policy states.
-  async scheduled(event, env, ctx) {
+// Daily cron (wrangler.jsonc "triggers"): MCP call logs are kept 12 months, as the MCP privacy policy states.
+async function scheduled(event, env, ctx) {
     const DAY = 24 * 60 * 60 * 1000, cutoff = Date.now() - 365 * DAY;
     ctx.waitUntil(env.DB.prepare("DELETE FROM mcp_calls WHERE created_at < ?").bind(cutoff).run());
     // privacy: keep raw IPs for 90 days only (abuse checks + excluding our own tests), then blank them
     ctx.waitUntil(env.DB.prepare("UPDATE mcp_calls SET ip='' WHERE created_at < ? AND ip != ''").bind(Date.now() - 90 * DAY).run().catch(() => {}));
     ctx.waitUntil(env.DB.prepare("DELETE FROM mcp_events WHERE created_at < ?").bind(cutoff).run().catch(() => {}));
     ctx.waitUntil(cleanupAiUsage(env)); // b60: AI usage counters kept 7 days
-  },
-};
+}
 
 // ---------------------------------------------------------------------------
 // API handlers
@@ -637,7 +651,7 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
 ${backLink(base, "/annual-reports", "Back to archive")}
 <nav class="crumb"><a href="${escHtml(base)}/annual-reports">Annual Report Archive</a> › ${escHtml(name)}</nav>
 <div class="detail">
-  <div style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥ Save</button><img src="${escHtml(base + it.image)}" alt="${escHtml(name)} cover"/></div>
+  <div style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥ Save</button><img${imgDims(it)} src="${escHtml(base + it.image)}" alt="${escHtml(name)} cover"/></div>
   <div>
     <h1>${escHtml(name)}</h1>
     ${it.description ? `<p class="desc">${escHtml(it.description)}</p>` : ""}
@@ -669,15 +683,19 @@ async function annualFacets(env, request) {
 
 async function annualSitemap(env, base) {
   const site = (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
-  const rows = ((await env.DB.prepare(`SELECT id,company,report_year,title,designer,industry,country,status,image_key FROM items WHERE status='published' AND collection='annual-report' ORDER BY created_at DESC`).all()).results || []).filter(isPublicRow);
+  const rows = ((await env.DB.prepare(`SELECT id,company,report_year,title,designer,industry,country,status,image_key,collection FROM items WHERE status='published' AND collection='annual-report' ORDER BY created_at DESC`).all()).results || []).filter(isPublicRow);
   const facet = (key, kind) => [...new Set(rows.map((r) => (r[key] || "").trim()).filter(Boolean))]
     .map((v) => `${site}${base}/annual-reports/${kind}/${slugify(v)}`);
   const urls = [`${site}${base}/annual-reports`, `${site}${base}/annual-reports/index`]
     .concat(facet("country", "country"), facet("designer", "designer"), facet("company", "company"), facet("industry", "industry"))
     .concat(rows.map((r) => site + annualItemPath(rowToItem(r, env), base)));
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
-    + urls.map((u) => `  <url><loc>${escHtml(u)}</loc></url>`).join("\n") + `\n</urlset>\n`;
+  const xml = sitemapXml(urls);
   return new Response(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
+}
+// SEO r1: one <url> per distinct loc (facet values that differ only in case or punctuation slugify to the same URL), in first-seen order.
+function sitemapXml(urls) {
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
+    + [...new Set(urls)].map((u) => `  <url><loc>${escHtml(u)}</loc></url>`).join("\n") + `\n</urlset>\n`;
 }
 
 // Shared styles for the server-rendered annual hub/facet pages.
@@ -755,7 +773,7 @@ async function annualFacetPage(kind, slug, env, base) {
     const img = base + it.image;
     const co = escHtml(`${it.company || it.title || ""}${it.report_year ? " " + it.report_year : ""}`);
     const meta = [kind !== "designer" ? it.designer : null, kind !== "industry" ? it.industry : null].filter(Boolean).map(escHtml).join(" · ");
-    return `<div class="card" style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥</button><a href="${escHtml(href)}" style="text-decoration:none;display:block"><img loading="lazy" src="${escHtml(img)}" alt="${co} cover"/><div class="b"><div class="co">${co}</div>${meta ? `<div class="m">${meta}</div>` : ""}</div></a></div>`;
+    return `<div class="card" style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥</button><a href="${escHtml(href)}" style="text-decoration:none;display:block"><img loading="lazy"${imgDims(it)} src="${escHtml(img)}" alt="${co} cover"/><div class="b"><div class="co">${co}</div>${meta ? `<div class="m">${meta}</div>` : ""}</div></a></div>`;
   }).join("");
   const jsonld = { "@context": "https://schema.org", "@type": "CollectionPage", name: heading, url: canonical, isPartOf: { "@type": "Collection", name: "Annual Report Archive", url: `${site}${base}/annual-reports` }, mainEntity: { "@type": "ItemList", numberOfItems: items.length } };
   const body = `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>${GTAG}
@@ -936,7 +954,7 @@ footer.rights{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--b
 ${backLink(base, "/museum", "Back to collection")}
 <nav class="crumb"><a href="${escHtml(base)}/museum">Museum Collection</a>${themeLabel ? ` › <a href="${escHtml(base)}/museum/theme/${escHtml(slugify(it.theme))}">${escHtml(themeLabel)}</a>` : ""} › ${escHtml(name)}</nav>
 <div class="detail">
-  <div style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥ Save</button><img src="${escHtml(base + it.image)}" alt="${escHtml(name)}${it.artist ? " by " + escHtml(it.artist) : ""}"/></div>
+  <div style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥ Save</button><img${imgDims(it)} src="${escHtml(base + it.image)}" alt="${escHtml(name)}${it.artist ? " by " + escHtml(it.artist) : ""}"/></div>
   <div>
     <h1>${escHtml(name)}</h1>
     ${it.description ? `<p class="desc">${escHtml(it.description)}</p>` : ""}
@@ -975,8 +993,7 @@ async function museumSitemap(env, base) {
   const urls = [`${site}${base}/museum`, `${site}${base}/museum/index`]
     .concat(facet("category", "theme"), facet("designer", "artist"), facet("country", "culture"), facet("industry", "type"), facet("company", "museum"))
     .concat(rows.map((r) => site + museumItemPath(rowToItem(r, env), base)));
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
-    + urls.map((u) => `  <url><loc>${escHtml(u)}</loc></url>`).join("\n") + `\n</urlset>\n`;
+  const xml = sitemapXml(urls);
   return new Response(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
 }
 
@@ -1031,7 +1048,7 @@ async function museumFacetPage(kind, slug, env, base) {
     const href = museumItemPath(it, base);
     const t = escHtml(it.title || "Untitled");
     const meta = [kind !== "artist" ? it.artist : null, it.year, kind !== "museum" ? it.museum : null].filter(Boolean).map((x) => escHtml(String(x))).join(" · ");
-    return `<div class="card" style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥</button><a href="${escHtml(href)}" style="text-decoration:none;display:block"><img loading="lazy" src="${escHtml(base + it.image)}" alt="${t}"/><div class="b"><div class="co">${t}</div>${meta ? `<div class="m">${meta}</div>` : ""}</div></a></div>`;
+    return `<div class="card" style="position:relative"><button class="card__save" data-id="${escHtml(it.id)}" title="Save to a board">♥</button><a href="${escHtml(href)}" style="text-decoration:none;display:block"><img loading="lazy"${imgDims(it)} src="${escHtml(base + it.image)}" alt="${t}"/><div class="b"><div class="co">${t}</div>${meta ? `<div class="m">${meta}</div>` : ""}</div></a></div>`;
   }).join("");
   const jsonld = { "@context": "https://schema.org", "@type": "CollectionPage", name: heading, url: canonical, isPartOf: { "@type": "Collection", name: "MGD Museum Collection", url: `${site}${base}/museum` }, mainEntity: { "@type": "ItemList", numberOfItems: items.length } };
   const body = `<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>${GTAG}
@@ -3307,6 +3324,7 @@ const THEME_HEAD = `<script>try{if(localStorage.getItem("mgd-theme")==="dark")do
 const THEME_TOGGLE = `<button type="button" class="mgd-theme-toggle" aria-label="Switch light or dark mode"></button>
 <script>(function(){var b=document.querySelector(".mgd-theme-toggle"),r=document.documentElement;function lab(){var d=r.getAttribute("data-theme")==="dark";b.textContent=d?"☀ Light mode":"☾ Dark mode";b.setAttribute("aria-pressed",String(d))}b.onclick=function(){var d=r.getAttribute("data-theme")!=="dark";if(d)r.setAttribute("data-theme","dark");else r.removeAttribute("data-theme");try{localStorage.setItem("mgd-theme",d?"dark":"light")}catch(e){}lab()};lab()})();</script>`;
 function themeify(body) {
+  body = seoTags(body);   // SEO r1: og / twitter:card / BreadcrumbList from the page's own title, description, canonical, image, crumb
   if (typeof body !== "string" || body.indexOf("</head>") < 0 || body.indexOf("mgd-theme-toggle") >= 0) return body;
   body = body.replace("</head>", THEME_HEAD + "</head>");
   const i = body.lastIndexOf("</body>");

@@ -2,6 +2,7 @@
 // All counts come from tpl_catalog.json (generated from the install-test results) and D1, never from typed numbers.
 // R2: tpl/wordpress/<theme>/<version>/theme.zip, shot-1280.webp, shot-390.webp. No D1 table of its own.
 import TPL_COPY from "./tpl_copy.json";
+import { imgDims } from "./seo_pages.js"; // SEO r1: <img> width/height from the D1 row
 import { INDUSTRIES, PLATFORMS, NICHES, MIN_DESIGNS, nicheById, nicheOfPattern, liveDesigns, liveThemes, industryNiches, platformIndustries, catalogMeta, wpIndustryPath, wpNichePath, themePath, nestedPatternPath } from "./ui_tree.js";
 
 // Approved by the user on 7-Nov-2026 (Option A: GPL for themes only, HTML templates keep their current terms). export.mjs writes the same sentence into each readme.
@@ -44,7 +45,7 @@ async function nicheImages(env, h, x, niches) {
   const rows = await x.uiRows(env, (r) => ids.includes(r.category) && r.country === "web");   // MCP r3: cached UI rows, filtered in JS
   const out = {}; for (const r of rows) { const it = h.rowToItem(r, env); if (!out[it.pattern]) out[it.pattern] = it; } return out;
 }
-const nicheCard = (n, img, href, h, base, sub) => `<a class="card page" href="${h.escHtml(href)}">${img ? `<div class="th"><img loading="lazy" src="${h.escHtml(base + img)}" alt="${h.escHtml(n.label)} template"/></div>` : ""}<div class="meta"><b>${h.escHtml(n.label)}</b><span>${h.escHtml(sub)}</span></div></a>`;
+const nicheCard = (n, im, href, h, base, sub) => `<a class="card page" href="${h.escHtml(href)}">${im && im.image ? `<div class="th"><img loading="lazy"${imgDims(im)} src="${h.escHtml(base + im.image)}" alt="${h.escHtml(n.label)} template"/></div>` : ""}<div class="meta"><b>${h.escHtml(n.label)}</b><span>${h.escHtml(sub)}</span></div></a>`;
 const themeCard = (n, d, h, base) => `<a class="card page" data-style="${h.escHtml(d.style)}" href="${h.escHtml(base)}/ui/${h.escHtml(themePath(n, d))}"><div class="th"><img loading="lazy" src="${h.escHtml(shot(d, 1280, base))}" alt="${h.escHtml(d.theme.name)} theme, front page"/></div><div class="meta"><b>${h.escHtml(d.theme.name)}</b><span>${h.escHtml(d.about)}</span></div></a>`;
 const mdAlt = (h, base, rel) => `<p class="lede" style="font-size:.85rem">Plain text for assistants: <a href="${h.escHtml(base)}/ui/${h.escHtml(rel)}.md">this page as Markdown</a>.</p>`;
 const STYLE_FILTER_JS = `<script>(function(){var g=document.getElementById("tgrid"),c=document.getElementById("tcount");if(!g)return;var cs=[].slice.call(g.querySelectorAll(".card"));document.addEventListener("click",function(e){var b=e.target.closest("[data-tf]");if(!b)return;e.preventDefault();var v=b.dataset.tf,n=0;cs.forEach(function(k){var ok=!v||k.dataset.style===v;k.style.display=ok?"":"none";if(ok)n++});if(c)c.textContent=n+" of "+cs.length+" themes";document.querySelectorAll("[data-tf]").forEach(function(x){x.setAttribute("aria-pressed",String(x===b))});try{history.replaceState(null,"",v?"?style="+v:location.pathname)}catch(_){}})})();</script>`;
@@ -61,7 +62,7 @@ export async function industryPage(ind, env, base, h, x) {
   const body = x.head(h, { title, desc, canonical: url, image: Object.values(img)[0] ? site + base + Object.values(img)[0].image : null, jsonld, css: LOCAL_CSS, md: `${url}.md` })
   + `${h.backLink(base, "/ui", "All UI screens")}${crumbNav(h, base, crumbs)}<h1>${h.escHtml(ind.h1)}</h1>
 <p class="lede">${h.escHtml(desc)} ${h.escHtml(c.intro || "")}</p>
-<h2 class="s">Sub-niches</h2><div class="tg">${niches.map((n) => nicheCard(n, img[n.pattern] && img[n.pattern].image, `${base}/ui/${ind.hub}/${n.htmlSeg}`, h, base, `${count(liveDesigns(n).length, "design")}`)).join("")}</div>
+<h2 class="s">Sub-niches</h2><div class="tg">${niches.map((n) => nicheCard(n, img[n.pattern], `${base}/ui/${ind.hub}/${n.htmlSeg}`, h, base, `${count(liveDesigns(n).length, "design")}`)).join("")}</div>
 ${wp.length ? `<h2 class="s">Also for WordPress</h2><p class="lede" style="margin:0"><a href="${h.escHtml(base)}/ui/${h.escHtml(wpIndustryPath(ind.id))}"><b>${h.escHtml(ind.label)} WordPress themes</b></a>: ${wt.designs} block themes across ${wt.niches} sub-niches, each installed and tested.</p>` : ""}
 ${app ? `<h2 class="s">App and portal screens</h2><p class="lede" style="margin:0">${app}</p>` : ""}
 <h2 class="s">What each sub-niche covers</h2><ul class="plain">${niches.map((n) => `<li><b>${h.escHtml(n.label)}.</b> ${h.escHtml(((TPL_COPY.niches || {})[n.id] || {}).intro || "")}</li>`).join("")}</ul>
@@ -73,7 +74,7 @@ ${app ? `<h2 class="s">App and portal screens</h2><p class="lede" style="margin:
 // Inserted into the sub-niche page (uiPatternPage): the distinct designs first, the style and device screens below them as filters.
 export function nicheDesignsBlock(n, items, base, h, itemPath) {
   const ds = liveDesigns(n);
-  const cards = ds.map((d) => { const it = items.find((i) => (i.variant || "homepage") === d.variant && i.style === d.style && i.platform === "web"); if (!it) return ""; return `<a class="card page" href="${h.escHtml(itemPath(it, base))}"><div class="th"><img loading="lazy" src="${h.escHtml(base + it.image)}" alt="${h.escHtml(`${n.label} template, ${d.layoutName} layout`)}"/></div><div class="meta"><b>${h.escHtml(d.layoutName)}</b><span>${h.escHtml(d.about)}</span></div></a>`; }).join("");
+  const cards = ds.map((d) => { const it = items.find((i) => (i.variant || "homepage") === d.variant && i.style === d.style && i.platform === "web"); if (!it) return ""; return `<a class="card page" href="${h.escHtml(itemPath(it, base))}"><div class="th"><img loading="lazy"${imgDims(it)} src="${h.escHtml(base + it.image)}" alt="${h.escHtml(`${n.label} template, ${d.layoutName} layout`)}"/></div><div class="meta"><b>${h.escHtml(d.layoutName)}</b><span>${h.escHtml(d.about)}</span></div></a>`; }).join("");
   return `<h2 class="s">${h.escHtml(`${ds.length} distinct designs`)}</h2><div class="tg">${cards}</div>${n.wpLive ? `<p class="lede"><b>Also for WordPress:</b> <a href="${h.escHtml(base)}/ui/${h.escHtml(wpNichePath(n))}">${h.escHtml(`${n.label} WordPress themes`)}</a>, ${liveThemes(n).length} block themes you can install and edit.</p>` : ""}`;
 }
 export const nicheCss = LOCAL_CSS;
@@ -104,7 +105,7 @@ export async function platformIndustryPage(ind, env, base, h, x) {
   const jsonld = [{ "@context": "https://schema.org", "@type": "CollectionPage", name: h1, url, description: desc, publisher: x.MGD_ORG(site), hasPart: niches.map((n) => ({ "@type": "CollectionPage", name: `${n.label} WordPress themes`, url: `${site}${base}/ui/${wpNichePath(n)}` })) }, crumbLd(site, base, crumbs)];
   const body = x.head(h, { title: x.fitTitle(`${h1} (${t.designs} free, tested) | MGD`, `${h1} (${t.designs} free) | MGD`, `${h1} | MGD`), desc, canonical: url, jsonld, css: LOCAL_CSS, md: `${url}.md` })
   + `${h.backLink(base, "/ui", "All UI screens")}${crumbNav(h, base, crumbs)}<h1>${h.escHtml(h1)}</h1><p class="lede">${h.escHtml(desc)} ${h.escHtml(TEST_LINE())}</p>
-<div class="tg">${niches.map((n) => nicheCard(n, img[n.pattern] && img[n.pattern].image, `${base}/ui/${wpNichePath(n)}`, h, base, `${count(liveThemes(n).length, "theme")}`)).join("")}</div>
+<div class="tg">${niches.map((n) => nicheCard(n, img[n.pattern], `${base}/ui/${wpNichePath(n)}`, h, base, `${count(liveThemes(n).length, "theme")}`)).join("")}</div>
 <p class="lede"><b>Also as HTML:</b> <a href="${h.escHtml(base)}/ui/${h.escHtml(ind.hub)}">${h.escHtml(ind.h1)}</a>.</p>
 <h2 class="s">Licence</h2><p class="lede">${h.escHtml(WP_LICENCE)}</p><h2 class="s">Before you use one</h2><p class="lede">${h.escHtml(discloseFor([ind.id]))} ${h.escHtml(FORM_NOTE)}</p>${mdAlt(h, base, rel)}${x.MCP_NOTE(base)}</div>${h.saveWidget(base)}</body></html>`;
   return x.page(h, body);
