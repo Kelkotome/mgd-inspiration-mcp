@@ -258,13 +258,13 @@ const licenceLd = (site, base) => ({ creator: MGD_ORG(site), copyrightHolder: MG
   copyrightNotice: "© Made Good Designs. Free to use and adapt; credit required only when republishing the screens.", license: `${site}${base}/ui/terms`, acquireLicensePage: `${site}${base}/ui/terms` });
 const siteOf = (env) => (env.ALLOWED_ORIGIN || "https://madegooddesigns.com").replace(/\/$/, "");
 
-// MCP r3 (12-Nov-2026): the UI pages read the same cached UI rows as the MCP tools (uiAllRows) and filter them here, instead of one
+// MCP r3 (12-Nov-2026): the UI pages read the same cached UI rows (uiAllRows, 1 h; an ingest drops them in its colo) as the MCP tools and filter them here, instead of one
 // D1 query per page view. D1 insights, 11/12-Nov (1 day): the item pages' "related" query alone read 39.9M rows (8,483 runs × 4,705, a
 // scan of every UI row), the gallery/sitemap 11.4M, the pattern pages 10.7M. keep(row) = the old WHERE as a predicate; eq() keeps SQL's
 // "NULL never equals" rule. The order is the same: the cached rows come in the old query's order and the sort below is unchanged.
 export const uiEq = (a, b) => a != null && b != null && a === b;
 async function uiAllRows(env) {
-  return shared(env, "ui-rows", 900, async () => (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='ui'`).all()).results || []);
+  return shared(env, "ui-rows", 3600, async () => (await env.DB.prepare(`SELECT * FROM items WHERE status='published' AND owner_id IS NULL AND collection='ui'`).all()).results || []);
 }
 async function uiRows(env, keep) {
   const all = await uiAllRows(env);
