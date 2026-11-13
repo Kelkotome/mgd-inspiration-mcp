@@ -5833,5 +5833,753 @@
     "body_gf": true
    }
   ]
+ },
+ "prata": {
+  "font": "Prata",
+  "page": "https://madegooddesigns.com/prata-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Cyreal"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Prata",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato’s warm, semi-rounded sans-serif forms keep body text friendly and readable under sharp, high-contrast Prata headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Prata",
+    "body": "Montserrat",
+    "group": "Sans-Serif Pairings",
+    "why": "Montserrat’s wide geometric shapes contrast cleanly with the Didone verticals of Prata, giving a modern fashion look.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Prata",
+    "body": "Source Sans 3",
+    "group": "Sans-Serif Pairings",
+    "why": "Source Sans 3 is a neutral, highly legible sans with many weights, so Prata headings get all the attention.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Prata",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora comes from the same Cyreal foundry as Prata, and its moderate contrast makes a calm all-serif text partner.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Prata",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans has open, slightly grotesque shapes that add a contemporary studio feel to elegant Prata titles.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "tenor sans": {
+  "font": "Tenor Sans",
+  "page": "https://madegooddesigns.com/tenor-sans-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Denis Masharov"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Playfair Display",
+    "body": "Tenor Sans",
+    "group": "Serif Pairings",
+    "why": "Playfair Display gives bold, high-contrast serif headlines while Tenor Sans keeps body text light, open and readable.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cormorant Garamond",
+    "body": "Tenor Sans",
+    "group": "Serif Pairings",
+    "why": "Cormorant Garamond’s delicate display serifs suit wedding and luxury titles above calm, legible Tenor Sans paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cinzel",
+    "body": "Tenor Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Cinzel’s Roman capital headings add classical formality, and Tenor Sans body text keeps the page modern and easy to read.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Tenor Sans",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Tracked uppercase Tenor Sans headings sit neatly above Lora, a warm text serif that reads comfortably in long articles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Tenor Sans",
+    "body": "Source Serif 4",
+    "group": "Serif Pairings",
+    "why": "Source Serif 4 is a sturdy text serif with many weights, giving reports and blogs a clear body under Tenor Sans headings.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "marcellus": {
+  "font": "Marcellus",
+  "page": "https://madegooddesigns.com/marcellus-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Astigmatic"
+   ],
+   "added": 2012
+  },
+  "pairs": [
+   {
+    "heading": "Marcellus",
+    "body": "Open Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Open Sans is a neutral, highly legible humanist sans that lets the carved Roman forms of Marcellus headings stand out.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Marcellus",
+    "body": "Raleway",
+    "group": "Sans-Serif Pairings",
+    "why": "Raleway’s elegant, light sans-serif shapes match the refined mood of Marcellus for spa, beauty and boutique sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Marcellus",
+    "body": "EB Garamond",
+    "group": "Serif Pairings",
+    "why": "EB Garamond is a classic book serif that pairs with Marcellus headings for a calm, literary, all-serif page.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Marcellus",
+    "body": "Mulish",
+    "group": "Sans-Serif Pairings",
+    "why": "Mulish is a clean, minimal sans with a wide weight range, giving modern body text under classical Marcellus titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Marcellus",
+    "body": "Fira Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Fira Sans has many weights and a sturdy, readable texture that suits content-heavy sites under Marcellus headings.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "italiana": {
+  "font": "Italiana",
+  "page": "https://madegooddesigns.com/italiana-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Santiago Orozco"
+   ],
+   "added": 2012
+  },
+  "pairs": [
+   {
+    "heading": "Italiana",
+    "body": "Jost",
+    "group": "Sans-Serif Pairings",
+    "why": "Jost’s clean geometric forms and wide weight range give crisp body text and labels under delicate Italiana headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Italiana",
+    "body": "Montserrat",
+    "group": "Sans-Serif Pairings",
+    "why": "Montserrat’s wide, sturdy sans-serif shapes balance the thin, high-contrast strokes of Italiana for fashion and beauty sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Italiana",
+    "body": "Karla",
+    "group": "Sans-Serif Pairings",
+    "why": "Karla is a compact grotesque sans with a friendly, slightly quirky feel that keeps elegant Italiana titles approachable.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Italiana",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora is a warm text serif with calligraphic roots, giving magazine pages comfortable body text under Italiana headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Italiana",
+    "body": "Nunito Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Nunito Sans offers soft, highly readable body text with many weights, a calm match for refined Italiana headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "gilda display": {
+  "font": "Gilda Display",
+  "page": "https://madegooddesigns.com/gilda-display-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Eduardo Tunni"
+   ],
+   "added": 2012
+  },
+  "pairs": [
+   {
+    "heading": "Gilda Display",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato’s warm, even sans-serif body text gives the high-contrast Gilda Display headlines a calm, readable base.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Gilda Display",
+    "body": "Montserrat",
+    "group": "Sans-Serif Pairings",
+    "why": "Montserrat’s wide geometric shapes contrast with the delicate serif headlines for a modern fashion and beauty look.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Gilda Display",
+    "body": "Raleway",
+    "group": "Sans-Serif Pairings",
+    "why": "Raleway’s slim, elegant sans-serif strokes match the refined mood of Gilda Display on boutique and jewelry sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Gilda Display",
+    "body": "Jost",
+    "group": "Sans-Serif Pairings",
+    "why": "Jost is a clean geometric sans with many weights that keeps body copy crisp beneath soft, curving serif titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Gilda Display",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora is a text serif with moderate contrast that pairs with the display serif for a classic, all-serif editorial page.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "forum": {
+  "font": "Forum",
+  "page": "https://madegooddesigns.com/forum-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Denis Masharov"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Forum",
+    "body": "Tenor Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Tenor Sans comes from the same designer, Denis Masharov, so its classical humanist forms share the tone of Forum headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Forum",
+    "body": "Open Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Open Sans is a neutral, highly legible sans with many weights that lets the Roman capitals of Forum stand out.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Forum",
+    "body": "Source Sans 3",
+    "group": "Sans-Serif Pairings",
+    "why": "Source Sans 3 gives clean, compact body text and a wide weight range under stately serif titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Forum",
+    "body": "PT Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "PT Sans is a humanist sans covering Cyrillic and Latin alike, a strong match for multilingual Forum headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Forum",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora’s moderate contrast and italics make a readable body serif beneath Forum for a classic, all-serif page.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "bellefair": {
+  "font": "Bellefair",
+  "page": "https://madegooddesigns.com/bellefair-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Nick Shinn",
+    "Liron Lavi Turkenic"
+   ],
+   "added": 2017
+  },
+  "pairs": [
+   {
+    "heading": "Bellefair",
+    "body": "Heebo",
+    "group": "Sans-Serif Pairings",
+    "why": "Heebo is a clean sans covering Hebrew and Latin, so bilingual body text stays consistent under Bellefair headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bellefair",
+    "body": "Assistant",
+    "group": "Sans-Serif Pairings",
+    "why": "Assistant offers Hebrew and Latin in several weights, giving light, friendly body copy beneath the elegant serif titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bellefair",
+    "body": "Raleway",
+    "group": "Sans-Serif Pairings",
+    "why": "Raleway’s slim, stylish sans-serif strokes echo the refinement of Bellefair on boutique, beauty and lifestyle sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bellefair",
+    "body": "Josefin Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Josefin Sans brings airy geometric letters that suit Bellefair headings on wedding, event and stationery pages.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bellefair",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans is a practical grotesque with many weights that keeps body text clear and modern under fine serif headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "libre caslon text": {
+  "font": "Libre Caslon Text",
+  "page": "https://madegooddesigns.com/libre-caslon-text-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Pablo Impallari"
+   ],
+   "added": null
+  },
+  "pairs": [
+   {
+    "heading": "Libre Caslon Display",
+    "body": "Libre Caslon Text",
+    "group": "Serif Pairings",
+    "why": "Libre Caslon Display is the high-contrast headline companion to the text face, so the whole page reads as one Caslon family.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Libre Franklin",
+    "body": "Libre Caslon Text",
+    "group": "Sans-Serif Pairings",
+    "why": "Libre Franklin’s bold grotesque headlines sit above Caslon body text in a classic newspaper and magazine combination.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Libre Caslon Text",
+    "group": "Serif Pairings",
+    "why": "Playfair Display adds sharp, high-contrast serif headlines while the Caslon body text stays sturdy and readable.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Libre Caslon Text",
+    "group": "Sans-Serif Pairings",
+    "why": "Montserrat’s wide geometric capitals give modern headings that contrast clearly with traditional Caslon paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Abril Fatface",
+    "body": "Libre Caslon Text",
+    "group": "Display Pairings",
+    "why": "Abril Fatface is a heavy display face that makes bold, poster-like titles above calm, bookish Caslon body copy.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "atkinson hyperlegible": {
+  "font": "Atkinson Hyperlegible",
+  "page": "https://madegooddesigns.com/atkinson-hyperlegible-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Braille Institute",
+    "Applied Design Works",
+    "Elliott Scott",
+    "Megan Eiswerth",
+    "Linus Boman",
+    "Theodore Petrosky"
+   ],
+   "added": 2021
+  },
+  "pairs": [
+   {
+    "heading": "Merriweather",
+    "body": "Atkinson Hyperlegible",
+    "group": "Serif Pairings",
+    "why": "Merriweather’s sturdy, low-contrast serifs make firm headlines that stay readable, matching Atkinson Hyperlegible’s practical body text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Fraunces",
+    "body": "Atkinson Hyperlegible",
+    "group": "Serif Pairings",
+    "why": "Fraunces adds soft, characterful serif headlines above Atkinson Hyperlegible body text, giving an accessible site some warmth.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "DM Serif Display",
+    "body": "Atkinson Hyperlegible",
+    "group": "Serif Pairings",
+    "why": "DM Serif Display sets bold, high-contrast titles that stand clearly apart from the open, unambiguous shapes of Atkinson Hyperlegible.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Atkinson Hyperlegible",
+    "body": "Literata",
+    "group": "Sans-Serif Pairings",
+    "why": "Literata is a serif designed for long reading, so it takes the body text while bold Atkinson Hyperlegible headings stay clear and direct.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Atkinson Hyperlegible",
+    "body": "Source Serif 4",
+    "group": "Serif Pairings",
+    "why": "Source Serif 4 offers a calm, versatile reading serif that sits neatly under short, bold Atkinson Hyperlegible headings.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "cormorant garamond": {
+  "font": "Cormorant Garamond",
+  "page": "https://madegooddesigns.com/cormorant-garamond-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Christian Thalmann"
+   ],
+   "added": null
+  },
+  "pairs": [
+   {
+    "heading": "Cormorant Garamond",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato’s warm, rounded sans text gives a calm, readable base under the delicate, high-contrast Cormorant Garamond headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cormorant Garamond",
+    "body": "Proza Libre",
+    "group": "Serif Pairings",
+    "why": "Proza Libre is a humanist sans with a slightly calligraphic feel, so it echoes the classic Garamond flavor of Cormorant Garamond titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cormorant Garamond",
+    "body": "Source Sans 3",
+    "group": "Sans-Serif Pairings",
+    "why": "Source Sans 3 is a neutral, highly readable sans that keeps long text clear while Cormorant Garamond adds elegance on top.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cormorant Garamond",
+    "body": "Montserrat",
+    "group": "Sans-Serif Pairings",
+    "why": "Montserrat’s wide geometric shapes contrast sharply with slender Cormorant Garamond serifs for a modern luxury look.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cormorant Garamond",
+    "body": "Nunito Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Nunito Sans brings soft, friendly body text that tempers the formal, refined tone of Cormorant Garamond headings.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "bodoni moda": {
+  "font": "Bodoni Moda",
+  "page": "https://madegooddesigns.com/bodoni-moda-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Owen Earl"
+   ],
+   "added": 2020
+  },
+  "pairs": [
+   {
+    "heading": "Bodoni Moda",
+    "body": "Jost",
+    "group": "Sans-Serif Pairings",
+    "why": "Jost is a geometric sans also designed by Owen Earl, so its clean circles balance Bodoni Moda headlines with a shared maker.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bodoni Moda",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato’s warm, semi-rounded sans text softens the sharp contrast of Bodoni Moda headings and stays comfortable in long paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bodoni Moda",
+    "body": "Source Sans 3",
+    "group": "Sans-Serif Pairings",
+    "why": "Source Sans 3 is a neutral, readable workhorse that lets dramatic Bodoni Moda titles take all the attention.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bodoni Moda",
+    "body": "Montserrat",
+    "group": "Sans-Serif Pairings",
+    "why": "Montserrat’s wide geometric letters and clean uppercase labels give Bodoni Moda layouts a classic fashion magazine feel.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bodoni Moda",
+    "body": "Libre Franklin",
+    "group": "Sans-Serif Pairings",
+    "why": "Libre Franklin is a sturdy grotesque sans whose even strokes keep news and editorial body text firm under Bodoni Moda headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "vazirmatn": {
+  "font": "Vazirmatn",
+  "page": "https://madegooddesigns.com/vazirmatn-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Saber Rastikerdar"
+   ],
+   "added": 2022
+  },
+  "pairs": [
+   {
+    "heading": "Lalezar",
+    "body": "Vazirmatn",
+    "group": "Sans-Serif Pairings",
+    "why": "Lalezar is a heavy single-weight Arabic display face that gives Persian headlines punch above calm Vazirmatn body text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Vazirmatn",
+    "body": "Noto Naskh Arabic",
+    "group": "Sans-Serif Pairings",
+    "why": "Noto Naskh Arabic sets long Arabic and Persian paragraphs in a traditional Naskh style under clean Vazirmatn sans headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Reem Kufi",
+    "body": "Vazirmatn",
+    "group": "Sans-Serif Pairings",
+    "why": "Reem Kufi adds geometric Kufi-style headlines in Arabic script while Vazirmatn keeps body copy and interface text easy to read.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Vazirmatn",
+    "body": "Markazi Text",
+    "group": "Sans-Serif Pairings",
+    "why": "Markazi Text is a serif covering Arabic and Latin, so long bilingual articles read well below bold Vazirmatn headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "Vazirmatn",
+    "group": "Sans-Serif Pairings",
+    "why": "Inter sets English headlines and Latin UI text on bilingual pages while Vazirmatn carries the Persian and Arabic body copy.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "noto sans sc": {
+  "font": "Noto Sans SC",
+  "page": "https://madegooddesigns.com/noto-sans-sc-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Google"
+   ],
+   "added": 2018
+  },
+  "pairs": [
+   {
+    "heading": "Noto Sans SC",
+    "body": "Noto Serif SC",
+    "group": "Serif Pairings",
+    "why": "Noto Serif SC is the matching Simplified Chinese serif from the Noto collection, so sans headings and serif reading text share one system.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "ZCOOL XiaoWei",
+    "body": "Noto Sans SC",
+    "group": "Sans-Serif Pairings",
+    "why": "ZCOOL XiaoWei is a single-weight Chinese display face that gives titles more character above plain Noto Sans SC body text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Ma Shan Zheng",
+    "body": "Noto Sans SC",
+    "group": "Script Pairings",
+    "why": "Ma Shan Zheng brings brush-written Chinese headlines that contrast clearly with the even, neutral strokes of Noto Sans SC body text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "ZCOOL QingKe HuangYou",
+    "body": "Noto Sans SC",
+    "group": "Sans-Serif Pairings",
+    "why": "ZCOOL QingKe HuangYou adds a bold, playful Chinese display style for posters and banners while Noto Sans SC handles the copy.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Inter",
+    "body": "Noto Sans SC",
+    "group": "Sans-Serif Pairings",
+    "why": "Inter sets English headlines and Latin words in mixed text, while Noto Sans SC renders the Chinese characters in a matching neutral sans.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "noto serif sc": {
+  "font": "Noto Serif SC",
+  "page": "https://madegooddesigns.com/noto-serif-sc-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Google"
+   ],
+   "added": 2018
+  },
+  "pairs": [
+   {
+    "heading": "Noto Sans SC",
+    "body": "Noto Serif SC",
+    "group": "Sans-Serif Pairings",
+    "why": "Noto Sans SC is the matching Simplified Chinese sans from the Noto collection, giving clean headings above serif reading text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "ZCOOL XiaoWei",
+    "body": "Noto Serif SC",
+    "group": "Sans-Serif Pairings",
+    "why": "ZCOOL XiaoWei is a single-weight Chinese display face that gives titles a distinct style above calm Noto Serif SC paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Ma Shan Zheng",
+    "body": "Noto Serif SC",
+    "group": "Script Pairings",
+    "why": "Ma Shan Zheng adds brush-written Chinese headlines, a traditional touch that suits the bookish texture of Noto Serif SC body text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Noto Serif SC",
+    "group": "Serif Pairings",
+    "why": "Playfair Display sets high-contrast English headlines on bilingual pages while Noto Serif SC carries the Chinese body copy.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Noto Serif SC",
+    "body": "Source Sans 3",
+    "group": "Sans-Serif Pairings",
+    "why": "Source Sans 3 sets clear English body text and UI below bold Noto Serif SC Chinese headlines on bilingual sites.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
  }
 }

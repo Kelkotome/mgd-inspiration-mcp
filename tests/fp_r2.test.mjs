@@ -50,7 +50,7 @@ try {
   }
 
   // 4. aliases and style suffixes land on the right guide; sibling families never collapse into each other
-  const alias = { "Big Shoulders Text": "Big Shoulders", "Cormorant Garamond": "Cormorant", "Source Sans Pro": "Source Sans", "Source Sans 3": "Source Sans",
+  const alias = { "Big Shoulders Text": "Big Shoulders", "Cormorant Garamond": "Cormorant Garamond", "Source Sans Pro": "Source Sans", "Source Sans 3": "Source Sans",
     "Source Serif Pro": "Source Serif 4", "Plex Sans": "IBM Plex Sans", "IBM Plex": "IBM Plex Sans", "Plus Jakarta": "Plus Jakarta Sans",
     "Montserrat Bold": "Montserrat", "Garamond Premier Pro": "Garamond", "Inter Display": "Inter", "Geist Sans": "Geist", "Playfair": "Playfair Display",
     "Roboto Slab": "Roboto Slab", "Roboto Mono": "Roboto Mono", "Roboto Condensed": "Roboto Condensed", "Merriweather Sans": "Merriweather Sans",

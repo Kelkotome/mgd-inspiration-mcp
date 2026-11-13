@@ -18,6 +18,8 @@ const LIST = JSON.parse(fs.readFileSync(path.resolve("tests", "gaps_r2_fonts.jso
 const NEW37 = [...LIST.zeros7, ...LIST.popular30];
 let n = 0;
 const fails = [];
+// fonts r3 (14-Nov-2026): these curated fonts now have their own published *-font-pairings guide, which comes first in the lookup.
+const R3 = new Set(["prata", "tenor sans", "marcellus", "italiana", "gilda display", "forum", "bellefair", "libre caslon text", "atkinson hyperlegible", "cormorant garamond", "bodoni moda", "vazirmatn", "noto sans sc", "noto serif sc"]);
 const ok = (c, m) => { if (!c) fails.push(m); n++; };
 try {
   const { fontPairing } = await import(pathToFileURL(tmp));
@@ -33,7 +35,7 @@ try {
   ok(Object.keys(CURATED).length === 79, `79 curated fonts, 67 + 12 mcp r4 Noto (got ${Object.keys(CURATED).length})`);
   for (const f of NEW37) {
     const v = CURATED[f.toLowerCase()];
-    ok(v && v.font === f && !BASE_CURATED[f.toLowerCase()] && !DATA[f.toLowerCase()], `${f}: new curated entry, not a guide or r1 font`);
+    ok(v && v.font === f && !BASE_CURATED[f.toLowerCase()] && (!DATA[f.toLowerCase()] || R3.has(f.toLowerCase())), `${f}: new curated entry, not a guide or r1 font`);
     ok(/^0 results/.test(baseFP({ font: f }).content[0].text), `${f}: was "0 results" on ${BASE}`);
   }
 
@@ -41,6 +43,7 @@ try {
   for (const f of NEW37) {
     const v = CURATED[f.toLowerCase()];
     if (!v) continue;
+    if (R3.has(f.toLowerCase())) { const g = DATA[f.toLowerCase()], s = sc(f); ok(g && s.font === g.font && s.page === g.page && s.match === "exact", `${f}: answered by its r3 guide`); continue; }
     ok(GF.has(f) && v.page === null && v.curated === true && v.pairs.length === 5, `${f}: Google Fonts family, page null, curated, 5 pairs`);
     const heads = v.pairs.filter((p) => p.heading === f).length;
     ok(heads === 5 || heads <= 2, `${f}: heading in ${heads} rows`);
@@ -83,7 +86,7 @@ try {
   ok(/^0 results/.test(head("Zzyzx Display")), '"Zzyzx Display" is still "0 results"');
   for (const q of ["Spectral", "Crimson Pro"]) ok(sc(q).match === "partner" && sc(q).font === q && sc(q).pairs.length >= 1, `${q}: still a partner-only answer`);
   for (const [q, want] of [["League Spartan", "League Spartan"], ["Marcellus", "Marcellus"], ["Great Vibes", "Great Vibes"],
-    ["Playfair Display", "Playfair Display"], ["Lora", "Lora"], ["Cormorant Garamond", "Cormorant"], ["Bodoni Moda", "Bodoni"],
+    ["Playfair Display", "Playfair Display"], ["Lora", "Lora"], ["Cormorant Garamond", "Cormorant Garamond"], ["Bodoni Moda", "Bodoni Moda"],
     ["DM Serif Display", "DM Serif Display"], ["Josefin Sans", "Josefin Sans"]]) ok(sc(q).font === want, `"${q}" -> ${want} (got ${sc(q).font})`);
 
   // 6. unchanged versus the base: every old curated font, every guide font and every mcp_calls query since 9-Nov; only the 37 may differ
@@ -103,8 +106,9 @@ try {
     "Spectral", "Crimson Pro", "Play", "Zzyzx Display"]);
   let same = 0;
   for (const q of names) {
-    const a = JSON.stringify(fontPairing({ font: q })), b = JSON.stringify(baseFP({ font: q }));
-    if (NEWK.has(q.toLowerCase())) { ok(a !== b, `"${q}" (new) differs from base`); continue; }
+    const N = (x) => x.replace(/\d+ fonts have pairing guides/g, "N fonts have pairing guides"); // the zero text counts guide fonts (r3: 88 -> 102)
+    const a = N(JSON.stringify(fontPairing({ font: q }))), b = N(JSON.stringify(baseFP({ font: q })));
+    if (NEWK.has(q.toLowerCase()) || R3.has(q.toLowerCase())) { ok(a !== b, `"${q}" (new) differs from base`); continue; }
     ok(a === b, `"${q}" unchanged versus ${BASE}`);
     if (a === b) same++;
   }
