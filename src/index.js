@@ -658,7 +658,7 @@ ${backLink(base, "/annual-reports", "Back to archive")}
     ${it.description ? `<p class="desc">${escHtml(it.description)}</p>` : ""}
     <ul class="facts">${facts.map((f) => `<li>${escHtml(f)}</li>`).join("")}</ul>
     ${chips ? `<div class="chips">${chips}</div>` : ""}
-    ${it.license ? `<p class="attrib">Scan: ${escHtml(it.source || "")}${it.source_link ? ` — <a href="${escHtml(it.source_link)}" rel="nofollow noopener" target="_blank">source record ↗</a>` : ""}. Licence: <a href="${escHtml(it.license_url)}" rel="nofollow noopener" target="_blank">${escHtml(it.license)}</a>${/ND/.test(it.license) ? " (shown unaltered, resized only)" : ""}.</p>` : ""}
+    ${it.license ? `<p class="attrib">Scan: ${escHtml(it.source || "")}${it.source_link ? ` — <a href="${escHtml(it.source_link)}" rel="nofollow noopener" target="_blank">source record ↗</a>` : ""}. Licence: <a href="${escHtml(it.license_url)}" rel="nofollow noopener" target="_blank">${escHtml(it.license)}</a>${/ND/.test(it.license) ? " (shown unaltered, resized only)" : `. Cover image cropped and/or resized by Made Good Designs${/SA/.test(it.license) ? `; this adaptation is shared under ${escHtml(it.license)}` : ""}`}.</p>` : ""}
   </div>
 </div>
 ${arId ? `<section class="fullreport"><h2>Full report</h2><iframe src="https://archive.org/embed/${escHtml(arId)}" title="${escHtml(name)} — full report" loading="lazy" allowfullscreen></iframe><p class="fr-note">Full report embedded from the Internet Archive.</p></section>` : ""}
@@ -2577,7 +2577,7 @@ function mcpItems(rows, header, opts, sibling) {
       isReport && it.designer ? `  designer/agency: ${it.designer}` : null,
       isReport && it.industry ? `  industry: ${it.industry}` : null,
       isReport && it.country ? `  country: ${it.country}` : null,
-      isReport && it.license ? `  licence: ${it.license} (${it.license_url}) — ${it.source}; attribution required` : null,
+      isReport && it.license ? `  licence: ${it.license} (${it.license_url}) — ${it.source}; attribution required${/ND/.test(it.license) ? "" : "; cover cropped and/or resized by Made Good Designs"}${/SA/.test(it.license) ? ` (adaptation shared under ${it.license})` : ""}` : null,
       isReport && it.license && it.source_link ? `  source record: ${it.source_link}` : null,
       isMuseum && it.artist ? `  artist: ${it.artist}${it.year ? " ("+it.year+")" : ""}` : null,
       isMuseum && it.type ? `  type: ${it.type}` : null,
