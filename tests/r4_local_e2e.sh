@@ -43,6 +43,7 @@ n=$(apply "$BUNDLE/r4-indexes.sql"); k=$(nidx); [ "$k" = 9 ] && echo "PASS 1 re-
 after=$(snap b)
 [ "$before" = "$after" ] && echo "PASS 3 facet pages identical before/after the indexes: $after" || { echo "FAIL 3 facet pages changed: $before vs $after"; RC=1; }
 python3 tests/r4_rpc.py "$L" --local > "$T/rpc" 2>&1; grep -E '^FAIL|-> ' "$T/rpc"; echo "r4_rpc: $(tail -1 "$T/rpc")"; grep -q ' 0 failed$' "$T/rpc" || RC=1
+python3 tests/fp4_rpc.py "$L" > "$T/fp4" 2>&1; grep -E '^FAIL|-> ' "$T/fp4"; echo "fp4_rpc: $(tail -1 "$T/fp4")"; grep -q ' 0 failed$' "$T/fp4" || RC=1   # fonts r4 (16-Nov)
 [ $RC = 0 ] || tail -12 "$T/dev.log" | cut -c1-200
 [ $RC = 0 ] && echo "mcp-r4 local e2e: all checks passed" || echo "mcp-r4 local e2e: FAILED"
 exit $RC
