@@ -116,8 +116,10 @@ const ids = (s) => [...new Set([...s.matchAll(/\b[0-9a-f]{12}\b/g)].map((m) => m
   for (const f of noto) { const r = text(await callTool(next, N.env, "get_font_pairing", { font: f })); t(`fonts: ${f} answers 5 pairings`, new RegExp(`^5 pairing\\(s\\) for ${f}\\.`).test(r), r.slice(0, 120)); }
   for (const [q, want] of [["Noto Sans CJK SC", "Noto Sans SC"], ["Noto Serif CJK JP", "Noto Serif JP"], ["Noto Sans Simplified Chinese", "Noto Sans SC"]]) {
     const r = text(await callTool(next, N.env, "get_font_pairing", { font: q })); t(`fonts: "${q}" -> ${want}`, r.startsWith(`5 pairing(s) for ${want}`), r.slice(0, 120)); }
-  for (const q of ["Noto Sans Thai", "Noto Sans Hebrew", "Noto Sans HK", "Noto Serif Devanagari", "Noto Color Emoji", "Play"]) {
+  for (const q of ["Noto Sans Thai", "Noto Sans Hebrew", "Noto Sans HK", "Noto Serif Devanagari", "Noto Color Emoji"]) {
     const r = text(await callTool(next, N.env, "get_font_pairing", { font: q })); t(`fonts: "${q}" stays an honest zero`, /^0 results/.test(r), r.slice(0, 120)); }
+  { const r = text(await callTool(next, N.env, "get_font_pairing", { font: "Play" }));   // fonts r4 (16-Nov): similar fonts, not Playfair
+    t('fonts: "Play" answers with similar sans-serif fonts', /^No dedicated guide for Play yet; these are published pairings for similar sans-serif fonts/.test(r) && !/Playfair/.test(r.split("\n")[0]), r.slice(0, 120)); }
   const { CURATED } = await import("../src/font_pairings_curated.js"), { CURATED: OLD } = await import("./r4/.base/src/font_pairings_curated.js");
   t(`fonts: the ${Object.keys(OLD).length} older curated fonts are unchanged; ${Object.keys(CURATED).length - Object.keys(OLD).length} added`, Object.keys(OLD).every((k) => JSON.stringify(OLD[k]) === JSON.stringify(CURATED[k])) && Object.keys(CURATED).length === 79);
 }

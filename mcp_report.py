@@ -15,7 +15,7 @@ BOT_CLIENTS = "('glimind-probe','histor','catalog-health','mcpcost','probe','age
 NOT_BOT_CLIENT = "" if "--include-bots" in sys.argv else (
     f" AND visitor NOT IN (SELECT visitor FROM mcp_events WHERE kind='initialize' AND client_name IN {BOT_CLIENTS} AND {W})")
 EV = f"FROM mcp_events WHERE {BOT} AND {W}{NOT_BOT_CLIENT}"
-CALLS_EX = "1=1" if "--include-bots" in sys.argv else "ip!='129.126.14.17' AND ua NOT LIKE 'curl/%'"
+CALLS_EX = "1=1" if "--include-bots" in sys.argv else "ip!='129.126.14.17' AND ua NOT LIKE 'curl/%' AND ua NOT LIKE 'mcp-ad-measurement%'"  # 16-Nov: scanner (junk inputs)
 
 
 def sql(q, tries=4, soft=False):

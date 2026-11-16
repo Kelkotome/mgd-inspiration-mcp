@@ -6581,5 +6581,113 @@
     "body_gf": true
    }
   ]
+ },
+ "golos text": {
+  "font": "Golos Text",
+  "page": "https://madegooddesigns.com/golos-text-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Alexandra Korolkova",
+    "Vitaly Kuzmin"
+   ],
+   "added": 2023
+  },
+  "pairs": [
+   {
+    "heading": "Unbounded",
+    "body": "Golos Text",
+    "group": "Sans-Serif Pairings",
+    "why": "Unbounded brings wide, rounded display headlines in Latin and Cyrillic, while Golos Text keeps the body copy calm and easy to read.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Golos Text",
+    "body": "PT Serif",
+    "group": "Serif Pairings",
+    "why": "PT Serif, also from ParaType, sets long Latin and Cyrillic articles in a sturdy serif under clean, bold Golos Text headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Golos Text",
+    "group": "Serif Pairings",
+    "why": "Playfair Display adds high-contrast serif headlines with Cyrillic support above the plain, even texture of Golos Text paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Golos Text",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora is a warm reading serif with Cyrillic glyphs, so blog posts read comfortably below short Golos Text headings in Bold or Black.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Montserrat",
+    "body": "Golos Text",
+    "group": "Sans-Serif Pairings",
+    "why": "Montserrat gives geometric, wide headlines with a full weight range, a clear contrast to the narrower, closed forms of Golos Text body copy.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "estedad": {
+  "font": "Estedad",
+  "page": "https://madegooddesigns.com/estedad-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Amin Abedi",
+    "Fontamin"
+   ],
+   "added": 2026
+  },
+  "pairs": [
+   {
+    "heading": "Lalezar",
+    "body": "Estedad",
+    "group": "Sans-Serif Pairings",
+    "why": "Lalezar is a heavy single-weight Arabic display face that gives Persian headlines real punch above calm, compact Estedad body text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Aref Ruqaa",
+    "body": "Estedad",
+    "group": "Serif Pairings",
+    "why": "Aref Ruqaa brings Ruqaa calligraphic style to Arabic titles, a warm traditional contrast to the plain, low-contrast forms of Estedad.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Estedad",
+    "body": "Amiri",
+    "group": "Serif Pairings",
+    "why": "Amiri is a classical Naskh book face with Latin glyphs, so long Arabic and Persian articles read comfortably under bold Estedad headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Estedad",
+    "body": "Noto Naskh Arabic",
+    "group": "Serif Pairings",
+    "why": "Noto Naskh Arabic sets clear, familiar Naskh paragraphs in four weights below short, modern Estedad sans headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Manrope",
+    "body": "Estedad",
+    "group": "Sans-Serif Pairings",
+    "why": "Manrope sets crisp English headlines and Latin UI text on bilingual pages while Estedad carries the Persian and Arabic body copy.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
  }
 }

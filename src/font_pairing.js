@@ -4,6 +4,7 @@
 import PAIRINGS from "./font_pairings.json";
 import { CURATED, GF_FAMILIES } from "./font_pairings_curated.js";
 import { gfLink, btKey, btLev } from "./search_extras.js";
+import { GF_META } from "./gf_meta.js";
 
 export const FONT_PAIRING_TOOL = {
   name: "get_font_pairing",
@@ -103,6 +104,84 @@ for (const v of Object.values(PAIRINGS)) for (const p of v.pairs) for (const n o
   AS_PARTNER.get(k).hits.push({ ...p, page: v.page });
 }
 
+// fonts r4 (16-Nov-2026): a Google Font with no guide and no partner hits used to get "0 results" (15 of 70 calls on 9-16 Nov). It now
+// gets the published pairings of the closest guide fonts, labelled as such: same Google Fonts category (display / handwriting fonts:
+// same stroke first), same primary script (an Arabic-script or Chinese font only borrows from Arabic-script or Chinese guides; none
+// = honest zero), then Google Fonts popularity. Data: gf_meta.js (fonts.google.com metadata, build_gf_meta.py). No D1, no network.
+const CAT_NAME = { S: "Sans Serif", R: "Serif", D: "Display", H: "Handwriting", M: "Monospace" };
+const CAT_LABEL = { S: "sans-serif", R: "serif", D: "display", H: "handwriting (script)", M: "monospace" };
+const SCRIPT_LABEL = { Arab: "Arabic-script", Hans: "Simplified Chinese", Hant: "Traditional Chinese", Jpan: "Japanese", Kore: "Korean",
+  Cyrl: "Cyrillic", Deva: "Devanagari", Hebr: "Hebrew", Thai: "Thai", Grek: "Greek" };
+const GFM = new Map();
+for (const line of GF_META.split("\n")) {
+  const [family, c, stroke, script, pop] = line.split("|");
+  GFM.set(btKey(family), { family, c, stroke, script, pop: Number(pop) || 9999 });
+}
+const GUIDES = Object.values(PAIRINGS).filter((v) => v.page && GFM.has(btKey(v.font))).map((v) => ({ v, m: GFM.get(btKey(v.font)) }));
+// Emoji, symbol, barcode and redaction fonts are not text faces: no "similar" pairings for them (honest zero).
+const NO_SIMILAR = /emoji|symbols|barcode|redacted|^flow /i;
+export function similarGuides(m, n = 3) {
+  if (NO_SIMILAR.test(m.family)) return [];
+  return GUIDES.filter((g) => g.m.c === m.c && g.m.script === m.script && btKey(g.v.font) !== btKey(m.family))
+    .map((g) => ({ g, s: (m.stroke && g.m.stroke === m.stroke ? 0 : 1) * 100000 + g.m.pop }))
+    .sort((x, y) => x.s - y.s).slice(0, n).map((x) => x.g.v);
+}
+function similarPairs(m, a) {
+  const lim = Math.max(1, Math.min(20, Number(a && a.limit) || 6));
+  const guides = similarGuides(m);
+  if (!guides.length) return null;
+  const pairs = [];
+  for (let i = 0; pairs.length < lim && i < 20; i++) {   // round-robin over the guides: their best pairs first
+    let added = false;
+    for (const v of guides) {
+      const p = v.pairs[i];
+      if (!p || pairs.length >= lim) continue;
+      added = true;
+      pairs.push({ heading: p.heading, body: p.body, group: p.group, why: p.why, similar_to: v.font, page: v.page,
+        google_fonts_url: gfLink([p.heading_gf !== false ? p.heading : null, p.body_gf !== false ? p.body : null]) });
+    }
+    if (!added) break;
+  }
+  const kind = (m.script && SCRIPT_LABEL[m.script] ? SCRIPT_LABEL[m.script] + " " : "") + CAT_LABEL[m.c];
+  const names = guides.map((v) => v.font);
+  const lines = [`No dedicated guide for ${m.family} yet; these are published pairings for similar ${kind} fonts (${names.join(", ")}). ` +
+    `Each pair comes from that font's own guide: use ${m.family} in place of the similar font, and cite the page listed with each. Try ${m.family} with these partners live: ${GENERATOR}`,
+    `About: ${m.family} is a ${CAT_NAME[m.c].toLowerCase()} typeface, free on Google Fonts.`];
+  for (const p of pairs) {
+    lines.push(`\n• ${p.heading} + ${p.body}  [${p.group}; from the ${p.similar_to} guide]`);
+    if (p.why) lines.push(`  why: ${p.why}`);
+    if (p.google_fonts_url) lines.push(`  <link href="${p.google_fonts_url}" rel="stylesheet">`);
+    lines.push(`  source: ${p.page}`);
+  }
+  return { content: [{ type: "text", text: lines.join("\n") }],
+    structuredContent: { font: m.family, page: null, match: "similar", category: CAT_NAME[m.c], similar_to: names, try_url: GENERATOR, pairs } };
+}
+// Input that is not a typeface name (scanners send "python asyncio"; empty strings; code; whole sentences) gets a short validation
+// message instead of the zero answer with its 30-font list. It is not an error and not a zero, so it does not count as a failure.
+const NOT_FONT_WORDS = /\b(python|asyncio|javascript|typescript|java|react|node|nodejs|sql|select|insert|docker|kubernetes|api|https?|www|json|html|css|regex|lorem|ipsum|hello|world|weather|recipe|null|undefined|test|testing|asdf|qwerty|foo|bar|baz)\b/i;
+const GF_WORDS = new Set();
+for (const m of GFM.values()) for (const w of m.family.toLowerCase().split(/\s+/)) if (w.length >= 3) GF_WORDS.add(w);
+for (const v of INDEX) for (const w of v.v.font.toLowerCase().split(/\s+/)) if (w.length >= 3) GF_WORDS.add(w);
+export function notAFont(raw) {
+  const s = String(raw == null ? "" : raw).trim();
+  if (!s) return "empty";
+  if (s.length > 80 || /[{}<>;=\[\]\\`$@#%^*|~]|:\/\//.test(s)) return "not a name";
+  const words = s.replace(/\b(font|fonts|typeface|typefaces|pairing|pairings|pair|pairs|with|for|what|goes|go)\b/gi, " ").trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return "empty";
+  if (words.length > 6) return "not a name";
+  const known = words.some((w) => GF_WORDS.has(w.toLowerCase()));
+  if (!known && NOT_FONT_WORDS.test(s)) return "not a name";
+  if (!known && words.length >= 2 && s === s.toLowerCase() && /[a-z]/.test(s)) return "not a name";
+  return null;
+}
+function invalidFont(raw, why) {
+  const shown = String(raw == null ? "" : raw).trim().slice(0, 60);
+  return { content: [{ type: "text", text: why === "empty"
+    ? `get_font_pairing needs a typeface name in "font", e.g. font="Poppins" or font="Playfair Display".`
+    : `"${shown}" does not look like a typeface name. get_font_pairing takes one font family, e.g. font="Poppins" or font="Playfair Display".` }],
+    structuredContent: { font: null, match: "invalid", pairs: [] } };
+}
+
 export function fontPairing(a) {
   // exact / alias / prefix first; then a font that only appears as a partner on other guides; fuzzy spelling matches last, so a
   // partner-only font (e.g. "Crimson Pro") is never swapped for a different guide one edit away.
@@ -110,6 +189,11 @@ export function fontPairing(a) {
   if (!f) {
     const hit = AS_PARTNER.get(fontKey(a && a.font));
     if (hit) return partnerPairs(hit, a);
+    const gm = GFM.get(fontKey(a && a.font));
+    const sim = gm && similarPairs(gm, a);
+    if (sim) return sim;
+    const bad = !gm && notAFont(a && a.font);
+    if (bad) return invalidFont(a && a.font, bad);
     const known = Object.values(PAIRINGS).map((v) => v.font);
     return { content: [{ type: "text", text: `0 results: no published pairing guide for "${(a && a.font) || ""}" yet. ${known.length} fonts have pairing guides, including: ${known.slice(0, 30).join(", ")}.` }],
       structuredContent: { font: null, pairs: [] } };

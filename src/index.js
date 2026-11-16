@@ -2023,7 +2023,7 @@ async function logMcp(env, tool, query, ip, ua, who) {
 
 // MCP analytics: connections, sessions and outcomes (migrate_mcp_events.sql). Best-effort — never affects a response.
 // Includes uptime monitors / directory checkers (AMP-Server calls the same 3 tools daily) so they don't count as users.
-const MCP_BOT_UA = /^(curl\/|undici|python-|Go-http-client|node-fetch|axios|okhttp|aiohttp|httpx|Wget|Java\/|node$|mgd-selftest)|mcp-probe|MCPYP|evyAI|scanner|AMP-Server|amp-mcp-tester|Inspection|SentinelOracle|histor\//i;
+const MCP_BOT_UA = /^(curl\/|undici|python-|Go-http-client|node-fetch|axios|okhttp|aiohttp|httpx|Wget|Java\/|node$|mgd-selftest)|mcp-probe|MCPYP|evyAI|scanner|AMP-Server|amp-mcp-tester|Inspection|SentinelOracle|histor\/|mcp-ad-measurement/i;
 function mcpCtx(request, endpoint, defer) {
   // kit pilot: connect links on library pages carry ?ref=<page-slug>; record it with the endpoint so mcp_events shows which page
   // brought the client (MCP clients keep the configured URL, so every request carries it). Slug-safe, ≤ 60 chars.

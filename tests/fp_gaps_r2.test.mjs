@@ -20,6 +20,8 @@ let n = 0;
 const fails = [];
 // fonts r3 (14-Nov-2026): these curated fonts now have their own published *-font-pairings guide, which comes first in the lookup.
 const R3 = new Set(["prata", "tenor sans", "marcellus", "italiana", "gilda display", "forum", "bellefair", "libre caslon text", "atkinson hyperlegible", "cormorant garamond", "bodoni moda", "vazirmatn", "noto sans sc", "noto serif sc"]);
+// fonts r4 (16-Nov-2026): two new guides, and "Play" now answers with similar fonts (src/gf_meta.js) instead of "0 results"
+const R4 = new Set(["golos text", "estedad", "play"]);
 const ok = (c, m) => { if (!c) fails.push(m); n++; };
 try {
   const { fontPairing } = await import(pathToFileURL(tmp));
@@ -82,7 +84,8 @@ try {
     ["Baskerville", "Baskerville"], ["Caslon", "Caslon"]]) ok(sc(q).font === want, `"${q}" -> ${want} (got ${sc(q).font})`);
 
   // 5. guards: unknown and guard probes still zero; partner-only answers kept
-  ok(/^0 results/.test(head("Play")) && sc("Play").pairs.length === 0, '"Play" is still "0 results"');
+  // fonts r4 (16-Nov): "Play" (a Google Font with no guide) now gets pairings of similar sans-serif guide fonts, never Playfair Display's
+  ok(sc("Play").match === "similar" && sc("Play").font === "Play" && sc("Play").pairs.length >= 1 && !sc("Play").similar_to.includes("Playfair Display"), '"Play" answers with similar fonts, not Playfair');
   ok(/^0 results/.test(head("Zzyzx Display")), '"Zzyzx Display" is still "0 results"');
   for (const q of ["Spectral", "Crimson Pro"]) ok(sc(q).match === "partner" && sc(q).font === q && sc(q).pairs.length >= 1, `${q}: still a partner-only answer`);
   for (const [q, want] of [["League Spartan", "League Spartan"], ["Marcellus", "Marcellus"], ["Great Vibes", "Great Vibes"],
@@ -100,7 +103,7 @@ try {
     "Fredoka|Forum|Fjalla One|Fira Sans|Faustina|Exo 2|Epilogue|Dosis|Domine|Dancing Script|DM Serif Display|DM Sans|DM Mono|Comfortaa|Caveat|" +
     "Cabin|Bodoni Moda|Bitter|Big Shoulders|Bellefair|Be Vietnam Pro|Barlow Condensed|Barlow|Asap|Arvo|Arimo|Archivo Narrow|Archivo Black|" +
     "Alfa Slab One|Albert Sans|Abel").split("|");
-  for (const q of QUERIES) ok(q === "Play" ? sc(q).pairs.length === 0 : sc(q).pairs.length >= 1, `mcp_calls "${q}" ${q === "Play" ? "has no pairs" : "has pairs"}`);
+  for (const q of QUERIES) ok(sc(q).pairs.length >= 1, `mcp_calls "${q}" has pairs`);   // fonts r4: "Play" too (similar fonts)
   const NEWK = new Set(NEW37.map((f) => f.toLowerCase()));
   const names = new Set([...Object.values(BASE_CURATED).map((v) => v.font), ...Object.values(DATA).map((v) => v.font), ...QUERIES,
     "Spectral", "Crimson Pro", "Play", "Zzyzx Display"]);
@@ -108,7 +111,7 @@ try {
   for (const q of names) {
     const N = (x) => x.replace(/\d+ fonts have pairing guides/g, "N fonts have pairing guides"); // the zero text counts guide fonts (r3: 88 -> 102)
     const a = N(JSON.stringify(fontPairing({ font: q }))), b = N(JSON.stringify(baseFP({ font: q })));
-    if (NEWK.has(q.toLowerCase()) || R3.has(q.toLowerCase())) { ok(a !== b, `"${q}" (new) differs from base`); continue; }
+    if (NEWK.has(q.toLowerCase()) || R3.has(q.toLowerCase()) || R4.has(q.toLowerCase())) { ok(a !== b, `"${q}" (new) differs from base`); continue; }
     ok(a === b, `"${q}" unchanged versus ${BASE}`);
     if (a === b) same++;
   }
