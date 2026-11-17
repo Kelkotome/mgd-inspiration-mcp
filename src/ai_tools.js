@@ -21,6 +21,8 @@
 // overshoot the cap) and refunded when the failure is ours/upstream's (key missing, network/5xx, unparseable output).
 // A completed model call always counts, including a refusal.
 //
+import { handleDesign } from "./ai_design.js";
+
 // Raw fetch to POST /v1/messages (no SDK): every upstream call in this Worker is plain fetch, and adding @anthropic-ai/sdk
 // would change the node_modules shared with the main checkout.
 
@@ -308,13 +310,13 @@ export async function status(store, env, ipk, now = Date.now()) {
 }
 
 // ------------------------------------------------------------------------------------------ HTTP handlers
-function j(obj, status, request, env) {
+export function j(obj, status, request, env) {
   return new Response(JSON.stringify(obj), { status: status || 200, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", ...aiCors(request, env) } });
 }
-const fail = (r, request, env, extra = {}) => j({ ok: false, error: r.error, message: r.message, ...extra }, r.status, request, env);
-const configured = (env) => !!(env.ANTHROPIC_API_KEY && env.TURNSTILE_SECRET);
+export const fail = (r, request, env, extra = {}) => j({ ok: false, error: r.error, message: r.message, ...extra }, r.status, request, env);
+export const configured = (env) => !!(env.ANTHROPIC_API_KEY && env.TURNSTILE_SECRET);
 
-async function verifyTurnstile(token, ip, request, env) {
+export async function verifyTurnstile(token, ip, request, env) {
   if (!token || token.length > 2048) return false;
   const host = new URL(request.url).hostname;
   if (env.TURNSTILE_BYPASS_LOCAL === "1" && isDev(env) && (host === "localhost" || host === "127.0.0.1")) return true; // offline local tests only
@@ -327,6 +329,7 @@ async function verifyTurnstile(token, ip, request, env) {
 
 export async function handleAi(request, env, ctx, path) {
   const method = request.method;
+  if (path === "/api/ai/design" || path === "/api/ai/design/status") return handleDesign(request, env, ctx, path); // design-r1: own quota + budget (src/ai_design.js)
   if (method === "OPTIONS" && (path === "/api/ai/health" || path === "/api/ai/describe" || path === "/api/ai/palette" || path === "/api/ai/svg" || path === "/api/ai/diagram" || path === "/api/ai/infographic" || path === "/api/ai/wireframe" || path === "/api/ai/flyer")) return new Response(null, { status: 204, headers: aiCors(request, env) });
   const origin = request.headers.get("Origin") || "";
   if (!originAllowed(origin, env)) return fail({ status: 403, error: "origin", message: "This endpoint only serves madegooddesigns.com." }, request, env);
@@ -475,13 +478,17 @@ export function buildDiagramBody(req) {
 }
 
 // Allow-list SVG rebuild (string tokenizer; the Worker has no DOM). Anything not on the lists is dropped; text nodes survive only in title/desc.
+const SVG_TEXT_EL = new Set(["text", "tspan"]);
+const SVG_TEXT_ATTR = new Set(["font-family", "font-size", "font-weight", "font-style", "text-anchor", "letter-spacing", "word-spacing", "dominant-baseline",
+  "alignment-baseline", "text-decoration", "dx", "dy", "textlength", "lengthadjust", "paint-order"]);
 const SVG_EL = new Set(["svg", "g", "defs", "path", "circle", "ellipse", "rect", "line", "polyline", "polygon", "lineargradient", "radialgradient", "stop", "clippath", "mask", "title", "desc", "use", "symbol"]);
 const SVG_ATTR = new Set(["xmlns", "viewbox", "width", "height", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "ry", "d", "points", "fill", "fill-opacity", "fill-rule",
   "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "stroke-miterlimit", "stroke-dasharray", "stroke-dashoffset", "stroke-opacity", "opacity", "transform",
   "id", "offset", "stop-color", "stop-opacity", "gradientunits", "gradienttransform", "spreadmethod", "fx", "fy", "clip-path", "clip-rule", "mask", "clippathunits",
   "maskunits", "preserveaspectratio", "href", "xlink:href", "xmlns:xlink", "vector-effect", "shape-rendering", "role", "aria-hidden", "aria-label", "visibility", "display"]);
 const CASE = { viewbox: "viewBox", lineargradient: "linearGradient", radialgradient: "radialGradient", clippath: "clipPath", gradientunits: "gradientUnits",
-  gradienttransform: "gradientTransform", spreadmethod: "spreadMethod", clippathunits: "clipPathUnits", maskunits: "maskUnits", preserveaspectratio: "preserveAspectRatio" };
+  gradienttransform: "gradientTransform", spreadmethod: "spreadMethod", clippathunits: "clipPathUnits", maskunits: "maskUnits", preserveaspectratio: "preserveAspectRatio",
+  textlength: "textLength", lengthadjust: "lengthAdjust" };
 const escAttr = (v) => v.replace(/&(?!(amp|lt|gt|quot|#\d+|#x[0-9a-f]+);)/gi, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const escText = (v) => v.replace(/&(?!(amp|lt|gt|quot|#\d+|#x[0-9a-f]+);)/gi, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 function safeAttrValue(name, v) {
@@ -491,10 +498,16 @@ function safeAttrValue(name, v) {
   if (/url\(/.test(low) && !/^(url\(#[\w.:-]+\)\s*)+$/.test(low.replace(/["']/g, "")) && !/^url\(['"]?#[\w.:-]+['"]?\)$/.test(low)) return null;
   return v;
 }
-export function sanitizeSvg(src) {
+// opts (design-r1, default off = the b64 behaviour): text: keep <text>/<tspan> (escaped text nodes, font attrs; font-family limited to plain
+// names), noTitle: drop <title>/<desc>, maxChars: output cap (default SVG_MAX_CHARS)
+export function sanitizeSvg(src, opts = {}) {
   if (typeof src !== "string") return null;
+  const allowText = !!opts.text, maxChars = opts.maxChars || SVG_MAX_CHARS;
+  const elOk = (n) => (SVG_EL.has(n) || (allowText && SVG_TEXT_EL.has(n))) && !(opts.noTitle && (n === "title" || n === "desc"));
+  const attrOk = (n) => SVG_ATTR.has(n) || (allowText && SVG_TEXT_ATTR.has(n));
+  const textHost = (t) => t === "title" || t === "desc" || (allowText && (t === "text" || t === "tspan"));
   let s = src.replace(/^﻿/, "").replace(/```(?:svg|xml)?/gi, "").trim();
-  if (s.length > SVG_MAX_CHARS * 2) return null;
+  if (s.length > maxChars * 2) return null;
   s = s.replace(/<!--[\s\S]*?-->/g, "").replace(/<!\[CDATA\[[\s\S]*?\]\]>/g, "").replace(/<\?[\s\S]*?\?>/g, "").replace(/<!DOCTYPE[\s\S]*?>/gi, "");
   const start = s.search(/<svg[\s>]/i); if (start < 0) return null;
   s = s.slice(start);
@@ -503,27 +516,32 @@ export function sanitizeSvg(src) {
   while (i < s.length && !closed) {
     const lt = s.indexOf("<", i);
     const text = s.slice(i, lt < 0 ? s.length : lt);
-    if (text && !skip && stack.length && (stack[stack.length - 1] === "title" || stack[stack.length - 1] === "desc")) out.push(escText(text));
+    if (text && !skip && stack.length && textHost(stack[stack.length - 1])) out.push(escText(text));
     if (lt < 0) break;
     tagRe.lastIndex = lt; const m = tagRe.exec(s);
     if (!m) { i = lt + 1; continue; }
     i = tagRe.lastIndex;
     const isEnd = m[1] === "/", name = m[2].toLowerCase(), selfClose = m[4] === "/";
     if (isEnd) {
-      if (skip) { if (stack.length && stack[stack.length - 1] === "#skip:" + name) { stack.pop(); skip--; } continue; }
+      if (skip) {   // close the skipped element even when unclosed (void HTML like <img>) skipped children sit above it, so they cannot swallow the rest
+        const si = stack.lastIndexOf("#skip:" + name);
+        if (si >= 0) while (stack.length > si) { stack.pop(); skip--; }
+        continue;
+      }
       const idx = stack.lastIndexOf(name); if (idx < 0) continue;
       while (stack.length > idx) { const t = stack.pop(); out.push("</" + (CASE[t] || t) + ">"); }
       if (name === "svg" && stack.length === 0) closed = true;
       continue;
     }
-    if (skip || !SVG_EL.has(name) || (!rootSeen && name !== "svg")) { if (!selfClose) { stack.push("#skip:" + name); skip++; } continue; }
+    if (skip || !elOk(name) || (!rootSeen && name !== "svg")) { if (!selfClose) { stack.push("#skip:" + name); skip++; } continue; }
     if (name === "svg" && rootSeen && stack.length === 0) break;
     rootSeen = true;
     const attrs = []; const ar = /([^\s=\/>]+)(?:\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+)))?/g; let a, seen = new Set();
     while ((a = ar.exec(m[3]))) {
-      const an = a[1].toLowerCase(); if (!SVG_ATTR.has(an) || seen.has(an)) continue;
+      const an = a[1].toLowerCase(); if (!attrOk(an) || seen.has(an)) continue;
       const raw = a[3] != null ? a[3] : a[4] != null ? a[4] : a[5] != null ? a[5] : "";
       const v = safeAttrValue(an, raw); if (v == null) continue;
+      if (an === "font-family" && !/^[A-Za-z0-9 ,'"-]{1,80}$/.test(v)) continue;
       seen.add(an); attrs.push(" " + (CASE[an] || an) + '="' + escAttr(v) + '"');
     }
     if (name === "use" && !seen.has("href") && !seen.has("xlink:href")) { if (!selfClose) { stack.push("#skip:" + name); skip++; } continue; } // <use> whose external ref was removed
@@ -537,8 +555,9 @@ export function sanitizeSvg(src) {
   while (stack.length) { const t = stack.pop(); if (!t.startsWith("#skip:")) out.push("</" + (CASE[t] || t) + ">"); }
   const res = out.join("");
   if (!/^<svg[\s>]/.test(res) || !/viewBox="[\d.\s,-]+"/.test(res)) return null;
-  if (!/<(path|circle|ellipse|rect|line|polyline|polygon|use)[\s/>]/.test(res)) return null;
-  return res.length <= SVG_MAX_CHARS ? res : null;
+  if (!/<(path|circle|ellipse|rect|line|polyline|polygon|use|text)[\s/>]/.test(res)) return null;
+  if (!allowText && !/<(path|circle|ellipse|rect|line|polyline|polygon|use)[\s/>]/.test(res)) return null;
+  return res.length <= maxChars ? res : null;
 }
 export function sanitizeMermaid(src) {
   if (typeof src !== "string") return null;
