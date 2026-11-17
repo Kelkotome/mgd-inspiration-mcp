@@ -22,6 +22,8 @@ const fails = [];
 const R3 = new Set(["prata", "tenor sans", "marcellus", "italiana", "gilda display", "forum", "bellefair", "libre caslon text", "atkinson hyperlegible", "cormorant garamond", "bodoni moda", "vazirmatn", "noto sans sc", "noto serif sc"]);
 // fonts r4 (16-Nov-2026): two new guides, and "Play" now answers with similar fonts (src/gf_meta.js) instead of "0 results"
 const R4 = new Set(["golos text", "estedad", "play"]);
+// fonts r5 (17-Nov-2026): Trajan + Onest guides
+const R5 = new Set(["trajan", "onest"]);
 const ok = (c, m) => { if (!c) fails.push(m); n++; };
 try {
   const { fontPairing } = await import(pathToFileURL(tmp));
@@ -111,7 +113,7 @@ try {
   for (const q of names) {
     const N = (x) => x.replace(/\d+ fonts have pairing guides/g, "N fonts have pairing guides"); // the zero text counts guide fonts (r3: 88 -> 102)
     const a = N(JSON.stringify(fontPairing({ font: q }))), b = N(JSON.stringify(baseFP({ font: q })));
-    if (NEWK.has(q.toLowerCase()) || R3.has(q.toLowerCase()) || R4.has(q.toLowerCase())) { ok(a !== b, `"${q}" (new) differs from base`); continue; }
+    if (NEWK.has(q.toLowerCase()) || R3.has(q.toLowerCase()) || R4.has(q.toLowerCase()) || R5.has(q.toLowerCase())) { ok(a !== b, `"${q}" (new) differs from base`); continue; }
     ok(a === b, `"${q}" unchanged versus ${BASE}`);
     if (a === b) same++;
   }

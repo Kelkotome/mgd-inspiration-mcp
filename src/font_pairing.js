@@ -48,6 +48,9 @@ const ALIASES = {
   notosanssimplifiedchinese: "notosanssc", notoserifsimplifiedchinese: "notoserifsc", notosanstraditionalchinese: "notosanstc",
   notoseriftraditionalchinese: "notoseriftc", notosansjapanese: "notosansjp", notoserifjapanese: "notoserifjp", notosanskorean: "notosanskr",
   notoserifkorean: "notoserifkr",
+  // fonts r5 (17-Nov-2026): Trajan's Adobe family names ("Trajan Pro" is the OpenType release, "Trajan Pro 3" the current Adobe Fonts
+  // family, CSS name trajan-pro-3) answer with the Trajan guide. Trajan Sans is a different design and stays an honest zero.
+  trajanpro: "trajan", trajanpro3: "trajan",
 };
 // MCP r4: a Noto family for another script ("Noto Sans Thai", "Noto Serif Devanagari", "Noto Sans HK") is not stretched to the Latin or
 // another script's Noto entry by the prefix step: different script, different pairing advice. Only a display cut of the same family is.
@@ -87,7 +90,16 @@ function partnerPairs(hit, a) {
 // CSS generic fallback. "display" is not a CSS generic family (it used to be emitted for Display groups); Display falls back to sans-serif.
 const cat = (g) => /mono|code/i.test(g) ? "monospace" : /script|handwriting/i.test(g) ? "cursive" : /serif/i.test(g) && !/sans/i.test(g) ? "serif" : "sans-serif";
 // The page font's own fallback comes from its Google Fonts category (about.category) when we have it.
-const ownCat = (v) => (v.about && v.about.category ? cat(v.about.category) : "sans-serif");
+// fonts r5 (17-Nov-2026): a guide font that is not on Google Fonts can carry its CSS generic and where to license it here (Trajan is a
+// serif sold through Adobe Fonts: "licence or self-host it" would be wrong, self-hosting it needs an extra Adobe licence). The older
+// commercial guides (Futura, Helvetica, Garamond...) are left exactly as they were.
+// stack = the CSS family names to emit (Adobe Fonts web projects serve Trajan as "trajan-pro-3"; installed desktop font "Trajan Pro 3").
+const NON_GF = { trajan: { css: "serif", stack: '"trajan-pro-3", "Trajan Pro 3"', where: "not free: license it through Adobe Fonts with a Creative Cloud subscription",
+  about: "About: Trajan is a capitals-only serif display typeface designed by Carol Twombly for Adobe (Adobe Originals); the current family " +
+    "is Trajan Pro 3. It is not free and not on Google Fonts: a Creative Cloud subscription covers it through Adobe Fonts. The usual free " +
+    "Google Fonts look-alike is Cinzel." } };
+const fam = (name) => (NON_GF[btKey(name)] || {}).stack || `"${name}"`;
+const ownCat = (v) => (v.about && v.about.category ? cat(v.about.category) : (NON_GF[btKey(v.font)] || {}).css || "sans-serif");
 const aboutLine = (v) => {
   const a = v.about;
   if (!a) return null;
@@ -205,16 +217,17 @@ export function fontPairing(a) {
   pairs = pairs.slice(0, lim).map((p) => {
     const gfNames = [p.heading_gf !== false ? p.heading : null, p.body_gf !== false ? p.body : null];
     const link = gfLink(gfNames);
-    const css = `h1, h2, h3 { font-family: "${p.heading}", ${f.v.font === p.heading ? ownCat(f.v) : cat(p.group)}; }\nbody { font-family: "${p.body}", ${f.v.font === p.body ? ownCat(f.v) : cat(p.group)}; }`;
-    const note = p.heading_gf === false || p.body_gf === false
-      ? `not on Google Fonts: ${[p.heading_gf === false && p.heading, p.body_gf === false && p.body].filter(Boolean).join(", ")} (licence or self-host it)` : null;
+    const css = `h1, h2, h3 { font-family: ${fam(p.heading)}, ${f.v.font === p.heading ? ownCat(f.v) : cat(p.group)}; }\nbody { font-family: ${fam(p.body)}, ${f.v.font === p.body ? ownCat(f.v) : cat(p.group)}; }`;
+    const nonGf = [p.heading_gf === false && p.heading, p.body_gf === false && p.body].filter(Boolean);
+    const where = nonGf.length === 1 && NON_GF[btKey(nonGf[0])] ? NON_GF[btKey(nonGf[0])].where : "licence or self-host it";
+    const note = nonGf.length ? `not on Google Fonts: ${nonGf.join(", ")} (${where})` : null;
     return { heading: p.heading, body: p.body, group: p.group, why: p.why, google_fonts_url: link, css, note };
   });
   const closest = f.how !== "exact" ? ` (closest match for "${a.font}")` : "";
   const lines = [f.v.page
     ? `${pairs.length} pairing(s) for ${f.v.font}${closest}. Source: ${f.v.page} — please cite it.`
     : `${pairs.length} pairing(s) for ${f.v.font}${closest}. Made Good Designs has no dedicated ${f.v.font} guide yet; these are its editorial pairings (cite madegooddesigns.com). Try them live in the font pairing generator: ${GENERATOR}`];
-  const about = aboutLine(f.v);
+  const about = aboutLine(f.v) || (NON_GF[btKey(f.v.font)] || {}).about || null;
   if (about) lines.push(about);
   for (const p of pairs) {
     lines.push(`\n• ${p.heading} + ${p.body}  [${p.group}]`);

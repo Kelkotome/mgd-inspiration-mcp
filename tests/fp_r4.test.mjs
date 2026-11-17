@@ -104,7 +104,7 @@ try {
   ok(sc("Poppins").match === "exact" && sc("Poppins").page === "https://madegooddesigns.com/poppins-font-pairing/", "Poppins: exact, own guide");
   ok(sc("Montserrat").match === "exact" && sc("Montserrat").pairs.length >= 4, "Montserrat: exact");
   ok(sc("Crimson Pro").match === "partner" && sc("Crimson Pro").font === "Crimson Pro" && sc("Crimson Pro").pairs.length >= 1, "Crimson Pro: partner answer");
-  const NEW = new Set(["golos text", "estedad"]);
+  const NEW = new Set(["golos text", "estedad", "trajan", "onest"]);   // fonts r5 (17-Nov): Trajan + Onest guides are checked in fp_r5
   const SIMILAR_NOW = new Set(["play"]);   // guard probe of mcp-gaps-r1: was "0 results", now similar
   let same = 0, total = 0;
   for (const v of Object.values(DATA)) {

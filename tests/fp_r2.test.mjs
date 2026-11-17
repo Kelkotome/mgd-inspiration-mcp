@@ -68,7 +68,7 @@ try {
   const an = fontPairing({ font: "Anton" }).content[0].text;
   if (DATA.anton && DATA.anton.about) ok(/About: Anton is a [a-z ]+ typeface by Vernon Adams/.test(an), "Anton about line");
   for (const v of Object.values(DATA)) for (const p of fontPairing({ font: v.font, limit: 20 }).structuredContent.pairs)
-    ok(/^h1, h2, h3 \{ font-family: "[^"]+", (serif|sans-serif|monospace|cursive); \}\nbody \{ font-family: "[^"]+", (serif|sans-serif|monospace|cursive); \}$/.test(p.css), `${v.font}: css ${p.css}`);
+    ok(/^h1, h2, h3 \{ font-family: ("[^"]+", )+(serif|sans-serif|monospace|cursive); \}\nbody \{ font-family: ("[^"]+", )+(serif|sans-serif|monospace|cursive); \}$/.test(p.css), `${v.font}: css ${p.css}`);   // fonts r5: a non-Google guide font may emit a family stack (Trajan: "trajan-pro-3", "Trajan Pro 3")
   if (DATA["eb garamond"]) ok(fontPairing({ font: "EB Garamond", limit: 20 }).structuredContent.pairs.some((p) => / serif; \}/.test(p.css) && p.css.includes('"EB Garamond", serif')), "EB Garamond falls back to serif");
   if (DATA["jetbrains mono"]) ok(fontPairing({ font: "JetBrains Mono", limit: 20 }).structuredContent.pairs.every((p) => p.css.includes('"JetBrains Mono", monospace')), "JetBrains Mono falls back to monospace");
   ok(sc("Oswald").pairs.length === 6 && fontPairing({ font: "Oswald", limit: 1 }).structuredContent.pairs.length === 1, "limit");

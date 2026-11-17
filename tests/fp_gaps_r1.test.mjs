@@ -10,6 +10,8 @@ let n = 0;
 const fails = [];
 // fonts r3 (14-Nov-2026): these curated fonts now have their own published *-font-pairings guide, which comes first in the lookup.
 const R3 = new Set(["prata", "tenor sans", "marcellus", "italiana", "gilda display", "forum", "bellefair", "libre caslon text", "atkinson hyperlegible", "cormorant garamond", "bodoni moda", "vazirmatn", "noto sans sc", "noto serif sc"]);
+// fonts r5 (17-Nov-2026): Onest (curated since mcp-gaps-r1) now has its own guide too; the curated entry stays, shadowed (as in r3).
+const R5 = new Set(["onest"]);
 const ok = (c, m) => { if (!c) fails.push(m); n++; };
 try {
   const { fontPairing } = await import(pathToFileURL(tmp));
@@ -44,7 +46,7 @@ try {
   const C = Object.values(CURATED);
   ok(C.length === 79, `79 curated fonts: 30 r1 + 37 mcp-gaps-r2 + 12 mcp r4 Noto (got ${C.length})`);
   for (const v of C) {
-    if (R3.has(v.font.toLowerCase())) { const g = DATA[v.font.toLowerCase()], s = sc(v.font); ok(g && s.font === g.font && s.page === g.page && s.match === "exact", `${v.font}: answered by its r3 guide`); continue; }
+    if (R3.has(v.font.toLowerCase()) || R5.has(v.font.toLowerCase())) { const g = DATA[v.font.toLowerCase()], s = sc(v.font); ok(g && s.font === g.font && s.page === g.page && s.match === "exact", `${v.font}: answered by its r3/r5 guide`); continue; }
     ok(!DATA[v.font.toLowerCase()], `${v.font}: not also a guide font`);
     ok(GF.has(v.font) && v.page === null && v.curated === true, `${v.font}: Google Fonts family, page null, curated`);
     ok(v.pairs.length === 5, `${v.font}: 5 pairs`);

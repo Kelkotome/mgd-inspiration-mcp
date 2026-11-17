@@ -6689,5 +6689,106 @@
     "body_gf": true
    }
   ]
+ },
+ "trajan": {
+  "font": "Trajan",
+  "page": "https://madegooddesigns.com/trajan-font-pairings/",
+  "about": null,
+  "pairs": [
+   {
+    "heading": "Trajan",
+    "body": "EB Garamond",
+    "group": "Serif Pairings",
+    "why": "EB Garamond sets long text in a classic old-style serif with true italics, a natural companion for carved Roman capitals.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Trajan",
+    "body": "Cormorant Garamond",
+    "group": "Serif Pairings",
+    "why": "Cormorant Garamond adds a light, elegant serif body with italics, a fit for invitations and luxury brands under Trajan titles.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Trajan",
+    "body": "Libre Baskerville",
+    "group": "Serif Pairings",
+    "why": "Libre Baskerville is a sturdy reading serif for the web, so articles stay comfortable below formal Trajan headings.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Trajan",
+    "body": "Source Sans 3",
+    "group": "Sans-Serif Pairings",
+    "why": "Source Sans 3 is a clean, neutral sans with a wide weight range, giving Trajan headlines a modern and practical page.",
+    "heading_gf": false,
+    "body_gf": true
+   },
+   {
+    "heading": "Trajan",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato brings warm, friendly sans-serif body text that softens the formal tone of Trajan capitals on websites.",
+    "heading_gf": false,
+    "body_gf": true
+   }
+  ]
+ },
+ "onest": {
+  "font": "Onest",
+  "page": "https://madegooddesigns.com/onest-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Dmitri Voloshin",
+    "Andrey Kudryavtsev"
+   ],
+   "added": 2023
+  },
+  "pairs": [
+   {
+    "heading": "Unbounded",
+    "body": "Onest",
+    "group": "Sans-Serif Pairings",
+    "why": "Unbounded gives wide, rounded display headlines in Latin and Cyrillic, while Onest keeps the body text quiet and easy to read.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Onest",
+    "group": "Serif Pairings",
+    "why": "Playfair Display adds high-contrast serif headlines with Cyrillic support above the plain, readable texture of Onest paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Fraunces",
+    "body": "Onest",
+    "group": "Serif Pairings",
+    "why": "Fraunces brings soft, characterful serif headings to Latin-script pages while Onest keeps interface and body text neutral.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Onest",
+    "body": "Source Serif 4",
+    "group": "Serif Pairings",
+    "why": "Source Serif 4 sets long articles in a crisp editorial serif, italics included, under bold, friendly Onest headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Onest",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora is a warm reading serif with Cyrillic glyphs, so blog posts read comfortably below simple Onest headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
  }
 }
