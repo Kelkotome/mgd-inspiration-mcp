@@ -132,8 +132,13 @@ def _offer_q(label, where):
             f"FROM mcp_events o WHERE o.{BOT}{NB} AND {where}")
 _pre = _offer_q("before (old Next step line, 14 d)", f"o.kind='call' AND o.tool IN {OFFER_TOOLS} AND o.ok=1 AND COALESCE(o.zero,0)=0 "
                 f"AND o.created_at BETWEEN {OFFER_SINCE}-14*86400000 AND {OFFER_SINCE}")
-_post = _offer_q(f"after (offer, last {DAYS} d)", f"o.kind='offer' AND o.created_at >= {OFFER_SINCE} AND o.{W}")
-rows = (sql(_pre) or []) + (sql(_post) or [])
+_post = _offer_q(f"offer block (5–8 Nov only, last {DAYS} d)", f"o.kind='offer' AND o.created_at >= {OFFER_SINCE} AND o.{W}")
+# 8-Nov-2026 (mcp-gap-r1, 8c0fc40): NEXT_STEP_MODE = "palette" retired the offer block, so kind='offer' stops at 8-Nov 12:16 SGT.
+# The palette line is not logged as an event; approximate it as successful non-empty calls of the 4 tools since the switch.
+PALETTE_SINCE = int(os.environ.get("PALETTE_SINCE", "0")) or 1794111380000  # ~8-Nov-2026 12:16 SGT (last offer event)
+_pal = _offer_q(f"palette line only (since 8-Nov, last {DAYS} d)", f"o.kind='call' AND o.tool IN {OFFER_TOOLS} AND o.ok=1 AND COALESCE(o.zero,0)=0 "
+                f"AND o.created_at >= {PALETTE_SINCE} AND o.{W}")
+rows = (sql(_pre) or []) + (sql(_post) or []) + (sql(_pal) or [])
 for r in rows: r["rate_pct"] = round(100.0 * (r["followed"] or 0) / r["shown"], 1) if r["shown"] else None
 table("Next-step offers: shown, followed within 30 min by the same visitor (ip+ua) with palette/type/moodboard/design_md calls", rows)
 # 8-Nov-2026 (mcp-gap-r1): search_ui_screens hint on design searches with UI words (src/search_extras.js withUiHint).
