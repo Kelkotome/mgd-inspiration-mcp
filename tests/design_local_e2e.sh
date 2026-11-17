@@ -44,7 +44,7 @@ trap 'kill $MOCKPID $NEWPID 2>/dev/null; pkill -f "inspector-port 9396" 2>/dev/n
 RC=0
 for t in test_design test_ai_caps test_ai_palette63 test_ai_b64 test_ai_b65 test_ai_b66; do node tests/$t.mjs > $TMP/$t.txt 2>&1 || RC=1; echo "$t: $(tail -1 $TMP/$t.txt)"; done
 # fonts r5 (8290427) ships in the same deploy: its unit suites here, fp5_rpc.py against the local Worker in suite a
-for t in fp_r5 fp_r4 fp_r2 fp_gaps_r1 fp_gaps_r2; do node tests/$t.test.mjs > $TMP/$t.txt 2>&1 || { RC=1; echo "FAIL $t"; }; echo "$t: $(tail -1 $TMP/$t.txt)"; done
+for t in fp_r5 fp_r4 fp_r2 fp_gaps_r1 fp_gaps_r2; do node --no-warnings tests/$t.test.mjs > $TMP/$t.txt 2>&1 || { RC=1; echo "FAIL $t"; }; echo "$t: $(tail -1 $TMP/$t.txt)"; done
 B=http://127.0.0.1:$NEWP M=http://127.0.0.1:$MOCKP
 suite() {  # $1 = label, $2 = suite letter / browser scenario, $3 = kind (rpc|ui), rest = --var pairs
   local label=$1 s=$2 kind=$3; shift 3
