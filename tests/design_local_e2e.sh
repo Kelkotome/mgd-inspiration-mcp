@@ -2,7 +2,7 @@
 # design-r1: LOCAL end-to-end test of the "Design anything" box (POST /api/ai/design + GET /api/ai/design/status).
 # NEVER deploys, never touches remote D1, never calls the real Anthropic API (tests/ai_mock_design.py answers instead).
 #   zsh tests/design_local_e2e.sh [HUB_TG_DIR]     (run from the repo root; HUB_TG_DIR = EtiennAubertBonn/tool-gap-2026-10 for the browser suites)
-# 1. unit tests (test_design + the b60-b66 AI suites)  2. HTTP suites a-d (rpc_design.py), each on a FRESH throwaway D1 with its own vars
+# 1. unit tests (test_design + the b60-b66 AI suites + fonts r5/r4/r2/gaps; fp5_rpc.py on the local Worker after suite a)  2. HTTP suites a-d (rpc_design.py), each on a FRESH throwaway D1 with its own vars
 # 3. browser suites (design-box/test_design_box.js: the boxed hub preview in Chrome -> same-origin proxy -> this Worker): main, paused, budget, limit
 # Ports: mock 8985, worker 8986 (inspector 9396), browser proxy 8987. Dummy key, Cloudflare always-pass Turnstile TEST keys, DEV_ALLOW_LOCAL=1,
 # TURNSTILE_BYPASS_LOCAL=1, DEV_LOGIN=1 + a throwaway SESSION_SECRET (dev-login stands in for Google).
@@ -43,6 +43,8 @@ python3 tests/ai_mock_design.py $MOCKP & MOCKPID=$!
 trap 'kill $MOCKPID $NEWPID 2>/dev/null; pkill -f "inspector-port 9396" 2>/dev/null; rm -f wrangler.design-test.jsonc; true' EXIT
 RC=0
 for t in test_design test_ai_caps test_ai_palette63 test_ai_b64 test_ai_b65 test_ai_b66; do node tests/$t.mjs > $TMP/$t.txt 2>&1 || RC=1; echo "$t: $(tail -1 $TMP/$t.txt)"; done
+# fonts r5 (8290427) ships in the same deploy: its unit suites here, fp5_rpc.py against the local Worker in suite a
+for t in fp_r5 fp_r4 fp_r2 fp_gaps_r1 fp_gaps_r2; do node tests/$t.test.mjs > $TMP/$t.txt 2>&1 || { RC=1; echo "FAIL $t"; }; echo "$t: $(tail -1 $TMP/$t.txt)"; done
 B=http://127.0.0.1:$NEWP M=http://127.0.0.1:$MOCKP
 suite() {  # $1 = label, $2 = suite letter / browser scenario, $3 = kind (rpc|ui), rest = --var pairs
   local label=$1 s=$2 kind=$3; shift 3
@@ -53,6 +55,7 @@ suite() {  # $1 = label, $2 = suite letter / browser scenario, $3 = kind (rpc|ui
   echo "$label: $(tail -1 $TMP/$label.txt)"
 }
 suite rpc-a a rpc
+python3 tests/fp5_rpc.py $B/inspiration > $TMP/fp5.txt 2>&1 || RC=1; grep "^FAIL" $TMP/fp5.txt | head; echo "fp5_rpc (local Worker): $(tail -1 $TMP/fp5.txt)"
 suite rpc-b b rpc --var AI_DESIGN_ANON_PER_HOUR:10
 suite rpc-c c rpc --var AI_DESIGN_BUDGET_USD:0.30 --var AI_DESIGN_HARD_CEILING_USD:0.45 --var AI_DESIGN_ALERT_WEBHOOK:http://127.0.0.1:$MOCKP/__alert
 suite rpc-d d rpc --var AI_DESIGN_KILL:1
