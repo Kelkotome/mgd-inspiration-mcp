@@ -14,6 +14,10 @@ const git = (f) => execFileSync("git", ["show", `${BASE}:src/${f}`], { encoding:
 for (const f of ["font_pairings_curated.js", "search_extras.js"]) assert.equal(git(f), fs.readFileSync(path.join(src, f), "utf8"), `${f} changed since ${BASE}`);
 const baseFile = path.join(src, "_fp_r4_base.mjs");
 fs.writeFileSync(baseFile, inline(git("font_pairing.js"), git("font_pairings.json")));
+// fonts r6 (18-Nov-2026): answers with a Garamond / Baskerville / Caslon / Bodoni / Georgia row (or a system-font partner: Arial, Didot...) change (note, stack, About
+// line); tests/fp_r6.test.mjs checks those against the r5 tip and that nothing else in them moved. They are skipped here.
+const R6 = new Set(["Garamond", "Baskerville", "Caslon", "Bodoni", "Georgia", "Arial", "Verdana", "Tahoma", "Trebuchet MS", "Courier", "Consolas", "Didot", "Big Caslon"]);
+const r6hit = (ans) => ((ans.structuredContent || {}).pairs || []).some((p) => R6.has(p.heading) || R6.has(p.body));
 let n = 0;
 const fails = [];
 const ok = (c, m) => { if (!c) fails.push(m); n++; };
@@ -98,6 +102,7 @@ try {
 
   // 4. regressions: Poppins, Montserrat, the Crimson Pro partner case and every other old answer are byte-identical to BASE
   for (const q of ["Poppins", "Montserrat", "Crimson Pro", "Poppins font pairing", "Montserrat Bold", "Spectral", "Crimson Text", "Inter", "Helvetica"]) {
+    if (r6hit(baseFP({ font: q }))) continue;
     ok(JSON.stringify(r(q)) === JSON.stringify(baseFP({ font: q })), `${q}: unchanged versus ${BASE}`);
     ok(JSON.stringify(r(q, { group: "serif", limit: 3 })) === JSON.stringify(baseFP({ font: q, group: "serif", limit: 3 })), `${q} (group serif, limit 3): unchanged`);
   }
@@ -108,7 +113,7 @@ try {
   const SIMILAR_NOW = new Set(["play"]);   // guard probe of mcp-gaps-r1: was "0 results", now similar
   let same = 0, total = 0;
   for (const v of Object.values(DATA)) {
-    if (NEW.has(v.font.toLowerCase())) continue;
+    if (NEW.has(v.font.toLowerCase()) || r6hit(baseFP({ font: v.font }))) continue;
     total++;
     const a = JSON.stringify(r(v.font)), b = JSON.stringify(baseFP({ font: v.font }));
     ok(a === b, `${v.font}: unchanged versus ${BASE}`);
@@ -116,7 +121,7 @@ try {
   }
   const { CURATED } = await import(pathToFileURL(path.join(src, "font_pairings_curated.js")));
   for (const v of Object.values(CURATED)) {
-    if (DATA[v.font.toLowerCase()]) continue;   // fonts that have their own guide now are compared above
+    if (DATA[v.font.toLowerCase()] || r6hit(baseFP({ font: v.font }))) continue;   // fonts that have their own guide now are compared above
     total++;
     const a = JSON.stringify(r(v.font)), b = JSON.stringify(baseFP({ font: v.font }));
     ok(a === b, `${v.font} (curated): unchanged versus ${BASE}`);

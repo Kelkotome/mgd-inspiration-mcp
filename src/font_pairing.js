@@ -91,15 +91,57 @@ function partnerPairs(hit, a) {
 const cat = (g) => /mono|code/i.test(g) ? "monospace" : /script|handwriting/i.test(g) ? "cursive" : /serif/i.test(g) && !/sans/i.test(g) ? "serif" : "sans-serif";
 // The page font's own fallback comes from its Google Fonts category (about.category) when we have it.
 // fonts r5 (17-Nov-2026): a guide font that is not on Google Fonts can carry its CSS generic and where to license it here (Trajan is a
-// serif sold through Adobe Fonts: "licence or self-host it" would be wrong, self-hosting it needs an extra Adobe licence). The older
-// commercial guides (Futura, Helvetica, Garamond...) are left exactly as they were.
+// serif sold through Adobe Fonts: "licence or self-host it" would be wrong, self-hosting it needs an extra Adobe licence).
 // stack = the CSS family names to emit (Adobe Fonts web projects serve Trajan as "trajan-pro-3"; installed desktop font "Trajan Pro 3").
+// fonts r6 (18-Nov-2026): the serif guide fonts Garamond, Baskerville, Caslon, Bodoni and Georgia get the same treatment (they used to get
+// "licence or self-host it" and a sans-serif fallback). Stack order: the licensed / preinstalled family, then the free Google Fonts revival
+// (EB Garamond, Libre Baskerville, Libre Caslon Text, Bodoni Moda: all in gf_meta.js, i.e. fonts.google.com metadata), then Georgia
+// (preinstalled on Windows and macOS), then serif. Baskerville, Bodoni 72 and Georgia ship with macOS; Georgia also with Windows. The
+// stacks follow the CSS on our own guides (e.g. the Caslon guide's 'Adobe Caslon Pro', 'Libre Caslon Text', Georgia, serif). The sans
+// commercial guides (Futura, Helvetica, Gill Sans, Proxima Nova) keep "licence or self-host it" and their sans-serif fallback. The system
+// fonts that partner them (Arial, Verdana, Didot...) say where they are preinstalled; commercial partners (DIN, Akkurat...) keep the old note.
+const SYS = "a system font preinstalled on Windows and macOS: name it in CSS, there is no web font to load";
 const NON_GF = { trajan: { css: "serif", stack: '"trajan-pro-3", "Trajan Pro 3"', where: "not free: license it through Adobe Fonts with a Creative Cloud subscription",
   about: "About: Trajan is a capitals-only serif display typeface designed by Carol Twombly for Adobe (Adobe Originals); the current family " +
     "is Trajan Pro 3. It is not free and not on Google Fonts: a Creative Cloud subscription covers it through Adobe Fonts. The usual free " +
-    "Google Fonts look-alike is Cinzel." } };
+    "Google Fonts look-alike is Cinzel." },
+  garamond: { css: "serif", stack: '"Garamond", "EB Garamond", "Georgia"',
+    where: "a family with many cuts, commercial ones such as Adobe Garamond Pro and Garamond Premier Pro; the free Google Fonts revival is EB Garamond",
+    about: "About: Garamond is a family of old-style serif typefaces named after the 16th-century Paris punchcutter Claude Garamond " +
+      "(some cuts follow the later types of Jean Jannon), with many cuts (Adobe Garamond Pro, Garamond Premier Pro and others). Garamond itself is not on Google Fonts; the free Google " +
+      "Fonts revival is EB Garamond (Cormorant Garamond is a display-oriented interpretation)." },
+  baskerville: { css: "serif", stack: '"Baskerville", "Libre Baskerville", "Georgia"',
+    where: "preinstalled on macOS, not on Windows; the free Google Fonts version is Libre Baskerville",
+    about: "About: Baskerville is a transitional serif typeface based on the types John Baskerville cut in Birmingham in the 1750s, with many " +
+      "cuts. It is not on Google Fonts, but a version ships with macOS; the free Google Fonts version, made for body text on screen, is Libre Baskerville." },
+  caslon: { css: "serif", stack: '"Adobe Caslon Pro", "Libre Caslon Text", "Georgia"',
+    where: "commercial cuts such as Adobe Caslon Pro; the free Google Fonts revival is Libre Caslon Text (Libre Caslon Display for headlines)",
+    about: "About: Caslon is a family of old-style serif typefaces based on the types William Caslon cut in London in the 18th century, with " +
+      "many cuts; Adobe Caslon Pro is the most widely used digital version. Caslon is not on Google Fonts; the free Google Fonts revival is " +
+      "Libre Caslon Text (with Libre Caslon Display for headlines)." },
+  bodoni: { css: "serif", stack: '"Bodoni 72", "Bodoni Moda", "Georgia"',
+    where: "a family with many commercial cuts; Bodoni 72 is preinstalled on macOS; the free Google Fonts revival is Bodoni Moda (also Libre Bodoni)",
+    about: "About: Bodoni is a family of high-contrast Didone (modern) serif typefaces based on the types of Giambattista Bodoni of Parma, " +
+      "late 18th century, with many cuts; it reads best at display sizes. Bodoni is not on Google Fonts, but Bodoni 72 ships with macOS; the " +
+      "free Google Fonts revivals are Bodoni Moda and Libre Bodoni." },
+  georgia: { css: "serif", stack: '"Georgia"',
+    where: SYS,
+    about: "About: Georgia is a serif typeface designed by Matthew Carter for Microsoft's Core Fonts for the Web (released 1996), drawn for " +
+      "legibility on screen. It is not on Google Fonts: it is a system font preinstalled on Windows and macOS, so naming it in CSS is enough " +
+      "there (other devices fall back to their default serif)." },
+  // partner-only system fonts on those five guides (no guide of their own, so no About line). Checked against the macOS 26 font folders
+  // (/System/Library/Fonts/Supplemental: Arial, Verdana, Tahoma, Trebuchet MS, Courier New, Didot, Big Caslon; Consolas absent);
+  // Arial, Verdana, Tahoma, Trebuchet MS, Georgia, Courier New and Consolas are Windows system fonts.
+  arial: { css: "sans-serif", stack: '"Arial"', where: SYS }, verdana: { css: "sans-serif", stack: '"Verdana"', where: SYS },
+  tahoma: { css: "sans-serif", stack: '"Tahoma"', where: SYS }, trebuchetms: { css: "sans-serif", stack: '"Trebuchet MS"', where: SYS },
+  courier: { css: "monospace", stack: '"Courier New", "Courier"', where: "Courier New is a system font preinstalled on Windows and macOS: name it in CSS, there is no web font to load" },
+  consolas: { css: "monospace", stack: '"Consolas"', where: "a Windows system font, not on macOS" },
+  didot: { css: "serif", stack: '"Didot"', where: "preinstalled on macOS, not on Windows" },
+  bigcaslon: { css: "serif", stack: '"Big Caslon"', where: "preinstalled on macOS, not on Windows" } };
 const fam = (name) => (NON_GF[btKey(name)] || {}).stack || `"${name}"`;
 const ownCat = (v) => (v.about && v.about.category ? cat(v.about.category) : (NON_GF[btKey(v.font)] || {}).css || "sans-serif");
+// A partner font's generic comes from the pair's group, except a NON_GF font, which always carries its own (Georgia is a serif in every group).
+const partnerCat = (name, group) => (NON_GF[btKey(name)] || {}).css || cat(group);
 const aboutLine = (v) => {
   const a = v.about;
   if (!a) return null;
@@ -217,10 +259,14 @@ export function fontPairing(a) {
   pairs = pairs.slice(0, lim).map((p) => {
     const gfNames = [p.heading_gf !== false ? p.heading : null, p.body_gf !== false ? p.body : null];
     const link = gfLink(gfNames);
-    const css = `h1, h2, h3 { font-family: ${fam(p.heading)}, ${f.v.font === p.heading ? ownCat(f.v) : cat(p.group)}; }\nbody { font-family: ${fam(p.body)}, ${f.v.font === p.body ? ownCat(f.v) : cat(p.group)}; }`;
+    const css = `h1, h2, h3 { font-family: ${fam(p.heading)}, ${f.v.font === p.heading ? ownCat(f.v) : partnerCat(p.heading, p.group)}; }\nbody { font-family: ${fam(p.body)}, ${f.v.font === p.body ? ownCat(f.v) : partnerCat(p.body, p.group)}; }`;
     const nonGf = [p.heading_gf === false && p.heading, p.body_gf === false && p.body].filter(Boolean);
-    const where = nonGf.length === 1 && NON_GF[btKey(nonGf[0])] ? NON_GF[btKey(nonGf[0])].where : "licence or self-host it";
-    const note = nonGf.length ? `not on Google Fonts: ${nonGf.join(", ")} (${where})` : null;
+    // one licence / availability note per font once any of them has its own (Garamond + Futura: each gets its own parenthesis); two
+    // fonts with no NON_GF entry keep the old shared "(licence or self-host it)".
+    const own = (n) => (NON_GF[btKey(n)] || {}).where;
+    const note = !nonGf.length ? null : nonGf.some(own)
+      ? `not on Google Fonts: ${nonGf.map((n) => `${n} (${own(n) || "licence or self-host it"})`).join(", ")}`
+      : `not on Google Fonts: ${nonGf.join(", ")} (licence or self-host it)`;
     return { heading: p.heading, body: p.body, group: p.group, why: p.why, google_fonts_url: link, css, note };
   });
   const closest = f.how !== "exact" ? ` (closest match for "${a.font}")` : "";

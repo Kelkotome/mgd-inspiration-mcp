@@ -43,8 +43,8 @@ python3 tests/ai_mock_design.py $MOCKP & MOCKPID=$!
 trap 'kill $MOCKPID $NEWPID 2>/dev/null; pkill -f "inspector-port 9396" 2>/dev/null; rm -f wrangler.design-test.jsonc; true' EXIT
 RC=0
 for t in test_design test_ai_caps test_ai_palette63 test_ai_b64 test_ai_b65 test_ai_b66; do node tests/$t.mjs > $TMP/$t.txt 2>&1 || RC=1; echo "$t: $(tail -1 $TMP/$t.txt)"; done
-# fonts r5 (8290427) ships in the same deploy: its unit suites here, fp5_rpc.py against the local Worker in suite a
-for t in fp_r5 fp_r4 fp_r2 fp_gaps_r1 fp_gaps_r2; do node --no-warnings tests/$t.test.mjs > $TMP/$t.txt 2>&1 || { RC=1; echo "FAIL $t"; }; echo "$t: $(tail -1 $TMP/$t.txt)"; done
+# fonts r5 (8290427) + fonts r6 ship in the same deploy: their unit suites here, fp5_rpc.py / fp6_rpc.py against the local Worker in suite a
+for t in fp_r6 fp_r5 fp_r4 fp_r2 fp_gaps_r1 fp_gaps_r2; do node --no-warnings tests/$t.test.mjs > $TMP/$t.txt 2>&1 || { RC=1; echo "FAIL $t"; }; echo "$t: $(tail -1 $TMP/$t.txt)"; done
 B=http://127.0.0.1:$NEWP M=http://127.0.0.1:$MOCKP
 suite() {  # $1 = label, $2 = suite letter / browser scenario, $3 = kind (rpc|ui), rest = --var pairs
   local label=$1 s=$2 kind=$3; shift 3
@@ -56,6 +56,7 @@ suite() {  # $1 = label, $2 = suite letter / browser scenario, $3 = kind (rpc|ui
 }
 suite rpc-a a rpc
 python3 tests/fp5_rpc.py $B/inspiration > $TMP/fp5.txt 2>&1 || RC=1; grep "^FAIL" $TMP/fp5.txt | head; echo "fp5_rpc (local Worker): $(tail -1 $TMP/fp5.txt)"
+python3 tests/fp6_rpc.py $B/inspiration > $TMP/fp6.txt 2>&1 || RC=1; grep "^FAIL" $TMP/fp6.txt | head; echo "fp6_rpc (local Worker): $(tail -1 $TMP/fp6.txt)"   # fonts r6 (18-Nov)
 suite rpc-b b rpc --var AI_DESIGN_ANON_PER_HOUR:10
 suite rpc-c c rpc --var AI_DESIGN_BUDGET_USD:0.30 --var AI_DESIGN_HARD_CEILING_USD:0.45 --var AI_DESIGN_ALERT_WEBHOOK:http://127.0.0.1:$MOCKP/__alert
 suite rpc-d d rpc --var AI_DESIGN_KILL:1

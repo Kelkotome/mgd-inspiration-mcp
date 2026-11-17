@@ -16,6 +16,10 @@ fs.writeFileSync(path.join(baseDir, "fp.mjs"), inline(git("font_pairing.js"), ba
 for (const f of ["font_pairings_curated.js", "search_extras.js"]) fs.writeFileSync(path.join(baseDir, f), git(f));
 const LIST = JSON.parse(fs.readFileSync(path.resolve("tests", "gaps_r2_fonts.json"), "utf8"));
 const NEW37 = [...LIST.zeros7, ...LIST.popular30];
+// fonts r6 (18-Nov-2026): answers with a Garamond / Baskerville / Caslon / Bodoni / Georgia row (or a system-font partner: Arial, Didot...) change (note, stack, About
+// line); tests/fp_r6.test.mjs checks those against the r5 tip and that nothing else in them moved. They are skipped here.
+const R6 = new Set(["Garamond", "Baskerville", "Caslon", "Bodoni", "Georgia", "Arial", "Verdana", "Tahoma", "Trebuchet MS", "Courier", "Consolas", "Didot", "Big Caslon"]);
+const r6hit = (ans) => ((ans.structuredContent || {}).pairs || []).some((p) => R6.has(p.heading) || R6.has(p.body));
 let n = 0;
 const fails = [];
 // fonts r3 (14-Nov-2026): these curated fonts now have their own published *-font-pairings guide, which comes first in the lookup.
@@ -114,6 +118,7 @@ try {
     const N = (x) => x.replace(/\d+ fonts have pairing guides/g, "N fonts have pairing guides"); // the zero text counts guide fonts (r3: 88 -> 102)
     const a = N(JSON.stringify(fontPairing({ font: q }))), b = N(JSON.stringify(baseFP({ font: q })));
     if (NEWK.has(q.toLowerCase()) || R3.has(q.toLowerCase()) || R4.has(q.toLowerCase()) || R5.has(q.toLowerCase())) { ok(a !== b, `"${q}" (new) differs from base`); continue; }
+    if (r6hit(baseFP({ font: q }))) continue;
     ok(a === b, `"${q}" unchanged versus ${BASE}`);
     if (a === b) same++;
   }

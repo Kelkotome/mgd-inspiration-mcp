@@ -18,6 +18,10 @@ const git = (f) => execFileSync("git", ["show", `${BASE}:src/${f}`], { encoding:
 for (const f of ["font_pairings_curated.js", "search_extras.js", "gf_meta.js"]) assert.equal(git(f), fs.readFileSync(path.join(src, f), "utf8"), `${f} changed since ${BASE}`);
 const baseFile = path.join(src, "_fp_r5_base.mjs");
 fs.writeFileSync(baseFile, inline(git("font_pairing.js"), git("font_pairings.json")));
+// fonts r6 (18-Nov-2026): answers with a Garamond / Baskerville / Caslon / Bodoni / Georgia row (or a system-font partner: Arial, Didot...) change (note, stack, About
+// line); tests/fp_r6.test.mjs checks those against the r5 tip and that nothing else in them moved. They are skipped here.
+const R6 = new Set(["Garamond", "Baskerville", "Caslon", "Bodoni", "Georgia", "Arial", "Verdana", "Tahoma", "Trebuchet MS", "Courier", "Consolas", "Didot", "Big Caslon"]);
+const r6hit = (ans) => ((ans.structuredContent || {}).pairs || []).some((p) => R6.has(p.heading) || R6.has(p.body));
 let n = 0;
 const fails = [];
 const ok = (c, m) => { if (!c) fails.push(m); n++; };
@@ -94,6 +98,7 @@ try {
   for (const q of names) {
     if (NEW.has(q.toLowerCase())) continue;
     for (const extra of [{}, { group: "serif", limit: 3 }]) {
+      if (r6hit(baseFP({ font: q, ...extra }))) continue;
       total++;
       const a = N(JSON.stringify(r(q, extra))), b = N(JSON.stringify(baseFP({ font: q, ...extra })));
       ok(a === b, `"${q}" ${JSON.stringify(extra)}: unchanged versus ${BASE}`);
