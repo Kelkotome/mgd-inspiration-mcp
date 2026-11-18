@@ -1,5 +1,5 @@
-// MCP r7 (18-Nov-2026): the round's changes, against the base tree (tests/r7/.base = d157482, the code of the live Worker 59aee919,
-// fonts r6), both running in Node on the local copy of live D1 (tests/r3/.data/live.sqlite; see mcp-r3.md "Local D1 copy"):
+// MCP r7 (18-Nov-2026): the round's changes, against the base tree (tests/r7/.base = 4413564, the code of the live Worker 50d0eecd,
+// fonts r6 + museum guide links), both running in Node on the local copy of live D1 (tests/r3/.data/live.sqlite; see mcp-r3.md "Local D1 copy"):
 //   A. accent folding: pure helpers + real searches (Hammershoi/Hammershøi, Kobke/Købke, Bjorg/Bjørg, Muller/Müller, Dvorak, Rodenbach)
 //   B. the 320 real library queries of r4: byte-identical to base, and fewer D1 round trips (first OR tier in the batch)
 //   C. get_ui_flow: every alias, descriptions, no-match suggestion; unchanged answers for flow ids
@@ -10,7 +10,7 @@
 import { openDb, makeEnv, cacheShim, callTool } from "./r3/env.mjs";
 import { existsSync, readFileSync } from "node:fs";
 
-if (!existsSync(new URL("./r7/.base/src/index.js", import.meta.url))) { console.log("no tests/r7/.base (git archive d157482 src ui-screens/taxonomy.json | tar -x -C tests/r7/.base)"); process.exit(1); }
+if (!existsSync(new URL("./r7/.base/src/index.js", import.meta.url))) { console.log("no tests/r7/.base (git archive 4413564 src ui-screens/taxonomy.json | tar -x -C tests/r7/.base)"); process.exit(1); }
 const shim = cacheShim(); globalThis.caches = shim;
 const { default: base } = await import("./r7/.base/src/index.js");
 const { default: next } = await import("../src/index.js");
