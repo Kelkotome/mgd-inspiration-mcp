@@ -5,7 +5,8 @@
 // R2: screenshot at ui/<id>-<v>.webp (+ -dark.webp twin), code at ui/<id>/index.html, tokens at ui/<id>/DESIGN.md.
 
 import UI_COPY from "./ui_pattern_copy.json"; // per-pattern landing-page copy: { h1, intro, tips[], faq[[q,a]] }
-import { buildIndex, rankRows, resolveName, resolveStyle, resolvePlatform, resolveElement, elHas, PATTERN_ALIASES } from "./ui_search.js";
+import { buildIndex, rankRows, resolveName, resolveStyle, resolvePlatform, resolveElement, elHas, PATTERN_ALIASES, nameScores, tokens } from "./ui_search.js";
+import { foldLower } from "./fold.js"; // MCP r7
 import UI_ELEMENTS from "./ui_elements.json"; // HTML-derived element/layout inventory per pattern|variant|platform (ui-screens/elements.js)
 import UI_TAXONOMY from "../ui-screens/taxonomy.json"; // pattern groups + flow steps for list_ui_patterns
 import { extractCopy } from "./ui_copy.js";
@@ -685,6 +686,74 @@ async function uiSearchIndex(env) {
 // MCP r4: first line of a get_ui_flow answer when the text matched no flow but did match screens. WORDING = r4-copy.md item 2, option A (placeholder).
 export const FLOW_FALLBACK_HEAD = (txt, flowList) => `No step-by-step flow matches "${txt}", so here are the closest single screens instead. ` +
   `For a full flow, call get_ui_flow with one of these ids: ${flowList}.`;
+// MCP r7 (18-Nov-2026): get_ui_flow forgiving matching. "onboarding" was an error although "sign-up (sign up and onboarding)" exists.
+// Order: 1 a flow id (as before) → 2 an alias here equals the text ("sign in" → login-2fa; before r7 the fuzzy step sent it to
+// magic-link-login) → 3 the r4 matcher (names, taxonomy aliases, token overlap / trigrams; unchanged) → 4 every word of the text is in
+// one flow's name or aliases → 5 a multi-word alias (or a distinctive one-word alias) appears in the text.
+// Nothing → the closest flows by name score as a suggestion, plus a search_ui_screens call (after the r4 screens fallback).
+export const FLOW_ALIASES = {
+  "sign-up": ["onboarding", "user onboarding", "signup", "sign-up flow", "register", "registration", "create account", "create an account",
+    "account creation", "new account", "join", "verify email", "email verification"],
+  "first-run": ["first run", "first-run experience", "first time user", "getting started", "welcome tour", "product tour", "setup wizard", "first project"],
+  "login-2fa": ["2fa", "mfa", "two factor", "two-factor authentication", "two step verification", "2-step verification", "otp", "one-time code",
+    "verification code", "login", "log in", "sign in", "signin", "authentication"],
+  "password-reset": ["forgot password", "forgotten password", "reset password", "password recovery", "recover password", "account recovery", "locked out"],
+  "checkout": ["purchase", "buy", "buying", "buy now", "cart", "shopping cart", "payment", "place order", "ecommerce checkout", "order"],
+  "upgrade-plan": ["upgrade", "pricing", "change plan", "plan upgrade", "go pro", "premium upgrade", "paywall", "subscribe"],
+  "cancel-subscription": ["cancel", "cancellation", "unsubscribe", "cancel plan", "cancel membership", "downgrade", "churn"],
+  "invite-teammate": ["invite", "invite user", "invite a user", "invite member", "invite team", "add teammate", "add team member", "team invite"],
+  "search-to-detail": ["search flow", "search and detail", "search to detail", "search results to detail"],
+  "delete-workspace": ["delete account", "close account", "remove workspace", "delete team"],
+  "book-a-class": ["class booking", "book a session", "fitness booking", "gym booking"],
+  "see-a-doctor": ["telehealth", "telemedicine", "doctor appointment", "video visit", "book a doctor"],
+  "message-and-call": ["messaging", "chat and call", "video call", "voice call"],
+  "open-an-account": ["bank account", "account opening", "kyc", "open account"],
+  "play-music": ["music player", "play a song", "play a track"],
+  "post-a-photo": ["upload a photo", "share a photo", "new post"],
+  "review-access": ["access review", "permissions review", "user permissions"],
+  "manage-tasks": ["delete and undo", "undo delete", "task management"],
+  "customer-lookup": ["crm lookup", "customer search", "customer report"],
+  "scan-a-product": ["barcode scan", "scan barcode", "product scanner"],
+};
+// Single-word aliases distinctive enough to pick a flow from inside a longer description (step 4)
+const FLOW_ALIAS_STRONG = new Set(["onboarding", "signup", "register", "registration", "2fa", "mfa", "otp", "checkout", "purchase", "upgrade",
+  "paywall", "cancellation", "unsubscribe", "invite", "telehealth", "telemedicine", "kyc"]);
+// Shown as "also close" when the text matched through an alias
+const FLOW_ALSO = { "sign-up": ["first-run"], "first-run": ["sign-up"], "login-2fa": ["magic-link-login", "password-reset"], "upgrade-plan": ["checkout"],
+  "cancel-subscription": ["delete-workspace"] };
+const FLOW_NAMES = () => Object.fromEntries(Object.entries(UI_FLOWS).map(([k, v]) => [k, [v, ...((FLOW_DEFS[k] || {}).aliases || [])]]));
+export function resolveFlow(input) {
+  const ids = Object.keys(UI_FLOWS), names = FLOW_NAMES();
+  const raw = foldLower(input).trim();
+  if (!raw) return null;
+  const slug = raw.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  if (ids.includes(slug)) return { id: slug, how: "exact" };
+  const tk = (s) => tokens(String(s).toLowerCase().replace(/[-_/]/g, " "), true);
+  const qt = tk(raw), key = qt.join(" ");
+  const al = (id) => FLOW_ALIASES[id] || [];
+  if (qt.length) for (const id of ids) if (al(id).some((n) => tk(n).join(" ") === key)) return { id, how: "alias" };
+  const r = resolveName(input, ids, names);
+  if (r) return r;
+  if (!qt.length) return null;
+  const sub = (set) => qt.every((t) => set.has(t));
+  const byName = ids.filter((id) => sub(new Set([...tk(id), ...names[id].flatMap(tk), ...al(id).flatMap(tk)])));
+  if (byName.length) return { id: byName.sort((x, y) => tk(UI_FLOWS[x]).length - tk(UI_FLOWS[y]).length)[0], how: "words" };
+  const qs = new Set(qt);
+  let best = null, bl = 0;
+  for (const id of ids) for (const n of al(id)) {
+    const nt = tk(n);
+    if (!nt.length || !(nt.length >= 2 || FLOW_ALIAS_STRONG.has(n)) || !nt.every((t) => qs.has(t))) continue;
+    if (nt.length > bl) { bl = nt.length; best = id; }
+  }
+  return best ? { id: best, how: "contains" } : null;
+}
+// The closest flows for text that matched none (score ≥ 0.2 on names + aliases), best first.
+export function closestFlows(input, n = 2) {
+  const names = FLOW_NAMES();
+  const all = Object.fromEntries(Object.keys(UI_FLOWS).map((id) => [id, [...names[id], ...(FLOW_ALIASES[id] || [])]]));
+  return nameScores(input, Object.keys(UI_FLOWS), all).filter((x) => x.score >= 0.2).slice(0, n).map((x) => x.id);
+}
+export const flowAlso = (id) => (FLOW_ALSO[id] || []).filter((x) => UI_FLOWS[x]);
 export async function callUiTool(name, a, env, h) {
   const site = h.site;
   const flowsLine = (it) => (it.flows || []).filter((f) => UI_FLOWS[f.id]).map((f) => `${f.id} step ${f.step}`).join(", ");
@@ -752,7 +821,7 @@ export async function callUiTool(name, a, env, h) {
     return { content: [{ type: "text", text: `${hint ? hint + "\n\n" : ""}${hd}.${darkNote} ${how} ${CITE}${imgs.length ? ` Attached: screenshots of results 1-${imgs.length}, in order.` : ""}\n\n${blocks.join("\n\n")}` }, ...imgs] };
   }
   if (name === "get_ui_flow") {
-    const fr = resolveName(a.flow, Object.keys(UI_FLOWS), Object.fromEntries(Object.entries(UI_FLOWS).map(([k, v]) => [k, [v, ...((FLOW_DEFS[k] || {}).aliases || [])]])));
+    const fr = resolveFlow(a.flow);
     const flowList = Object.entries(UI_FLOWS).map(([k, v]) => `${k} (${v.toLowerCase()})`).join(", ");
     if (!fr) {
       // MCP r4 (13-Nov-2026): agents pass a description instead of a flow id ("employee directory browse and view team hierarchy",
@@ -766,7 +835,12 @@ export async function callUiTool(name, a, env, h) {
           return { content: [{ type: "text", text: FLOW_FALLBACK_HEAD(txt, flowList) + "\n\n" + first }, ...alt.content.slice(1)] };
         }
       }
-      return { content: [{ type: "text", text: `No flow matches "${a.flow || ""}". Available: ` + flowList }], isError: true };
+      // MCP r7: not a bare error: the closest flows (if any) and the search_ui_screens call for the same text
+      const close = txt ? closestFlows(txt) : [];
+      const cq = txt.replace(/["\\\n\r]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
+      const sugg = (close.length ? ` Closest flow${close.length > 1 ? "s" : ""}: ${close.map((id) => `${id} (${UI_FLOWS[id].toLowerCase()})`).join(", ")}; call get_ui_flow(flow="${close[0]}").` : "") +
+        (cq ? ` For single screens instead: search_ui_screens(query="${cq}").` : "");
+      return { content: [{ type: "text", text: `No flow matches "${a.flow || ""}".${sugg} Available: ` + flowList }], isError: true };
     }
     const id = fr.id;
     const platform = resolvePlatform(a.device || a.platform) || "web", style = resolveStyle(a.style) || "minimal";
@@ -778,7 +852,8 @@ export async function callUiTool(name, a, env, h) {
     const lines = steps.map(({ it, step, error }) => [`${step}. ${label(it.pattern)}${it.variant ? " (" + label(it.variant).toLowerCase() + ")" : ""}${error ? " — ERROR STATE" : ""}`, `   screen_id: ${it.id}`,
       it.description ? `   ${it.description}` : null, `   screenshot: ${site}${it.image}`, `   page: ${site}${uiItemPath(it, "")}`].filter(Boolean).join("\n"));
     const pal = (steps[0].it.palette || []).map((hx, i) => `${ROLES[i]} ${hx}`).join(", ");
-    const matched = fr.how === "exact" ? "" : `(flow "${a.flow}" → ${id}) `;
+    const also = fr.how === "exact" ? [] : flowAlso(id);
+    const matched = fr.how === "exact" ? "" : `(flow "${a.flow}" → ${id}${also.length ? `; also close: ${also.join(", ")}` : ""}) `;
     const fimgs = a.previews === true ? await previewImages(env, steps.map((x) => x.it), false, 6) : [];
     return { content: [{ type: "text", text: `${matched}Flow "${UI_FLOWS[id]}" — ${steps.length} steps${nErr ? ` incl. ${nErr} error state${nErr > 1 ? "s" : ""}` : ""}, ${platform}, ${style} style, product ${steps[0].it.product} (fictional).${acts.length ? " Covers: " + acts.join(", ") + "." : ""}${a.include_errors === false && (fd.errors || []).length ? " Error steps omitted (include_errors=false)." : ""} All steps share one design system${pal ? " (light colour roles: " + pal + ")" : ""}; get any step's HTML + DESIGN.md with get_ui_screen_code. Page (cite this): ${site}/ui/flows/${id}?platform=${platform}&style=${style}\n${CITE}${fimgs.length ? `\nAttached: screenshots of steps 1-${fimgs.length}, in order.` : ""}\n\n${lines.join("\n\n")}` }, ...fimgs] };
   }
