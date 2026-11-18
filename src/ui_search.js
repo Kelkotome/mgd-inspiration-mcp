@@ -7,6 +7,7 @@
 // A fully matched multi-word alias ("doctor directory", "now playing") adds a bonus. Ties break on the
 // canonical pattern order, then platform/style preference — never on created_at.
 
+import { fold } from "./fold.js"; // MCP r7: accent folding (pure, no Worker APIs)
 export const UI_STYLE_LIST = ["minimal", "editorial", "brutalist", "luxury", "playful", "corporate", "retro", "monochrome"];
 
 // Curated aliases per pattern: the words people actually use for it. Matched after stemming.
@@ -338,7 +339,8 @@ export function stem(w) {
   if (s.length > 3 && s.endsWith("e")) s = s.slice(0, -1); // price/pricing → pric, share/shared → shar
   return s;
 }
-const norm = (s) => { let t = String(s || "").toLowerCase().replace(/[’']/g, "'"); for (const [re, to] of PHRASES) t = t.replace(re, to); return t; };
+// MCP r7: folded (é→e, ø→o, ß→ss…) on both the query and the screen text, so "cafe" finds "café" and the reverse.
+const norm = (s) => { let t = fold(String(s || "")).toLowerCase().replace(/[’']/g, "'"); for (const [re, to] of PHRASES) t = t.replace(re, to); return t; };
 export function words(s) { return norm(s).split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 1 || /\d/.test(w)); }
 export function tokens(s, keepStop) { return words(s).filter((w) => keepStop || !STOP.has(w)).map(stem); }
 const SYN = new Map(); // stem → [alternate stems]
@@ -480,7 +482,7 @@ function suggest(pq, idx, ranked) {
 
 // Free-text pattern / flow names → canonical id ("doctor directory", "Doctors", "kanban" → kanban-board). Returns { id, how } or null.
 export function resolveName(input, ids, aliases) {
-  const raw = String(input || "").trim().toLowerCase();
+  const raw = fold(String(input || "")).trim().toLowerCase();
   if (!raw) return null;
   const slug = raw.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   if (ids.includes(slug)) return { id: slug, how: "exact" };
@@ -501,6 +503,22 @@ export function resolveName(input, ids, aliases) {
     }
   }
   return bs >= 0.5 ? { id: best, how: "fuzzy" } : null;
+}
+
+// MCP r7: every id with its best name score (same token-overlap / trigram measure as resolveName), best first; ties keep the ids'
+// order. get_ui_flow uses it to name the closest flows when nothing matches well enough.
+export function nameScores(input, ids, aliases) {
+  const raw = fold(String(input || "")).trim().toLowerCase();
+  if (!raw) return [];
+  const qt = tokens(raw.replace(/-/g, " "), true), g = grams(raw.replace(/[^a-z0-9]+/g, " ").trim());
+  return ids.map((id, k) => {
+    let bs = 0;
+    for (const n of [id.replace(/-/g, " "), ...((aliases && aliases[id]) || [])]) {
+      const nt = tokens(n, true); const ov = qt.length ? qt.filter((t) => nt.includes(t)).length / Math.max(qt.length, nt.length) : 0;
+      bs = Math.max(bs, ov, jacc(g, grams(n.toLowerCase())) * 0.9);
+    }
+    return { id, score: bs, k };
+  }).sort((x, y) => y.score - x.score || x.k - y.k).map(({ id, score }) => ({ id, score }));
 }
 
 // Free-text style / platform → canonical value (null if unknown). "minimalist" → minimal, "premium" → luxury, "iPhone" → mobile.

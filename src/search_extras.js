@@ -4,6 +4,7 @@
 //  (C) FTS5 candidate search with bm25 (see ftsCandidates()), with a fallback to the LIKE search on any error.
 // Pure helpers are exported for tests/test_search_n11.mjs.
 import { shared } from "./mcp_cache.js"; // MCP r3 (12-Nov-2026)
+import { fold, foldLower, wordForms, accentVariants } from "./fold.js"; // MCP r7 (18-Nov-2026): accent folding
 
 // ---- (A) icon intent -------------------------------------------------------------------------------------------------
 // "bold icon", "settings icons", "icon for delete", "trash glyph" → yes. "app icon", "iconic poster", "logo icon",
@@ -153,7 +154,14 @@ const BT_FILL = /\b(what|which|font|fonts|typeface|typefaces|type face|brand fon
 export function btClean(s) {
   return String(s || "").replace(/[’']s\b/g, "").replace(/[?!]/g, " ").replace(BT_FILL, " ").replace(/\s+/g, " ").trim();
 }
+// MCP r7: ø/æ/ß/ł… are folded to plain letters first ("Søstrene" → "sostrene"); before r7 they were dropped ("sstrene"), and
+// build_brand_type.py (Python NFKD + ASCII) still builds the D1 brand_type keys that way, so lookups try both (btKeyLegacy).
 export function btKey(s) {
+  let k = fold(String(s || "")).toLowerCase().replace(/&/g, " and ");
+  k = k.replace(/[^a-z0-9]+/g, " ").trim().replace(/^the /, "");
+  return k.replace(/ /g, "");
+}
+export function btKeyLegacy(s) {
   let k = String(s || "").normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/&/g, " and ");
   k = k.replace(/[^a-z0-9]+/g, " ").trim().replace(/^the /, "");
   return k.replace(/ /g, "");
@@ -181,17 +189,19 @@ export function btInputs(a) {
   const seen = new Set(), out = [];
   for (const r of raw) {
     const q = String(r == null ? "" : r).slice(0, 80).trim(); if (!q) continue;
-    const clean = btClean(q) || q, key = btKey(clean);
+    const clean = btClean(q) || q, key = btKey(clean), legacy = btKeyLegacy(clean);
     if (!key || seen.has(key)) continue;
-    seen.add(key); out.push({ q, clean, key });
+    seen.add(key); out.push({ q, clean, key, legacy: legacy && legacy !== key ? legacy : null });
   }
   return out.slice(0, 10);
 }
 const j = (s) => { try { const v = JSON.parse(s || "[]"); return Array.isArray(v) ? v : []; } catch (_) { return []; } };
 
-async function btFind(env, key, retry) {
+async function btFind(env, key, retry, legacy) {
   const run = (sql, ...b) => retry(() => env.DB.prepare(sql).bind(...b).all()).then((r) => r.results || []);
-  let rows = await run("SELECT * FROM brand_type WHERE key=? OR alias=? LIMIT 4", key, key);
+  // MCP r7: an accented name also tries the pre-r7 key (the D1 keys drop ø/æ/ł…: "Søstrene Grene" is key sstrenegrene, alias sostrenegrene)
+  let rows = legacy ? await run("SELECT * FROM brand_type WHERE key IN (?, ?) OR alias IN (?, ?) LIMIT 4", key, legacy, key, legacy)
+    : await run("SELECT * FROM brand_type WHERE key=? OR alias=? LIMIT 4", key, key);
   if (rows.length) return { rows, how: "exact" };
   if (key.length >= 3) {
     rows = await run("SELECT * FROM brand_type WHERE key LIKE ? ORDER BY length(key) LIMIT 4", key + "%");
@@ -205,9 +215,21 @@ async function btFind(env, key, retry) {
   return { rows: [], how: "" };
 }
 // Fallback for brands newer than the last build: their D1 "— Typeface" tile (guide link + palette).
+// MCP r7: the name is also tried folded and with the accented spellings of its first word ("Sostrene Grene" → "Søstrene Grene"; SQLite
+// LIKE only ignores case for ASCII letters, so a capitalised form is added too). Still one statement, at most 8 patterns.
+export function btTilePatterns(clean) {
+  const c = String(clean || "").replace(/[%_]/g, "").trim();
+  if (!c) return [];
+  const f = fold(c), sp = f.indexOf(" "), first = sp < 0 ? f : f.slice(0, sp), rest = sp < 0 ? "" : f.slice(sp);
+  const cap = (x) => x.charAt(0).toUpperCase() + x.slice(1);
+  const vs = accentVariants(first, 3).map((v) => v + rest);
+  return [...new Set([c, f, ...vs, ...vs.map(cap)])].slice(0, 8);
+}
 async function btTile(env, clean, retry) {
-  const r = await retry(() => env.DB.prepare("SELECT id, company, source_url, palette, industry, image_key FROM items WHERE style='type-specimen' AND status='published' AND owner_id IS NULL AND collection='design' AND company LIKE ? ORDER BY length(company) LIMIT 2")
-    .bind(clean.replace(/[%_]/g, "") + "%").all());
+  const pats = btTilePatterns(clean);
+  if (!pats.length) return [];
+  const r = await retry(() => env.DB.prepare(`SELECT id, company, source_url, palette, industry, image_key FROM items WHERE style='type-specimen' AND status='published' AND owner_id IS NULL AND collection='design' AND (${pats.map(() => "company LIKE ?").join(" OR ")}) ORDER BY length(company) LIMIT 2`)
+    .bind(...pats.map((p) => p + "%")).all());
   return (r.results || []).map((t) => ({ key: btKey(t.company), brand: t.company, guide_url: String(t.source_url || "").replace(/#.*$/, "") || null, tile_id: t.id,
     tile_key: t.image_key, palette: t.palette, industry: t.industry, named: "[]", alts: "[]" }));
 }
@@ -270,7 +292,7 @@ export async function brandTypeface(a, env, site, retry) {
   // run them one after the other), then assembled in the order given, so the answer is unchanged.
   const looked = await Promise.all(inputs.map(async (inp) => {
     let rows = [], how = "";
-    try { ({ rows, how } = await btFind(env, inp.key, retry)); }
+    try { ({ rows, how } = await btFind(env, inp.key, retry, inp.legacy)); }
     catch (e) { if (!/no such table/i.test(String((e && e.message) || e))) throw e; }   // brand_type not loaded yet → tiles only
     if (!rows.length) { rows = await btTile(env, inp.clean, retry); how = rows.length ? "tile" : ""; }
     return { rows, how };
@@ -321,12 +343,17 @@ export const isGeneric = (w) => GENERIC_WORDS.has(String(w || "").toLowerCase())
 // (same query: 8,141 rows, 25 ms) and still ranks the candidates by how many of ALL the words they have. If that pool leaves the
 // answer short of the limit, the full OR runs as before ("any+"), so an answer is never cut short. The other tiers are unchanged.
 export const FTS_DOMINANT = new Set(["american", "an", "and", "annual", "art", "arts", "background", "beverage", "black", "blue", "brand", "branding", "brands", "british", "brown", "canada", "center", "centered", "color", "colored", "colorful", "colors", "colour", "coloured", "companies", "company", "corporate", "corporation", "cover", "dark", "design", "designed", "designs", "editorial", "electronic", "electronics", "features", "featuring", "field", "food", "for", "from", "good", "goods", "green", "grey", "grid", "guide", "guidelines", "hand", "home", "identity", "illustrated", "illustration", "illustrations", "in", "industrial", "kingdom", "kitchen", "layout", "light", "lighting", "lights", "made", "maker", "makers", "minimal", "minimalism", "monochrome", "of", "on", "one", "orange", "outdoor", "outdoors", "palette", "print", "printed", "printing", "prints", "product", "productivity", "products", "red", "report", "retro", "serif", "showing", "shows", "specimen", "state", "states", "style", "teal", "technology", "text", "that", "the", "to", "tool", "tools", "type", "typeface", "typefaces", "typography", "united", "vintage", "white", "with", "yellow"]);
+// MCP r7: opts.forms(word) → every spelling to look up (src/fold.js wordForms: as typed, folded, accented variants). Each word then
+// becomes ("w" OR "v1" OR …) in the AND/OR tiers, the phrase tier also tries the folded phrase, and the prefix tier the folded prefix.
+// Without opts.forms (or with the Worker var FTS_FOLD=0) the expressions are exactly the pre-r7 ones.
 export function ftsTiers(words, cols, opts = {}) {
   const fc = cols && cols.length ? `{${cols.join(" ")}} : ` : "";
-  const qt = (w) => `"${w}"`;
+  const forms = (w) => (opts.forms ? opts.forms(w) : [w]);
+  const qt = (w) => { const f = forms(w); return f.length > 1 ? "(" + f.map((x) => `"${x}"`).join(" OR ") + ")" : `"${w}"`; };
   const t = [];
   const core = words.filter((w) => !isGeneric(w)), opt = core.length ? core : words; // only generic words: treat them as normal
-  if (words.length > 1) t.push({ tier: "phrase", expr: fc + `"${words.join(" ")}"` });
+  const folded = opts.forms ? words.map((w) => foldLower(w)) : words;
+  if (words.length > 1) t.push({ tier: "phrase", expr: fc + (folded.join(" ") !== words.join(" ") ? `("${words.join(" ")}" OR "${folded.join(" ")}")` : `"${words.join(" ")}"`) });
   t.push({ tier: "all", expr: fc + "(" + words.map(qt).join(" AND ") + ")" });
   if (core.length && core.length < words.length) t.push({ tier: core.length > 1 ? "core" : "core1", expr: fc + "(" + core.map(qt).join(" AND ") + ")" });
   const rare = opts.rare === false ? opt : opt.filter((w) => !FTS_DOMINANT.has(w));   // Worker var FTS_RARE=0 turns the rule off
@@ -335,7 +362,8 @@ export function ftsTiers(words, cols, opts = {}) {
     t.push({ tier: "any+", expr: fc + "(" + opt.map(qt).join(" OR ") + ")", ifShort: true });
   } else if (opt.length > 1) t.push({ tier: "any", expr: fc + "(" + opt.map(qt).join(" OR ") + ")" });
   const pre = opt.filter((w) => w.length >= 3);
-  if (pre.length) t.push({ tier: "prefix", expr: fc + "(" + pre.map((w) => qt(w) + "*").join(" OR ") + ")" });
+  const pq = (w) => { const f = opts.forms ? foldLower(w) : w; return f !== w ? `"${w}"* OR "${f}"*` : `"${w}"*`; };
+  if (pre.length) t.push({ tier: "prefix", expr: fc + "(" + pre.map(pq).join(" OR ") + ")" });
   return t;
 }
 // The callers' WHERE strings name items columns bare; inside the FTS join they must be qualified (themes/industry/… exist in both).
@@ -344,9 +372,9 @@ export function ftsQualify(where) {
 }
 const stem = (w) => w.length > 4 ? w.replace(/(ing|es|ed|s)$/, "") : w;
 export function ftsCoverageSort(rows, words, cols, prefix) {
-  const qs = words.map(stem);
+  const qs = words.map((w) => stem(foldLower(w)));   // MCP r7: both sides folded ("hammershoi" counts for a row with "Hammershøi")
   return rows.map((r, i) => {
-    const toks = new Set(cols.map((c) => String(r[c] == null ? "" : r[c])).join(" ").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
+    const toks = new Set(foldLower(cols.map((c) => String(r[c] == null ? "" : r[c])).join(" "))
       .split(/[^\p{L}\p{N}]+/u).filter(Boolean).map(stem));
     const hit = qs.reduce((n, q, k) => n + (toks.has(q) || (prefix && [...toks].some((x) => x.startsWith(q))) ? (isGeneric(words[k]) ? GENERIC_W : 1) : 0), 0);
     return { r, i, hit };
@@ -374,7 +402,7 @@ export async function ftsSearch(env, where, binds, cols, q, order, limit, stop) 
     // museum: the 48 hand-featured works (featured_rank) get a small bump, as the LIKE search ordered them first among equal hits.
     const rank = `bm25(items_fts, ${FTS_W.join(", ")})` + (/^featured_rank/.test(order) ? " - (CASE WHEN items.featured_rank IS NOT NULL THEN 3 ELSE 0 END)" : "");
     const out = [], seen = new Set(), from = {}; let last = "";
-    const tiers = ftsTiers(words, cols, { rare: String(env.FTS_RARE || "") !== "0" });
+    const tiers = ftsTiers(words, cols, { rare: String(env.FTS_RARE || "") !== "0", forms: String(env.FTS_FOLD || "") === "0" ? null : wordForms });
     const isAny = (t) => /^any/.test(t.tier) || (t.tier === "prefix" && words.filter((x) => !isGeneric(x)).length !== 1 && words.length > 1);
     const stmt = (t, n) => env.DB.prepare(`SELECT items.* FROM items_fts JOIN items ON items.rowid = items_fts.rowid WHERE items_fts MATCH ? AND ${w} ORDER BY ${rank}, ${ord} LIMIT ?`)
       .bind(t.expr, ...binds, n);
@@ -382,11 +410,19 @@ export async function ftsSearch(env, where, binds, cols, q, order, limit, stop) 
     // (~0.2 s each from the US or Europe). The first asks LIMIT limit, the others 2 x limit. The sequential code asked limit + the rows
     // already taken, which is always below 2 x limit (a tier only runs while fewer than limit rows are taken), so the rows taken are the same.
     const head = tiers.filter((t) => !isAny(t) && t.tier !== "prefix");
-    const pre = head.length > 1 ? (await env.DB.batch(head.map((t, i) => stmt(t, i ? 2 * limit : limit)))).map((r) => (r && r.results) || []) : null;
+    // MCP r7 (18-Nov-2026): the first OR tier rides in the same batch when it is cheap (its words are the rarer ones, or none of them is
+    // one of the ~110 dominant words). On 200 real design searches 78 % needed it after the AND tiers: that was a second D1 round trip
+    // (~0.2 s from the US or Europe). Its rows do not depend on the tiers before it (fixed LIMIT, duplicates skipped below), so the
+    // answer is identical; when the AND tiers already fill the answer its rows are simply not used. Worker var FTS_PREFETCH=0 turns it off.
+    const optW = words.filter((x) => !isGeneric(x)).length ? words.filter((x) => !isGeneric(x)) : words;
+    const firstAny = tiers.find((t) => isAny(t) && t.tier === "any");
+    const pf = String(env.FTS_PREFETCH || "") !== "0" && head.length > 1 && firstAny && (firstAny.rare || optW.every((x) => !FTS_DOMINANT.has(x))) ? firstAny : null;
+    const inBatch = pf ? [...head, pf] : head;
+    const pre = inBatch.length > 1 ? (await env.DB.batch(inBatch.map((t, i) => stmt(t, t === pf ? Math.max(120, limit * 15) : i ? 2 * limit : limit)))).map((r) => (r && r.results) || []) : null;
     for (const t of tiers) {
       if (out.length >= limit) break;
       if (t.tier === "prefix" && out.length) break;   // prefixes only when no whole-word hit at all
-      const any = isAny(t), hi = pre ? head.indexOf(t) : -1;
+      const any = isAny(t), hi = pre ? inBatch.indexOf(t) : -1;
       let rows = hi >= 0 ? pre[hi] : await stmt(t, any ? Math.max(120, limit * 15) : limit + seen.size).all().then((r) => r.results || []);
       // OR-matches: bm25 alone lets one rare word win ("emerald" → the Emerald brand tiles for "dark luxury landscape emerald green"),
       // so rank by how many of the query words a row has (as before 5-Nov), bm25 order breaking ties.
