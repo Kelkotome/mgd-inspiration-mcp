@@ -15,7 +15,9 @@ BOT_CLIENTS = "('glimind-probe','histor','catalog-health','mcpcost','probe','age
 NOT_BOT_CLIENT = "" if "--include-bots" in sys.argv else (
     f" AND visitor NOT IN (SELECT visitor FROM mcp_events WHERE kind='initialize' AND client_name IN {BOT_CLIENTS} AND {W})")
 EV = f"FROM mcp_events WHERE {BOT} AND {W}{NOT_BOT_CLIENT}"
-CALLS_EX = "1=1" if "--include-bots" in sys.argv else "ip!='129.126.14.17' AND ua NOT LIKE 'curl/%' AND ua NOT LIKE 'mcp-ad-measurement%'"  # 16-Nov: scanner (junk inputs)
+CALLS_EX = "1=1" if "--include-bots" in sys.argv else "ip!='129.126.14.17' AND ua NOT LIKE 'curl/%' AND ua NOT LIKE 'mcp-ad-measurement%' AND ua NOT LIKE 'agent-index%'"  # 16-Nov: scanner (junk inputs); 18-Nov (MCP r7): + the agent-index crawler
+# MCP r7 (18-Nov-2026): the same two scanners are also left out of the "Failed calls" table (their junk inputs filled it)
+SCAN_EX = "" if "--include-bots" in sys.argv else " AND e.ua NOT LIKE 'mcp-ad-measurement%' AND e.ua NOT LIKE 'agent-index%'"
 
 
 def sql(q, tries=4, soft=False):
@@ -66,6 +68,7 @@ table("Retention: callers who called again on a later day (D7-style, within the 
     f"SELECT COUNT(*) callers, SUM(days>1) called_on_2plus_days, ROUND(100.0*SUM(days>1)/MAX(COUNT(*),1),1) pct "
     f"FROM (SELECT visitor, COUNT(DISTINCT date({SG})) days {EV} AND kind='call' GROUP BY visitor)"))
 table("Prompts (slash commands) used", sql(f"SELECT kind, COALESCE(tool,'') prompt, COUNT(*) n {EV} AND kind IN ('prompt','prompts_list') GROUP BY 1,2 ORDER BY 3 DESC"))
+print("  Note: when every prompt shows the same count (about 251 each in the 7 days to 18-Nov), that is a scanner fetching each prompt in turn, not people using them.")
 table("Endpoint profile (public = /mcp all tools, public-core = /mcp/core)", sql(f"SELECT endpoint, SUM(kind='initialize') connects, SUM(kind='call') calls {EV} GROUP BY 1"))
 table("Connections by client app (from initialize)", sql(
     f"SELECT COALESCE(client_name,'?') client, COUNT(*) connections, COUNT(DISTINCT visitor) visitors, MAX(client_version) latest_version "
@@ -107,7 +110,7 @@ _ERRQ = ("(SELECT substr(c.query,1,60) FROM mcp_calls c WHERE c.tool=REPLACE(e.t
 _EV_E = EV.replace("FROM mcp_events WHERE", "FROM mcp_events e WHERE e.", 1).replace(" AND visitor NOT IN", " AND e.visitor NOT IN").replace(f" AND {W}", f" AND e.{W}", 1)
 def _errors(with_err):
     return sql(f"SELECT datetime(e.created_at/1000,'unixepoch','+8 hours') t, e.tool, {'substr(e.err,1,110) err, ' if with_err else ''}{_ERRQ} query, "
-               f"CASE WHEN e.ua LIKE 'Claude-User%' THEN 'claude.ai' ELSE substr(e.ua,1,20) END app {_EV_E} AND e.kind='call' AND e.ok=0 ORDER BY e.created_at DESC LIMIT 40", soft=True)
+               f"CASE WHEN e.ua LIKE 'Claude-User%' THEN 'claude.ai' ELSE substr(e.ua,1,20) END app {_EV_E} AND e.kind='call' AND e.ok=0{SCAN_EX} ORDER BY e.created_at DESC LIMIT 40", soft=True)
 _er = _errors(True)
 if _er is None:
     _er = _errors(False) or []
@@ -152,6 +155,18 @@ table("Museum hint on art-history searches: shown, followed within 30 min by sea
     f"SELECT COUNT(*) shown, COUNT(DISTINCT o.visitor) visitors, SUM(EXISTS (SELECT 1 FROM mcp_events f WHERE f.kind='call' AND f.visitor=o.visitor "
     f"AND f.tool IN ('search_museum_art','run:search_museum_art') AND f.created_at > o.created_at AND f.created_at <= o.created_at + 1800000)) followed "
     f"FROM mcp_events o WHERE o.{BOT}{NB} AND o.kind='museum_hint' AND o.{W}"))
+# MCP r7 (18-Nov-2026): font / brand / palette hints on the library searches (src/intent_hints.js). shown = mcp_events kind font_hint /
+# brand_hint / palette_hint; followed = the same visitor called the named tool within 30 min (same rule as the UI-screens hint).
+_hint_rows = []
+for _k, _label, _tools in [("font_hint", "font hint → get_font_pairing", "('get_font_pairing','run:get_font_pairing')"),
+                           ("brand_hint", "brand hint → get_brand_typeface", "('get_brand_typeface','run:get_brand_typeface')"),
+                           ("palette_hint", "palette hint → generate_website_color_palette", "('generate_website_color_palette','run:generate_website_color_palette')")]:
+    _r = sql(f"SELECT '{_label}' hint, COUNT(*) shown, COUNT(DISTINCT o.visitor) visitors, SUM(EXISTS (SELECT 1 FROM mcp_events f WHERE f.kind='call' "
+             f"AND f.visitor=o.visitor AND f.tool IN {_tools} AND f.created_at > o.created_at AND f.created_at <= o.created_at + 1800000)) followed "
+             f"FROM mcp_events o WHERE o.{BOT}{NB} AND o.kind='{_k}' AND o.{W}") or []
+    for r in _r: r["rate_pct"] = round(100.0 * (r["followed"] or 0) / r["shown"], 1) if r["shown"] else None
+    _hint_rows += _r
+table("Intent hints on library searches (r7): shown, followed within 30 min by the named tool (same visitor)", _hint_rows)
 table("Countries (desktop clients; claude.ai shows Anthropic's servers)", sql(
     f"SELECT country, COUNT(DISTINCT visitor) visitors, COUNT(*) events {EV} AND ua NOT LIKE 'Claude-User%' GROUP BY 1 ORDER BY 2 DESC LIMIT 10"))
 print("\nVisits from MCP answers: GA4 → Reports → Acquisition → Traffic acquisition, filter Session source = 'mcp' "
