@@ -50,3 +50,7 @@ tests/r4/.base/
 wrangler.r4.jsonc
 r4-e2e.*
 tests/r4/.data/
+tests/r7/.base/
+wrangler.r7.jsonc
+r7-e2e.*
+r7-last-dev.log

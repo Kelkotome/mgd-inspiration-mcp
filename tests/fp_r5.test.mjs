@@ -15,7 +15,8 @@ const DATA = JSON.parse(fs.readFileSync(path.join(src, "font_pairings.json"), "u
 const inline = (code, json) => code.replace('import PAIRINGS from "./font_pairings.json";', "const PAIRINGS = " + json + ";");
 fs.writeFileSync(tmp, inline(fs.readFileSync(path.join(src, "font_pairing.js"), "utf8"), JSON.stringify(DATA)));
 const git = (f) => execFileSync("git", ["show", `${BASE}:src/${f}`], { encoding: "utf8", maxBuffer: 64 << 20 });
-for (const f of ["font_pairings_curated.js", "search_extras.js", "gf_meta.js"]) assert.equal(git(f), fs.readFileSync(path.join(src, f), "utf8"), `${f} changed since ${BASE}`);
+for (const f of ["font_pairings_curated.js", "gf_meta.js"]) assert.equal(git(f), fs.readFileSync(path.join(src, f), "utf8"), `${f} changed since ${BASE}`);
+console.log(await (await import("./fp_sx_guard.mjs")).sxGuard(src, git, BASE));   // MCP r7: search_extras.js may change if every font key stays the same
 const baseFile = path.join(src, "_fp_r5_base.mjs");
 fs.writeFileSync(baseFile, inline(git("font_pairing.js"), git("font_pairings.json")));
 // fonts r6 (18-Nov-2026): answers with a Garamond / Baskerville / Caslon / Bodoni / Georgia row (or a system-font partner: Arial, Didot...) change (note, stack, About

@@ -15,7 +15,8 @@ const BASE = process.env.FP6_BASE || "3c739d8";
 const src = path.resolve("src"), tmp = path.join(src, "_fp_r6_test.mjs"), baseFile = path.join(src, "_fp_r6_base.mjs");
 const inline = (code, json) => code.replace('import PAIRINGS from "./font_pairings.json";', "const PAIRINGS = " + json + ";");
 const git = (f) => execFileSync("git", ["show", `${BASE}:src/${f}`], { encoding: "utf8", maxBuffer: 64 << 20 });
-for (const f of ["font_pairings.json", "font_pairings_curated.js", "search_extras.js", "gf_meta.js"]) assert.equal(git(f), fs.readFileSync(path.join(src, f), "utf8"), `${f} changed since ${BASE}`);
+for (const f of ["font_pairings.json", "font_pairings_curated.js", "gf_meta.js"]) assert.equal(git(f), fs.readFileSync(path.join(src, f), "utf8"), `${f} changed since ${BASE}`);
+console.log(await (await import("./fp_sx_guard.mjs")).sxGuard(src, git, BASE));   // MCP r7: search_extras.js may change if every font key stays the same
 fs.writeFileSync(tmp, inline(fs.readFileSync(path.join(src, "font_pairing.js"), "utf8"), git("font_pairings.json")));
 fs.writeFileSync(baseFile, inline(git("font_pairing.js"), git("font_pairings.json")));
 const DATA = JSON.parse(git("font_pairings.json"));
