@@ -246,5 +246,20 @@ const both = async (tool, args) => [await callTool(base, B.env, tool, args), awa
   t("get_font_pairing: answers exactly as base", text(fb) === text(fn));
 }
 
+// ---------------------------------------------------------------------------------------------------------------- I. contract
+{
+  const { rpc } = await import("./r3/env.mjs");
+  const lb = await rpc(base, B.env, "tools/list", {}), ln = await rpc(next, N.env, "tools/list", {});
+  const tb = lb.json.result.tools, tn = ln.json.result.tools;
+  t(`tools/list: same ${tn.length} tools, names, descriptions and schemas as base`, tn.length === 112 && JSON.stringify(tb) === JSON.stringify(tn));
+  const init = { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "r7", version: "1" } };
+  const ib = await rpc(base, B.env, "initialize", init), inn = await rpc(next, N.env, "initialize", init);
+  const sb = ib.json.result.instructions, sn = inn.json.result.instructions;
+  t(`initialize: instructions unchanged (${sn.length} of 1,500 characters)`, sb === sn && sn.length <= 1500);
+  const src = ["index.js", "search_extras.js", "intent_hints.js", "ui_screens.js", "mcp_tools.js"].map((f) => readFileSync(new URL("../src/" + f, import.meta.url), "utf8")).join("\n");
+  const added = src.split("\n").filter((l) => /MCP r7|r7:/.test(l) || /Looking for|Need a website|plain text, not item|correct check digit|Closest flow|For single screens/.test(l)).join("\n");
+  t("r7 user-facing strings: no 'best', no competitor names", !/\bbest\b/i.test(added.replace(/\/\/.*$/gm, "")) && !/mobbin|dribbble|behance|pinterest|canva/i.test(added));
+}
+
 console.log(`${ok} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
