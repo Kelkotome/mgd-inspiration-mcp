@@ -225,13 +225,31 @@ function combos(a) {
     `\n\nPreview on a business card, poster and website and export CSS/Tailwind: ${T}/color-combination-generator/`);
 }
 
+// MCP r7 (18-Nov-2026): a wrong check digit stays an error (the number is never changed silently), but the answer names the full
+// code with the correct check digit and how to ask for it. Returns "" when the error is not about a check digit.
+export function upcFixed(type, raw, expected) {
+  const d = String(raw || "").replace(/[^0-9Xx]/g, "");
+  if (expected && /^\d+$/.test(expected)) return expected;
+  if (type === "isbn" && /^\d{9}[\dXx]$/.test(d)) return d.slice(0, 9) + MGDUpc.isbn10Check(d.slice(0, 9));
+  if (type === "upce" && /^\d{12}$/.test(d)) return d.slice(0, 11) + MGDUpc.checkDigit(d.slice(0, 11));
+  return null;
+}
+function upcFixHint(type, raw, expected, addon) {
+  const fixed = upcFixed(type, raw, expected);
+  if (!fixed || fixed === String(raw || "").replace(/[^0-9Xx]/g, "")) return "";
+  const body = fixed.slice(0, -1);
+  return ` With the correct check digit the full code is ${fixed}. If that is the number you meant, call generate_upc_barcode again with ` +
+    `number="${fixed}"${type !== "upca" ? `, type="${type}"` : ""}${addon ? `, addon="${addon}"` : ""}` +
+    (type === "isbn" && fixed.length === 10 ? "" : ` (or pass the first ${body.length} digits, "${body}", and the check digit is added for you)`) +
+    ". Your number was not changed: check it against your GS1 or ISBN record first.";
+}
 function upc(a) {
   const type = ["upca", "upce", "ean13", "isbn"].includes(a.type) ? a.type : "upca";
   const mag = Math.max(0.8, Math.min(2, Number(a.magnification) || 1));
   const addon = a.addon ? str(a.addon, 5).replace(/\D/g, "") : "";
   if (addon && !/^(\d{2}|\d{5})$/.test(addon)) return err("addon must be 2 or 5 digits.");
   const r = MGDUpc.make(type, str(a.number, 20) + (addon ? " " + addon : ""), { mag });
-  if (!r || !r.ok) return err((r && r.error) || "That number isn't valid for " + type.toUpperCase() + ".");
+  if (!r || !r.ok) return err(((r && r.error) || "That number isn't valid for " + type.toUpperCase() + ".") + upcFixHint(type, str(a.number, 20), r && r.expected, addon));
   const rel = Object.entries(r.related || {}).filter(([, v]) => v).map(([k, v]) => `${k.toUpperCase()}: ${v}`).join(" · ");
   return ok(`${type.toUpperCase()} ${r.code}${r.addon ? " + add-on " + r.addon : ""} — ${r.widthMm.toFixed(1)} × ${r.heightMm.toFixed(1)} mm at ${Math.round(mag * 100)}%.` +
     (rel ? `\nRelated codes: ${rel}` : "") + `\n\n\`\`\`svg\n${r.svg}\n\`\`\`\n\nPNG at 300–1200 DPI, EPS, PDF and batch ZIP: ${T}/upc-generator/\nReal retail UPCs must be licensed from GS1 (gs1.org).`);
