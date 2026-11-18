@@ -236,6 +236,18 @@ function invalidFont(raw, why) {
     structuredContent: { font: null, match: "invalid", pairs: [] } };
 }
 
+// MCP r7 (18-Nov-2026): the family name if the text names a typeface we can answer for (a guide, a curated or partner font, or any
+// Google Fonts family), exact names and aliases only (no prefix or spelling guesses). Used by the library-search font hint.
+export function knownFont(q) {
+  const key = fontKey(q);
+  if (!key) return null;
+  const g = BY_KEY.get(key) || (ALIASES[key] && BY_KEY.get(ALIASES[key]));
+  if (g) return g.v.font;
+  const p = AS_PARTNER.get(key);
+  if (p) return p.font;
+  const m = GFM.get(key);
+  return m ? m.family : null;
+}
 export function fontPairing(a) {
   // exact / alias / prefix first; then a font that only appears as a partner on other guides; fuzzy spelling matches last, so a
   // partner-only font (e.g. "Crimson Pro") is never swapped for a different guide one edit away.

@@ -44,6 +44,8 @@ import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authori
 import { MOODBOARD_TOOL, callMoodboard, moodboardRoute, moodboardAdmin } from "./moodboards.js";
 import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs } from "./discovery.js";
 import { uiItemPath } from "./ui_screens.js";
+import { foldLower } from "./fold.js"; // MCP r7: accent folding in the JS ranking of the LIKE search
+import { intentHint, withIntentHint, hintKindOf } from "./intent_hints.js"; // MCP r7: font / brand / palette hints on library searches
 import { withIconHint, withUiHint, UI_HINT_HEAD, BRAND_TYPEFACE_TOOL, brandTypeface, ftsSearch, withMuseumHint, MUSEUM_HINT_HEAD, isGeneric, GENERIC_W } from "./search_extras.js";
 import { FONT_PAIRING_TOOL, fontPairing } from "./font_pairing.js"; // kit pilot 5-Nov-2026 (local branch kit-pilot-2026-11)
 import { REF_FONTS, OFFER_HEAD, buildNextStep } from "./next_offer.js";
@@ -2137,6 +2139,9 @@ async function mcpTracked(env, c, msg, inner, hdrs) {
   // by the same visitor within 30 min as followed.
   if (r && !r.isError && Array.isArray(r.content) && r.content[0] && typeof r.content[0].text === "string" && r.content[0].text.startsWith(UI_HINT_HEAD))
     await mcpLater(c.defer, mcpEvent(env, c, { kind: "hint", tool }));
+  // MCP r7 (18-Nov): font / brand / palette hints on library searches (kind font_hint / brand_hint / palette_hint; mcp_report.py counts follow-ups)
+  const ihk = r && !r.isError && Array.isArray(r.content) && r.content[0] && typeof r.content[0].text === "string" ? hintKindOf(r.content[0].text) : null;
+  if (ihk) await mcpLater(c.defer, mcpEvent(env, c, { kind: ihk, tool }));
   // 9-Nov (mcp-gap-r2): the search_museum_art next step on art-history queries (kind='museum_hint'; mcp_report.py counts follow-ups)
   if (r && !r.isError && Array.isArray(r.content) && r.content.some((x) => x && x.type === "text" && typeof x.text === "string" && x.text.includes(MUSEUM_HINT_HEAD)))
     await mcpLater(c.defer, mcpEvent(env, c, { kind: "museum_hint", tool }));
@@ -2222,6 +2227,11 @@ function mcpOffer(tool, q, rows, r) {
   } catch (_) { /* the offer must never break a search answer */ }
   return r;
 }
+// MCP r7: a font / brand / palette hint (src/intent_hints.js) leads the answer instead of the palette line; otherwise the palette line as before.
+function mcpHinted(tool, q, rows, r) {
+  const h = intentHint(tool, q, rows);
+  return h ? withIntentHint(h, r) : mcpOffer(tool, q, rows, r);
+}
 async function mcpCallToolInner(name, a, env, opts) {
   if (name === "search_design_inspiration") {
     const q = (a.query || "").toString().trim();
@@ -2230,17 +2240,21 @@ async function mcpCallToolInner(name, a, env, opts) {
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.theme) { where += " AND themes LIKE ?"; binds.push(`%"${a.theme}"%`); }
     const r = await mcpSearchRowsRetry(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
-    return mcpIconHinted(q, withMuseumHint(name, q, withUiHint(q, mcpOffer(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design)))), env);
+    return mcpIconHinted(q, withMuseumHint(name, q, withUiHint(q, mcpHinted(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design)))), env);
   }
   if (name === "list_inspiration_themes") {
     // 2-Nov-2026: this scans every design row (avg 2.6 s live; ~74k rows read); counts move slowly. MCP r3: kept 60 min per
     // isolate and per colo (Cache API), so a cold isolate no longer rescans.
-    const counts = await shared(env, "theme-counts", 3600, async () => {
-      const rows = await mcpRetry(() => env.DB.prepare(`SELECT themes FROM items WHERE status='published' AND owner_id IS NULL AND collection='design'`).all());
+    // MCP r7 (18-Nov-2026): still 2,840 ms avg (calls are rare, so most found a cold colo, and every deploy started new keys). Now
+    //   - D1 counts in SQL (json_each + GROUP BY over the curated themes) and returns ~26 rows, not ~74k themes strings (~2.1 MB);
+    //   - the cache key is not tied to the deploy (opts.global) and is kept 6 hours.
+    // Same counts as before: only well-formed JSON arrays count (safeArr), each theme once per item as listed.
+    const counts = await shared(env, "theme-counts-r7", 21600, async () => {
+      const rows = await mcpRetry(() => env.DB.prepare(`SELECT j.value AS t, COUNT(*) AS n FROM items, json_each(CASE WHEN json_valid(items.themes) AND json_type(items.themes)='array' THEN items.themes ELSE '[]' END) j WHERE items.status='published' AND items.owner_id IS NULL AND items.collection='design' AND j.value IN (${MCP_THEMES.map(() => "?").join(",")}) GROUP BY j.value`).bind(...MCP_THEMES).all());
       const c = {};
-      (rows.results || []).forEach((r) => safeArr(r.themes).forEach((t) => { c[t] = (c[t] || 0) + 1; }));
+      (rows.results || []).forEach((r) => { c[r.t] = r.n; });
       return c;
-    });
+    }, { global: true });
     const lines = MCP_THEMES.map((t) => `- ${t}: ${counts[t] || 0} items  (${MCP_SITE}/?theme=${t})`);
     return { content: [{ type: "text", text: `Curated design-inspiration themes at Made Good Designs (${MCP_SITE}/):\n` + lines.join("\n") }] };
   }
@@ -2263,7 +2277,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     const r = await mcpSearchRowsRetry(env, where, binds, ["company", "designer", "title", "description", "tags", "industry"], q, "report_year DESC, created_at DESC", limit);
     // default = public domain only: drop any link-only row even if its status were wrong; opt-in keeps only flipped ('mcp-nc') ones
     r.rows = r.rows.filter((x) => nc ? (isPublicRow(x) || x.status === "mcp-nc") : isPublicRow(x));
-    return mcpIconHinted(q, mcpOffer(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts, MCP_SIBLING["annual-report"])), env);
+    return mcpIconHinted(q, mcpHinted(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} annual-report result(s) for "${q}"${a.year ? " ("+a.year+")" : ""}${a.industry ? " in "+a.industry : ""}${r.note}`, opts, MCP_SIBLING["annual-report"])), env);
   }
   if (name === "search_museum_art") {
     let q = (a.query || "").toString().trim();
@@ -2279,7 +2293,7 @@ async function mcpCallToolInner(name, a, env, opts) {
     if (theme) { where += " AND category = ?"; binds.push(theme); }
     if (a.culture) { where += " AND country LIKE ?"; binds.push(`%${a.culture.toString().trim()}%`); }
     const r = await mcpSearchRowsRetry(env, where, binds, ["title", "designer", "description", "tags", "industry"], q, "featured_rank IS NULL, featured_rank, created_at DESC", limit);
-    return mcpIconHinted(q, mcpOffer(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} museum artwork(s) for "${q}"${theme ? " in theme "+theme : ""}${r.note}${themeNote}`, opts, MCP_SIBLING.museum)), env);
+    return mcpIconHinted(q, mcpHinted(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} museum artwork(s) for "${q}"${theme ? " in theme "+theme : ""}${r.note}${themeNote}`, opts, MCP_SIBLING.museum)), env);
   }
   if (name === "get_share_feedback") {
     const link = (a.link || "").toString();
@@ -2334,7 +2348,13 @@ async function mcpDesignFromRefs(a, env) {
   const fail = (t) => ({ content: [{ type: "text", text: t }], isError: true });
   const ids = [...new Set((Array.isArray(a.references) ? a.references : typeof a.references === "string" ? a.references.split(/[\s,]+/) : [])
     .map((x) => String(x).trim().replace(/[?#].*$/, "")).map((x) => (String(x).match(/([0-9a-f]{12})(?:\.(?:jpg|png|webp))?\/?$/i) || String(x).match(/^([0-9a-f]{12})$/i) || [])[1]).filter(Boolean).map((x) => x.toLowerCase()))].slice(0, 24);
-  const q = String(a.query || "").trim().slice(0, 120);
+  let q = String(a.query || "").trim().slice(0, 120);
+  // MCP r7 (18-Nov-2026): references sent as plain text ("Materials Marketplace", twice on 17-Nov) used to stop with the error below.
+  // Text with no item ID or URL in it is now searched exactly as search_design_inspiration searches it, and the top results are used.
+  const refText = !ids.length && !q ? (Array.isArray(a.references) ? a.references.filter((x) => typeof x === "string").join(" ") : typeof a.references === "string" ? a.references : "")
+    .replace(/\s+/g, " ").trim().slice(0, 120) : "";
+  const fromText = refText && !/https?:\/\/|\b[0-9a-f]{12}\b/i.test(refText) && /\p{L}/u.test(refText) ? refText : "";
+  if (fromText) q = fromText;
   if (!ids.length && !q) return fail("Pass references (item IDs, or the image/page URLs returned by search_design_inspiration, search_museum_art, search_annual_reports or search_ui_screens) or a query.");
   let rows = [], note = "", missed = 0;
   // 9-Nov-2026 (mcp-errors-r1): a call with references that matched no public item (or none with a palette) plus a query used to
@@ -2350,7 +2370,9 @@ async function mcpDesignFromRefs(a, env) {
     }
     if (!rows.length && q) {
       for (const c of [coll, ...["design", "ui", "museum", "annual-report"].filter((x) => x !== coll)]) {
-        const r = await mcpSearchRowsRetry(env, "status=? AND owner_id IS NULL AND collection=?", ["published", c], ["title", "description", "tags", "themes", "designer"], q, "featured_rank IS NULL, featured_rank, created_at DESC", clampInt(a.limit, 8, 3, 12));
+        const asDesign = fromText && c === "design";   // r7: the search_design_inspiration columns and order
+        const r = await mcpSearchRowsRetry(env, "status=? AND owner_id IS NULL AND collection=?", ["published", c], asDesign ? ["title", "description", "tags", "themes"] : ["title", "description", "tags", "themes", "designer"], q,
+          asDesign ? "created_at DESC" : "featured_rank IS NULL, featured_rank, created_at DESC", clampInt(a.limit, 8, 3, 12));
         rows = withPal(r.rows || []);
         if (rows.length) { note = (r.note || "") + (c !== coll ? ` (nothing in the ${coll} collection, so these are from ${c})` : ""); break; }
       }
@@ -2375,7 +2397,8 @@ async function mcpDesignFromRefs(a, env) {
     personality: a.personality, product_type: a.product_type, colors: { light: d.light, dark: d.dark }, heading_font: heading, body_font: body });
   if (md.isError) return md;
   const refs = items.map((it) => `- ${it.title || it.company || "Untitled"}${it.designer ? " — " + it.designer : it.artist ? " — " + it.artist : ""} (${it.collection === "museum" ? "public domain / CC0" : it.source_host || it.collection}) · palette ${it.palette.slice(0, 5).join(" ")} · ${MCP_SITE}${it.image}`).join("\n");
-  const head = `Design system from ${items.length} reference(s)${q && !ids.length || (ids.length && missed === ids.length) ? ` matching "${q}"` : ""}${note} (Made Good Designs library — cite ${MCP_SITE}/):\n${refs}\n\n` +
+  const textLine = fromText ? `The references you passed were plain text, not item IDs or URLs, so "${fromText.replace(/"/g, "'")}" was searched as search_design_inspiration would search it, and the top ${items.length} result(s) below were used.\n` : "";
+  const head = textLine + `Design system from ${items.length} reference(s)${q && !ids.length || (ids.length && missed === ids.length) ? ` matching "${q}"` : ""}${note} (Made Good Designs library — cite ${MCP_SITE}/):\n${refs}\n\n` +
     `Pooled palette: ${d.palette.join(" ")}. Primary ${d.primary || "(none — neutral palette)"}${d.accentHue != null ? `, accent hue ${Math.round(d.accentHue)}°` : ""}, mood ${d.mood}. Fonts: ${heading} / ${body} — ${fontWhy}.\n` +
     `Light and dark roles were built so every text pair passes WCAG AA. Edit: ${d.palette_url} · shadcn/ui theme: ${d.shadcn_url} · moodboard: ${TOOLS_SITE}/moodboard-maker/`;
   return { content: [{ type: "text", text: head }, ...md.content],
@@ -2494,8 +2517,10 @@ async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, l
   const textCols = [...new Set(["id", ...cols])].join(", ");
   const pool = (w, wb2, ord, ob) => env.DB.prepare(`SELECT ${textCols} FROM items WHERE ${where}${w} ORDER BY ${ord} LIMIT ?`)
     .bind(...binds, ...wb2, ...ob, POOL).all().then((r) => r.results || []);
-  const wholeRe = words.map((x) => new RegExp(`(^|[^\\p{L}\\p{N}])${x}($|[^\\p{L}\\p{N}])`, "u"));
-  const docOf = (r) => cols.map((c) => String(r[c] == null ? "" : r[c])).join(" \u0001 ").toLowerCase();
+  // MCP r7: the JS ranking compares folded text on both sides (ø→o, é→e…); the D1 LIKEs above still use the words as typed.
+  const fw = words.map(foldLower);
+  const wholeRe = fw.map((x) => new RegExp(`(^|[^\\p{L}\\p{N}])${x}($|[^\\p{L}\\p{N}])`, "u"));
+  const docOf = (r) => foldLower(cols.map((c) => String(r[c] == null ? "" : r[c])).join(" \u0001 "));
   // Rerank the pool in JS (stable: ties keep D1's order), then fetch the full rows for the top ids only.
   const finish = async (cands, scoreOf) => {
     const ranked = cands.map((r, i) => ({ r, i, s: scoreOf(docOf(r)) })).sort((x, y) => y.s - x.s || x.i - y.i).slice(0, limit);
@@ -2537,7 +2562,7 @@ async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, l
   const sb = use.flatMap((i) => likes(words[i]));
   const someC = await pool(" AND (" + use.map((i) => hit[i]).join(" OR ") + ")", ub, `(${poolScore}) DESC, ${order}`, sb);
   // JS: a whole-word hit (any column) earns the word's full weight, a match inside another word a third of it.
-  const some = await finish(someC, (d) => use.reduce((n, i) => n + (wholeRe[i].test(d) ? w(i) : d.includes(words[i]) ? third(i) : 0), 0));
+  const some = await finish(someC, (d) => use.reduce((n, i) => n + (wholeRe[i].test(d) ? w(i) : d.includes(fw[i]) ? third(i) : 0), 0));
   return { rows: some, note: some.length ? ` (no item matches every word; closest matches for: ${use.map((i) => words[i]).join(", ")})` : "" };
 }
 
