@@ -45,9 +45,12 @@ function memSet(k, val, at, exp) {
 
 // shared(env, name, ttlSec, loader, opts): the cached value, else loader() (stored unless empty). opts.edge=false keeps it in memory
 // only; opts.keep(val) = false also skips storing (e.g. a "0 results" answer or a screen whose HTML was missing).
+// MCP r7: opts.global = the key does not carry the deployed Worker version, for data that does not depend on the code (theme counts):
+// a deploy no longer makes every colo recount. MCP_CACHE_VERSION still invalidates it by hand.
+export const globalVersion = () => MCP_CACHE_VERSION + ".global";
 export async function shared(env, name, ttlSec, loader, opts = {}) {
   if (cacheOff(env)) { CACHE_STATS.skip++; return loader(); }
-  const ver = cacheVersion(env), k = ver + "|" + name, now = Date.now();
+  const ver = opts.global ? globalVersion() : cacheVersion(env), k = ver + "|" + name, now = Date.now();
   const hit = memGet(k, now);
   if (hit !== undefined) { CACHE_STATS.mem++; return hit; }
   const c = opts.edge === false ? null : edge();
