@@ -146,6 +146,14 @@ async function route(request, env, ctx) {
       if (path === "/api/admin/ui-spec-backfill" && method === "POST") return uiSpecBackfill(request, env);
       { const bm = path.match(/^\/b\/([a-z0-9]{10})$/); if (bm && method === "GET") return publicBoardPage(bm[1], env, base, url); }
       if (path === "/save" && method === "GET") return html(injectBase(SAVE_HTML, base));
+      // Chrome extension brand map (21-Nov-2026): static JSON in R2 (ext/brands.json, built by chrome-extension/build_brand_map.py); the extension
+      // downloads it once a day and matches domains on device. Public data only (slug, name, domains, hex, fonts); no request data is logged here.
+      if (path === "/ext/brands.json" && (method === "GET" || method === "HEAD")) {
+        const obj = await env.BUCKET.get("ext/brands.json");
+        if (!obj) return new Response("not found", { status: 404, headers: { "Cache-Control": "public, max-age=300" } });
+        return new Response(method === "HEAD" ? null : obj.body, { headers: { "Content-Type": "application/json; charset=utf-8",
+          "Cache-Control": "public, max-age=86400", "Access-Control-Allow-Origin": "*", "ETag": obj.httpEtag, "X-Robots-Tag": "noindex" } });
+      }
       if (path === "/assets/board-canvas.js" && method === "GET")
         return new Response(BOARD_CANVAS_JS, { headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
       if (path === "/museum/sitemap.xml" && method === "GET") return edgeCache(request, ctx, 3600, () => museumSitemap(env, base)); // SEO r1: edge-cached (8.9k rows a build)
