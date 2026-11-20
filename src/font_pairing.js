@@ -176,7 +176,10 @@ const GUIDES = Object.values(PAIRINGS).filter((v) => v.page && GFM.has(btKey(v.f
 const NO_SIMILAR = /emoji|symbols|barcode|redacted|^flow /i;
 export function similarGuides(m, n = 3) {
   if (NO_SIMILAR.test(m.family)) return [];
-  return GUIDES.filter((g) => g.m.c === m.c && g.m.script === m.script && btKey(g.v.font) !== btKey(m.family))
+  // 21-Nov-2026: Bagel Fat One, Modak, Shrikhand, Baloo 2 are Latin display faces whose METADATA lists a second script (Kore/Deva/Gujr),
+  // so no guide shared their script and they got a zero. Display and handwriting faces are used as Latin headings: fall back to Latin guides.
+  const scriptOk = (g) => g.m.script === m.script || ((m.c === "D" || m.c === "H") && m.script && !g.m.script && g.m.c === m.c);
+  return GUIDES.filter((g) => g.m.c === m.c && scriptOk(g) && btKey(g.v.font) !== btKey(m.family))
     .map((g) => ({ g, s: (m.stroke && g.m.stroke === m.stroke ? 0 : 1) * 100000 + g.m.pop }))
     .sort((x, y) => x.s - y.s).slice(0, n).map((x) => x.g.v);
 }

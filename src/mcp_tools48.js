@@ -253,7 +253,8 @@ function typeScale(a) {
 const r2 = (n) => Math.round(n * 100) / 100;
 
 function colorScale(a) {
-  let input = a.colors;
+  // 21-Nov-2026: callers send the singular (claude-code sent {"color":"#e0a775"}): accept color/colour/hex/brand_color as colors.
+  let input = a.colors != null && a.colors !== "" ? a.colors : (a.color != null ? a.color : a.colour != null ? a.colour : a.hex != null ? a.hex : a.brand_color);
   if (Array.isArray(input)) input = input.slice(0, 12);
   else if (input && typeof input === "object") input = Object.fromEntries(Object.entries(input).slice(0, 12));
   else input = str(input, 1000);
