@@ -131,6 +131,15 @@ const FAMILIES = {
   archpf: { name: "Okelund Architects", cat: "architecture", desc: "a small architecture practice for homes, extensions and community buildings", type: { web: "Website", mobile: "Mobile website" } },
   agencypf: { name: "Tallowfield Studio", cat: "agency", desc: "an independent creative agency for brand identity, websites and campaigns", type: { web: "Website", mobile: "Mobile website" } },
   marketingpf: { name: "Quellmarsh Marketing", cat: "marketing-agency", desc: "a marketing agency for content, search, email and paid campaigns", type: { web: "Website", mobile: "Mobile website" } },
+  // 21-Nov-2026 seventh industry, beauty, fitness and wellness (templates r4). Coined names, fictional.
+  hairsalon: { name: "Fernwick Hair Studio", cat: "hair-salon", desc: "a neighbourhood hair salon for cuts, colour and styling", type: { web: "Website", mobile: "Mobile website" } },
+  barber: { name: "Cobbleford Barbers", cat: "barbershop", desc: "a barbershop for haircuts, fades and beard trims, walk-ins and bookings", type: { web: "Website", mobile: "Mobile website" } },
+  nails: { name: "Petalnook Nails", cat: "nail-salon", desc: "a small nail salon for manicures, pedicures and nail art", type: { web: "Website", mobile: "Mobile website" } },
+  spa: { name: "Quillmere Spa", cat: "spa", desc: "a day spa for massages, facials and quiet rooms", type: { web: "Website", mobile: "Mobile website" } },
+  makeup: { name: "Saoirse Vellacott Makeup", cat: "makeup-artist", desc: "an independent makeup artist for weddings, events, shoots and lessons", type: { web: "Website", mobile: "Mobile website" } },
+  gymbw: { name: "Kettlewick Gym", cat: "gym", desc: "an independent gym with a weights floor, group classes and coaching", type: { web: "Website", mobile: "Mobile website" } },
+  trainer: { name: "Orla Penhallow Coaching", cat: "fitness", desc: "an independent personal trainer for one-to-one, small-group and online coaching", type: { web: "Website", mobile: "Mobile website" } },
+  yogabw: { name: "Wrenfold Yoga", cat: "yoga", desc: "a yoga studio with daily classes, beginners' courses and workshops", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 
