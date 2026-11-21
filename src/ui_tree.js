@@ -110,6 +110,25 @@ export const INDUSTRIES = {
     ],
     appPatterns: ["portfolio-home", "case-study"],
   },
+  // 21-Nov-2026 seventh industry (templates r4), approved by the user 21-Nov-2026 with all 8 niches. Demand (Keyword Planner, worldwide, 21-Nov-2026,
+  // every term down 11-49 % YoY): hair salon 1,000, gym 880, fitness 390 + personal trainer 170, yoga 320, barber shop 260 + barbershop 140,
+  // spa 260 + massage 90, makeup artist 140, nail salon 90. hubFirst: no niche is named like the industry ("beauty", "wellness" -> the hub).
+  // gym-website was a flat n12 pattern; its hand-built Ironyard Gym homepage is not in the catalog (as agency/architecture in r3), so the nested
+  // gym page shows the seven new designs. salon-website stays a flat n12 pattern (not a niche here).
+  "beauty-fitness": {
+    id: "beauty-fitness", label: "Beauty, fitness and wellness", hub: "beauty-fitness-website-templates", seg: "beauty-fitness", h1: "Beauty, fitness and wellness website templates", hubFirst: true,
+    niches: [
+      ["hair-salon", "hair-salon-website", "Hair salon", "hair-salon-website-template", "hair-salon"],
+      ["barbershop", "barbershop-website", "Barbershop", "barber-shop-website-template", "barbershop"],
+      ["nail-salon", "nail-salon-website", "Nail salon", "nail-salon-website-template", "nail-salon"],
+      ["spa", "spa-website", "Spa and massage", "spa-website-template", "spa"],
+      ["makeup-artist", "makeup-artist-website", "Makeup artist", "makeup-artist-website-template", "makeup-artist"],
+      ["gym", "gym-website", "Gym", "gym-website-template", "gym"],
+      ["fitness", "fitness-website", "Personal trainer and fitness", "fitness-website-template", "fitness"],
+      ["yoga", "yoga-website", "Yoga studio", "yoga-website-template", "yoga"],
+    ],
+    appPatterns: ["class-schedule", "booking-details", "booking-confirmed"],
+  },
 };
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };

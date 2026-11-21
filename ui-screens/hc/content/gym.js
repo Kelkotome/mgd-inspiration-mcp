@@ -29,7 +29,7 @@ module.exports = {
       { d: "Saturday", slots: [["9:00 AM", "Team conditioning", "Coach Mae · Floor", "conditioning"], ["10:30 AM", "Barbell strength", "Coach Idris · Floor", "strength"]] },
       { d: "Sunday", slots: [["10:00 AM", "Indoor cycling", "Coach Fenn · Studio", "cycling"], ["11:15 AM", "Mobility and stretch", "Coach Wren · Studio", "mobility"]] },
     ] },
-  passes: { h2: "Ways to train", lede: "Every pass covers the open floor and classes. Change or pause it at the desk.", note: "Sample prices. Replace the passes, prices and terms with your own.",
+  passes: { button: "Ask about this pass", h2: "Ways to train", lede: "Every pass covers the open floor and classes. Change or pause it at the desk.", note: "Sample prices. Replace the passes, prices and terms with your own.",
     items: [
       { t: "Day pass", price: "$00", per: "a day", points: ["Open floor and one class", "Towel and locker included", "Buy on the desk"] },
       { t: "Monthly", price: "$00", per: "a month", points: ["Open floor at all hours", "Unlimited classes", "One coach check-in a month"] },

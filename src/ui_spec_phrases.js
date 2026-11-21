@@ -88,6 +88,14 @@ export const INDUSTRY_PHRASES = {
   "photography-website": ["an independent photographer", "a photographer"],
   "interior-design-website": ["an interior design studio", "a studio"],
   "marketing-agency-website": ["a small marketing agency", "an agency"],
+  // beauty, fitness and wellness, 21-Nov-2026 (templates r4). gym-website keeps its n12 phrase (unchanged, so the live n12 specs do not move).
+  "hair-salon-website": ["a neighbourhood hair salon", "a salon"],
+  "barbershop-website": ["a barbershop with walk-ins and bookings", "a barbershop"],
+  "nail-salon-website": ["a small nail salon", "a salon"],
+  "spa-website": ["a day spa or massage studio", "a spa"],
+  "makeup-artist-website": ["an independent makeup artist", "a makeup artist"],
+  "fitness-website": ["an independent personal trainer", "a trainer"],
+  "yoga-website": ["a yoga studio with a weekly timetable", "a studio"],
 };
 
 // Hand-written exceptions where the default audience reads oddly with the style: "pattern|style" → [best, notIdeal]
