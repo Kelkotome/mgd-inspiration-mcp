@@ -8,7 +8,7 @@ Applies to website templates under `/inspiration/ui/`. Healthcare is the pilot (
 |---|---|---|
 | Platform | HTML, WordPress | Path: `/ui/wordpress-themes/...`. HTML is the default and has no path segment of its own |
 | Type | one-page, website, landing page | Filter. A chip appears only when a page has more than one value |
-| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios | Path |
+| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios, Beauty, fitness and wellness | Path |
 | Sub-niche | Cardiology, Dental... | Path, under its industry |
 
 Web and mobile are the **Device** filter, renamed so that Platform is free. The database column stays `country`, and `?platform=web|mobile` still works.
@@ -154,18 +154,22 @@ Hub `portfolio-website-templates`, WordPress segment `portfolio`. Demand (Keywor
 
 Owner picked the industry 21-Nov-2026 (~3.1K/mo combined). Hub `beauty-fitness-website-templates`, WordPress segment `beauty-fitness`, hubFirst (no niche is named like the industry; "beauty website template" 170, "wellness website template" 210 and "salon/spa/gym wordpress theme" answered by the hub or niche). Demand (Keyword Planner, worldwide, 21-Nov-2026, every term down 11–49 % YoY): hair salon 1,000 (beauty salon 1,000 is the same close variant), gym 880, fitness 390 + personal trainer 170, yoga 320 (+15 % 3 mo), barber shop 260 + barbershop 140, spa 260 + massage 90, makeup artist 140, nail salon 90. Dropped: tattoo 140 (−48 %, imagery rules), martial arts / dance / pilates / crossfit / esthetician (≤90, −48 % to −85 %).
 
-| Sub-niche | id | Pattern | HTML segment | WordPress segment |
-|---|---|---|---|---|
-| Hair salon | hair-salon | hair-salon-website | hair-salon-website-template | hair-salon |
-| Barbershop | barbershop | barbershop-website | barber-shop-website-template | barbershop |
-| Nail salon | nail-salon | nail-salon-website | nail-salon-website-template | nail-salon |
-| Spa and massage | spa | spa-website | spa-website-template | spa |
-| Makeup artist | makeup-artist | makeup-artist-website | makeup-artist-website-template | makeup-artist |
-| Gym | gym | gym-website | gym-website-template | gym |
-| Personal trainer and fitness | fitness | fitness-website | fitness-website-template | fitness |
-| Yoga studio | yoga | yoga-website | yoga-website-template | yoga |
+| Sub-niche | id | Pattern | HTML segment | WordPress segment | Layouts (built 21-Nov-2026, templates r4) |
+|---|---|---|---|---|---|
+| Hair salon | hair-salon | hair-salon-website | hair-salon-website-template | hair-salon | concierge, bento, folio, band, atlas, ledger |
+| Barbershop | barbershop | barbershop-website | barber-shop-website-template | barbershop | band, bento, ledger, atlas, folio, concierge |
+| Nail salon | nail-salon | nail-salon-website | nail-salon-website-template | nail-salon | bento, concierge, folio, band, atlas, ledger |
+| Spa and massage | spa | spa-website | spa-website-template | spa | concierge, folio, ledger, bento, band, atlas |
+| Makeup artist | makeup-artist | makeup-artist-website | makeup-artist-website-template | makeup-artist | folio, concierge, bento, band, atlas, ledger |
+| Gym | gym | gym-website (n12) | gym-website-template | gym | timetable, band, bento, atlas, folio, ledger, concierge |
+| Personal trainer and fitness | fitness | fitness-website | fitness-website-template | fitness | timetable, atlas, bento, band, folio, ledger, concierge |
+| Yoga studio | yoga | yoga-website | yoga-website-template | yoga | timetable, folio, concierge, bento, band, ledger, atlas |
 
-Layouts: six per niche from the existing set (booking-first `concierge`, `band`, `bento`, `folio`, `atlas`, `ledger`) plus one new layout if review shows a gap (a class/timetable layout for gym, fitness and yoga). Same pipeline as portfolios: content files in `ui-screens/hc/content/`, `INDUSTRIES` row in `src/ui_tree.js`, `PATTERN_SEO` / `UI_COPY` / aliases, WordPress themes, catalog, MCP answer.
+Layouts: six per niche from the existing set (booking-first `concierge`, `band`, `bento`, `folio`, `atlas`, `ledger`) plus one new layout if review shows a gap (a class/timetable layout for gym, fitness and yoga).
+
+**Timetable layout (built).** Review showed the gap: a gym, trainer or yoga site is read for its week of classes, and the shared layouts only have a 3-column table. `timetable` (monochrome) is a dark hero with today's classes, a weekly timetable in day columns with a no-JS class-type filter (radio chips and `:has()`, as the portfolio filter), three passes with zero-placeholder prices, a first-visit guide, coaches as initials and a contact form. It needs `classes` and `passes` (schema in `ui-screens/hc/README.md`). Gym, fitness and yoga have 7 designs; the five beauty niches have 6. 51 designs, 51 themes, 102 screens.
+
+**n12 rows.** gym-website was a flat n12 pattern (Ironyard Gym). Its hand-built homepage is not a signature and not in the catalog (as agency and architecture in r3), so the nested gym page shows the seven new designs and the flat URL 301s once (the slug equals the nested segment). salon-website (Studio Velour) stays a flat n12 pattern: its "hair salon", "hairdresser", "barber" and "spa website" aliases moved to the new niches. Same pipeline as portfolios: content files in `ui-screens/hc/content/`, `INDUSTRIES` row in `src/ui_tree.js`, `PATTERN_SEO` / `UI_COPY` / aliases, WordPress themes, catalog, MCP answer.
 
 **Words (lint, `tests/bw_lint.py`, modelled on hc_lint).** No health, medical or weight-loss claims ("cure", "detox", "burn fat", "lose X kg", "treats", "heals", "anti-ageing results"), no before/after pictures, no guarantees, no real brands (product, salon, gym or fitness-app names), no reviews, testimonials, ratings, "trusted by" or invented member counts; prices only as obvious samples ("from $00" placeholders or "sample price"); licences or certifications only in "add your own" sentences. People shown as drawn placeholders, never photographs.
 
@@ -197,6 +201,6 @@ node ui-screens/wp-export/build_catalog.mjs distinct.json src/tpl_catalog.json  
 
 `ui-screens/wp-export/export.mjs` converts a template's HTML into a block theme: `theme.json`, templates, header and footer parts, one pattern per section, eight style variations plus dark, bundled fonts, `readme.txt`, `screenshot.png`. Real blocks are used wherever a block can hold the markup. Custom HTML is kept for forms, plus some decoration and tables with cell attributes, and each theme's report counts them. The header uses `core/navigation`, which collapses to an overlay menu under 960 px. Text-only sections and layouts are real groups, so they edit in the Site Editor.
 
-Theme slug: `mgd-<niche>-<layout>`. Layout ids: `signature` (the hand-built homepage, variant `homepage`), `atlas`, `folio`, `ledger`, `bento`, `band`, `concierge`, for property content `listing`, `showcase`, and for restaurant content `menu`, `reserve`.
+Theme slug: `mgd-<niche>-<layout>`. Layout ids: `signature` (the hand-built homepage, variant `homepage`), `atlas`, `folio`, `ledger`, `bento`, `band`, `concierge`, for property content `listing`, `showcase`, and for restaurant content `menu`, `reserve`, for wedding content `invite`, `programme`, for portfolio content `work`, `index`, and for gym, fitness and yoga content `timetable`.
 
 R2 keys: `tpl/wordpress/<slug>/<version>/{theme.zip,shot-1280.webp,shot-390.webp}`. A new version means a new prefix, so caches and old links stay valid until the catalog changes.

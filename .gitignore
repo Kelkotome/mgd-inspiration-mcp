@@ -54,3 +54,5 @@ tests/r7/.base/
 wrangler.r7.jsonc
 r7-e2e.*
 r7-last-dev.log
+wrangler.ind7.jsonc
+ui-screens/out-r2-tpl-r4
