@@ -41,3 +41,7 @@ set_error_handler(function ($no, $str, $file, $line) use ($mgdt_log) {
   return false;
 });
 register_shutdown_function(function () use ($mgdt_log) { $e = error_get_last(); if ($e && in_array($e['type'], [E_ERROR, E_PARSE, E_COMPILE_ERROR, E_CORE_ERROR], true)) @file_put_contents($mgdt_log, gmdate('c') . " PHP Fatal error:  {$e['message']} in {$e['file']} on line {$e['line']}\n", FILE_APPEND); });
+// The Playground has no reliable outbound HTTP from PHP, so WordPress.org update checks only add "unexpected error" warnings that say nothing about
+// the theme. Switch them off (upgrader_process_complete -> wp_update_themes fires after every Theme_Upgrader install).
+foreach ([['upgrader_process_complete', 'wp_update_themes'], ['upgrader_process_complete', 'wp_update_plugins'], ['upgrader_process_complete', 'wp_version_check'], ['admin_init', '_maybe_update_themes'], ['admin_init', '_maybe_update_plugins'], ['admin_init', '_maybe_update_core'], ['wp_update_themes', 'wp_update_themes'], ['wp_update_plugins', 'wp_update_plugins'], ['wp_version_check', 'wp_version_check'], ['load-themes.php', 'wp_update_themes'], ['load-update.php', 'wp_update_themes'], ['load-update-core.php', 'wp_update_themes'], ['init', 'wp_schedule_update_checks']] as $h) { remove_action($h[0], $h[1]); remove_action($h[0], $h[1], 10); }
+add_filter('automatic_updater_disabled', '__return_true');
