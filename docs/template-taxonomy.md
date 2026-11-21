@@ -150,6 +150,25 @@ Hub `portfolio-website-templates`, WordPress segment `portfolio`. Demand (Keywor
 
 **Words.** No real software, social, portfolio, stock or marketing platforms, camera, furniture or paint brands, design press or award schemes, no awards, shortlists, reviews, testimonials or "trusted by", no invented metrics (followers, ROI, traffic or sales growth), no guarantees or "rank first" promises. Professional status (registered, chartered, licensed, insured, accredited) appears only in a sentence that says "add your own" or "sample". Checked by `tests/pf_lint.py`.
 
+## Beauty, fitness and wellness tree (21-Nov-2026, seventh industry: APPROVED by the user 21-Nov-2026 ~21:40, all 8 niches)
+
+Owner picked the industry 21-Nov-2026 (~3.1K/mo combined). Hub `beauty-fitness-website-templates`, WordPress segment `beauty-fitness`, hubFirst (no niche is named like the industry; "beauty website template" 170, "wellness website template" 210 and "salon/spa/gym wordpress theme" answered by the hub or niche). Demand (Keyword Planner, worldwide, 21-Nov-2026, every term down 11–49 % YoY): hair salon 1,000 (beauty salon 1,000 is the same close variant), gym 880, fitness 390 + personal trainer 170, yoga 320 (+15 % 3 mo), barber shop 260 + barbershop 140, spa 260 + massage 90, makeup artist 140, nail salon 90. Dropped: tattoo 140 (−48 %, imagery rules), martial arts / dance / pilates / crossfit / esthetician (≤90, −48 % to −85 %).
+
+| Sub-niche | id | Pattern | HTML segment | WordPress segment |
+|---|---|---|---|---|
+| Hair salon | hair-salon | hair-salon-website | hair-salon-website-template | hair-salon |
+| Barbershop | barbershop | barbershop-website | barber-shop-website-template | barbershop |
+| Nail salon | nail-salon | nail-salon-website | nail-salon-website-template | nail-salon |
+| Spa and massage | spa | spa-website | spa-website-template | spa |
+| Makeup artist | makeup-artist | makeup-artist-website | makeup-artist-website-template | makeup-artist |
+| Gym | gym | gym-website | gym-website-template | gym |
+| Personal trainer and fitness | fitness | fitness-website | fitness-website-template | fitness |
+| Yoga studio | yoga | yoga-website | yoga-website-template | yoga |
+
+Layouts: six per niche from the existing set (booking-first `concierge`, `band`, `bento`, `folio`, `atlas`, `ledger`) plus one new layout if review shows a gap (a class/timetable layout for gym, fitness and yoga). Same pipeline as portfolios: content files in `ui-screens/hc/content/`, `INDUSTRIES` row in `src/ui_tree.js`, `PATTERN_SEO` / `UI_COPY` / aliases, WordPress themes, catalog, MCP answer.
+
+**Words (lint, `tests/bw_lint.py`, modelled on hc_lint).** No health, medical or weight-loss claims ("cure", "detox", "burn fat", "lose X kg", "treats", "heals", "anti-ageing results"), no before/after pictures, no guarantees, no real brands (product, salon, gym or fitness-app names), no reviews, testimonials, ratings, "trusted by" or invented member counts; prices only as obvious samples ("from $00" placeholders or "sample price"); licences or certifications only in "add your own" sentences. People shown as drawn placeholders, never photographs.
+
 ## Adding an industry
 
 1. Add a family per niche to `ui-screens/lib.js`, and a motif to `GLYPH` in `ui-screens/hc/engine.js` if needed.
