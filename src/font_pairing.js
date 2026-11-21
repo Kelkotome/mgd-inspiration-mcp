@@ -171,6 +171,8 @@ for (const line of GF_META.split("\n")) {
   const [family, c, stroke, script, pop] = line.split("|");
   GFM.set(btKey(family), { family, c, stroke, script, pop: Number(pop) || 9999 });
 }
+// 22-Nov-2026: Google Fonts lists only "Baloo 2" (the old "Baloo" family was retired), but people still ask for plain "Baloo".
+if (!GFM.has("baloo") && GFM.has("baloo2")) GFM.set("baloo", GFM.get("baloo2"));
 const GUIDES = Object.values(PAIRINGS).filter((v) => v.page && GFM.has(btKey(v.font))).map((v) => ({ v, m: GFM.get(btKey(v.font)) }));
 // Emoji, symbol, barcode and redaction fonts are not text faces: no "similar" pairings for them (honest zero).
 const NO_SIMILAR = /emoji|symbols|barcode|redacted|^flow /i;

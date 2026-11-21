@@ -416,6 +416,12 @@ function shadcnTheme(a) {
 
 const TOK_FMT = { dtcg: ["tokens.json (W3C DTCG 2025.10)", "json"], tailwind: ["Tailwind v4 theme.css", "css"], css: ["tokens.css", "css"], scss: ["_tokens.scss", "scss"], styleDictionary: ["Style Dictionary tokens.json", "json"] };
 function exportTokens(a) {
+  // 22-Nov-2026: a caller sent {primary, format}: accept a single `format` for `formats`, and loose colour args (primary/secondary/accent/brand) as `colors`.
+  if (a.format && !a.formats) a = { ...a, formats: [a.format] };
+  if (!str(a.source, 10).trim() && !(a.colors && typeof a.colors === "object" && Object.keys(a.colors).length)) {
+    const loose = {}; for (const k of ["primary", "secondary", "accent", "brand", "background", "foreground"]) if (typeof a[k] === "string" && a[k].trim()) loose[k] = a[k];
+    if (Object.keys(loose).length) a = { ...a, colors: loose };
+  }
   let model;
   const src = str(a.source, 200000);
   try {
