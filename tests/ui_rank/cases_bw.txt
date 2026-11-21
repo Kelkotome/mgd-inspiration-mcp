@@ -1,0 +1,21 @@
+# Beauty, fitness and wellness tree, 21-Nov-2026 (templates r4). Run with the pending rows (with_pending.mjs, UI_OUTS incl. out-hc).
+hair salon website template | hair-salon-website
+hair salon website | hair-salon-website
+hairdresser website | hair-salon-website
+barber shop website template | barbershop-website
+barbershop website | barbershop-website
+barber website | barbershop-website
+nail salon website template | nail-salon-website
+nail salon website | nail-salon-website
+spa website template | spa-website
+massage website | spa-website
+day spa website | spa-website
+makeup artist website template | makeup-artist-website
+makeup artist portfolio | makeup-artist-website
+gym website template | gym-website
+gym website | gym-website
+personal trainer website | fitness-website
+fitness website template | fitness-website
+yoga studio website template | yoga-website
+yoga website | yoga-website
+salon website | salon-website
