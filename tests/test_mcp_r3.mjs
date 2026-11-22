@@ -100,8 +100,11 @@ else {
 
   // ---- D. tools/list and instructions
   const base = JSON.parse(readFileSync(new URL("./mcp_r3_base_tools.json", import.meta.url)));
-  const tl = await rpc(worker, env, "tools/list"), tools = tl.json.result.tools;
-  t("tools/list has 112 tools", tools.length === 112 && base.tools.length === 112, tools.length);
+  const tl = await rpc(worker, env, "tools/list"), all = tl.json.result.tools;
+  // 23-Nov-2026: get_shared_board (app boards) is appended after the r3 base; the other 112 must still match the base exactly.
+  t("tools/list has 113 tools, get_shared_board last", all.length === 113 && all[112].name === "get_shared_board", all.length);
+  const tools = all.slice(0, 112);
+  t("tools/list has the 112 base tools", tools.length === 112 && base.tools.length === 112, tools.length);
   t("tool names unchanged and in the same order", JSON.stringify(tools.map((x) => x.name)) === JSON.stringify(base.tools.map((x) => x.name)), "");
   const sch = tools.filter((x, i) => createHash("sha256").update(JSON.stringify(x.inputSchema)).digest("hex").slice(0, 16) !== base.tools[i].schema).map((x) => x.name);
   t("every input schema byte-identical to the base", sch.length === 0, sch);

@@ -30,7 +30,10 @@ def check(name, cond, info=""):
 
 tl, nbytes = post("tools/list", {})
 tools = tl["result"]["tools"]
-check("tools/list: 112 tools, same names as the base", len(tools) == 112 and [t["name"] for t in tools] == [t["name"] for t in B["tools"]], len(tools))
+# 23-Nov-2026: get_shared_board (app boards) is appended after the r3 base; the rest must still match the base exactly.
+check("tools/list: 113 tools, the base + get_shared_board last", len(tools) == 113 and tools[-1]["name"] == "get_shared_board", len(tools))
+tools = tools[:-1]
+check("tools/list: the other 112 tools, same names as the base", len(tools) == 112 and [t["name"] for t in tools] == [t["name"] for t in B["tools"]], len(tools))
 check(f"tools/list bytes within +5 % of the base ({B['bytes']['mcp']} → {nbytes})", nbytes <= B["bytes"]["mcp"] * 1.05, nbytes)
 ins = post("initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "mcp_r3_rpc", "version": "1"}})[0]["result"]["instructions"]
 check(f"instructions < 1,500 chars ({len(ins)}), line 1 says when to use them", len(ins) < 1500 and "Use for ANY design" in ins.split("\n")[0] and "BEFORE building or restyling UI" in ins.split("\n")[0], ins[:200])

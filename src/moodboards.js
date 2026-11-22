@@ -68,7 +68,7 @@ async function loadBoard(env, id) {
 const parseItems = (s) => { try { const a = JSON.parse(s || "[]"); return Array.isArray(a) ? a : []; } catch (_) { return []; } };
 
 // Resolve refs → curated, published items. Returns { found: [{id, note}], skipped: [ref] }.
-async function resolve(env, refs, notes) {
+export async function resolve(env, refs, notes) {
   const want = [], skipped = [];
   for (const r of (Array.isArray(refs) ? refs : []).slice(0, 60)) {
     const id = moodboardItemId(r);

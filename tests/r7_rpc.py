@@ -1,6 +1,6 @@
 """MCP r7 (18-Nov-2026): JSON-RPC checks against a Worker (tests/r7_local_e2e.sh's wrangler dev with seeded rows, or live after the deploy).
 Usage: python3 tests/r7_rpc.py <base, e.g. http://127.0.0.1:8977/inspiration or https://madegooddesigns.com/inspiration> [--local]
-  - tools/list: 112 tools, same names; instructions within 1,500 characters
+  - tools/list: 113 tools (112 + get_shared_board, app boards 23-Nov-2026), same names; instructions within 1,500 characters
   - accent folding: Hammershoi = Hammershøi (live: the 8 SMK works), Kobke = Købke, Bjorg = Bjørg, Muller = Müller, Dvorak = Dvořák, Rodenbach
   - get_ui_flow: onboarding -> sign-up; aliases; a typo names the closest flow + search_ui_screens; gibberish stays the error
   - design_md_from_references with plain-text references; barcode check digit message
@@ -26,7 +26,7 @@ ids = lambda t: list(dict.fromkeys(re.findall(r"\b[0-9a-f]{12}\b", t)))
 first = lambda t: t.split("\n")[0]
 
 tools = post("tools/list", {})["result"]["tools"]
-check(f"tools/list: 112 tools ({len(tools)})", len(tools) == 112, len(tools))
+check(f"tools/list: 113 tools ({len(tools)})", len(tools) == 113, len(tools))  # +get_shared_board (app boards, 23-Nov-2026)
 names = {t["name"] for t in tools}
 check("tools/list: the r7 tools are all there", {"search_museum_art", "search_design_inspiration", "search_annual_reports", "get_ui_flow", "design_md_from_references",
       "generate_upc_barcode", "list_inspiration_themes", "get_font_pairing", "get_brand_typeface", "generate_website_color_palette"} <= names)
