@@ -58,6 +58,45 @@ Worker code (`src/`): `ui_tree.js` (INDUSTRIES row), `ui_seo.js` (PATTERN_SEO), 
 - **Pre-existing, not this round:** `ui_spec.test.mjs` pins the law-firm page's breakpoints `[1024, 960, 760]`, but the current main `out` page has
   `[1024, 760]`. It fails on base too; it ran here against a copy with that one fixture patched.
 
+## Ironyard fix (22-Nov-2026, owner request)
+
+The n12 **Ironyard Gym** homepage (`gym-website`, 16 live rows: 8 styles x web + mobile) now follows `tests/bw_lint.py`. Same layout; changes in
+`ui-screens/tpl/site-gym.js`:
+- Membership prices `$49 / $119 / $260` are now `$00`, with "Sample prices: replace with yours." under the heading and "/ month · sample price".
+- "Member notes / What members say" (quotes from fictional members) is now **"Notes from the coaches"** (`#coach-notes`): three practical tips in
+  the same cards, signed by the page's own coaches (Dana Kowalski: picking a first class; Elijah Mensah: your first session; Rosa Lindqvist:
+  booking and cancelling).
+- Footer: "© 2026 Ironyard Gym, a fictional gym. Sample content: replace names, prices and times with your own." (the fictional notice).
+- Pattern description: "sample $00 monthly prices", "notes from the coaches with first-class tips"; tag `testimonials` dropped.
+- Lint: the full `bw_lint` passes 8/8 web pages (`BW_LINT_OUT=ui-screens/out-ironyard python3 tests/bw_lint.py gym`); the rule patterns
+  (HEALTH, BEFORE_AFTER, PROMISE, BRAND, AWARD, REVIEW, COUNT, PRO+OK_SENT, MONEY) find 0 hits on all 16 pages.
+- Re-rendered with the current kit, so the live HTML also picks up the sitekit 960 px nav breakpoint added since n12. DESIGN.md is unchanged.
+- Ranking with the 16 rows patched as below: `cases_bw` 20/20, `cases_n12` 43/43, `cases` 138/140, hc/re/rs/wd/n13/r4/home unchanged
+  (identical to unpatched); `test_tpl_tree` 22/22. The local ind7 e2e (`hc_routes`, `bw_mcp`) was not re-run: it needs `wrangler dev`, and it
+  covers the nested gym page and its 301, not this row's text.
+
+**Bundle** (`../deploy-bundle-2026-11-21/`, from `python3 tests/ironyard_bundle.py`; reads the live rows read-only from the public API):
+- `tpl-r4-ironyard-r2.tsv`: 64 R2 objects, 11.9 MB, same `key \t path \t sha256 \t content-type` format. Per row: new versioned images
+  `ui/<id>-mwrpvall.webp` and `-dark.webp` (the old keys are cached immutable for a year, so they are not overwritten) and, overwritten in
+  place, `ui/<id>/index.html` and `ui/<id>/spec.json`. Paths point into `ui-screens/out-r2-ironyard/` (generated, gitignored).
+- `tpl-r4-ironyard.sql`: 16 lines (one `UPDATE items SET image_key, height, description, tags ... WHERE collection='ui' AND id AND source_url`
+  per row) + 1 comment. Idempotent; the FTS update trigger re-indexes the text.
+- `tpl-r4-ironyard-rollback.sql`: 16 UPDATEs + 1 comment restoring today's live image_key, height, description and tags. The old images are
+  never deleted. `ui-screens/out-r2-ironyard-rollback/` holds the current live `index.html` + `spec.json` for an R2 rollback.
+- Apply check on a copy of the live snapshot: 16 rows changed, re-run identical, row count unchanged, FTS finds "notes from the coaches" in
+  16 rows, no `testimonials` tag left, rollback restores 16/16. sha256: r2 `b9e5a9e47b7a…`, sql `8c0c885688e7…`, rollback `a4a3facd50e8…`.
+- To rebuild on a fresh checkout: `cd ui-screens && GEN_OUT=out-ironyard node gen.js --only gym-website && SHOOT_OUT=out-ironyard ./shoot.sh &&
+  SHOOT_OUT=out-ironyard python3 trim.py && cd .. && IRONYARD_VER=mwrpvall python3 tests/ironyard_bundle.py`.
+
+**Extra deploy steps** (slot into the steps below):
+- Step 2 (R2): also upload every line of `tpl-r4-ironyard-r2.tsv` the same way.
+- After step 4 (D1): apply each line of `tpl-r4-ironyard.sql` as its own `wrangler d1 execute mgd-inspiration --remote --command "<line>"`.
+  Each must report 1 row changed. A direct UPDATE skips the Worker's cache drop, so step 5's purge (and the deploy) is what refreshes the pages;
+  the MCP's per-colo screen cache expires on its own TTL.
+- Step 6 (live): `curl -s -A curl/8.4.0 -H 'Accept: */*' https://madegooddesigns.com/inspiration/api/item/8feae92492d0` shows
+  `"notes from the coaches"`, no `testimonials` tag and an image ending `-mwrpvall.webp`; `/ui/raw/8feae92492d0.html` shows `$00` and "Notes from the coaches".
+- Rollback: apply `tpl-r4-ironyard-rollback.sql` line by line, re-upload `out-r2-ironyard-rollback/ui/<id>/{index.html,spec.json}`, purge.
+
 ## Deploy steps (user)
 
 Run from `../mgd-inspiration-tpl-r4` unless noted. Same order as r3: R2 first (nothing links it yet), then code, then rows, then purge.
@@ -91,5 +130,5 @@ Run from `../mgd-inspiration-tpl-r4` unless noted. Same order as r3: R2 first (n
 
 1. Copy is option A (disclosure `DISCLOSES["beauty-fitness"]`, `tpl_copy.json` industry text, best-for phrases in `ui_spec_phrases.js`); not separately approved.
 2. Prices are `$00` placeholders everywhere (the spec allowed "from $00" or "sample price"); say if you prefer realistic numbers labelled "sample price".
-3. The n12 Ironyard Gym homepage is not checked against the new wording rules; it stays a plain item, not a card on the nested page.
+3. The n12 Ironyard Gym homepage now passes the wording rules (see "Ironyard fix"); it stays a plain item, not a card on the nested page.
 4. `salon-website` (Studio Velour, n12) stays flat outside the hub; nest it as a ninth niche or leave it.
