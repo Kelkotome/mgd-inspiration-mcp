@@ -243,6 +243,14 @@ export const PATTERN_SEO = {
   "photography-website": ["photography-website-template", "Photography website templates"],
   "interior-design-website": ["interior-design-website-template", "Interior design website templates"],
   "marketing-agency-website": ["marketing-agency-website-template", "Marketing agency website templates"],
+  // 21-Nov-2026 beauty, fitness and wellness: new niches (gym-website keeps its n12 slug). These only ever live under the industry hub.
+  "hair-salon-website": ["hair-salon-website-template", "Hair salon website templates"],
+  "barbershop-website": ["barber-shop-website-template", "Barbershop website templates"],
+  "nail-salon-website": ["nail-salon-website-template", "Nail salon website templates"],
+  "spa-website": ["spa-website-template", "Spa and massage website templates"],
+  "makeup-artist-website": ["makeup-artist-website-template", "Makeup artist website templates"],
+  "fitness-website": ["fitness-website-template", "Personal trainer and fitness website templates"],
+  "yoga-website": ["yoga-website-template", "Yoga studio website templates"],
   // UI components round 1 (7-Nov-2026; Keyword Planner "ui design" + "html css" + "examples", deploy-bundle-2026-11-07/components-audit.md)
   tabs: ["tabs-ui", "Tabs UI design examples"],
   cards: ["card-ui", "Card UI design examples"],

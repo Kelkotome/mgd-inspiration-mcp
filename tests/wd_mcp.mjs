@@ -27,7 +27,7 @@ await want("wedding catering stays a caterer", T("wedding catering wordpress the
 await want("restaurant unchanged", T("restaurant wordpress theme"), ["/ui/wordpress-themes/restaurant/casual-dining", "allergen"], ["planning advice"]);
 await want("real estate unchanged", T("real estate wordpress theme"), ["/ui/wordpress-themes/real-estate/real-estate-agency", "fair housing"], ["planning advice"]);
 await want("healthcare unchanged", T("cardiology WordPress theme"), ["/ui/wordpress-themes/healthcare/cardiology", "not medical advice"], ["planning advice"]);
-await want("salon still honest none", T("salon wordpress theme"), [/No WordPress theme for "salon"/]);
+await want("tattoo still honest none (salon has themes since templates r4)", T("tattoo wordpress theme"), [/No WordPress theme for "tattoo"/]);
 for (const q of ["calendar event card", "event list component", "rsvp form", "countdown timer", "photo gallery grid", "event ticket checkout"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "No WordPress theme"]);
 await want("list_ui_patterns themes", call("list_ui_patterns", { kind: "themes" }), ["TEMPLATE TREE, WEDDINGS AND EVENTS", `${W}florist`, "TEMPLATE TREE, RESTAURANT", "TEMPLATE TREE, HEALTHCARE", "TEMPLATE TREE, REAL ESTATE"]);
 const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 112) { fails++; console.log("FAIL tool count changed"); }

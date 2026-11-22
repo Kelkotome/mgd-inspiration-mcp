@@ -1,7 +1,7 @@
 /* Gym website template (Ironyard Gym — fictional strength and conditioning gym with classes and coaching). Full responsive home page:
    nav, hero with "Book a free trial class" and a training-floor banner with facts, weekly class timetable grid, membership options,
-   coaches, facility zones, a four-week beginner path, member notes, trial booking form, footer.
-   No body-transformation or results claims. Gym "photos" are inline SVG in fixed natural tones. */
+   coaches, facility zones, a four-week beginner path, notes from the coaches, trial booking form, footer.
+   No body-transformation or results claims, no member reviews, prices are $00 placeholders labelled "sample price" (tests/bw_lint.py, 22-Nov-2026). Gym "photos" are inline SVG in fixed natural tones. */
 const { ic, esc } = require("../lib");
 const K = require("../sitekit");
 
@@ -53,8 +53,9 @@ const CSS = `<style>
 .gy-wk .badge{justify-self:start}
 .gy-notes{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:24px}
 .gy-note{padding:26px;display:grid;gap:14px;align-content:space-between}
-.gy-note q{quotes:"\\201C" "\\201D";font-family:var(--font-h);font-size:min(calc(18px * var(--hs)),21px);line-height:1.4}
-.gy-note.big q{font-size:min(calc(23px * var(--hs)),26px)}
+.gy-note .gy-tip{font-family:var(--font-h);font-size:min(calc(18px * var(--hs)),21px);line-height:1.4}
+.gy-note.big .gy-tip{font-size:min(calc(23px * var(--hs)),26px)}
+.gy-note .gy-tip b{display:block;font:700 12px var(--font-b);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 .gy-trial{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:0;padding:0;overflow:hidden}
 .gy-trial>div:first-child{padding:36px;display:grid;gap:18px;align-content:start;background:color-mix(in oklab,var(--primary) 12%,var(--surface))}
 .gy-trial form{padding:36px;display:grid;gap:16px}
@@ -95,7 +96,7 @@ const CSS = `<style>
   .gy-wk:nth-child(2n){border-right:0}
   .gy-wk p{font-size:13px}
   .gy-notes{display:flex}
-  .gy-note q,.gy-note.big q{font-size:min(calc(17px * var(--hs)),20px)}
+  .gy-note .gy-tip,.gy-note.big .gy-tip{font-size:min(calc(17px * var(--hs)),20px)}
   .gy-trial{grid-template-columns:minmax(0,1fr)}
   .gy-trial>div:first-child,.gy-trial form{padding:24px}
   .gy-trial .gy-check{display:none}
@@ -146,11 +147,11 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Timetable", "Membership", "Coach
 </div></section>
 
 <section class="sk-sec sk-alt" id="membership"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Membership</span><h2 class="sk-h2">Pick how often you’ll train</h2></div><p class="muted" style="max-width:340px">No joining fee. Pause up to 8 weeks a year. Cancel with 30 days’ notice.</p></div>
-  <div class="gy-plans">${[["Open gym", "$49", "Train on your own schedule", ["Open gym 5:30 AM – 10 PM", "Program card refreshed monthly", "One coach check-in per quarter"], "", "Choose open gym"],
-    ["Unlimited", "$119", "Classes plus open gym", ["Every class on the timetable", "Open gym 5:30 AM – 10 PM", "Quarterly goal session with a coach", "Bring a friend free once a month"], "feat", "Choose unlimited"],
-    ["Coached 1:1", "$260", "Four private sessions a month", ["A plan written around you", "Four 1:1 sessions with your coach", "Open gym included", "Weekly check-in by message"], "gy-mhide", "Book a consult"]].map(([n, pr, sub, items, c, cta]) => `<article class="card gy-plan ${c}"><div><div class="sk-row" style="justify-content:space-between"><h3 class="sk-h3">${n}</h3>${c === "feat" ? `<span class="badge">Most chosen</span>` : ""}</div><p class="muted" style="font-size:14px">${sub}</p></div>
-      <div class="gy-price"><span class="num" style="font-size:40px">${pr}</span><span class="muted">/ month</span></div>
+  <div class="sk-head"><div><span class="sk-eyebrow">Membership</span><h2 class="sk-h2">Pick how often you’ll train</h2><p class="muted" style="font-size:14px;margin-top:8px">Sample prices: replace with yours.</p></div><p class="muted" style="max-width:340px">No joining fee. Pause up to 8 weeks a year. Cancel with 30 days’ notice.</p></div>
+  <div class="gy-plans">${[["Open gym", "$00", "Train on your own schedule", ["Open gym 5:30 AM – 10 PM", "Program card refreshed monthly", "One coach check-in per quarter"], "", "Choose open gym"],
+    ["Unlimited", "$00", "Classes plus open gym", ["Every class on the timetable", "Open gym 5:30 AM – 10 PM", "Quarterly goal session with a coach", "Bring a friend free once a month"], "feat", "Choose unlimited"],
+    ["Coached 1:1", "$00", "Four private sessions a month", ["A plan written around you", "Four 1:1 sessions with your coach", "Open gym included", "Weekly check-in by message"], "gy-mhide", "Book a consult"]].map(([n, pr, sub, items, c, cta]) => `<article class="card gy-plan ${c}"><div><div class="sk-row" style="justify-content:space-between"><h3 class="sk-h3">${n}</h3>${c === "feat" ? `<span class="badge">Most chosen</span>` : ""}</div><p class="muted" style="font-size:14px">${sub}</p></div>
+      <div class="gy-price"><span class="num" style="font-size:40px">${pr}</span><span class="muted">/ month · sample price</span></div>
       <ul>${items.map((t) => `<li><span>${ic("check", 16)}</span><span>${t}</span></li>`).join("")}</ul><a class="btn ${c === "feat" ? "primary" : ""} block sk-btn-lg" href="#">${cta}</a></article>`).join("")}</div>
 </div></section>
 
@@ -170,9 +171,11 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Timetable", "Membership", "Coach
   <div class="gy-path">${[["Week 1", "Move well", "Squat, hinge, push and pull with a broomstick before a barbell."], ["Week 2", "Load it", "First barbell work and how to pick a starting weight."], ["Week 3", "Conditioning", "Pacing on the rower and bike, and what a hard session should feel like."], ["Week 4", "Join a class", "Your coach books you into two regular classes and stays nearby."]].map(([w, t, d]) => `<div class="gy-wk"><span class="badge">${w}</span><h3 class="sk-h3">${t}</h3><p class="muted" style="font-size:14px">${d}</p></div>`).join("")}</div>
 </div></section>
 
-<section class="sk-sec sk-alt"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Member notes</span><h2 class="sk-h2">What members say</h2></div></div>
-  <div class="gy-notes sk-rail">${[["big", "I was nervous walking in. Kenji had me squatting a broomstick in front of a mirror and nobody looked twice. Two years on, the 6:15 crew is the best part of my week.", "Laila M.", "6:15 AM regular"], ["", "The timetable actually fits a shift pattern. I book lunch conditioning on my phone between meetings.", "Owen R.", "Unlimited member"], ["", "Coaches fix your form without making a show of it. Saturday sled day is loud in the best way.", "Grace T.", "Member since 2024"]].map(([c, q, n, r]) => `<figure class="card gy-note ${c}"><q>${esc(q)}</q><figcaption class="sk-row" style="gap:10px"><span class="avatar" style="width:36px;height:36px">${n[0]}${n.split(" ")[1][0]}</span><span><b>${n}</b><br><span class="muted" style="font-size:13px">${r}</span></span></figcaption></figure>`).join("")}</div>
+<section class="sk-sec sk-alt" id="coach-notes"><div class="sk-wrap">
+  <div class="sk-head"><div><span class="sk-eyebrow">Coach notes</span><h2 class="sk-h2">Notes from the coaches</h2></div><p class="muted" style="max-width:340px">Practical answers to what new members ask us most often.</p></div>
+  <div class="gy-notes sk-rail">${[["big", "Picking a first class", "Start with Intro to lifting or Mobility & core. Both run at a steady pace, and the coach shows every movement before you try it. Tell us about any injuries when you book.", "Dana Kowalski", "Head coach"],
+    ["", "Your first session", "Ten minutes of warm-up, a short skill block, then a piece you can scale. Go at a pace you can talk at. Rest whenever you need to.", "Elijah Mensah", "Conditioning"],
+    ["", "Booking and cancelling", "Booking opens 7 days ahead. Cancel up to 2 hours before so your spot goes to the next person on the waitlist.", "Rosa Lindqvist", "Mobility"]].map(([c, h, t, n, r]) => `<figure class="card gy-note ${c}"><p class="gy-tip"><b>${esc(h)}</b>${esc(t)}</p><figcaption class="sk-row" style="gap:10px"><span class="avatar" style="width:36px;height:36px">${n[0]}${n.split(" ")[1][0]}</span><span><b>${n}</b><br><span class="muted" style="font-size:13px">${r}</span></span></figcaption></figure>`).join("")}</div>
 </div></section>
 
 <section class="sk-sec" id="book-a-free-trial-class"><div class="sk-wrap"><div class="card gy-trial">
@@ -187,10 +190,10 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Timetable", "Membership", "Coach
   </form>
 </div></div></section>
 </main>
-${K.footer(p, "Coached strength and conditioning on Foundry Street. Open gym from 5:30 AM.", [["Visit", ["21 Foundry Street, Unit 4", "Bike racks and street parking", "Mon–Fri 5:30 AM – 10 PM"]], ["Contact", ["(555) 014-7700", "coach@ironyard.example", "Front desk staffed 7 AM – 8 PM"]], ["Members", ["Book a class", "Pause or freeze", "House rules"]]])}`, CSS);
+${K.footer(p, "Coached strength and conditioning on Foundry Street. Open gym from 5:30 AM.", [["Visit", ["21 Foundry Street, Unit 4", "Bike racks and street parking", "Mon–Fri 5:30 AM – 10 PM"]], ["Contact", ["(555) 014-7700", "coach@ironyard.example", "Front desk staffed 7 AM – 8 PM"]], ["Members", ["Book a class", "Pause or freeze", "House rules"]]], "© 2026 Ironyard Gym, a fictional gym. Sample content: replace names, prices and times with your own.")}`, CSS);
 
 module.exports = {
   "gym-website": K.def("gym", "Gym website",
-    "a full gym home page: navigation with a free-trial button and member log-in, an uppercase hero with a training-floor banner and four facility facts, a six-day class timetable grid with class types, times and spaces left, three membership plans with monthly prices and a featured plan, coach cards, five facility zones beside a turf photo, a four-week beginner path, member notes, a free trial booking form with class picker and a footer",
-    ["navigation-header", "hero", "stats", "timetable", "schedule", "pricing", "pricing-cards", "team", "features-list", "steps", "testimonials", "booking-form", "footer", "gym", "fitness"], web),
+    "a full gym home page: navigation with a free-trial button and member log-in, an uppercase hero with a training-floor banner and four facility facts, a six-day class timetable grid with class types, times and spaces left, three membership plans with sample $00 monthly prices and a featured plan, coach cards, five facility zones beside a turf photo, a four-week beginner path, notes from the coaches with first-class tips, a free trial booking form with class picker and a footer",
+    ["navigation-header", "hero", "stats", "timetable", "schedule", "pricing", "pricing-cards", "team", "features-list", "steps", "booking-form", "footer", "gym", "fitness"], web),
 };

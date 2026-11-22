@@ -65,6 +65,15 @@ function need(c) {
     const cv = c.cv || {}; req(cv.h2 && cv.lede && Array.isArray(cv.rows) && cv.rows.length >= 4 && cv.rows.length <= 6 && cv.rows.every((r) => r.length === 3 && r.every(Boolean)), "cv: h2, lede, 4-6 of [years, title, detail]");
     req(Array.isArray(c.art) && c.art.length === 3 && c.art.every((a) => PART.includes(a)), "art: 3 project drawings");
   }
+  // class timetable layout (timetable) needs a week of classes with a class-type filter and three passes: gym, fitness and yoga content only (21-Nov-2026)
+  if ((c.layouts || []).includes("timetable")) {
+    const C = c.classes || {}; req(C.eyebrow && C.h2 && C.lede && C.note && /sample/i.test(C.note) && C.filterLabel && C.allLabel && C.todayLabel, "classes: eyebrow, h2, lede, note (says sample), filterLabel, allLabel, todayLabel");
+    req(Array.isArray(C.kinds) && C.kinds.length >= 3 && C.kinds.length <= 4 && C.kinds.every((x) => x.length === 2 && /^[a-z]+$/.test(x[0]) && x[1]), "classes.kinds: 3-4 of [id, label]");
+    const ks = new Set((C.kinds || []).map((x) => x[0]));
+    req(Array.isArray(C.days) && C.days.length >= 5 && C.days.length <= 7 && C.days.every((d) => d.d && Array.isArray(d.slots) && d.slots.length >= 2 && d.slots.length <= 4 && d.slots.every((x) => x.length === 4 && x.every(Boolean) && ks.has(x[3]))), "classes.days: 5-7 of { d, slots: 2-4 of [time, class, who, kind id] }");
+    for (const k of ks) req((C.days || []).some((d) => (d.slots || []).some((x) => x[3] === k)), `classes: kind ${k} has no class`);
+    const P = c.passes || {}; req(P.h2 && P.lede && P.note && /sample/i.test(P.note) && Array.isArray(P.items) && P.items.length === 3 && P.items.every((x) => x.t && x.price && x.per && Array.isArray(x.points) && x.points.length === 3 && x.points.every(Boolean)), "passes: h2, lede, note (says sample), exactly 3 of { t, price, per, 3 points }");
+  }
   for (const [k, n] of [["visit.fields", c.visit.fields], ["footer.cols", c.footer.cols], ["services.cols", c.services.cols]]) if (n) req(Array.isArray(n) && n.length === 3 && n.every(Boolean), `${k}: 3 labels`);
   if (/—/.test(JSON.stringify(c))) miss.push("em dash");
   if (miss.length) throw new Error(`${c.niche}: ${miss.join(", ")}`);

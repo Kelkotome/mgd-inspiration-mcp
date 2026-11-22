@@ -57,6 +57,15 @@ const GLYPH = {
   megaphone: '<path d="M8 26h10l26-14v40L18 38H8z"/><path d="M18 38l4 16h8l-4-16M52 24v16"/>',
   frameart: '<rect x="8" y="8" width="48" height="48"/><rect x="16" y="16" width="32" height="32"/><path d="M16 40l10-10 8 8 6-6 8 8"/>',
   person: '<circle cx="32" cy="20" r="10"/><path d="M12 56c2-12 10-20 20-20s18 8 20 20"/>',
+  // beauty, fitness and wellness (21-Nov-2026, seventh industry)
+  scissors: '<circle cx="16" cy="48" r="8"/><circle cx="48" cy="48" r="8"/><path d="M21 42L46 8M43 42L18 8"/><circle cx="32" cy="26" r="1.5"/>',
+  razor: '<path d="M10 22h34l8 6-8 6H10z"/><path d="M10 28h40"/><path d="M26 34v24M20 58h12"/><path d="M14 14h4M24 14h4M34 14h4"/>',
+  polish: '<rect x="18" y="28" width="28" height="28" rx="6"/><path d="M24 28V18h16v10"/><path d="M28 18V6h8v12"/><path d="M24 42h16"/>',
+  stones: '<ellipse cx="32" cy="52" rx="22" ry="6"/><ellipse cx="32" cy="38" rx="16" ry="6"/><ellipse cx="32" cy="25" rx="10" ry="5"/><path d="M32 18c0-6 4-10 10-12-1 6-4 10-10 12z"/>',
+  brush: '<path d="M44 8l12 12-24 24-12-12z"/><path d="M20 32l-8 8c-4 4-4 10 0 12s8 4 12 0l8-8"/><path d="M38 14l12 12"/>',
+  dumbbell: '<path d="M20 32h24"/><rect x="10" y="20" width="10" height="24" rx="2"/><rect x="44" y="20" width="10" height="24" rx="2"/><path d="M4 26v12M60 26v12"/>',
+  stopwatch: '<circle cx="32" cy="36" r="20"/><path d="M32 36V24M26 8h12M32 8v8M48 18l4-4"/>',
+  lotus: '<path d="M32 50c-6-8-6-20 0-30 6 10 6 22 0 30z"/><path d="M32 50c-10-2-18-10-20-22 10 2 18 10 20 22zM32 50c10-2 18-10 20-22-10 2-18 10-20 22z"/><path d="M8 54h48"/>',
 };
 const glyph = (c, size, sw = 2.2) => `<svg class="i" width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPH[c.motif]}</svg>`;
 // Abstract illustration, drawn from the niche's glyph. Original artwork; a site owner swaps it for a real photo.
@@ -1113,6 +1122,106 @@ const indexL = (p, st, c) => { const W = c.work, CV = c.cv;
 <div class="ix-foot">${[`<div><b>${esc(p.name)}</b><span class="muted">${esc(c.footer.blurb)}</span></div>`, ...c.visit.locations.map((l) => `<div><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></div>`)].join("")}</div></div></section>
 </main>${notice(c)}${foot(p, c)}`, BASE + PF_BASE + pfFilterCss(c, "ixf", "ix-row") + indexCss); };
 
+// ==== class timetable layout (21-Nov-2026, seventh industry: gym, personal trainer and fitness, yoga). Needs c.classes (week of classes
+// with a class-type filter) and c.passes (three membership or class-pass cards with placeholder prices). No script: the filter is radio chips
+// with :has() rules, the same pattern as the portfolio filter (without :has() every class stays visible). People are initials, never photos.
+const TT_BASE = `<style>
+.tt-chips{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+.tt-legend{float:left;padding:8px 4px 8px 0;font-size:14px;font-weight:600;color:var(--muted)}
+.tt-chip{position:relative;display:inline-flex}
+.tt-chip input{position:absolute;opacity:0;width:1px;height:1px}
+.tt-chip span{padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:var(--bg);font-weight:600;font-size:14px;cursor:pointer}
+.tt-chip input:checked+span{background:var(--text);color:var(--bg);border-color:var(--text)}
+.tt-chip input:focus-visible+span{outline:2px solid var(--primary);outline-offset:2px}
+</style>`;
+const ttFilter = (c, id) => `<fieldset class="tt-chips"><legend class="tt-legend">${esc(c.classes.filterLabel)}</legend><label class="tt-chip"><input type="radio" name="${id}" id="${id}-all" checked><span>${esc(c.classes.allLabel)}</span></label>${c.classes.kinds.map(([k, l]) => `<label class="tt-chip"><input type="radio" name="${id}" id="${id}-${k}"><span>${esc(l)}</span></label>`).join("")}</fieldset>`;
+const ttFilterCss = (c, id, cell) => `<style>${c.classes.kinds.map(([k]) => `.${id}:has(#${id}-${k}:checked) .${cell}:not([data-k~="${k}"]){display:none}`).join("")}</style>`;
+const kindLabel = (c, k) => (c.classes.kinds.find((x) => x[0] === k) || [k, k])[1];
+const ttCss = `<style>
+.tt-top{background:var(--text);color:var(--bg)}
+.tt-top .muted,.tt-top .sk-lede{color:inherit;opacity:.74}
+.tt-top .sk-eyebrow{color:inherit;opacity:.8}
+.tt-top .btn{border-color:var(--bg)}
+.tt-top .btn:not(.primary){background:transparent;color:var(--bg)}
+.tt-hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:56px;align-items:center;padding-block:72px 64px}
+.tt-h1{font-size:calc(66px * var(--hs));line-height:1}
+.tt-today{background:var(--bg);color:var(--text);padding:24px;display:grid;gap:4px;border-radius:var(--radius-lg)}
+.tt-today h2{font-size:calc(22px * var(--hs));margin-bottom:8px}
+.tt-today ol{list-style:none;display:grid}
+.tt-today li{display:grid;grid-template-columns:72px minmax(0,1fr);gap:2px 12px;padding:12px 0;border-top:1px solid var(--border)}
+.tt-today time{grid-row:span 2;font-weight:700;font-variant-numeric:tabular-nums}
+.tt-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid color-mix(in oklab,var(--bg) 30%,transparent)}
+.tt-facts>div{padding:20px 24px 24px 0;display:grid;gap:2px}
+.tt-facts>div+div{padding-left:24px;border-left:1px solid color-mix(in oklab,var(--bg) 30%,transparent)}
+.tt-bar{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;margin-bottom:22px}
+.tt-week{display:grid;grid-template-columns:repeat(var(--days),minmax(0,1fr));border:1px solid var(--text)}
+.tt-day{display:grid;align-content:start;min-width:0}
+.tt-day+.tt-day{border-left:1px solid var(--border)}
+.tt-day h3{font-size:14px;letter-spacing:.08em;text-transform:uppercase;padding:12px 12px;background:var(--surface);border-bottom:1px solid var(--text)}
+.tt-slot{display:grid;gap:2px;padding:12px;border-bottom:1px solid var(--border);font-size:14px;min-width:0;overflow-wrap:anywhere}
+.tt-slot time{font-weight:700;font-variant-numeric:tabular-nums}
+.tt-slot b{font-size:15px;line-height:1.3}
+.tt-slot .badge{justify-self:start;margin-top:4px}
+.tt-kinds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--text);margin-top:56px}
+.tt-kinds article{display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px 14px;padding:22px 20px 22px 0;border-bottom:1px solid var(--border)}
+.tt-kinds .badge{justify-self:start}
+.tt-kinds .ic{grid-row:span 3;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:var(--text);color:var(--bg)}
+.tt-pass{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
+.tt-pass article{padding:28px;display:grid;gap:12px;align-content:start;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--bg)}
+.tt-pass article:nth-child(2){background:var(--text);color:var(--bg);border-color:var(--text)}
+.tt-pass article:nth-child(2) .muted{color:inherit;opacity:.74}
+.tt-pass article:nth-child(2) .btn{background:var(--bg);color:var(--text);border-color:var(--bg)}
+.tt-price{font:var(--hw) calc(44px * var(--hs))/1 var(--font-h)}
+.tt-pass ul{list-style:none;display:grid;gap:8px}
+.tt-pass li{display:flex;gap:8px;align-items:flex-start}
+.tt-first{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:56px;align-items:start}
+.tt-steps{list-style:none;counter-reset:t;display:grid}
+.tt-steps li{counter-increment:t;display:grid;grid-template-columns:56px minmax(0,1fr);gap:2px 14px;padding:18px 0;border-top:1px solid var(--border)}
+.tt-steps li::before{content:counter(t);grid-row:span 2;width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--text);border-radius:50%;font-weight:700}
+.tt-t{width:100%;border-collapse:collapse;margin-top:16px}
+.tt-t th,.tt-t td{text-align:left;padding:12px 14px 12px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.tt-t thead th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--text)}
+.tt-team{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.tt-team article{display:grid;gap:8px;align-content:start}
+.tt-team .avatar{width:100%;height:auto;aspect-ratio:1;border-radius:var(--radius-lg);font:var(--hw) calc(44px * var(--hs)) var(--font-h)}
+.tt-aud{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center}
+.tt-aud ul{list-style:none;display:grid;gap:0}
+.tt-aud li{padding:14px 0;border-bottom:1px solid var(--border);display:flex;gap:10px}
+.tt-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.tt-say{font:var(--hw) calc(34px * var(--hs))/1.2 var(--font-h);max-width:960px}
+.tt-faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px}
+.tt-faq details{padding:16px 0;border-top:1px solid var(--border)}
+.tt-faq p{margin-top:8px;color:var(--muted)}
+.tt-visit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:48px;align-items:start}
+.tt-locs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:24px}
+.tt-locs article{display:grid;gap:2px;padding-top:14px;border-top:2px solid var(--text)}
+.tt-end{padding:56px 0}
+.tt-endin{display:flex;flex-wrap:wrap;gap:24px;align-items:end;justify-content:space-between}
+@media (max-width:1024px){.tt-hero,.tt-first,.tt-visit,.tt-aud{grid-template-columns:minmax(0,1fr);gap:32px}.tt-week{grid-template-columns:repeat(3,minmax(0,1fr))}.tt-day{border-bottom:1px solid var(--text)}.tt-day+.tt-day{border-left:0}.tt-day:not(:nth-child(3n+1)){border-left:1px solid var(--border)}.tt-kinds,.tt-pass{grid-template-columns:repeat(2,minmax(0,1fr))}.tt-team{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.tt-hero{padding-block:36px 32px}.tt-h1{font-size:calc(42px * var(--hs))}.tt-facts{grid-template-columns:minmax(0,1fr)}.tt-facts>div+div{padding-left:0;border-left:0;border-top:1px solid color-mix(in oklab,var(--bg) 30%,transparent)}.tt-week,.tt-kinds,.tt-pass,.tt-faq,.tt-locs{grid-template-columns:minmax(0,1fr)}.tt-day:not(:nth-child(3n+1)){border-left:0}.tt-team{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.tt-say{font-size:calc(24px * var(--hs))}.tt-t th:nth-child(3),.tt-t td:nth-child(3){display:none}}
+</style>`;
+const timetableL = (p, st, c) => { const C = c.classes, P = c.passes, today = C.days[0];
+  return K.page(st, `${alert(c)}${K.nav(p, [], c.hero.cta, null).replace('<nav class="sk-links" aria-label="Main"></nav>', navLinks(c)).replace('href="#' + K.slug(c.hero.cta) + '"', 'href="#visit"')}
+<main class="tt">
+<section class="tt-top"><div class="sk-wrap tt-hero"><div class="sk-stack"><span class="sk-eyebrow">${esc(c.hero.eyebrow)}</span><h1 class="tt-h1">${esc(c.hero.h1)}</h1><p class="sk-lede">${esc(c.hero.lede)}</p><div class="sk-row"><a class="btn primary sk-btn-lg" href="#visit">${esc(c.hero.cta)}</a><a class="btn sk-btn-lg" href="#services">${esc(c.hero.alt)}</a></div></div>
+<div class="tt-today"><span class="sk-eyebrow">${esc(C.todayLabel)}</span><h2>${esc(today.d)}</h2><ol>${today.slots.map(([t, n, w]) => `<li><time>${esc(t)}</time><b>${esc(n)}</b><span class="muted">${esc(w)}</span></li>`).join("")}</ol></div></div>
+<div class="sk-wrap"><div class="tt-facts">${c.facts.map((f) => `<div><b>${esc(f.t)}</b><span class="muted">${esc(f.d)}</span></div>`).join("")}</div></div></section>
+<section class="sk-sec" id="services"><div class="sk-wrap ttf"><div class="sk-head"><div><span class="sk-eyebrow">${esc(C.eyebrow)}</span><h2 class="sk-h2">${esc(C.h2)}</h2></div><p class="muted">${esc(C.lede)}</p></div>
+<div class="tt-bar">${ttFilter(c, "ttf")}<span class="muted">${esc(C.note)}</span></div>
+<div class="tt-week" style="--days:${C.days.length}">${C.days.map((d) => `<div class="tt-day"><h3>${esc(d.d)}</h3>${d.slots.map(([t, n, w, k]) => `<div class="tt-slot" data-k="${esc(k)}"><time>${esc(t)}</time><b>${esc(n)}</b><span class="muted">${esc(w)}</span><span class="badge">${esc(kindLabel(c, k))}</span></div>`).join("")}</div>`).join("")}</div>
+<div class="tt-kinds">${c.services.items.map((s) => `<article><span class="ic">${ic(s.icon, 19)}</span><h3 class="sk-h3">${esc(s.t)}</h3><span class="muted">${esc(s.d)}</span><span class="badge">${esc(s.who)}</span></article>`).join("")}</div></div></section>
+<section class="sk-sec sk-alt" id="passes"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(P.h2)}</h2></div><p class="muted">${esc(P.lede)}</p></div>
+<div class="tt-pass">${P.items.map((x) => `<article><h3 class="sk-h3">${esc(x.t)}</h3><p><span class="tt-price">${esc(x.price)}</span> <span class="muted">${esc(x.per)}</span></p><ul>${x.points.map((y) => `<li>${ic("check", 16)}<span>${esc(y)}</span></li>`).join("")}</ul><a class="btn block" href="#visit">${esc(P.button || c.hero.cta)}</a></article>`).join("")}</div><p class="muted" style="margin-top:16px;font-size:13.5px">${esc(P.note)}</p></div></section>
+<section class="sk-sec" id="process"><div class="sk-wrap tt-first"><div class="sk-stack"><h2 class="sk-h2">${esc(c.process.h2)}</h2><p class="muted">${esc(c.process.lede)}</p><div class="sk-photo" style="aspect-ratio:4/3;width:100%">${scene(c, 520, 390)}</div></div>
+<div><ol class="tt-steps">${c.process.steps.map((s) => `<li><b>${esc(s.t)}</b><span class="muted">${esc(s.d)}</span></li>`).join("")}</ol>
+<h3 class="sk-h3" style="margin-top:36px">${esc(c.table.h2)}</h3><p class="muted">${esc(c.table.lede)}</p><table class="tt-t"><thead><tr>${c.table.cols.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${c.table.rows.map((r) => `<tr>${r.map((x, i) => `<td>${i ? esc(x) : `<b>${esc(x)}</b>`}</td>`).join("")}</tr>`).join("")}</tbody></table>${c.table.note ? `<p class="muted" style="margin-top:12px;font-size:13px">${esc(c.table.note)}</p>` : ""}</div></div></section>
+<section class="sk-sec sk-alt" id="team"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.team.h2)}</h2></div><p class="muted">${esc(c.team.lede)}</p></div><div class="tt-team">${c.team.people.map((m) => `<article><span class="avatar" aria-hidden="true">${esc(initials(m.n))}</span><h3 class="sk-h3">${esc(m.n)}</h3><p class="muted">${esc(m.r)}</p><p>${esc(m.b)}</p></article>`).join("")}</div></div></section>
+<section class="sk-sec"><div class="sk-wrap tt-aud"><div class="sk-stack"><span class="sk-eyebrow">${esc(c.audience.eyebrow)}</span><h2 class="sk-h2">${esc(c.audience.h2)}</h2><p class="muted">${esc(c.audience.lede)}</p></div><ul>${c.audience.points.map((x) => `<li>${ic("check", 18)}<span>${esc(x)}</span></li>`).join("")}</ul></div>
+<div class="sk-wrap" style="margin-top:64px"><h3 class="sk-h3">${esc(c.index.h2)}</h3><p class="muted" style="margin-top:6px">${esc(c.index.lede)}</p><div class="tt-tags">${c.index.items.map((x) => `<span class="badge">${esc(x)}</span>`).join("")}</div><p class="tt-say" style="margin-top:56px">${esc(c.statement)}</p></div></section>
+<section class="sk-sec sk-alt" id="faq"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">${esc(c.faq.h2)}</h2></div></div><div class="tt-faq">${faqItems(c)}</div></div></section>
+<section class="sk-sec" id="visit"><div class="sk-wrap tt-visit"><div><h2 class="sk-h2">${esc(c.visit.h2)}</h2><p class="sk-lede">${esc(c.visit.lede)}</p><div class="tt-locs">${c.visit.locations.map((l) => `<article><b>${esc(l.n)}</b><span>${esc(l.addr)}</span><span class="muted">${esc(l.hours)}</span><span>${esc(l.phone)}</span></article>`).join("")}</div><p style="margin-top:18px"><b>${esc(c.visit.email)}</b></p></div>${contactForm(c)}</div></section>
+<section class="tt-end tt-top"><div class="sk-wrap tt-endin"><div class="sk-stack"><h2 class="sk-h2">${esc(c.cta.h2)}</h2><p class="muted">${esc(c.cta.lede)}</p></div><a class="btn primary sk-btn-lg" href="#visit">${esc(c.hero.cta)}</a></div></section>
+</main>${notice(c)}${foot(p, c)}`, BASE + TT_BASE + ttFilterCss(c, "ttf", "tt-slot") + ttCss); };
 
 const LAYOUTS = {
   atlas: { fn: atlas, style: "corporate", name: "Atlas", about: "split hero with a next-step card, card grids and a contact form" },
@@ -1133,5 +1242,7 @@ const LAYOUTS = {
   // portfolio and creative studio layouts: only for content with a project list, a case study and a CV (portfolios and creative studios)
   work: { fn: workL, style: "brutalist", name: "Work", about: "the work first: a type-led hero over a ruled availability strip, project cards with a discipline filter, one case study told in steps", needs: "work", webH: 9200, mobileH: 14400 },
   index: { fn: indexL, style: "monochrome", name: "Index", about: "the list first: the name set large as a masthead, a numbered project index that opens row by row with a discipline filter, then a CV, services and contact in columns", needs: "work", webH: 9200, mobileH: 14400 },
+  // class timetable layout: only for content with a week of classes and passes (gym, personal trainer and fitness, yoga)
+  timetable: { fn: timetableL, style: "monochrome", name: "Timetable", about: "the week first: a dark hero with today's classes, a weekly class timetable with a class-type filter, three passes with sample prices, a first-visit guide and coaches", needs: "classes", webH: 7400, mobileH: 15200 },
 };
 module.exports = { LAYOUTS, GLYPH, prop, dish, SAMPLE_KEY, wdArt, WD_ART, pfArt, PF_ART };

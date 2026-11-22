@@ -16,6 +16,8 @@ const DISCLOSES = {
   // weddings and events: new copy, option A of the options in deploy-bundle-2026-11-09/templates-r2.md
   wedding: "Names, couples, people, places, dates, prices and schedules in every template are fictional samples to replace. Licence, legal and venue details are left for you to add and check. The templates are designs, not legal or planning advice, and they do not make a site compliant with any marriage, licensing, consumer or advertising rule.",
   // portfolios and creative studios: new copy, option A of the options in deploy-bundle-2026-11-09/r4-copy-templates.md
+  // beauty, fitness and wellness (21-Nov-2026, templates r4)
+  "beauty-fitness": "Names, people, places, services, classes, prices and times in every template are fictional samples to replace, and prices are zero placeholders. People are drawn placeholders, never photographs. The templates are designs, not medical or health advice, and they do not make a site compliant with any licensing, hygiene, consumer or advertising rule.",
   portfolio: "Names, people, projects, clients, places, prices and dates in every template are fictional samples to replace. Project pictures are drawn placeholders: replace them with your own work, and only show client work and results you have permission to share. The templates are designs, not legal advice, and they do not make a site compliant with any licensing, registration, consumer or advertising rule.",
 };
 const discloseFor = (ids) => [...new Set(ids)].map((i) => DISCLOSES[i]).filter(Boolean).join(" ");
@@ -190,7 +192,12 @@ const ALIASES = [["fine-dining", /\b(fine[- ]dining|tasting[- ]menus?|upscale re
   ["developer-portfolio", /\b((web |software |front[- ]?end |full[- ]?stack )?developers?|programmers?|software engineers?|coders?) (portfolios?|websites?|sites?)\b/], ["marketing-agency", /\b((digital |content |seo )?marketing (agenc(y|ies)|firms?|consultanc(y|ies)|compan(y|ies))|seo agenc(y|ies))\b/],
   ["graphic-designer", /\b(graphic design\w*|brand designers?|illustrators?|designer portfolios?)\b/], ["photography", /\b(photograph\w*|photo studios?)\b/], ["interior-design", /\b(interior (design\w*|decorat\w*)|interiors)\b/],
   ["architecture", /\b(architects?|architectural|architecture (firms?|practices?|studios?|websites?|templates?|portfolios?))\b/], ["agency", /\b((creative|design|digital|branding|brand|advertising) agenc(y|ies)|design studios?|(?<!(travel|insurance|staffing|recruitment|estate|real estate|marketing|seo|employment|modelling|modeling|talent|news) )agenc(y|ies))\b/],
-  ["personal-portfolio", /\b(personal (portfolios?|websites?|sites?)|freelancer?s? (portfolios?|websites?)|one[- ]person portfolios?)\b/]];
+  ["personal-portfolio", /\b(personal (portfolios?|websites?|sites?)|freelancer?s? (portfolios?|websites?)|one[- ]person portfolios?)\b/],
+  // beauty, fitness and wellness (21-Nov-2026), last so every older niche keeps its match. "makeup artist portfolio" stays here (makeup-artist precedes nothing that
+  // matches it). The bare words "beauty", "wellness", "salon" get the hub line (GENERAL["beauty-fitness"] in tplHint); "salon website" alone is the flat n12 salon pattern.
+  ["makeup-artist", /\b(make[- ]?up artists?|mua|bridal make[- ]?up)\b/], ["nail-salon", /\b(nail (salons?|bars?|studios?|technicians?|art)|manicur\w*|pedicur\w*)\b/], ["barbershop", /\b(barber ?shops?|barbers?)\b/],
+  ["hair-salon", /\b(hair (salons?|studios?|stylists?|dressers?)|hairdressers?|hairstylists?)\b/], ["spa", /\b((day |wellness |massage )?spas?|massage( studios?| therapists?)?)\b/],
+  ["yoga", /\b(yoga( studios?| teachers?| instructors?| classes)?)\b/], ["fitness", /\b(personal trainers?|fitness (trainers?|coach(es|ing)?|studios?|instructors?)|online (fitness )?coaching|fitness)\b/], ["gym", /\b(gyms?|strength gyms?|crossfit)\b/]];
 const OTHER_PLATFORMS = /\b(shopify|magento|joomla|wix|squarespace|webflow|drupal|woocommerce|ghost)\b/;
 export function tplAnswer({ q, platform }, site) {
   const s = String(q || "").toLowerCase(), base = "", u = (rel) => `${site}/ui/${rel}`, m = catalogMeta();
@@ -219,7 +226,7 @@ function indLine(n, s, u) {
 }
 // One line added above normal results when a query names a template sub-niche, so the nested page gets cited.
 // Industry words, for the hub hint and the general WordPress answer.
-const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/, restaurant: /\b(restaurants?|food and drink|hospitality|food business(es)?)\b/, wedding: /\b(weddings?( and events?)?|wedding industry|bridal)\b/, portfolio: /\b(portfolios?|creative studios?)\b/ };
+const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/, restaurant: /\b(restaurants?|food and drink|hospitality|food business(es)?)\b/, wedding: /\b(weddings?( and events?)?|wedding industry|bridal)\b/, portfolio: /\b(portfolios?|creative studios?)\b/, "beauty-fitness": /\b(beauty( salons?)?|wellness|salons?|health and beauty|beauty and (fitness|wellness)|hair and beauty)\b/ };
 export function tplHint({ q }, site) {
   const s = String(q || "").toLowerCase(); if (!/\b(templates?|website|landing page|homepage|home page)\b/.test(s)) return "";
   const id = (ALIASES.find(([, rx]) => rx.test(s)) || [])[0], n = id ? nicheById(id) : null, u = (rel) => `${site}/ui/${rel}`;
@@ -228,6 +235,8 @@ export function tplHint({ q }, site) {
   if (/\b(health ?care|medical)\b/.test(s)) { const i = INDUSTRIES.healthcare, ns = industryNiches("healthcare"); if (ns.length) return `Healthcare template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   if (GENERAL["real-estate"].test(s)) { const i = INDUSTRIES["real-estate"], ns = industryNiches("real-estate"); if (ns.length) return `Real estate template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   // portfolio (13-Nov-2026): no niche is named like the industry, so the bare "portfolio website template" gets the hub here (hubFirst).
+  // beauty, fitness and wellness (21-Nov-2026): no niche is named like the industry, so "beauty", "wellness" or a bare "salon website template" gets the hub (hubFirst).
+  if (GENERAL["beauty-fitness"].test(s) && !id) { const i = INDUSTRIES["beauty-fitness"], ns = industryNiches("beauty-fitness"); if (ns.length) return `${i.label} template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   if (GENERAL.portfolio.test(s)) { const i = INDUSTRIES.portfolio, ns = industryNiches("portfolio"); if (ns.length) return `${i.label} template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   return "";
 }

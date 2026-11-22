@@ -1,0 +1,125 @@
+{
+ "barbershop": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.417,
+  "failedPairs": []
+ },
+ "fitness": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger",
+   "timetable"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.41,
+  "failedPairs": []
+ },
+ "gym": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger",
+   "timetable"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.397,
+  "failedPairs": []
+ },
+ "hair-salon": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.43,
+  "failedPairs": []
+ },
+ "makeup-artist": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.411,
+  "failedPairs": []
+ },
+ "nail-salon": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.421,
+  "failedPairs": []
+ },
+ "spa": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.427,
+  "failedPairs": []
+ },
+ "yoga": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger",
+   "timetable"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.443,
+  "failedPairs": []
+ }
+}

@@ -1,4 +1,5 @@
 # 5-Nov-2026 template round (n12): industry website templates (Keyword Planner "{industry} website template / website design / landing page template").
+# 21-Nov-2026 (templates r4): "hair salon" and "fitness ... website" moved to the beauty-fitness niches by design, so those two cases accept either pattern.
 # query | expected patterns (any of) | optional args
 restaurant website template | restaurant-website
 restaurant landing page with menu and reservations | restaurant-website
@@ -13,7 +14,7 @@ online store homepage | ecommerce-website
 coffee shop website template | coffee-shop-website
 bakery cafe website | coffee-shop-website
 salon website template | salon-website
-hair salon booking website | salon-website
+hair salon booking website | salon-website hair-salon-website
 real estate website template | real-estate-website
 real estate landing page with property search | real-estate-website
 construction website template | construction-website
@@ -23,7 +24,7 @@ lawyer website | law-firm-website
 dental website template | dental-website
 dentist website design | dental-website
 gym website template | gym-website
-fitness website with class timetable | gym-website
+fitness website with class timetable | gym-website fitness-website
 education website template | school-website
 school website | school-website
 nonprofit website template | nonprofit-website

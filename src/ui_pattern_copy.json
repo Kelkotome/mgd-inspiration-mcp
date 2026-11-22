@@ -2757,7 +2757,7 @@
  },
  "gym-website": {
   "h1": "Gym website templates",
-  "intro": "A gym site should make the first visit easy. These templates include a free-trial hero, a weekly class timetable, membership options, coaches, the training floor, a beginner path, member notes and a trial booking form.",
+  "intro": "A gym site should make the first visit easy. These templates include a free-first-visit hero, a weekly class timetable with a filter by class type, passes with sample prices, coaches, the training floor, a beginner path and a first-visit booking form.",
   "tips": [
    "Put the timetable on the page, not behind a download.",
    "Show membership options side by side.",
@@ -4830,6 +4830,146 @@
    [
     "How many photo slots should a dating profile have?",
     "Six slots in a 3 by 2 grid is common, with two required, the first marked as the main photo and the order changeable by dragging."
+   ]
+  ]
+ },
+ "hair-salon-website": {
+  "h1": "Hair salon website templates",
+  "intro": "Salon clients want to know what a cut or colour costs, how long it takes and who will do it. These templates include a booking hero, services with times and sample prices, the stylists, how a first visit and a colour consultation work, patch tests, aftercare and a booking form.",
+  "tips": [
+   "Publish services with how long each one takes and a from-price.",
+   "Say how colour consultations and patch tests work before people book.",
+   "Show the stylists by what they do, so clients can choose.",
+   "Put the cancellation policy next to the booking form."
+  ],
+  "faq": [
+   [
+    "What should a hair salon website include?",
+    "Services with times and prices, the stylists, how to book, consultations and patch tests, the cancellation policy, opening hours and how to find you."
+   ],
+   [
+    "Should a salon show prices online?",
+    "Yes. A from-price and a time for each service answers the first question most clients have and saves calls."
+   ]
+  ]
+ },
+ "barbershop-website": {
+  "h1": "Barbershop website templates",
+  "intro": "A barbershop site answers three questions fast: can I walk in, how much, and how long. These templates include walk-in and booking options, a cuts list with times and sample prices, the barbers, opening hours with quiet times and a booking form.",
+  "tips": [
+   "Say clearly whether you take walk-ins, bookings or both.",
+   "List cuts and beard work with times and from-prices.",
+   "Show the quietest times so people can drop in without a wait.",
+   "Keep the address and hours visible on a phone."
+  ],
+  "faq": [
+   [
+    "What should a barbershop website include?",
+    "Walk-in and booking options, a list of cuts with times and prices, the barbers, opening hours, the address and a way to book."
+   ],
+   [
+    "Do barbershops need online booking?",
+    "Many mix walk-ins and bookings. Say which you take and when, so people know whether to book or just turn up."
+   ]
+  ]
+ },
+ "nail-salon-website": {
+  "h1": "Nail salon website templates",
+  "intro": "A nail salon site sells on the menu and the booking slot. These templates include manicure, pedicure and nail art services with times and sample prices, how appointments run, hygiene and aftercare notes written as samples, the team and a booking form.",
+  "tips": [
+   "List every service with how long it takes and a from-price.",
+   "Say how long gel or extensions usually last and how removal works.",
+   "Explain your cleaning routine in plain words, then check it matches what you do.",
+   "Make the booking form short."
+  ],
+  "faq": [
+   [
+    "What should a nail salon website include?",
+    "Services with times and prices, nail art options, how removals and infills work, aftercare, the team, opening hours and online booking."
+   ],
+   [
+    "How do nail salons get more bookings online?",
+    "Clear prices and times, a short booking form and current opening hours. Show your own nail art pictures once you have them."
+   ]
+  ]
+ },
+ "spa-website": {
+  "h1": "Spa and massage website templates",
+  "intro": "A spa or massage site should make a quiet hour easy to book. These templates include massages, facials and packages with times and sample prices, what to expect on arrival, what to wear, the rooms, the team, gift vouchers and a booking form.",
+  "tips": [
+   "Give each treatment a length and a from-price.",
+   "Say what happens on arrival, what to wear and when to arrive.",
+   "Ask guests to tell you about health conditions, and keep health claims off the page.",
+   "Offer gift vouchers and say how long they last."
+  ],
+  "faq": [
+   [
+    "What should a spa website include?",
+    "Treatments with times and prices, packages, what to expect on arrival, the rooms, the team, gift vouchers, policies and a booking form."
+   ],
+   [
+    "Can a spa website describe health benefits?",
+    "Describe what happens in a treatment and how it feels. Health claims usually need evidence and may be regulated, so check the rules where you work."
+   ]
+  ]
+ },
+ "makeup-artist-website": {
+  "h1": "Makeup artist website templates",
+  "intro": "A makeup artist site sells the artist and the date. These templates include wedding, event and shoot makeup, trials, lessons, how a wedding morning runs, sample prices, the artist's background and a date enquiry form.",
+  "tips": [
+   "Say which dates you are taking and how far ahead people should enquire.",
+   "Explain trials, travel and early starts for weddings.",
+   "Add your own pictures of your work once you have permission to share them.",
+   "Keep the enquiry form to date, place, number of people and looks."
+  ],
+  "faq": [
+   [
+    "What should a makeup artist website include?",
+    "Services for weddings, events and shoots, trials, lessons, how a booking works, prices, travel, your background and a date enquiry form."
+   ],
+   [
+    "Should a makeup artist show prices?",
+    "A from-price for each service, plus travel and early-start fees, helps people enquire with the right budget."
+   ]
+  ]
+ },
+ "fitness-website": {
+  "h1": "Personal trainer and fitness website templates",
+  "intro": "A personal trainer site sells a first session and a timetable that fits. These templates include one-to-one, small-group, outdoor and online sessions, a weekly session timetable with a filter, passes with sample prices, how a first session works and a booking form.",
+  "tips": [
+   "Say who you train and where: studio, outdoors or online.",
+   "Put your weekly sessions on the page.",
+   "Explain the first session step by step.",
+   "Keep health and weight-loss claims off the page, and add your own qualifications."
+  ],
+  "faq": [
+   [
+    "What should a personal trainer website include?",
+    "The kinds of sessions you run, where and when, prices or passes, how a first session works, your background and a way to book."
+   ],
+   [
+    "Should personal trainers list prices?",
+    "Yes, at least from-prices for a single session and a pack. It saves time for you and for people looking."
+   ]
+  ]
+ },
+ "yoga-website": {
+  "h1": "Yoga studio website templates",
+  "intro": "A yoga studio site is built around the timetable. These templates include a weekly class timetable with a filter by class type, beginners' courses, passes with sample prices, the teachers, what to bring to a first class and a booking form.",
+  "tips": [
+   "Put the timetable on the page and keep it current.",
+   "Give beginners a clear first class or course.",
+   "Say what to bring, when to arrive and whether mats are provided.",
+   "Introduce teachers by the classes they teach."
+  ],
+  "faq": [
+   [
+    "What should a yoga studio website include?",
+    "A class timetable, beginners' options, passes and prices, the teachers, what to bring, the studio address and a way to book."
+   ],
+   [
+    "How do yoga studios get new students from their website?",
+    "A clear beginners' class or course, an easy first booking and honest information about what a class is like."
    ]
   ]
  }

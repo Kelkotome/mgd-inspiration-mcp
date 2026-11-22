@@ -23,6 +23,9 @@ wrangler.n13.jsonc
 ui-screens/out-hc
 ui-screens/out-wp
 ui-screens/out-r2-r4
+ui-screens/out-ironyard
+ui-screens/out-r2-ironyard
+ui-screens/out-r2-ironyard-rollback
 ui-screens/wp-export/node_modules
 wrangler.hc.jsonc
 wrangler.ind2.jsonc
@@ -54,3 +57,5 @@ tests/r7/.base/
 wrangler.r7.jsonc
 r7-e2e.*
 r7-last-dev.log
+wrangler.ind7.jsonc
+ui-screens/out-r2-tpl-r4

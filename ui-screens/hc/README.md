@@ -35,6 +35,8 @@ A niche is one file, `hc/content/<niche>.js`. `node gen_hc.js --only <niche>` po
 | caseStudy | portfolio layouts only: eyebrow, t, lede, briefLabel, brief, note (must say "sample"), steps: exactly 3 of [heading, detail], delivered: 3 to 6 strings. |
 | cv | portfolio layouts only: h2, lede, rows: 4 to 6 of [years, title, detail] (a CV, a studio or a practice history). |
 | art (portfolios) | exactly 3 drawings from poster, book, screen, phone, building, room, chair, photo, letter, mark, pack, plan. Project cards draw them as placeholders, never as photographs of real work. |
+| classes | class timetable layout only (`timetable`; gym, personal trainer and fitness, yoga): eyebrow, h2, lede, note (must say "sample"), filterLabel, allLabel, todayLabel, kinds: 3 or 4 of [id, label] (id a-z only), days: 5 to 7 of { d, slots: 2 to 4 of [time, class, who or room, kind id] }. Every kind needs a class. The first day is shown in the hero as today's classes. |
+| passes | class timetable layout only: h2, lede, note (must say "sample"), items: exactly 3 of { t, price, per, points: 3 strings }, optional button (the label on each pass, default the hero button). Prices are zero placeholders ("$00"), checked by `tests/bw_lint.py`. |
 | optional labels | visit.fields, footer.cols and services.cols: exactly 3 strings each, to rename the form fields, footer column titles and ledger table headers (a couple's site is not a business). |
 | notice | names the business as fictional, and for health says "general information" and "not medical advice" |
 
