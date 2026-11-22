@@ -1,6 +1,6 @@
 """MCP r4 (13-Nov-2026): JSON-RPC + page checks against a Worker (the local e2e's wrangler dev, or live after the deploy).
 Usage: python3 tests/r4_rpc.py <base, e.g. http://127.0.0.1:8973/inspiration or https://madegooddesigns.com/inspiration> [--local]
-  - tools/list: 112 tools
+  - tools/list: 113 tools (112 + get_shared_board, 23-Nov-2026)
   - get_font_pairing: the 12 Noto families answer 5 pairings; CJK aliases resolve; other-script Noto names stay honest zeros
   - get_ui_flow: real flow ids answer as before; a multi-word description answers with the closest screens (live; locally only when
     UI rows exist, else it must stay the old error); gibberish stays the error
@@ -30,7 +30,7 @@ def check(name, cond, info=""):
     print(("PASS " if cond else "FAIL ") + name + ("" if cond else f"\n   -> {str(info)[:300]}"))
 
 tools = post("tools/list", {})["result"]["tools"]
-check(f"tools/list: 112 tools ({len(tools)})", len(tools) == 112, len(tools))
+check(f"tools/list: 113 tools ({len(tools)})", len(tools) == 113, len(tools))  # +get_shared_board (app boards, 23-Nov-2026)
 
 for f in ["Noto Sans", "Noto Serif", "Noto Sans SC", "Noto Serif SC", "Noto Sans TC", "Noto Serif TC", "Noto Sans JP", "Noto Serif JP", "Noto Sans KR", "Noto Serif KR", "Noto Sans Arabic", "Noto Sans Devanagari"]:
     r, t = call("get_font_pairing", {"font": f})

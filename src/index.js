@@ -42,6 +42,8 @@ import { wellKnownKind, wellKnown, oauthCors, register as oauthRegister, authori
   connectedAppsApi, connectedAppsPage } from "./oauth.js";
 // 2-Nov-2026 MCP UX: no-login moodboards + progressive tool discovery
 import { MOODBOARD_TOOL, callMoodboard, moodboardRoute, moodboardAdmin } from "./moodboards.js";
+// 23-Nov-2026: app board links Phase 1 (/app-board/<id>, /api/app-boards, get_shared_board)
+import { APP_BOARD_TOOL, callGetSharedBoard, appBoardRoute, appBoardsApi, appBoardAdmin, appBoardsCleanup } from "./app_boards.js";
 import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs } from "./discovery.js";
 import { uiItemPath } from "./ui_screens.js";
 import { foldLower } from "./fold.js"; // MCP r7: accent folding in the JS ranking of the LIKE search
@@ -103,6 +105,12 @@ async function route(request, env, ctx) {
       catch (e) { return new Response(JSON.stringify({ ok: false, error: "unavailable", message: "The AI tool is not available right now." }), { status: 503, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" } }); }
     }
 
+    // App board links (23-Nov-2026): own CORS (X-Edit-Token header), JSON errors, before the generic API preflight.
+    if (path === "/api/app-boards" || path.startsWith("/api/app-boards/")) {
+      try { const r = await appBoardsApi(path, request, env, base); if (r) return r; }
+      catch (e) { return new Response(JSON.stringify({ error: "server_error" }), { status: 500, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" } }); }
+    }
+
     // CORS preflight for the API (gallery may be embedded on the WP site, cross-origin).
     if (method === "OPTIONS" && path.startsWith("/api/")) {
       return new Response(null, { status: 204, headers: corsHeaders(env, request) });
@@ -143,6 +151,8 @@ async function route(request, env, ctx) {
       // No-login MCP moodboards (2-Nov-2026): public unlisted page + report button; admin disable.
       if (path.startsWith("/board/")) { const r = await moodboardRoute(path, request, env, base, { escHtml, rowToItem, site: "https://madegooddesigns.com", itemPage: mcpBoardItemPage }); if (r) return r; }
       if (path === "/api/admin/moodboard" && method === "POST") return moodboardAdmin(request, env, isAdmin);
+      if (path.startsWith("/app-board/")) { const r = await appBoardRoute(path, request, env, ctx, base, APP_BOARD_H); if (r) return r; }
+      if (path === "/api/admin/app-board" && method === "POST") return appBoardAdmin(request, env, isAdmin);
       if (path === "/api/admin/ui-spec-backfill" && method === "POST") return uiSpecBackfill(request, env);
       { const bm = path.match(/^\/b\/([a-z0-9]{10})$/); if (bm && method === "GET") return publicBoardPage(bm[1], env, base, url); }
       if (path === "/save" && method === "GET") return html(injectBase(SAVE_HTML, base));
@@ -253,6 +263,7 @@ async function scheduled(event, env, ctx) {
     ctx.waitUntil(env.DB.prepare("UPDATE mcp_calls SET ip='' WHERE created_at < ? AND ip != ''").bind(Date.now() - 90 * DAY).run().catch(() => {}));
     ctx.waitUntil(env.DB.prepare("DELETE FROM mcp_events WHERE created_at < ?").bind(cutoff).run().catch(() => {}));
     ctx.waitUntil(cleanupAiUsage(env)); // b60: AI usage counters kept 7 days
+    ctx.waitUntil(appBoardsCleanup(env).catch(() => {})); // app boards: expire after 12 months unseen, purge 90 days later
 }
 
 // ---------------------------------------------------------------------------
@@ -1671,7 +1682,7 @@ const MCP_TOOLS = [
     annotations: { title: "Generate DESIGN.md", readOnlyHint: true, destructiveHint: false, openWorldHint: false },
   },
 ];
-MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, ...MCP_TOOLS_64, ...MCP_TOOLS_65, ...MCP_TOOLS_66, ...MCP_TOOLS_68, ...MCP_TOOLS_69, ...MCP_TOOLS_72, ...MCP_TOOLS_73, ...MCP_TOOLS_75, ...MCP_TOOLS_76, ...MCP_TOOLS_78, ...MCP_TOOLS_79, ...MCP_TOOLS_80, MOODBOARD_TOOL, BRAND_TYPEFACE_TOOL, FONT_PAIRING_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
+MCP_TOOLS.push(...MCP_TOOLS_43, ...MCP_TOOLS_44, ...MCP_TOOLS_45, ...UI_MCP_TOOLS, ...MCP_TOOLS_48, ...MCP_TOOLS_49, ...MCP_TOOLS_50, ...MCP_TOOLS_51, ...MCP_TOOLS_52, ...MCP_TOOLS_53, ...MCP_TOOLS_63, ...MCP_TOOLS_64, ...MCP_TOOLS_65, ...MCP_TOOLS_66, ...MCP_TOOLS_68, ...MCP_TOOLS_69, ...MCP_TOOLS_72, ...MCP_TOOLS_73, ...MCP_TOOLS_75, ...MCP_TOOLS_76, ...MCP_TOOLS_78, ...MCP_TOOLS_79, ...MCP_TOOLS_80, MOODBOARD_TOOL, BRAND_TYPEFACE_TOOL, FONT_PAIRING_TOOL, APP_BOARD_TOOL); // batch-43 tool cores: unicode fonts, characters, diff, colour combos, UPC, diagrams, logos, passport sizes
 extendMockupDefs(MCP_TOOLS); // batch 73: get_mockup_print_area (mcp_tools69.js) also covers canvas, magazine, flyer, brochure, notebook, polo, cap, sticker, banner, paper bag
 
 // ---- Routing guide (sent on initialize; clients load it into the model's context) — 31-Oct-2026
@@ -2200,6 +2211,10 @@ async function mcpCallTool(params, env, ip, ua, who, listed, defer) {
     await mcpLater(defer, logMcp(env, name, a.board_id || a.title || "", ip, ua, who));
     return mcpCallToolSafe(name, () => callMoodboard(a, env, { site: MCP_SITE, ip }));
   }
+  if (name === "get_shared_board") {
+    await mcpLater(defer, logMcp(env, name, String(a.board_id || "").slice(0, 120), ip, ua, who));
+    return mcpCallToolSafe(name, () => callGetSharedBoard(a, env, { site: MCP_SITE, h: APP_BOARD_H, later: defer }));
+  }
   // 9-Nov-2026 (mcp-errors-r1): calls with none of the logged keys (product, distance, gauge, pages…) log their arguments as compact JSON,
   // so a failed call can be replayed (on 5-Nov seven tools failed with an empty query and the arguments were lost).
   await mcpLater(defer, logMcp(env, name, (a.query || a.q || (name === "get_brand_typeface" ? [].concat(a.brands || [], a.brand || []).map(String).join(", ").slice(0, 200) : "") || (name === "get_font_pairing" ? String(a.font || "").slice(0, 80) : "") || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || (typeof a.colors === "string" ? a.colors.slice(0, 80) : Array.isArray(a.colors) ? a.colors.slice(0, 6).map((x) => (x && typeof x === "object" ? JSON.stringify(x) : String(x))).join(" ").slice(0, 200) : a.colors && typeof a.colors === "object" ? JSON.stringify(a.colors).slice(0, 200) : "") || (Array.isArray(a.pairs) ? JSON.stringify(a.pairs).slice(0, 200) : "") || a.preset || "") || mcpArgsText(a), ip, ua, who));
@@ -2575,6 +2590,8 @@ async function mcpWordRows(env, where, binds, cols, q, order, limit, run, any, l
 }
 
 // Canonical madegooddesigns.com page for a curated item (used by moodboard pages; same URLs as the MCP answers cite).
+// Helpers handed to src/app_boards.js (page, Markdown brief, MCP tool).
+const APP_BOARD_H = { escHtml, rowToItem, isLinkOnly, site: "https://madegooddesigns.com", itemPage: (r, it) => mcpBoardItemPage(r, it) };
 function mcpBoardItemPage(r, it) {
   if (r.collection === "museum") return `${MCP_SITE}/museum/${slugify(it.title || it.artist || "artwork")}${it.year ? "-" + it.year : ""}-${it.id}`;
   if (r.collection === "annual-report") return `${MCP_SITE}/annual-reports/${slugify(it.company || it.title)}${it.report_year ? "-" + it.report_year : ""}-${it.id}`;
