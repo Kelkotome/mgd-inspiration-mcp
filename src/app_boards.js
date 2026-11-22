@@ -1,6 +1,7 @@
 // App board links, Phase 1 (23-Nov-2026): the Made Good Design app shares a board as a public, unlisted link
 // /inspiration/app-board/<id> (noindex), no sign-in. Same model as the MCP moodboards (src/moodboards.js): the creator gets a private
-// edit token (only its SHA-256 is stored), new boards are rate-limited per salted IP hash, 3 reports hide a board, the admin can
+// edit token (only its SHA-256 is stored), new boards are rate-limited per salted IP hash, reports from 3 DISTINCT IP hashes hide a board
+// (one report per IP hash per board counts, app_board_reports; an IP hash counts at most 20 reports a day), the admin can
 // disable/restore it. Separate table (app_boards, migrate_app_boards.sql) because the items are typed (library images, palettes,
 // colours, fonts, note cards), the caps differ (60 items) and app boards expire; mcp_moodboards and save_moodboard are untouched.
 //
@@ -28,7 +29,7 @@ export const APP_BOARD_EXPIRY_DAYS = 365;        // not viewed or edited for 12 
 export const APP_BOARD_PURGE_AFTER_DAYS = 90;     // expired rows (content already wiped) are deleted this much later
 export const APP_BOARD_LIMITS = Object.freeze({
   items: 60, bodyBytes: 32 * 1024, title: 80, notes: 500, itemNote: 200, noteText: 500, sample: 120, family: 80,
-  hexMin: 2, hexMax: 12, mode: 40, licence: 80, newPerDay: 20, updatesPerDay: 200,
+  hexMin: 2, hexMax: 12, mode: 40, licence: 80, newPerDay: 20, updatesPerDay: 200, reportsPerDay: 20,
 });
 const L = APP_BOARD_LIMITS;
 const DAY = 86400e3, REPORTS_TO_HIDE = 3;
@@ -178,7 +179,7 @@ export async function appBoardsApi(path, request, env, base) {
       if (b.disabled === ST_EXPIRED) return J({ error: "expired" }, 404);   // app treats 404 as already deleted
       const tok = request.headers.get("X-Edit-Token") || "";
       if (!tok || (await sha256hex(tok)) !== b.edit_hash) return J({ error: "The edit token is missing or wrong." }, 403);
-      await env.DB.prepare("DELETE FROM app_boards WHERE id=?").bind(b.id).run();
+      await env.DB.batch([env.DB.prepare("DELETE FROM app_boards WHERE id=?").bind(b.id), env.DB.prepare("DELETE FROM app_board_reports WHERE board_id=?").bind(b.id)]);
       return J(null, 204);
     }
     if (path !== "/api/app-boards") return null;
@@ -239,7 +240,8 @@ export async function appBoardsApi(path, request, env, base) {
   }
 }
 
-// Admin: POST /api/admin/app-board {id, disabled: 0|1} (Bearer ADMIN_TOKEN). Restoring clears the reports and counts as a view.
+// Admin: POST /api/admin/app-board {id, disabled: 0|1} (Bearer ADMIN_TOKEN). Restoring clears the reports (rows too, so 3 new distinct
+// reporters are needed to hide it again) and counts as a view.
 export async function appBoardAdmin(request, env, isAdmin) {
   const J = (o, s) => new Response(JSON.stringify(o), { status: s, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
   if (!isAdmin(request, env)) return J({ error: "unauthorized" }, 401);
@@ -248,8 +250,9 @@ export async function appBoardAdmin(request, env, isAdmin) {
   const b = ID_RE.test(id) ? await loadBoard(env, id) : null;
   if (!b) return J({ error: "not_found" }, 404);
   if (b.disabled === ST_EXPIRED) return J({ error: "expired", id }, 410);
-  await env.DB.prepare("UPDATE app_boards SET disabled=?, reports=CASE WHEN ?=0 THEN 0 ELSE reports END, last_seen=CASE WHEN ?=0 THEN ? ELSE last_seen END WHERE id=?")
-    .bind(dis, dis, dis, Date.now(), id).run();
+  const up = env.DB.prepare("UPDATE app_boards SET disabled=?, reports=CASE WHEN ?=0 THEN 0 ELSE reports END, last_seen=CASE WHEN ?=0 THEN ? ELSE last_seen END WHERE id=?")
+    .bind(dis, dis, dis, Date.now(), id);
+  await (dis ? up.run() : env.DB.batch([up, env.DB.prepare("DELETE FROM app_board_reports WHERE board_id=?").bind(id)]));
   return J({ ok: true, id, disabled: dis, reports: dis ? b.reports : 0 }, 200);
 }
 
@@ -260,6 +263,8 @@ export async function appBoardsCleanup(env, now = Date.now()) {
   try {
     const a = await env.DB.prepare("UPDATE app_boards SET disabled=3, title='', notes=NULL, items='[]', edit_hash='' WHERE last_seen < ? AND disabled != 3").bind(cutoff).run();
     const d = await env.DB.prepare("DELETE FROM app_boards WHERE last_seen < ? AND disabled = 3").bind(cutoff - APP_BOARD_PURGE_AFTER_DAYS * DAY).run();
+    // report rows older than the expiry window (their board is expired or long reviewed); idx_app_board_reports_at
+    await env.DB.prepare("DELETE FROM app_board_reports WHERE created_at < ?").bind(cutoff).run().catch(() => {});
     return { expired: (a.meta && a.meta.changes) || 0, deleted: (d.meta && d.meta.changes) || 0 };
   } catch (e) { if (/no such table/i.test(String(e && e.message))) return { expired: 0, deleted: 0 }; throw e; }
 }
@@ -394,7 +399,18 @@ export async function appBoardRoute(path, request, env, ctx, base, h) {
   const E = h.escHtml;
   if (m[2]) {
     if (request.method !== "POST") return new Response("POST only", { status: 405, headers: { Allow: "POST" } });
-    try { await env.DB.prepare("UPDATE app_boards SET reports=reports+1, disabled=CASE WHEN disabled=0 AND reports+1>=? THEN 2 ELSE disabled END WHERE id=? AND disabled!=3").bind(REPORTS_TO_HIDE, m[1]).run(); } catch (_) { /* no table yet */ }
+    // One report per IP hash per board counts (PRIMARY KEY board_id+ip_hash); hidden at 3 distinct IP hashes; an IP hash past
+    // reportsPerDay a day gets the same thank-you page but its reports are not counted. reports = distinct reporters, recounted each time.
+    try {
+      const now = Date.now(), iph = await sha256hex((env.MCP_HASH_SALT || "mgd-mcp-v1") + "|appreport|" + (request.headers.get("CF-Connecting-IP") || ""));
+      const n = await env.DB.prepare("SELECT COUNT(*) AS n FROM app_board_reports WHERE ip_hash=? AND created_at>?").bind(iph, now - DAY).first();
+      if (!n || n.n < intVar(env.APP_BOARD_REPORT_LIMIT, L.reportsPerDay)) {
+        await env.DB.batch([
+          env.DB.prepare("INSERT OR IGNORE INTO app_board_reports (board_id, ip_hash, created_at) SELECT id, ?, ? FROM app_boards WHERE id=? AND disabled != 3").bind(iph, now, m[1]),
+          env.DB.prepare("UPDATE app_boards SET reports=(SELECT COUNT(*) FROM app_board_reports WHERE board_id=?1), disabled=CASE WHEN disabled=0 AND (SELECT COUNT(*) FROM app_board_reports WHERE board_id=?1)>=?2 THEN 2 ELSE disabled END WHERE id=?1 AND disabled != 3").bind(m[1], REPORTS_TO_HIDE),
+        ]);
+      }
+    } catch (_) { /* no table yet */ }
     return simplePage(h, base, "Thanks — reported", "We’ll review this board. Boards with several reports are hidden until checked.", 200);
   }
   if (request.method !== "GET" && request.method !== "HEAD") return new Response("method not allowed", { status: 405, headers: { Allow: "GET, HEAD" } });

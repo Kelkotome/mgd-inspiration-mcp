@@ -19,7 +19,7 @@ Built and tested locally only (wrangler dev --local, throwaway D1). Nothing depl
 | `src/text_filter.js` | new: conservative word lists (adult, slurs, spam) + link/phone spam rules |
 | `src/index.js` | import; `/api/app-boards*` route placed before the generic `/api/` OPTIONS; `/app-board/*` + admin routes; tool registered + dispatched; cron call; `APP_BOARD_H` helpers |
 | `src/moodboards.js` | `resolve()` is now exported (no behaviour change) |
-| `migrate_app_boards.sql` | new table `app_boards` + 2 indexes (additive) |
+| `migrate_app_boards.sql` | new tables `app_boards` + `app_board_reports`, 4 indexes (additive) |
 | `tests/test_text_filter.mjs`, `tests/test_app_boards.mjs` | new node unit suites |
 | `tests/app_boards_rpc.py`, `tests/app_boards_local_e2e.sh` | new local end-to-end suite + runner |
 | `tests/r7_rpc.py`, `tests/r4_rpc.py`, `tests/mcp_r3_rpc.py`, `tests/test_mcp_r3.mjs` | tool count 112 → 113 (`get_shared_board` last) |
@@ -44,6 +44,9 @@ Built and tested locally only (wrangler dev --local, throwaway D1). Nothing depl
 npx wrangler d1 execute mgd-inspiration --remote --command "CREATE TABLE IF NOT EXISTS app_boards (id TEXT PRIMARY KEY, edit_hash TEXT NOT NULL, title TEXT NOT NULL, notes TEXT, items TEXT NOT NULL DEFAULT '[]', ip_hash TEXT, created_at INTEGER NOT NULL, updated_at INTEGER, last_seen INTEGER NOT NULL, upd_day INTEGER NOT NULL DEFAULT 0, upd_count INTEGER NOT NULL DEFAULT 0, reports INTEGER NOT NULL DEFAULT 0, disabled INTEGER NOT NULL DEFAULT 0)"
 npx wrangler d1 execute mgd-inspiration --remote --command "CREATE INDEX IF NOT EXISTS idx_app_boards_ip ON app_boards(ip_hash, created_at)"
 npx wrangler d1 execute mgd-inspiration --remote --command "CREATE INDEX IF NOT EXISTS idx_app_boards_seen ON app_boards(last_seen)"
+npx wrangler d1 execute mgd-inspiration --remote --command "CREATE TABLE IF NOT EXISTS app_board_reports (board_id TEXT NOT NULL, ip_hash TEXT NOT NULL, created_at INTEGER NOT NULL, PRIMARY KEY (board_id, ip_hash))"
+npx wrangler d1 execute mgd-inspiration --remote --command "CREATE INDEX IF NOT EXISTS idx_app_board_reports_ip ON app_board_reports(ip_hash, created_at)"
+npx wrangler d1 execute mgd-inspiration --remote --command "CREATE INDEX IF NOT EXISTS idx_app_board_reports_at ON app_board_reports(created_at)"
 ```
 
 ## Deploy order
@@ -63,6 +66,7 @@ npx wrangler rollback <previous version id>
 Get the version id from `npx wrangler deployments list` before deploying. The table can stay because nothing else reads it. To remove it fully:
 
 ```sh
+npx wrangler d1 execute mgd-inspiration --remote --command "DROP TABLE IF EXISTS app_board_reports"
 npx wrangler d1 execute mgd-inspiration --remote --command "DROP TABLE IF EXISTS app_boards"
 ```
 
@@ -100,9 +104,9 @@ Run `bash tests/app_boards_local_e2e.sh`.
 
 | Suite | Result |
 |---|---|
-| test_text_filter | 89/89 |
+| test_text_filter | 135/135 |
 | test_app_boards | 59/59 |
-| app_boards_rpc | 103 passed, 0 failed |
+| app_boards_rpc | 116 passed, 0 failed |
 | r7_rpc | 33/33 |
 | fp6_rpc | 18/18 |
 | fp5_rpc | 14/14 |
@@ -131,4 +135,14 @@ Run `bash tests/app_boards_local_e2e.sh`.
 - **Body over 32 KB:** returns 400 with field `body` (not 413), to keep the 400 `{error, field}` shape.
 - **Create with a `token` but no `id`:** the token is ignored and a new board is created.
 - **`url`:** always `${PUBLIC_ORIGIN}/inspiration/app-board/<id>`, which is `https://madegooddesigns.com/inspiration/app-board/<id>` with the live vars.
-- **Reports:** work like moodboards: 3 reports hide a board, with no per-IP dedupe.
+- **Reports (lead decision 23-Nov):**
+  - One report per IP hash per board counts (`app_board_reports`, primary key board_id + ip_hash).
+  - A board is hidden once 3 distinct IP hashes have reported it.
+  - An IP hash counts at most 20 reports a day (`APP_BOARD_REPORT_LIMIT` overrides; 3 in local tests). Past the cap the reporter still sees the thank-you page, but the report is not counted.
+  - Admin restore clears the board's report rows. Owner delete removes them. The cron deletes report rows older than 365 days.
+  - A report costs: a count on `idx_app_board_reports_ip` (up to 20 rows), an `INSERT OR IGNORE`, and a recount of that board's rows.
+- **Filter (tightened 23-Nov):**
+  - Blocks sexual slang, porn and adult-site terms and explicit sexual phrases (pussy, porn, xxx, nsfw, onlyfans, hentai, cum, sex video/tape/toys/chat, send nudes, …).
+  - Also catches leetspeak, stretched letters ("pooorn", "xxxx") and spelled-out letters ("n.s.f.w", "p o r n").
+  - Still allowed: "nude", plain "sex" (e.g. "Sex Pistols"), naked, hardcore, fetish, vibrator, XXXL. Whole-word allowlist: Pornic, "cum laude".
+  - Known side effect: a run of 3+ x's (an "xxxx" placeholder) is refused.

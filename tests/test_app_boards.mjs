@@ -6,7 +6,7 @@ let n = 0, fail = 0;
 const t = (name, cond, info) => { n++; if (!cond) { fail++; console.log("FAIL", name, info === undefined ? "" : JSON.stringify(info).slice(0, 300)); } else console.log("PASS", name); };
 const v = (b) => { try { return { ok: validateBoard(b) }; } catch (e) { return { err: validationError(e) || { thrown: String(e) } }; } };
 const field = (b) => (v(b).err || {}).field;
-const x = (k) => "x".repeat(k);
+const x = (k) => "a".repeat(k);  // not "x": a run of x is an adult term since 23-Nov (xxx)
 const base = { title: "T", notes: "", items: [] };
 
 // ---- happy path + normalisation

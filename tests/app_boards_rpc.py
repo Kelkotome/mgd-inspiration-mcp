@@ -1,5 +1,5 @@
 """App board links Phase 1 (23-Nov-2026): HTTP + MCP checks against a LOCAL worker (tests/app_boards_local_e2e.sh starts it with
-APP_BOARD_DAILY_LIMIT=8, APP_BOARD_UPDATE_LIMIT=5, ADMIN_TOKEN=local-admin-test, --test-scheduled, seeded items, migrate_app_boards.sql).
+APP_BOARD_DAILY_LIMIT=8, APP_BOARD_UPDATE_LIMIT=5, APP_BOARD_REPORT_LIMIT=3, ADMIN_TOKEN=local-admin-test, --test-scheduled, seeded items, migrate_app_boards.sql).
   python3 tests/app_boards_rpc.py http://127.0.0.1:8987   (env D1CMD = the `wrangler d1 execute … --local` prefix, for expiry checks)
 Covers: create / update / delete, bad token, every cap, filter accept/reject, both rate limits, XSS in every text field, page + OG tags,
 Markdown brief, get_shared_board MCP tool, 404/410 states, expiry on read + daily cron expiry/purge, last_seen bump. UA curl/8.4.0."""
@@ -110,22 +110,22 @@ _, _, html2 = page(bid)
 check("update: full replace (old items gone, new present)", "<h1>Renamed</h1>" in html2 and "#123456" in html2 and "#FF0000" not in html2 and html2.count('class="pin"') == 1 and "Acme Transit" in html2, html2[:200])
 check("update: wrong token → 403 {error}", api({"id": bid, "token": "abt_wrong", "title": "x", "items": []})[0] == 403)
 check("update: missing token → 403", api({"id": bid, "title": "x", "items": []})[0] == 403)
-st, j, _ = api({"id": bid, "token": "abt_wrong", "title": "x" * 500, "items": []})
+st, j, _ = api({"id": bid, "token": "abt_wrong", "title": "a" * 500, "items": []})
 check("update: wrong token is checked before validation (403, not 400)", st == 403 and "field" not in j, (st, j))
 check("update: unknown id → 404", api({"id": "zzzzzzzzzzzzzz", "token": tok, "title": "x", "items": []})[0] == 404)
-st, j, _ = api({"id": bid, "token": tok, "title": "ok", "notes": "x" * 501, "items": []})
+st, j, _ = api({"id": bid, "token": tok, "title": "ok", "notes": "a" * 501, "items": []})
 check("update: validation 400 with field + limit", st == 400 and j.get("field") == "notes" and "500" in j.get("error", ""), j)
 
 # ---- caps + validation over HTTP
 lib = lambda i: {"kind": "library", "id": i}
 cases = [
-  ("title 81", {"title": "x" * 81, "items": []}, "title"), ("notes 501", {"title": "t", "notes": "n" * 501, "items": []}, "notes"),
+  ("title 81", {"title": "a" * 81, "items": []}, "title"), ("notes 501", {"title": "t", "notes": "n" * 501, "items": []}, "notes"),
   ("notes 2000 (app cap)", {"title": "t", "notes": "n" * 2000, "items": []}, "notes"),
   ("61 items", {"title": "t", "items": [{"kind": "colour", "hex": "#000000"}] * 61}, "items"),
-  ("item note 201", {"title": "t", "items": [{"kind": "colour", "hex": "#000000", "note": "x" * 201}]}, "items[0].note"),
-  ("note card 501", {"title": "t", "items": [{"kind": "note", "text": "x" * 501}]}, "items[0].text"),
-  ("sample 121", {"title": "t", "items": [{"kind": "font", "family": "Inter", "sample": "x" * 121}]}, "items[0].sample"),
-  ("family 81", {"title": "t", "items": [{"kind": "font", "family": "x" * 81}]}, "items[0].family"),
+  ("item note 201", {"title": "t", "items": [{"kind": "colour", "hex": "#000000", "note": "a" * 201}]}, "items[0].note"),
+  ("note card 501", {"title": "t", "items": [{"kind": "note", "text": "a" * 501}]}, "items[0].text"),
+  ("sample 121", {"title": "t", "items": [{"kind": "font", "family": "Inter", "sample": "a" * 121}]}, "items[0].sample"),
+  ("family 81", {"title": "t", "items": [{"kind": "font", "family": "a" * 81}]}, "items[0].family"),
   ("1 hex", {"title": "t", "items": [{"kind": "palette", "hexes": ["#000000"]}]}, "items[0].hexes"),
   ("13 hexes", {"title": "t", "items": [{"kind": "palette", "hexes": ["#000000"] * 13}]}, "items[0].hexes"),
   ("bad hex", {"title": "t", "items": [{"kind": "palette", "hexes": ["#000000", "#00000Z"]}]}, "items[0].hexes[1]"),
@@ -139,9 +139,9 @@ for name, b, f in cases:
     st, j, _ = api(b, ip="10.0.9.9")
     check(f"cap/validation: {name} → 400 field {f}", st == 400 and j.get("field") == f, (st, j))
 check("caps at the limit pass (title 80, notes 500, 60 items, 12 hexes, sample 120, family 80, notes 200/500)",
-      api({"title": "x" * 80, "notes": "n" * 500, "items": [{"kind": "palette", "hexes": ["#000000"] * 12, "note": "x" * 200}, {"kind": "font", "family": "f" * 80, "sample": "s" * 120},
-           {"kind": "note", "text": "x" * 500}] + [{"kind": "colour", "hex": "#000000"}] * 57}, ip="10.0.9.8")[0] == 201)
-st, j, _ = api(None, ip="10.0.9.9", raw=json.dumps({"title": "t", "notes": "", "items": [{"kind": "note", "text": "x" * 400}] * 60, "pad": "p" * 9000}).encode())
+      api({"title": "a" * 80, "notes": "n" * 500, "items": [{"kind": "palette", "hexes": ["#000000"] * 12, "note": "a" * 200}, {"kind": "font", "family": "f" * 80, "sample": "s" * 120},
+           {"kind": "note", "text": "a" * 500}] + [{"kind": "colour", "hex": "#000000"}] * 57}, ip="10.0.9.8")[0] == 201)
+st, j, _ = api(None, ip="10.0.9.9", raw=json.dumps({"title": "t", "notes": "", "items": [{"kind": "note", "text": "a" * 400}] * 60, "pad": "p" * 9000}).encode())
 check("body > 32 KB → 400 field body (limit stated)", st == 400 and j.get("field") == "body" and "32768" in j.get("error", ""), (st, j))
 st, j, _ = api(None, ip="10.0.9.9", raw=b"{not json")
 check("invalid JSON → 400 field body", st == 400 and j.get("field") == "body", (st, j))
@@ -152,6 +152,12 @@ for f, b in [("title", {"title": "Cheap VIAGRA", "items": []}), ("notes", {"titl
              ("items[0].family", {"title": "t", "items": [{"kind": "font", "family": "Hentai Sans"}]})]:
     st, j, _ = api(b, ip="10.0.9.9")
     check(f"filter rejects {f} → 400 text_not_allowed", st == 400 and j == {"error": "text_not_allowed", "field": f}, (st, j))
+for f, b in [("title", {"title": "Pussy Riot", "items": []}), ("notes", {"title": "t", "notes": "follow my 0nlyfans", "items": []}),
+             ("items[0].text", {"title": "t", "items": [{"kind": "note", "text": "N.S.F.W stuff"}]}), ("items[0].note", {"title": "t", "items": [{"kind": "colour", "hex": "#000000", "note": "sex video"}]})]:
+    st, j, _ = api(b, ip="10.0.9.9")
+    check(f"tightened filter rejects {f} → 400 text_not_allowed", st == 400 and j == {"error": "text_not_allowed", "field": f}, (st, j))
+st, j, _ = api({"title": "Pornic sardines", "notes": "Magna cum laude certificate", "items": []}, ip="10.0.9.6")
+check("allowlist: Pornic, cum laude accepted", st == 201, (st, j))
 st, j, _ = api({"title": "Nude palette", "notes": "Sex Pistols poster, Moby Dick cover, https://a.example", "items": [{"kind": "note", "text": "Spice market"}]}, ip="10.0.9.7")
 check("filter accepts design words (nude, Sex Pistols, Moby Dick, spice)", st == 201, (st, j))
 
@@ -169,9 +175,13 @@ check("create rate limit: another IP unaffected", api({"title": "other", "items"
 
 # ---- report → hidden (410); admin restore / disable
 st, j, _ = api({"title": "to report", "items": [lib(LIB_DESIGN)]}, ip="10.0.6.1"); pid, ptok = j["id"], j["token"]
-for _ in range(2): req("POST", f"{I}/app-board/{pid}/report", raw=b"")
-check("2 reports: still visible", page(pid)[0] == 200)
-st, _, t = req("POST", f"{I}/app-board/{pid}/report", raw=b"")
+report = lambda bid_, ip: req("POST", f"{I}/app-board/{bid_}/report", raw=b"", headers={"CF-Connecting-IP": ip})
+for _ in range(5): report(pid, "10.1.0.1")
+check("same IP reporting 5 times counts once: still visible", page(pid)[0] == 200)
+if D1CMD: check("same IP 5 times → reports = 1, one row", d1(f"SELECT reports FROM app_boards WHERE id='{pid}'") == [{"reports": 1}] and d1(f"SELECT COUNT(*) n FROM app_board_reports WHERE board_id='{pid}'") == [{"n": 1}])
+report(pid, "10.1.0.2")
+check("2 distinct IPs: still visible", page(pid)[0] == 200)
+st, _, t = report(pid, "10.1.0.3")
 check("report → thanks page", st == 200 and "reported" in t)
 st, _, t = page(pid)
 check("3 reports: friendly 410 page, noindex", st == 410 and "hidden pending review" in t and "noindex" in t, st)
@@ -184,11 +194,26 @@ st, _, t = adm({"id": pid, "disabled": 0})
 check("admin restore → 200, page back", st == 200 and json.loads(t)["reports"] == 0 and page(pid)[0] == 200, t)
 check("admin disable → 410 page", adm({"id": pid, "disabled": 1})[0] == 200 and page(pid)[0] == 410)
 check("report GET → 405", req("GET", f"{I}/app-board/{pid}/report")[0] == 405)
+for ip in ["10.1.0.1", "10.1.0.2", "10.1.0.3"]: report(pid, ip)
+if D1CMD: check("after admin restore: report rows cleared, so old reporters count again (3 rows)", d1(f"SELECT COUNT(*) n FROM app_board_reports WHERE board_id='{pid}'") == [{"n": 3}])
+# per-IP daily report cap (APP_BOARD_REPORT_LIMIT=3 locally; 20 live): the 4th board this IP reports is not counted
+cap_ids = [api({"title": f"cap {i}", "items": []}, ip="10.0.4.1")[1]["id"] for i in range(4)]
+for c in cap_ids: report(c, "10.1.9.9")
+if D1CMD:
+    rs = [d1(f"SELECT reports FROM app_boards WHERE id='{c}'")[0]["reports"] for c in cap_ids]
+    check("report cap per IP hash: 3 counted, the 4th (over the daily cap) ignored, thank-you page still shown", rs == [1, 1, 1, 0] and report(cap_ids[3], "10.1.9.9")[0] == 200, rs)
+for ip in ["10.1.9.1", "10.1.9.2"]: report(cap_ids[3], ip)
+check("a capped IP cannot help hide: 2 other IPs → still visible", page(cap_ids[3])[0] == 200)
+report(cap_ids[3], "10.1.9.3")
+check("3rd distinct counted IP hides it", page(cap_ids[3])[0] == 410)
+check("report on an unknown board → thanks page, no row", report("zzzzzzzzzzzzzz", "10.1.8.1")[0] == 200 and (not D1CMD or d1("SELECT COUNT(*) n FROM app_board_reports WHERE board_id='zzzzzzzzzzzzzz'") == [{"n": 0}]))
 
 # ---- delete
 check("delete: no token → 403", delete(bid)[0] == 403)
 check("delete: wrong token → 403", delete(bid, "abt_wrong")[0] == 403)
+report(bid, "10.1.7.1")
 check("delete: right token → 204 (no body)", delete(bid, tok) == (204, None))
+if D1CMD: check("delete also removes the board's report rows", d1(f"SELECT COUNT(*) n FROM app_board_reports WHERE board_id='{bid}'") == [{"n": 0}])
 st, _, t = page(bid)
 check("deleted: page 404 friendly", st == 404 and "doesn’t exist" in t, st)
 check("deleted: delete again → 404", delete(bid, tok)[0] == 404)

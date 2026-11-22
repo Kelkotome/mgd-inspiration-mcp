@@ -44,7 +44,7 @@ D1 --command "INSERT INTO items (id,title,description,source_url,source_host,ima
  ('d00000000001','Licensed scan (link only)','x','https://lib.example/1','lib.example','link/d00000000001.jpg','[]','[]','[]','published',1700000020000,'design',800,600,NULL),
  ('e00000000001','Pending item','x','https://p.example/1','p.example','items/e00000000001.jpg','[]','[]','[]','pending',1700000021000,'design',800,600,NULL),
  ('bbbbbbbbbbb9','Private user item','x','https://private.example/','private.example','user/u/bbbbbbbbbbb9.jpg','[]','[]','[]','published',1700000022000,'design',800,600,'someoneelse1')" >>"$T/setup.log" 2>&1 || { echo "seed (app-board rows) failed"; tail -5 "$T/setup.log"; exit 1; }
-"$W" dev --local -c "$CFG" --persist-to "$T/state" --port $PORT --inspector-port $INSP --test-scheduled --var APP_BOARD_DAILY_LIMIT:8 --var APP_BOARD_UPDATE_LIMIT:5 --var ADMIN_TOKEN:local-admin-test --var MOODBOARD_DAILY_LIMIT:6 --show-interactive-dev-session=false > "$T/dev.log" 2>&1 &
+"$W" dev --local -c "$CFG" --persist-to "$T/state" --port $PORT --inspector-port $INSP --test-scheduled --var APP_BOARD_DAILY_LIMIT:8 --var APP_BOARD_UPDATE_LIMIT:5 --var APP_BOARD_REPORT_LIMIT:3 --var ADMIN_TOKEN:local-admin-test --var MOODBOARD_DAILY_LIMIT:6 --show-interactive-dev-session=false > "$T/dev.log" 2>&1 &
 DEVPID=$!; up=0; for i in $(seq 1 90); do curl -s -o /dev/null http://127.0.0.1:$PORT/inspiration/mcp && { up=1; break; }; sleep 1; done
 [ $up = 1 ] || { echo "dev server did not start"; tail -20 "$T/dev.log"; exit 1; }
 L=http://127.0.0.1:$PORT/inspiration
