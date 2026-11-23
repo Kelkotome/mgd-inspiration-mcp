@@ -19,7 +19,7 @@ await want("free wordpress block theme lists four industries", T("free wordpress
 await want("home builder stays real estate", T("home builder wordpress theme"), ["/ui/wordpress-themes/real-estate/home-builder"], [W]);
 await want("website builder theme is not a builder niche", T("website builder theme"), [], [W, "construction-website-templates"]);
 await want("shopify plumber theme, honest none", T("shopify plumber theme"), ["no Shopify templates", `${H}plumber-website-template`], ["download/wordpress"]);
-await want("construction template hint leads with the hub", T("construction website template"), ["Construction and home services template hub", "/ui/construction-website-templates", `${H}construction-company-website-template`, "7 distinct designs"]);
+await want("construction template hint leads with the hub", T("construction website template"), ["Construction and home services template hub", "/ui/construction-website-templates", `${H}construction-company-website-template`, "6 distinct designs"]);
 await want("construction company template gets the niche", T("construction company website template"), [`${H}construction-company-website-template`], ["template hub"]);
 await want("plain template gets the nested page", T("landscaping website template"), [`${H}landscaping-website-template`, "6 distinct designs"]);
 await want("home services website template gets the hub", T("home services website template"), ["Construction and home services template hub"]);
@@ -29,5 +29,5 @@ await want("healthcare unchanged", T("cardiology WordPress theme"), ["/ui/wordpr
 await want("builder wordpress theme: honest none, not the construction niche (page-builder intent)", T("builder wordpress theme"), ['No WordPress theme for "builder"'], [W, "construction-website-templates/"]);
 for (const q of ["page builder theme", "form builder dark theme", "progress bar theme", "home services app", "job tracker app", "contractor dashboard theme", "dark theme dashboard"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "construction-website-templates"]);
 await want("list_ui_patterns themes", call("list_ui_patterns", { kind: "themes" }), ["TEMPLATE TREE, CONSTRUCTION AND HOME SERVICES", `${W}pest-control`, "TEMPLATE TREE, RESTAURANT", "TEMPLATE TREE, HEALTHCARE", "TEMPLATE TREE, REAL ESTATE"]);
-const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 112) { fails++; console.log("FAIL tool count changed"); }
+const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 113) { fails++; console.log("FAIL tool count changed"); }
 console.log(`${n} checks, ${fails} failed`); process.exit(fails ? 1 : 0);

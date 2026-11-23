@@ -26,5 +26,5 @@ await want("healthcare unchanged", T("cardiology WordPress theme"), ["/ui/wordpr
 await want("not hijacked: search bar wordpress (honest none, not the bar niche)", T("search bar wordpress"), [/No WordPress theme for "search bar"/], ["/ui/wordpress-themes/restaurant/bar", "restaurant block themes"]);
 for (const q of ["navigation bar theme", "progress bar theme", "tab bar dark theme", "sidebar theme", "food delivery app dashboard theme", "dark theme dashboard", "restaurant booking app", "menu component"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "No WordPress theme", "restaurant-website-templates"]);
 await want("list_ui_patterns themes", call("list_ui_patterns", { kind: "themes" }), ["TEMPLATE TREE, RESTAURANT", `${W}food-truck`, "TEMPLATE TREE, HEALTHCARE", "TEMPLATE TREE, REAL ESTATE"]);
-const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 112) { fails++; console.log("FAIL tool count changed"); }
+const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 113) { fails++; console.log("FAIL tool count changed"); }
 console.log(`${n} checks, ${fails} failed`); process.exit(fails ? 1 : 0);

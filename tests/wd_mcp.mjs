@@ -30,5 +30,5 @@ await want("healthcare unchanged", T("cardiology WordPress theme"), ["/ui/wordpr
 await want("tattoo still honest none (salon has themes since templates r4)", T("tattoo wordpress theme"), [/No WordPress theme for "tattoo"/]);
 for (const q of ["calendar event card", "event list component", "rsvp form", "countdown timer", "photo gallery grid", "event ticket checkout"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "No WordPress theme"]);
 await want("list_ui_patterns themes", call("list_ui_patterns", { kind: "themes" }), ["TEMPLATE TREE, WEDDINGS AND EVENTS", `${W}florist`, "TEMPLATE TREE, RESTAURANT", "TEMPLATE TREE, HEALTHCARE", "TEMPLATE TREE, REAL ESTATE"]);
-const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 112) { fails++; console.log("FAIL tool count changed"); }
+const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 113) { fails++; console.log("FAIL tool count changed"); }
 console.log(`${n} checks, ${fails} failed`); process.exit(fails ? 1 : 0);

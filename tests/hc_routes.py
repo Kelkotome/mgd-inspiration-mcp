@@ -94,8 +94,9 @@ if sig and IND == "wedding" and os.environ.get("WD_SIG", "1") == "1":   # WD_SIG
 if sig and IND == "restaurant":
     s, _, rb = text(f"/ui/raw/{sig[0][-12:]}.html"); ck(s == 200 and "Fictional restaurant created for this template" in rb, "restaurant signature carries the fictional notice")
     ck(not re.search(r"Guest notes|What regulars order|San Marzano|[Ff]eta\b", rb), "restaurant signature has no guest notes or protected food names")
-# the live builder page (construction company, the first construction niche), fixed in this branch: renamed to Stoneharrow Builders, fictional notice, testimonials, figures and licence numbers removed
+# templates r5 (23-Nov-2026): the live n12/n13 construction, cleaning, hvac and pest-control homepages are not signatures (as gym in r4), so they
+# stay plain items: none of them may be a card on its nested page.
 if sig and IND == "construction":
-    s, _, rb = text(f"/ui/raw/{sig[0][-12:]}.html"); ck(s == 200 and "Fictional builder created for this template" in rb and "Stoneharrow Builders" in rb, "builder signature carries the fictional notice and the new name")
-    ck(not re.search(r"Ironbark|Family-run since|GC-48213|projects completed since|Nadia & Sean|Owen R\.", rb), "builder signature has no old name, testimonials, figures or licence number")
+    for nid, pat, htmlSeg, seg in NICHES:
+        s, _, nb = text(f"/ui/{HUB}/{htmlSeg}"); ck(not re.search(r"Ironbark|Spruceway|Northdraft|Mothwell", nb.split("Every screen", 1)[0]), f"{nid}: no n12/n13 homepage card")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)
