@@ -48,6 +48,7 @@ import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs 
 import { uiItemPath } from "./ui_screens.js";
 import { foldLower } from "./fold.js"; // MCP r7: accent folding in the JS ranking of the LIKE search
 import { intentHint, withIntentHint, hintKindOf } from "./intent_hints.js"; // MCP r7: font / brand / palette hints on library searches
+import { ipFranchise, ipBias, ipOrder, ipStylePool, withIpNotice } from "./ip_notice.js";
 import { withIconHint, withUiHint, UI_HINT_HEAD, BRAND_TYPEFACE_TOOL, brandTypeface, ftsSearch, withMuseumHint, MUSEUM_HINT_HEAD, isGeneric, GENERIC_W } from "./search_extras.js";
 import { FONT_PAIRING_TOOL, fontPairing } from "./font_pairing.js"; // kit pilot 5-Nov-2026 (local branch kit-pilot-2026-11)
 import { REF_FONTS, OFFER_HEAD, buildNextStep } from "./next_offer.js";
@@ -2257,13 +2258,26 @@ function mcpHinted(tool, q, rows, r) {
 }
 async function mcpCallToolInner(name, a, env, opts) {
   if (name === "search_design_inspiration") {
-    const q = (a.query || "").toString().trim();
+    const q0 = (a.query || "").toString().trim();
+    const ip = ipFranchise(q0); // 23-Nov-2026: franchise name → search an original look-alike genre + copyright note (src/ip_notice.js)
+    const q = ip ? ip.kind.alt : q0;
     const limit = clampInt(a.limit, 8, 1, 20);
     const binds = ["published", "design"];
     let where = "status=? AND owner_id IS NULL AND collection=?";
     if (a.theme) { where += " AND themes LIKE ?"; binds.push(`%"${a.theme}"%`); }
-    const r = await mcpSearchRowsRetry(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
-    return mcpIconHinted(q, withMuseumHint(name, q, withUiHint(q, mcpHinted(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design)))), env);
+    let r;
+    const stylePool = ip ? null : ipStylePool(q0);
+    if (ip || stylePool) {
+      // curated pool first (museum + design rows tagged alt-*), narrowed by a franchise bias word when that still leaves >= 3, rotated per franchise;
+      // generic style queries (no franchise name) use the same pools without a notice; the loose phrase search is the backup
+      const pool = ip ? ip.kind.pool : stylePool;
+      const pw = "status=? AND owner_id IS NULL AND collection IN ('design','museum') AND tags LIKE ?", pb = ["published", `%"${pool}"%`], pc = ["title", "description", "tags", "themes"];
+      const ord = ipOrder(ip ? ip.franchise : q0), bias = ip ? ipBias(ip.franchise) : "";
+      if (bias) { const b = await mcpSearchRowsRetry(env, pw, pb, pc, bias, ord, limit); if (b.rows.length >= 3) r = b; }
+      if (!r) { const pr = await mcpSearchRowsRetry(env, pw, pb, pc, "", ord, limit); if (pr.rows.length >= 3) r = pr; }
+    }
+    if (!r) r = await mcpSearchRowsRetry(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
+    return withIpNotice(ip, await mcpIconHinted(q, withMuseumHint(name, q, withUiHint(q, mcpHinted(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design)))), env));
   }
   if (name === "list_inspiration_themes") {
     // 2-Nov-2026: this scans every design row (avg 2.6 s live; ~74k rows read); counts move slowly. MCP r3: kept 60 min per
