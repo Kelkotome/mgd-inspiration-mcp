@@ -85,6 +85,9 @@ for d in sorted(glob.glob(os.path.join(OUT, "*-web-*"))):
     if re.search(r"\(\d{3}\) (?!01)", txt) or re.search(r"\((?!555)\d{3}\) \d{3}-", txt): errs.append("phone not in fictional (555) 01xx range")
     if "ictional" not in txt: errs.append("no fictional notice")
     if not re.search(r"sample (content|area|schedule|prices|rates|price guide|projects|jobs)", txt, re.I): errs.append("no sample-content line")
+    for m in re.finditer(r"[$£€]\s?\d[\d,.]*", txt):   # templates r5 (23-Nov-2026): prices are zero placeholders, as the r4 beauty/fitness rule
+        if re.sub(r"[$£€\s,.]", "", m.group(0)).strip("0"): errs.append(f"price not a zero placeholder: ...{txt[max(0,m.start()-30):m.end()+20].strip()}...")
+    if re.search(r"[$£€]\s?\d", txt) and not re.search(r"\bsample (prices?|rates?|price guide)\b", txt, re.I): errs.append("prices shown but no 'sample price' wording")
     if "-project-" in base and "Sample schedule" not in txt: errs.append("project layout without the sample schedule note")
     print(("FAIL " if errs else "ok   ") + base, f"({len(errs)})")
     for e in errs[:14]: print("   ", e)

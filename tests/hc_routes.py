@@ -13,8 +13,12 @@ class NoRedir(urllib.request.HTTPRedirectHandler):
 op = urllib.request.build_opener(NoRedir)
 def get(path):
     u = path if path.startswith("http") else BASE + path
-    try: r = op.open(urllib.request.Request(u, headers={"User-Agent": "curl/8.4.0", "Accept": "*/*"}), timeout=60); return r.status, dict(r.headers), r.read()
-    except urllib.error.HTTPError as e: return e.code, dict(e.headers), e.read()
+    for i in range(5):   # retries: python SSL resets crashed the r4 live sweep (22-Nov-2026)
+        try: r = op.open(urllib.request.Request(u, headers={"User-Agent": "curl/8.4.0", "Accept": "*/*"}), timeout=60); return r.status, dict(r.headers), r.read()
+        except urllib.error.HTTPError as e: return e.code, dict(e.headers), e.read()
+        except Exception:
+            if i == 4: raise
+            __import__("time").sleep(2 * (i + 1))
 fails = 0; checks = 0
 def ck(ok, msg):
     global fails, checks; checks += 1
