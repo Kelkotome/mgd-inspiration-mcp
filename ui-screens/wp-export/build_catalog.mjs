@@ -8,7 +8,7 @@ const require = createRequire(import.meta.url); const { LAYOUTS } = require(path
 const [dj, out] = process.argv.slice(2); const distinct = JSON.parse(fs.readFileSync(dj, "utf8"));
 const res = {}; for (const f of fs.readdirSync(OUT_WP).filter((x) => /^_r\d+\.jsonl$/.test(x))) for (const l of fs.readFileSync(path.join(OUT_WP, f), "utf8").trim().split("\n")) { const r = JSON.parse(l); res[r.slug] = r; } // last run wins
 const prev = fs.existsSync(out) ? JSON.parse(fs.readFileSync(out, "utf8")) : { niches: {} }; const niches = {}, seen = { pass: [], fail: [], untested: [] }; const R2 = path.join(OUT_WP, "_r2"); fs.rmSync(R2, { recursive: true, force: true }); // only this worktree's themes; healthcare's _r2 lives in mgd-inspiration-hc
-const VERSION = process.env.TPL_VERSION || "1.0.0"; // per-theme version of the themes built in this run (24-Nov-2026: re-release under a new R2 key); the catalog-level version stays 1.0.0 let wp = null, php = null, tested = null;
+const VERSION = process.env.TPL_VERSION || "1.0.0"; let wp = null, php = null, tested = null; // VERSION: per-theme version of the themes built in this run (24-Nov-2026: re-release under a new R2 key); the catalog-level version stays 1.0.0
 for (const d of designs()) {
   const n = (niches[d.niche] ||= { designs: [], services: [] }), dd = distinct[d.niche]; if (!dd) throw new Error("no distinct result for " + d.niche);
   const r = res[d.slug], rep = d.noTheme ? null : JSON.parse(fs.readFileSync(path.join(OUT_WP, `${d.slug}.report.json`), "utf8")), zip = path.join(OUT_WP, `${d.slug}.zip`);
