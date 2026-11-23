@@ -1,7 +1,7 @@
-/* Construction website template (Ironbark Builders — fictional general contractor for homes and small commercial builds).
-   Full responsive home page: nav, hero with get-a-quote and a site photo, credentials bar, services, recent projects
-   (featured + cards with scope/duration), process timeline, licensing/insurance facts with figures, quote request form, footer.
-   Site and project "photos" are inline SVG in fixed natural tones. Licences/insurance are stated as plain facts, no real bodies. */
+/* Construction website template (Stoneharrow Builders, renamed 7-Nov-2026 from Ironbark Builders, which matches real builders — fictional general contractor for homes and small commercial builds).
+   Full responsive home page: nav, hero with get-a-quote and a site photo, how-we-work bar, services, recent projects
+   (featured + cards with scope/duration), process timeline, paperwork table with plain facts, quote request form, footer.
+   Site and project "photos" are inline SVG in fixed natural tones. Licence, insurance and warranty details are left for the owner to add. */
 const { ic, esc } = require("../lib");
 const K = require("../sitekit");
 
@@ -140,10 +140,10 @@ const proj = (kind, id) => {
 };
 
 const SERVICES = [
-  ["home", "New builds", "Single and two-storey homes on your land, from slab to handover.", ["Design and engineering coordinated", "Council approvals managed", "Fixed-price contract"], "Typical build: 7–10 months"],
+  ["home", "New builds", "Single and two-storey homes on your land, from slab to handover.", ["Design and engineering coordinated", "Council applications coordinated", "Fixed-price contract"], "Typical build: 7–10 months"],
   ["plus", "Extensions", "Ground-floor and second-storey additions that tie into the existing house.", ["Structural steel and underpinning", "Matching brick or new cladding", "Stay-at-home staging where possible"], "Typical build: 3–5 months"],
   ["refresh", "Renovations", "Kitchens, bathrooms, layout changes and whole-house refurbishments.", ["Strip-out and rewiring", "Waterproofing and tiling", "Joinery by our own shop"], "Typical build: 6–14 weeks"],
-  ["grid", "Commercial fit-outs", "Cafés, clinics, shops and offices up to around 600 m².", ["After-hours work for open sites", "Services and compliance sign-off", "Staged handover"], "Typical build: 4–12 weeks"],
+  ["grid", "Commercial fit-outs", "Cafés, clinics, shops and offices up to around 600 m².", ["After-hours work for open sites", "Electrical and plumbing trades coordinated", "Staged handover"], "Typical build: 4–12 weeks"],
 ];
 const PROJECTS = [
   ["extension", "Kellerman Street extension", "Rear kitchen and living extension, structural steel, bi-fold glazing", "14 weeks", "Northgate"],
@@ -154,7 +154,7 @@ const STEPS = [["Week 0", "Site visit", "We walk the site with you, measure up a
   ["Weeks 1–3", "Fixed quote", "Itemised pricing, a schedule and allowances listed line by line."],
   ["Weeks 3–8", "Design & approvals", "We coordinate the architect, engineer and permit applications."],
   ["Build", "On site", "One site lead, a weekly update with photos, and a shared defects list."],
-  ["Handover", "Keys & aftercare", "Final walkthrough, manuals and warranties, a 90-day check-in visit."]];
+  ["Handover", "Keys & aftercare", "Final walkthrough, manuals and a 90-day check-in visit."]];
 
 const web = (p, st) => K.page(st, `${K.nav(p, ["Services", "Projects", "Process", "About"], "Get a quote", "(555) 017-3300")}
 <main>
@@ -162,28 +162,27 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Services", "Projects", "Process"
   <div class="sk-stack" style="gap:22px">
     <span class="sk-eyebrow">General contractor · Homes & small commercial</span>
     <h1 class="sk-h1">Solid builds, plain pricing, one crew from slab to keys</h1>
-    <p class="sk-lede">${esc(p.name)} builds new homes, extensions, renovations and fit-outs with our own carpenters and a small crew of trusted trades. One fixed quote, one site lead, no surprises buried in the fine print.</p>
+    <p class="sk-lede">${esc(p.name)} builds new homes, extensions, renovations and fit-outs with our own carpenters and a small crew of regular trades. One fixed quote, one site lead, no surprises buried in the fine print.</p>
     <div class="sk-row"><a class="btn primary sk-btn-lg" href="#get-a-quote">Get a quote ${ic("arrow", 16)}</a><a class="btn sk-btn-lg" href="#projects">See recent projects</a></div>
-    <p class="muted ib-hide-m" style="font-size:14px">${ic("clock", 14)} Site visits within 7 days · we reply to every enquiry by the next working day</p>
+    <p class="muted ib-hide-m" style="font-size:14px">${ic("clock", 14)} Free site visit · we reply to every enquiry with a call</p>
   </div>
   <div class="ib-visual"><div class="sk-photo">${siteShot()}</div>
     <div class="card ib-float"><small>Now on site</small><div class="num">Week 11 of 30</div><small>Two-storey home, Ridgeview Drive</small></div></div>
 </section>
 
-<div class="ib-bar-out"><div class="sk-wrap"><div class="ib-bar">${[["shield", "Licensed builder", "Licence no. GC-48213"], ["check", "Fully insured", "$10m public liability"], ["doc", "Fixed-price contracts", "Variations agreed in writing"], ["key", "Structural warranty", "10 years on new builds"]].map(([i, t, d]) => `<div><span class="ib-ic">${ic(i, 18)}</span><div><b>${t}</b><span>${d}</span></div></div>`).join("")}</div></div></div>
+<div class="ib-bar-out"><div class="sk-wrap"><div class="ib-bar">${[["shield", "Your credentials", "Licence and insurance details: add your own here."], ["check", "One site lead", "Start to finish on every job"], ["doc", "Fixed-price contracts", "Variations agreed in writing"], ["key", "Weekly updates", "Photos from site every Friday"]].map(([i, t, d]) => `<div><span class="ib-ic">${ic(i, 18)}</span><div><b>${t}</b><span>${d}</span></div></div>`).join("")}</div></div></div>
 
 <section class="sk-sec" id="services"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">What we build</span><h2 class="sk-h2">Four kinds of work, one crew</h2></div><p class="muted ib-hide-m" style="max-width:380px">Each job has one site lead from ${esc(p.name)}, start to finish. We use our own carpenters for framing and joinery and the same electricians and plumbers we’ve worked with for years.</p></div>
+  <div class="sk-head"><div><span class="sk-eyebrow">What we build</span><h2 class="sk-h2">Four kinds of work, one crew</h2></div><p class="muted ib-hide-m" style="max-width:380px">Each job has one site lead from ${esc(p.name)}, start to finish. We use our own carpenters for framing and joinery and the same electricians and plumbers on every job.</p></div>
   <div class="ib-svc">${SERVICES.map(([i, t, d, list, from], n) => `<article><span class="ib-no">0${n + 1}</span><h3 class="sk-h3">${t}</h3><p class="muted" style="font-size:14px">${d}</p><ul>${list.map((x) => `<li>${ic("check", 14)}<span>${x}</span></li>`).join("")}</ul><span class="ib-from"><b>${from}</b></span></article>`).join("")}</div>
 </div></section>
 
 <section class="sk-sec sk-alt" id="projects"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Recent projects</span><h2 class="sk-h2">What we finished this year</h2></div><a class="btn sk-btn-lg ib-hide-m" href="#">All 46 projects ${ic("arrow", 16)}</a></div>
+  <div class="sk-head"><div><span class="sk-eyebrow">Recent projects</span><h2 class="sk-h2">What we finished this year</h2></div><a class="btn sk-btn-lg ib-hide-m" href="#">All projects ${ic("arrow", 16)}</a></div>
   <article class="card ib-feat"><div class="sk-photo">${proj("newbuild", 0)}</div>
     <div><span class="badge" style="justify-self:start">New build · Completed Sept 2026</span><h3 class="sk-h3" style="font-size:calc(26px * var(--hs))">Ashgrove Lane family home</h3>
       <p class="muted">Four-bedroom, two-storey home on a sloping block, with a stepped slab, cedar cladding and a north-facing living wing.</p>
-      <dl class="ib-spec">${[["Scope", "Slab to handover"], ["Duration", "38 weeks"], ["Floor area", "248 m²"], ["Location", "Ashgrove"]].map(([a, b]) => `<div><dt>${a}</dt><dd>${b}</dd></div>`).join("")}</dl>
-      <p class="ib-quote">“Weekly photos every Friday meant we always knew where things stood, even from two hours away.” <span class="muted" style="font-family:var(--font-b);font-size:13px">Nadia & Sean K.</span></p></div></article>
+      <dl class="ib-spec">${[["Scope", "Slab to handover"], ["Duration", "38 weeks"], ["Floor area", "248 m²"], ["Location", "Ashgrove"]].map(([a, b]) => `<div><dt>${a}</dt><dd>${b}</dd></div>`).join("")}</dl></div></article>
   <div class="sk-g3 sk-rail">${PROJECTS.map(([k, t, d, dur, loc], i) => `<article class="card ib-proj"><div class="sk-photo">${proj(k, i + 1)}</div><div><h3 class="sk-h3" style="font-size:calc(18px * var(--hs))">${t}</h3><p class="muted" style="font-size:14px">${d}</p><div class="ib-meta"><span>${ic("clock", 13)} ${dur}</span><span>${ic("pin", 13)} ${loc}</span></div></div></article>`).join("")}</div>
 </div></section>
 
@@ -193,22 +192,21 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Services", "Projects", "Process"
 </div></section>
 
 <section class="sk-sec sk-alt sk-tight" id="about"><div class="sk-wrap ib-cred">
-  <div class="sk-stack" style="gap:16px"><span class="sk-eyebrow">Licensing & insurance</span><h2 class="sk-h2">The paperwork, up front</h2>
-    <p class="muted ib-hide-m">Copies of every certificate below come with your quote. Ask for them at the site visit too.</p>
-    <table class="ib-table"><tbody>${[["Builder licence", "GC-48213, unrestricted residential and commercial"], ["Public liability", "$10,000,000 per occurrence"], ["Contract works insurance", "Full replacement value, every job"], ["Home warranty cover", "Provided on residential work over $20,000"], ["Workers’ compensation", "All employed staff"], ["Site safety", "Written site plan and induction for every project"]].map(([a, b]) => `<tr><th scope="row">${a}</th><td>${b}</td></tr>`).join("")}</tbody></table>
+  <div class="sk-stack" style="gap:16px"><span class="sk-eyebrow">Paperwork</span><h2 class="sk-h2">The paperwork, up front</h2>
+    <p class="muted ib-hide-m">Everything below comes in writing with your quote. Ask about it at the site visit too.</p>
+    <table class="ib-table"><tbody>${[["Contract", "Fixed-price, itemised, allowances listed line by line"], ["Variations", "Priced and agreed in writing before work starts"], ["Credentials", "Contractor licence, insurance and warranty details: add your own here."], ["Progress updates", "Weekly, with photos from site"], ["Payments", "Staged against build milestones"], ["Site safety", "Written site plan and induction for every project"]].map(([a, b]) => `<tr><th scope="row">${a}</th><td>${b}</td></tr>`).join("")}</tbody></table>
   </div>
-  <div class="ib-figs">${[["17", "years building in the region"], ["212", "projects completed since 2009"], ["14", "carpenters and apprentices employed"], ["46", "projects in the last 12 months"]].map(([v, l]) => `<div class="card"><div class="num">${v}</div><span>${l}</span></div>`).join("")}
-    <figure class="card ib-note"><p class="ib-quote">“They sent the insurance certificates with the quote before I’d even asked. The fit-out ran around our opening hours for six weeks.”</p><figcaption class="muted" style="font-size:13px"><b style="color:var(--text)">Owen R.</b> · Café owner, Market Square</figcaption></figure></div>
+  <div class="ib-figs">${[["One", "site lead on every job"], ["Fixed", "price, itemised quote"], ["Weekly", "photo update from site"], ["Own", "carpenters for framing and joinery"]].map(([v, l]) => `<div class="card"><div class="num">${v}</div><span>${l}</span></div>`).join("")}</div>
 </div></section>
 
 <section class="sk-sec" id="get-a-quote"><div class="sk-wrap">
   <div class="card ib-qwrap">
     <div class="ib-next"><span class="sk-eyebrow">Request a quote</span><h2 class="sk-h2">Tell us about the job</h2>
-      <ol>${[["Call back within a day", "We’ll ask a few questions and book a site visit."], ["Free site visit", "Measure-up and an honest talk about budget."], ["Written quote in 2–3 weeks", "Itemised, fixed-price, valid for 60 days."]].map(([t, d], i) => `<li><span>0${i + 1}</span><span><b>${t}</b><span class="muted">${d}</span></span></li>`).join("")}</ol>
-      <div class="ib-contact"><span>${ic("phone", 15)} (555) 017-3300 · Mon–Fri 7–5</span><span>${ic("mail", 15)} quotes@ironbark.example</span><span>${ic("pin", 15)} Yard: 9 Sawmill Road, Northgate</span></div></div>
+      <ol>${[["A call back", "We’ll ask a few questions and book a site visit."], ["Free site visit", "Measure-up and an honest talk about budget."], ["Written quote in 2–3 weeks", "Itemised, fixed-price, valid for 60 days."]].map(([t, d], i) => `<li><span>0${i + 1}</span><span><b>${t}</b><span class="muted">${d}</span></span></li>`).join("")}</ol>
+      <div class="ib-contact"><span>${ic("phone", 15)} (555) 017-3300 · Mon–Fri 7–5</span><span>${ic("mail", 15)} quotes@stoneharrow.example</span><span>${ic("pin", 15)} Yard: 9 Sawmill Road, Northgate</span></div></div>
     <form class="ib-form" aria-label="Quote request">
       <div class="sk-field"><label>Project type</label><div class="ib-types" role="radiogroup">${[["New build", 0], ["Extension", 1], ["Renovation", 0], ["Commercial fit-out", 0], ["Something else", 0]].map(([t, on]) => `<span class="ib-type${on ? " on" : ""}" role="radio" aria-checked="${on ? "true" : "false"}">${t}</span>`).join("")}</div></div>
-      <div class="sk-g2"><div class="sk-field"><label for="ib-budget">Budget range</label><select class="sk-input" id="ib-budget"><option>$150k–$300k</option><option>Under $50k</option><option>$50k–$150k</option><option>$300k+</option></select></div><div class="sk-field"><label for="ib-start">Ideal start date</label><input class="sk-input" id="ib-start" type="text" value="March 2027"></div></div>
+      <div class="sk-g2"><div class="sk-field"><label for="ib-budget">Budget range</label><select class="sk-input" id="ib-budget"><option>$00 to $00 (sample range)</option><option>Under $00</option><option>$00 to $00</option><option>Over $00</option></select></div><div class="sk-field"><label for="ib-start">Preferred start date</label><input class="sk-input" id="ib-start" type="text" value="March 2027"></div></div>
       <div class="sk-g2"><div class="sk-field"><label for="ib-pc">Site postcode</label><input class="sk-input" id="ib-pc" value="4051"></div><div class="sk-field"><label for="ib-name">Your name</label><input class="sk-input" id="ib-name" value="Lin Park"></div></div>
       <div class="sk-g2"><div class="sk-field"><label for="ib-em">Email</label><input class="sk-input" id="ib-em" placeholder="you@example.com"></div><div class="sk-field"><label for="ib-ph">Phone</label><input class="sk-input" id="ib-ph" placeholder="(555) 000-0000"></div></div>
       <div class="sk-field"><label for="ib-desc">Describe the work</label><textarea class="sk-input" id="ib-desc">Single-storey rear extension, about 30 m², new kitchen and a second bathroom. We have concept drawings from an architect.</textarea></div>
@@ -218,10 +216,10 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Services", "Projects", "Process"
   </div>
 </div></section>
 </main>
-${K.footer(p, "Homes, extensions, renovations and small commercial builds. Family-run since 2009.", [["Visit the yard", ["9 Sawmill Road, Northgate", "Mon–Fri 7 AM–5 PM", "Sat by appointment"]], ["Contact", ["(555) 017-3300", "quotes@ironbark.example", "Careers & apprenticeships"]], ["Work", ["New builds", "Extensions", "Renovations", "Commercial fit-outs"]]], `© 2026 ${p.name}. Builder licence GC-48213.`)}`, CSS);
+${K.footer(p, "Homes, extensions, renovations and small commercial builds.", [["Visit the yard", ["9 Sawmill Road, Northgate", "Mon–Fri 7 AM–5 PM", "Sat by appointment"]], ["Contact", ["(555) 017-3300", "quotes@stoneharrow.example", "Careers & apprenticeships"]], ["Work", ["New builds", "Extensions", "Renovations", "Commercial fit-outs"]]], `Fictional builder created for this template. Projects and timings are sample content. Sample prices are zero placeholders: replace them with your own. © 2026 ${p.name}.`)}`, CSS);
 
 module.exports = {
   "construction-website": K.def("construction", "Construction company website",
-    "a full general contractor home page: navigation with phone number and get-a-quote, a hero with a construction-site photo, quote and projects buttons and a now-on-site progress card, a credentials bar (licence, insurance, fixed-price contracts, structural warranty), four numbered services with inclusions and typical build times, recent projects with a featured build (scope, duration, floor area, client quote) and project cards with duration and location, a five-step process timeline, a licensing and insurance table with company figures, a quote request form (project type, budget range, start date, postcode, contact details, description, file attachment) beside what-happens-next steps and contact details, and a footer",
-    ["navigation-header", "hero", "trust-bar", "services", "project-gallery", "case-study", "testimonials", "timeline", "process-steps", "table", "stats", "quote-form", "file-upload", "footer", "construction"], web),
+    "a full general contractor home page: navigation with phone number and get-a-quote, a hero with a construction-site photo, quote and projects buttons and a now-on-site progress card, a how-we-work bar (add-your-own credentials, one site lead, fixed-price contracts, weekly updates), four numbered services with inclusions and typical build times, recent projects with a featured build (scope, duration, floor area) and project cards with duration and location, a five-step process timeline, a paperwork table with plain how-we-work facts, a quote request form (project type, budget range, start date, postcode, contact details, description, file attachment) beside what-happens-next steps and contact details, and a footer",
+    ["navigation-header", "hero", "trust-bar", "services", "project-gallery", "case-study", "timeline", "process-steps", "table", "stats", "quote-form", "file-upload", "footer", "construction"], web),
 };

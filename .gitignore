@@ -63,3 +63,6 @@ wrangler.ind4.jsonc
 wrangler.ind8.jsonc
 ui-screens/out-r2-tpl-r5
 maps.json
+ui-screens/out-r5fix/
+ui-screens/out-r2-r5fix/
+ui-screens/out-r2-r5fix-rollback/

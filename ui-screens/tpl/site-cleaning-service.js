@@ -1,8 +1,8 @@
 /* Cleaning service website template (Spruceway Cleaning, a fictional home and office cleaning company). Full responsive, quote-led home page:
    nav, tinted hero with a wide instant-quote card (home size, bathrooms, frequency, extras, filled estimate receipt), how it works,
    room-by-room checklist comparing standard, deep and move-out cleans, recurring plans, same-cleaner card with home notes,
-   what we bring / what we need / what we leave out, keys and access, insurance, areas served, office note, reviews, FAQ, booking, footer.
-   Reviews are fictional and allowed on this page. The kitchen scene is inline SVG in fixed natural tones. No JS: the estimate is a filled sample. */
+   what we bring / what we need / what we leave out, keys and access, own-employees note, areas served, office note, FAQ, booking, footer.
+   No reviews or credential claims: insurance details are left for the owner to add. The kitchen scene is inline SVG in fixed natural tones. No JS: the estimate is a filled sample. */
 const { ic, esc } = require("../lib");
 const K = require("../sitekit");
 
@@ -100,12 +100,6 @@ const CSS = `<style>
 .cl-pills span{height:32px;padding:0 12px;display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;font-size:13px;font-weight:500;background:var(--surface)}
 .cl-office{padding:22px;display:grid;gap:9px;justify-items:start;background:color-mix(in oklab,var(--primary) 8%,var(--surface))}
 .cl-office p{font-size:13.5px;color:var(--muted)}
-.cl-revs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.cl-rev{padding:22px;display:grid;gap:10px;align-content:start}
-.cl-rev p{font-size:14.5px}
-.cl-stars{display:flex;gap:2px;color:color-mix(in oklab,var(--accent) 80%,var(--text))}
-.cl-stars svg{fill:currentColor}
-.cl-rev footer{font-size:13px;color:var(--muted)}
 .cl-last{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
 .cl-faq details{border-top:1px solid var(--border);padding:12px 0}
 .cl-faq details:last-child{border-bottom:1px solid var(--border)}
@@ -157,7 +151,6 @@ const CSS = `<style>
   .cl-same .sk-photo{display:none}
   .cl-three article{padding:18px}
   .cl-keyg{grid-template-columns:minmax(0,1fr)}
-  .cl-rev{padding:18px}
   .cl-form{padding:18px}
   .cl-form .sk-g2{grid-template-columns:minmax(0,1fr)}
 }
@@ -175,32 +168,25 @@ const N = `<span class="cl-n" aria-label="Not included">${ic("minus", 14)}</span
 const A = (x) => `<span class="cl-add">${x}</span>`;
 const mk = (v) => (v === 1 ? Y : v === 0 ? N : A(v));
 const ROOMS = [
-  ["Kitchen", [["Counters, sink and backsplash", 1, 1, 1], ["Stovetop and outside of appliances", 1, 1, 1], ["Inside the microwave", 1, 1, 1], ["Cabinet fronts and handles", 0, 1, 1], ["Inside the oven", "+$30", 1, 1], ["Inside the fridge", "+$30", "+$30", 1], ["Inside cabinets and drawers", 0, "+$45", 1]]],
+  ["Kitchen", [["Counters, sink and backsplash", 1, 1, 1], ["Stovetop and outside of appliances", 1, 1, 1], ["Inside the microwave", 1, 1, 1], ["Cabinet fronts and handles", 0, 1, 1], ["Inside the oven", "+$00", 1, 1], ["Inside the fridge", "+$00", "+$00", 1], ["Inside cabinets and drawers", 0, "+$00", 1]]],
   ["Bathrooms", [["Toilet, sink, tub and shower", 1, 1, 1], ["Mirrors and fixtures polished", 1, 1, 1], ["Soap scum and grout scrubbed", 0, 1, 1], ["Exhaust fan cover dusted", 0, 1, 1], ["Inside vanity and medicine cabinet", 0, 0, 1]]],
   ["Bedrooms and living areas", [["Dusting of reachable surfaces", 1, 1, 1], ["Beds made, linens changed if left out", 1, 1, 0], ["Carpets and rugs vacuumed", 1, 1, 1], ["Baseboards and door frames hand-wiped", 0, 1, 1], ["Window sills and tracks", 0, 1, 1], ["Ceiling fans and vents", 0, 1, 1], ["Inside closets and on shelves", 0, 0, 1]]],
-  ["Whole home", [["Floors vacuumed and mopped", 1, 1, 1], ["Trash emptied and liners replaced", 1, 1, 1], ["Light switches and door handles", 1, 1, 1], ["Marks spot-cleaned from walls", 0, 1, 1], ["Interior window glass", "+$40", "+$40", 1]]],
+  ["Whole home", [["Floors vacuumed and mopped", 1, 1, 1], ["Trash emptied and liners replaced", 1, 1, 1], ["Light switches and door handles", 1, 1, 1], ["Marks spot-cleaned from walls", 0, 1, 1], ["Interior window glass", "+$00", "+$00", 1]]],
 ];
 const roomTable = ([room, rows]) => `<table class="cl-tbl"><caption>${room}</caption><thead><tr><th scope="col">Task</th><th scope="col">Standard</th><th scope="col">Deep</th><th scope="col">Move-out</th></tr></thead><tbody>${rows.map(([t, a, b, c]) => `<tr><td>${t}</td><td>${mk(a)}</td><td>${mk(b)}</td><td>${mk(c)}</td></tr>`).join("")}</tbody></table>`;
 
 const PLANS = [
-  ["Weekly", "$130", "Busy homes, pets and small children. Same day, same time.", 0],
-  ["Every 2 weeks", "$140", "What most households pick. Keeps on top of floors and bathrooms.", 1],
-  ["Every 4 weeks", "$160", "A monthly reset. Visits run longer, so the price is a little higher.", 0],
-  ["One-time", "$185", "A single standard clean, for guests, a party or a catch-up.", 0],
-];
-
-const STAR = Array.from({ length: 5 }, () => ic("star", 15)).join("");
-const REVIEWS = [
-  ["Marisol came back the second visit already knowing which rug can’t get wet. We have not had to explain anything twice.", "Hannah R.", "Every 2 weeks, Alder Heights"],
-  ["Our move-out clean got the full deposit back. The inside of the oven looked better than the day we moved in.", "Tobias K.", "Move-out clean, Eastmere"],
-  ["I work from home, so I was wary. They arrive in the window, work quietly and text when they leave. The dog now waits at the door for them.", "Nia O.", "Weekly, Millbrook"],
+  ["Weekly", "$00", "Busy homes, pets and small children. Same weekday and time each visit.", 0],
+  ["Every 2 weeks", "$00", "What most households pick. Keeps on top of floors and bathrooms.", 1],
+  ["Every 4 weeks", "$00", "A monthly reset. Visits run longer, so the price is a little higher.", 0],
+  ["One-time", "$00", "A single standard clean, for guests, a party or a catch-up.", 0],
 ];
 
 const FAQ = [
   ["Do I need to be home?", "No. Most customers are out. See keys and access above for how we get in.", true],
   ["Why is the first visit a deep clean?", "Recurring visits keep a home at a level. If a home hasn’t had a professional clean in the past two months, the first visit brings it to that level."],
-  ["What if I need to cancel or skip?", "Skip or move a visit free with 48 hours’ notice. Later than that, a $40 late cancellation fee applies."],
-  ["What if something was missed?", "Tell us within 24 hours and we’ll return to redo that area at no charge."],
+  ["What if I need to cancel or skip?", "Skip or move a visit free with 48 hours’ notice. Later than that, a $00 late cancellation fee applies."],
+  ["What if something was missed?", "Tell us soon after the visit and we’ll return to redo that area at no charge."],
   ["Do I tip the cleaner?", "It is never expected. If you would like to, leave cash with a note, or ask us to add it to your invoice."],
   ["Is the price fixed?", "The estimate is based on what you tell us. If a home is very different from the description, we call you before starting."],
 ];
@@ -210,33 +196,33 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["What’s included", "Plans", "Ho
 <section class="cl-hero" id="quote"><div class="sk-wrap">
   <div class="cl-htop">
     <div><span class="sk-eyebrow">House cleaning · Weekly, deep and move-out</span><h1>Your price in 30 seconds. Your Thursday back.</h1></div>
-    <div><p>${esc(p.name)} cleans homes and small offices with the same cleaner each visit. No call-backs and no walkthrough needed to get a price.</p><div class="cl-marks"><span>${ic("check", 15)} No contract</span><span>${ic("check", 15)} Supplies included</span><span>${ic("check", 15)} 24-hour redo</span></div></div>
+    <div><p>${esc(p.name)} cleans homes and small offices with the same cleaner each visit. No call-backs and no walkthrough needed to get a price.</p><div class="cl-marks"><span>${ic("check", 15)} No contract</span><span>${ic("check", 15)} Supplies included</span><span>${ic("check", 15)} Free redo if we miss something</span></div></div>
   </div>
   <div class="card cl-quote">
     <form class="cl-opts" aria-label="Instant quote">
       <h2>Tell us about your home <small>Takes about 30 seconds</small></h2>
       <div class="cl-grp"><span class="cl-lab" id="cl-l1">Home size</span><div class="cl-chips" role="radiogroup" aria-labelledby="cl-l1">${["Studio", "1 bed", "2 bed", "3 bed", "4+ bed"].map((x, i) => `<label class="cl-chip"><input type="radio" name="cl-size"${i === 2 ? " checked" : ""}>${x}</label>`).join("")}</div></div>
       <div class="cl-grp"><span class="cl-lab" id="cl-l2">Bathrooms</span><div class="cl-chips" role="radiogroup" aria-labelledby="cl-l2">${["1", "1.5", "2", "2.5", "3+"].map((x, i) => `<label class="cl-chip"><input type="radio" name="cl-bath"${i === 2 ? " checked" : ""}>${x}</label>`).join("")}</div></div>
-      <div class="cl-grp cl-wide"><span class="cl-lab" id="cl-l3">How often?</span><div class="cl-chips" role="radiogroup" aria-labelledby="cl-l3">${[["One-time", "$185"], ["Weekly", "$130"], ["Every 2 weeks", "$140"], ["Every 4 weeks", "$160"]].map(([x, v], i) => `<label class="cl-chip"><input type="radio" name="cl-freq"${i === 2 ? " checked" : ""}>${x} <small>${v}</small></label>`).join("")}</div></div>
-      <div class="cl-grp cl-wide"><span class="cl-lab">Extras for this visit</span><div class="cl-chips">${[["Inside oven", "$30", 1], ["Inside fridge", "$30", 0], ["Interior windows", "$40", 0], ["Inside cabinets", "$45", 0], ["Load of laundry", "$25", 0], ["Pet hair", "$20", 1]].map(([x, v, on]) => `<label class="cl-chip"><input type="checkbox"${on ? " checked" : ""}>${x} <small>+${v}</small></label>`).join("")}</div></div>
+      <div class="cl-grp cl-wide"><span class="cl-lab" id="cl-l3">How often?</span><div class="cl-chips" role="radiogroup" aria-labelledby="cl-l3">${[["One-time", "$00"], ["Weekly", "$00"], ["Every 2 weeks", "$00"], ["Every 4 weeks", "$00"]].map(([x, v], i) => `<label class="cl-chip"><input type="radio" name="cl-freq"${i === 2 ? " checked" : ""}>${x} <small>${v}</small></label>`).join("")}</div></div>
+      <div class="cl-grp cl-wide"><span class="cl-lab">Extras for this visit</span><div class="cl-chips">${[["Inside oven", "$00", 1], ["Inside fridge", "$00", 0], ["Interior windows", "$00", 0], ["Inside cabinets", "$00", 0], ["Load of laundry", "$00", 0], ["Pet hair", "$00", 1]].map(([x, v, on]) => `<label class="cl-chip"><input type="checkbox"${on ? " checked" : ""}>${x} <small>+${v}</small></label>`).join("")}</div></div>
     </form>
     <aside class="cl-rcpt feat" aria-label="Your estimate">
       <span class="cl-mu">Your estimate</span>
-      <div class="num cl-est">$190</div>
+      <div class="num cl-est">$00</div>
       <span class="cl-mu">for your first visit</span>
-      <ul><li><span>2 bed, 2 bath, every 2 weeks</span><span>$140</span></li><li><span>Inside oven</span><span>+$30</span></li><li><span>Pet hair</span><span>+$20</span></li></ul>
-      <span class="cl-mu">2 cleaners, about 2 hours. Later visits from $140.</span>
-      <span class="cl-mu">No professional clean in the past two months? Your first visit is a $260 deep clean.</span>
+      <ul><li><span>2 bed, 2 bath, every 2 weeks</span><span>$00</span></li><li><span>Inside oven</span><span>+$00</span></li><li><span>Pet hair</span><span>+$00</span></li></ul>
+      <span class="cl-mu">2 cleaners, about 2 hours. Later visits from $00</span>
+      <span class="cl-mu">No professional clean in the past two months? Your first visit is a $00 deep clean.</span>
       <a class="btn primary block" href="#book-a-clean">Book this clean</a>
     </aside>
   </div>
 </div></section>
 
-<section class="sk-sec cl-how" aria-label="How it works"><div class="sk-wrap"><ol class="cl-steps sk-rail">${[["Get a price", "Answer four questions above. No home visit."], ["Pick a day", "Choose a day and a two-hour arrival window."], ["We clean", "We text when we’re on the way and when we finish."], ["Check it", "Not right? Tell us within 24 hours and we redo it."]].map(([a, b]) => `<li><b>${a}</b><span>${b}</span></li>`).join("")}</ol></div></section>
+<section class="sk-sec cl-how" aria-label="How it works"><div class="sk-wrap"><ol class="cl-steps sk-rail">${[["Get a price", "Answer four questions above. No home visit."], ["Pick a day", "Choose a day and a two-hour arrival window."], ["We clean", "We text when we’re on the way and when we finish."], ["Check it", "Not right? Tell us after the visit and we come back to redo it."]].map(([a, b]) => `<li><b>${a}</b><span>${b}</span></li>`).join("")}</ol></div></section>
 
 <section class="sk-sec" id="what-s-included"><div class="sk-wrap">
   <div class="sk-head" style="margin-bottom:24px"><div><span class="sk-eyebrow">What’s included</span><h2 class="sk-h2">Room by room, what each clean covers</h2></div><p class="muted" style="max-width:340px;font-size:14px">Add-ons show their price. A dash means it isn’t part of that clean.</p></div>
-  <div class="cl-plans-h">${[["Standard", "$185", "2 to 3 hours. Keeps a tidy home clean."], ["Deep", "$260", "4 to 5 hours. First visits, spring cleans."], ["Move-out", "$340", "5 to 6 hours. Empty homes, end of lease."]].map(([a, b, c], i) => `<div class="card cl-tier${i === 1 ? " sel" : ""}"><b>${a}</b><div class="num">${b}</div><span>${c}</span></div>`).join("")}</div>
+  <div class="cl-plans-h">${[["Standard", "$00", "2 to 3 hours. Keeps a tidy home clean."], ["Deep", "$00", "4 to 5 hours. First visits, spring cleans."], ["Move-out", "$00", "5 to 6 hours. Empty homes, end of lease."]].map(([a, b, c], i) => `<div class="card cl-tier${i === 1 ? " sel" : ""}"><b>${a}</b><div class="num">${b}</div><span>${c}</span></div>`).join("")}</div>
   <div class="cl-rooms sk-rail">${[ROOMS[0], ROOMS[2], ROOMS[1], ROOMS[3]].map((r) => `<div>${roomTable(r)}</div>`).join("")}</div>
   <p class="cl-note">Prices shown for a 2 bed, 2 bath home. Your quote above uses your own home size.</p>
 </div></section>
@@ -255,26 +241,21 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["What’s included", "Plans", "Ho
 </div></section>
 
 <section class="sk-sec sk-alt" style="padding-top:56px;padding-bottom:56px"><div class="sk-wrap"><div class="cl-three sk-rail">
-  <article class="card"><h3 class="sk-h3">What we bring</h3><ul>${["Vacuum with a fine-dust filter", "Mops, microfiber cloths, caddy", "All cleaning products", "Fragrance-free or pet-safe products on request"].map((x) => `<li><span>${ic("check", 14)}</span><span>${x}</span></li>`).join("")}</ul></article>
+  <article class="card"><h3 class="sk-h3">What we bring</h3><ul>${["Vacuum with a fine-dust filter", "Mops, microfiber cloths, caddy", "All cleaning products", "Fragrance-free products on request"].map((x) => `<li><span>${ic("check", 14)}</span><span>${x}</span></li>`).join("")}</ul></article>
   <article class="card"><h3 class="sk-h3">What we need from you</h3><ul>${["Clutter picked up so we can reach surfaces", "Hot water and power on", "Pets in a safe spot, if they’re nervous", "Special products for stone or antiques, if you use them"].map((x) => `<li><span>${ic("check", 14)}</span><span>${x}</span></li>`).join("")}</ul></article>
-  <article class="card cl-no"><h3 class="sk-h3">What we leave alone</h3><ul>${["Mold, pest droppings or biohazards", "Furniture over 30 lb", "Outside windows and anything above a step stool", "Dishes piled up from the week, unless you add it"].map((x) => `<li><span>${ic("x", 14)}</span><span>${x}</span></li>`).join("")}</ul></article>
+  <article class="card cl-no"><h3 class="sk-h3">What we leave alone</h3><ul>${["Mold, pest droppings or biohazards", "Heavy furniture", "Outside windows and anything above a step stool", "Dishes piled up from the week, unless you add it"].map((x) => `<li><span>${ic("x", 14)}</span><span>${x}</span></li>`).join("")}</ul></article>
 </div></div></section>
 
 <section class="sk-sec" style="padding-bottom:28px"><div class="sk-wrap cl-keys">
   <div><span class="sk-eyebrow">Keys and access</span><h2 class="sk-h2" style="margin-top:8px">However you’d like to let us in</h2>
     <div class="cl-keyg">${[["home", "You’re home", "We ring when we arrive."], ["lock", "Door code", "Stored encrypted. Change it any time."], ["key", "Lockbox", "Your box, your code."], ["tag", "Key on file", "Coded tag, never your address."]].map(([i, a, b]) => `<div><span class="cl-ico">${ic(i, 18)}</span><b>${a}</b><span>${b}</span></div>`).join("")}</div></div>
-  <aside class="card cl-ins"><span style="color:var(--success)">${ic("shield", 20)}</span><h3 class="sk-h3">Insured, and our own employees</h3><p>Every cleaner is our employee, background-checked and trained by us. We carry liability insurance and bonding, and we can send a certificate for your building manager on request. If something gets broken, tell us and we’ll put it right.</p></aside>
+  <aside class="card cl-ins"><span style="color:var(--success)">${ic("shield", 20)}</span><h3 class="sk-h3">Our own employees</h3><p>Every cleaner is our employee, trained by us. Liability insurance and bonding details: add your own here. If something gets broken, tell us straight away.</p></aside>
 </div></section>
 
 <section class="sk-sec" id="areas" style="padding-top:28px"><div class="sk-wrap cl-area">
   <div><span class="sk-eyebrow">Areas served</span><h2 class="sk-h2" style="margin-top:8px">Where we clean</h2>
     <div class="cl-pills">${["Alder Heights", "Eastmere", "Millbrook", "Cooper Flats", "Harlow Park", "Stonebridge", "West Tamsin", "Fairhaven Row", "Old Quarry", "Linden Hill"].map((x) => `<span>${x}</span>`).join("")}</div></div>
   <aside class="card cl-office"><h3 class="sk-h3">Cleaning an office?</h3><p>We clean small offices, studios and shops after hours, one to five nights a week, with a fixed monthly price after a short walkthrough.</p><a class="btn" href="#book-a-clean">Ask for an office quote ${ic("arrow", 15)}</a></aside>
-</div></section>
-
-<section class="sk-sec sk-alt" id="reviews"><div class="sk-wrap">
-  <div class="sk-head" style="margin-bottom:24px"><div><span class="sk-eyebrow">Customer reviews</span><h2 class="sk-h2">What people tell us</h2></div></div>
-  <div class="cl-revs sk-rail">${REVIEWS.map(([q, n, m]) => `<article class="card cl-rev"><div class="cl-stars" aria-label="5 out of 5">${STAR}</div><p>${q}</p><footer><b style="color:var(--text)">${n}</b> · ${m}</footer></article>`).join("")}</div>
 </div></section>
 
 <section class="sk-sec" id="faq"><div class="sk-wrap cl-last">
@@ -285,15 +266,15 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["What’s included", "Plans", "Ho
     <div class="sk-field"><label for="cl-adr">Address</label><input class="sk-input" id="cl-adr" value="41 Larkspur Lane, Alder Heights"></div>
     <div class="sk-g2"><div class="sk-field"><label for="cl-svc">Clean</label><select class="sk-input" id="cl-svc"><option>Every 2 weeks</option><option>Weekly</option><option>Deep clean</option><option>Move-out clean</option></select></div><div class="sk-field"><label for="cl-day">First visit</label><select class="sk-input" id="cl-day"><option>Thu 12 Nov, 9 to 11 AM</option><option>Fri 13 Nov, 1 to 3 PM</option></select></div></div>
     <div class="sk-field"><label for="cl-acc">How do we get in?</label><select class="sk-input" id="cl-acc"><option>Door code</option><option>I’ll be home</option><option>Lockbox</option></select></div>
-    <button class="btn primary sk-btn-lg" type="button">Book for $190</button>
+    <button class="btn primary sk-btn-lg" type="button">Book for $00</button>
     <p class="cl-note">No payment now. We charge your card after the clean.</p>
   </form>
 </div></section>
 </main>
-${K.footer(p, "Home and small office cleaning, with the same cleaner each visit and a price you can see before you book.", [["Services", ["Recurring house cleaning", "Deep cleaning", "Move-in and move-out", "Office cleaning"]], ["Contact", ["(555) 016-3380", "hello@spruceway.example", "Mon to Sat, 8 AM to 6 PM"]], ["Company", ["2 Fennel Yard", "Join the team", "Gift a clean"]]])}`, CSS);
+${K.footer(p, "Home and small office cleaning, with the same cleaner each visit and a price you can see before you book.", [["Services", ["Recurring house cleaning", "Deep cleaning", "Move-in and move-out", "Office cleaning"]], ["Contact", ["(555) 016-3380", "hello@spruceway.example", "Mon to Sat, 8 AM to 6 PM"]], ["Company", ["2 Fennel Yard", "Join the team", "Gift a clean"]]], `Fictional cleaning company created for this template. Plans and timings are sample content. Sample prices are zero placeholders: replace them with your own. © 2026 ${p.name}.`)}`, CSS);
 
 module.exports = {
   "cleaning-service-website": K.def("cleaning", "Cleaning service website",
-    "a full house cleaning company home page led by its quote: navigation with a phone number and book button, a tinted hero with a wide instant quote card for home size, bathrooms, frequency and extras beside a filled estimate receipt, four how-it-works steps, a room-by-room checklist comparing standard, deep and move-out cleans with add-on prices, four recurring plan prices with skip and cancel terms, a same-cleaner section with a saved home notes card and a kitchen illustration, what we bring, what we need and what we leave alone, keys and access options with an insurance note, areas served pills with an office cleaning note, customer reviews, an FAQ beside a booking form and a footer",
-    ["navigation-header", "hero", "instant-quote", "price-estimate", "chips", "steps", "comparison-table", "checklist", "pricing-cards", "home-notes", "access-options", "insurance", "service-area", "testimonials", "faq", "booking-form", "footer", "cleaning-service"], web),
+    "a full house cleaning company home page led by its quote: navigation with a phone number and book button, a tinted hero with a wide instant quote card for home size, bathrooms, frequency and extras beside a filled estimate receipt, four how-it-works steps, a room-by-room checklist comparing standard, deep and move-out cleans with add-on prices, four recurring plan prices with skip and cancel terms, a same-cleaner section with a saved home notes card and a kitchen illustration, what we bring, what we need and what we leave alone, keys and access options with an own-employees note (insurance details left for the owner to add), areas served pills with an office cleaning note, an FAQ beside a booking form and a footer",
+    ["navigation-header", "hero", "instant-quote", "price-estimate", "chips", "steps", "comparison-table", "checklist", "pricing-cards", "home-notes", "access-options", "insurance", "service-area", "faq", "booking-form", "footer", "cleaning-service"], web),
 };
