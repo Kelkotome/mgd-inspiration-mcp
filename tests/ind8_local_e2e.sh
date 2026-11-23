@@ -57,7 +57,7 @@ for r in rows:
     k = r["image_key"]; print(k); print(k[:-5] + "-dark.webp")
     for f in ("index.html", "spec.json", "DESIGN.md"): print(f"ui/{r['id']}/{f}")
 PY
-  while read -r k; do mkdir -p "$CN_DUMP/r2/$(dirname "$k")"; "$W" r2 object get "$BUCKET/$k" --file "$CN_DUMP/r2/$k" --local -c "$CFG" --persist-to "$T/state" >>"$T/setup.log" 2>&1 || echo "missing $k"; done < "$CN_DUMP/keys.txt"
+  while read -r k; do mkdir -p "$CN_DUMP/r2/$(dirname "$k")"; ok=0; for a in 1 2 3 4; do "$W" r2 object get "$BUCKET/$k" --file "$CN_DUMP/r2/$k" --local -c "$CFG" --persist-to "$T/state" >>"$T/setup.log" 2>&1 && [ -s "$CN_DUMP/r2/$k" ] && { ok=1; break; }; sleep $a; done; [ $ok = 1 ] || { echo "missing $k"; RC=1; }; done < "$CN_DUMP/keys.txt"
 fi
 [ $RC = 0 ] || tail -12 "$T/dev.log" | cut -c1-200
 while [ -n "${HC_KEEP:-}" ] && [ -e "$HC_KEEP" ]; do sleep 2; done
