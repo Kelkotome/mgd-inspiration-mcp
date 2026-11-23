@@ -41,7 +41,33 @@ HUB_SKIP, tplHint), `ui_screens.js` (4 new page patterns, Dispatch/Project label
 
 ## Local results
 
-RESULTS_PLACEHOLDER
+All local (Playground WP 7.1.4 / PHP 8.3.36, wrangler dev --local on a throwaway D1 + R2). Code at the commit that adds this note.
+
+- **Build:** 8 niches, 96 screens in `out-hc`, 48 zips. `hc_distinct` 48/48 distinct (max tree similarity 0.726, max layout overlap 0.510;
+  re-skin controls 0.640 to 0.936). Lint `tests/cn_lint.py` 48/48 pages (now including the zero-price rule).
+- **Install test:** 48/48 pass (install, activate, block theme, PHP log clean, 390/768/1280 no overflow, no external requests, Site Editor
+  blocks valid, layout fidelity >= 0.70). Negative controls 5/5 fail (block, overflow, external, php, layout; the layout control was run
+  with a source design for both new trades layouts, overlap 0.22 to 0.33). Catalog rebuilt: 62 niches, the older 54 kept unchanged.
+- **Ranking (local, live rows + pending r4/r5 rows):** `cases_cn` 20/20, `cases_bw` 20/20, `cases_n12` 43/43, `cases` 138/140 (same 2 misses
+  as base), hc/re/rs/wd/r4/home/n13 identical to the r4 worktree on the same rows. `test_tpl_tree` 24/24, `test_ui_hint` 93/93,
+  `test_next_offer` 51/51, `ui_kit` 2,816 DESIGN.md ok. `ui_spec` fails only on the pre-existing law-firm breakpoint fixture (as in r4).
+- **ind8 local e2e (`tests/ind8_local_e2e.sh`): rc=0.** `hc_routes`: healthcare 1642, real estate 1141, restaurant 1147, wedding 1135,
+  portfolio 1132, beauty-fitness 1150, **construction 1152** checks, 0 failed. MCP suites hc 33, re 25, rs 29, wd 31, pf 33, bw 31, **cn 31**, 0 failed.
+- **Test fixes on the way:** five MCP suites still pinned the tool count at 112; it is 113 since get_shared_board (app boards), so they
+  failed on base too. hc_routes construction no longer expects the 7-Nov fixed signature (no signatures this round); it checks that no
+  old homepage is a card. hc_routes now retries SSL resets (5 tries with backoff).
+- **Bundle** (`../deploy-bundle-2026-11-23/`, from the passing e2e's dump): `tpl-r5-construction-rows.sql` 98 lines (96 INSERTs + 2 comments),
+  `tpl-r5-construction-rollback.sql` (1 UPDATE), `tpl-r5-construction-r2.tsv` **624 R2 objects** (480 `ui/`, 144 `tpl/`, 105.2 MB).
+  Apply check on a copy of a live snapshot: +96 rows, re-run +0, FTS +96, rollback hid exactly 96.
+  sha256: r2 `10172750ac474782…`, rollback `71c9d6d913775c56…`, rows `4494ee114272f953…`.
+  Helpers: `r2_up_r5.sh` (8 parallel, sha-checked, 3 retries) and `d1_apply_r5.sh` (one statement per line, 1 s apart, 4 retries).
+
+## Resume (if the Mac slept mid-way)
+
+Nothing is in flight. To rebuild from scratch: `node ui-screens/gen_hc.js --only construction,plumber,electrician,roofing,hvac,cleaning-service,landscaping,pest-control`,
+`SHOOT_OUT=out-hc ui-screens/shoot.sh; SHOOT_OUT=out-hc python3 ui-screens/trim.py`, start the Playground
+(`NODE_OPTIONS=--dns-result-order=ipv4first`, `wp-playground-cli server --port=9400 --wp=7.1.4 --php=8.3`, mounts: zips dir to `/zips`,
+a dir holding `ui-screens/wp-export/mgdt-harness.php` to `/wordpress/wp-content/mu-plugins`), then `bash tests/r5_build.sh`, then the e2e + bundle (step 1).
 
 ## Deploy steps (owner or lead; Claude does not deploy r5)
 
@@ -50,14 +76,12 @@ Run from `../mgd-inspiration-tpl-r5` unless noted. R2 first (nothing links it ye
 1. **Bundle** (already built; rebuild only after any re-run of the e2e):
    `SCRATCH=<dir> CN_DUMP=<dir>/dump bash tests/ind8_local_e2e.sh` then `python3 tests/cn_bundle.py <dir>/dump`
    writes `../deploy-bundle-2026-11-23/tpl-r5-construction-{rows.sql,rollback.sql,r2.tsv}`.
-2. **R2:** every line of `tpl-r5-construction-r2.tsv` (`key \t path \t sha256 \t content-type`):
-   `npx wrangler r2 object put mgd-inspiration-images/<key> --file <path> --content-type "<ct>" --remote`; read one zip back and hash it.
+2. **R2:** `zsh ../deploy-bundle-2026-11-23/r2_up_r5.sh` (expect `DONE ok=624 bad=0`); read one zip back and hash it.
 3. **Merge and deploy:** in `../mgd-inspiration`: `git merge tpl-r5-construction` (into museum-collection-2026-10), record the current
    version (`npx wrangler deployments list`), `npx wrangler deploy`, then **push museum-collection-2026-10 at once** (cloud wrap-up deploys
    from origin).
-4. **D1 rows:** each line of `tpl-r5-construction-rows.sql` as its own
-   `npx wrangler d1 execute mgd-inspiration --remote --command "<line>"` (never `--file`). Idempotent. Pace them (the library lane also
-   writes D1): `sleep 1` between lines is enough.
+4. **D1 rows:** `zsh ../deploy-bundle-2026-11-23/d1_apply_r5.sh` (each line of `tpl-r5-construction-rows.sql` as its own
+   `wrangler d1 execute --remote --command`, never `--file`; idempotent; 1 s apart). Expect 96 lines `changes=1`.
 5. **Purge** `/inspiration/ui` (`python3 ../.claude-tools/cf_purge.py` prefix purge, token in EtiennAubertBonn/.env).
 6. **Live checks** (read only, curl/8.4.0 UA; the scripts retry SSL resets):
    ```
