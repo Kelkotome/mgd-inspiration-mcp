@@ -49,11 +49,11 @@ def run(f):
         if l.strip() and not l.startswith("--"): c.execute(l)
     c.commit()
 run("tpl-r6-professional-rows.sql"); after = c.execute("SELECT count(*) FROM items").fetchone()[0]; fts1 = c.execute("SELECT count(*) FROM items_fts").fetchone()[0]
-hit = c.execute("SELECT count(*) FROM items_fts WHERE items_fts MATCH 'Quellbrook'").fetchone()[0]
+hit = c.execute("SELECT count(*) FROM items_fts WHERE items_fts MATCH 'Penmarrow'").fetchone()[0]
 run("tpl-r6-professional-rows.sql"); again = c.execute("SELECT count(*) FROM items").fetchone()[0]
 run("tpl-r6-professional-rollback.sql"); removed = c.execute("SELECT count(*) FROM items WHERE status = 'removed' AND collection = 'ui'").fetchone()[0]
 pub = c.execute("SELECT count(*) FROM items WHERE status = 'published'").fetchone()[0]; c.close(); shutil.rmtree(tmp)
-print(f"rows {len(rows)}  statements {len(out) - 2}  live copy {before} -> {after} (+{after - before}), re-run {again} (+0), fts {fts0} -> {fts1}, fts 'Quellbrook' hits {hit}, rollback hid {removed}, published back to {pub}")
+print(f"rows {len(rows)}  statements {len(out) - 2}  live copy {before} -> {after} (+{after - before}), re-run {again} (+0), fts {fts0} -> {fts1}, fts 'Penmarrow' hits {hit}, rollback hid {removed}, published back to {pub}")
 print(f"R2 objects {len(man)} (ui {sum(1 for m in man if m[0].startswith('ui/'))}, tpl {sum(1 for m in man if m[0].startswith('tpl/'))}), bytes {sum(os.path.getsize(os.path.join(ROOT, m[1])) for m in man)}")
 assert after - before == 96 and again == after and fts1 - fts0 == 96 and hit > 0 and removed == 96
 print("OK")
