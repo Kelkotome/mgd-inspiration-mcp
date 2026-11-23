@@ -152,7 +152,7 @@ const FAMILIES = {
   taxps: { name: "Pellbrook Tax Office", cat: "tax-preparation", desc: "a neighbourhood tax preparation office for personal and small-business returns", type: { web: "Website", mobile: "Mobile website" } },
   advisorps: { name: "Tamberlow Financial Planning", cat: "financial-advisor", desc: "an independent financial planning practice for retirement, savings and family finances", type: { web: "Website", mobile: "Mobile website" } },
   insuranceps: { name: "Brackenwold Insurance Agency", cat: "insurance-agency", desc: "a local independent insurance agency for home, car, business and life cover", type: { web: "Website", mobile: "Mobile website" } },
-  consultingps: { name: "Tarrowby Consulting", cat: "consulting", desc: "a small management consulting firm", type: { web: "Website", mobile: "Mobile website" } },
+  consultingps: { name: "Ostrevane Consulting", paletteSeed: "Tarrowby Consulting" /* renamed 24-Nov-2026; old name kept only as the palette seed so colours stay as published */, cat: "consulting", desc: "a small management consulting firm", type: { web: "Website", mobile: "Mobile website" } },
   staffingps: { name: "Brindleholt Staffing", cat: "staffing-agency", desc: "a local staffing and recruitment agency", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
