@@ -122,6 +122,13 @@ ABOUT = {
     "Noto Serif KR": ["Serif", ["Google"], None],
     "Noto Sans Arabic": ["Sans Serif", ["Google"], None],
     "Noto Sans Devanagari": ["Sans Serif", ["Google"], None],
+    # --- mcp r5 (23-Nov-2026): varsity / collegiate / blackletter faces for the fraternity + varsity gap (no year: METADATA.pb not re-checked)
+    "Graduate": ["Serif", ["Eduardo Tunni"], None],
+    "Bevan": ["Serif", ["Vernon Adams"], None],
+    "Rubik Mono One": ["Sans Serif", ["Hubert and Fischer"], None],
+    "UnifrakturCook": ["Display", ["j. 'mach' wust"], None],
+    "Pirata One": ["Display", ["Rodrigo Fuenzalida", "Nicolas Massi"], None],
+    "Jacquard 12": ["Display", ["Sarah Cadigan-Fried"], None],
     # --- end mcp r4
 }
 
@@ -684,6 +691,49 @@ PAIRS = {
         ("Poppins", "Noto Sans Devanagari", "Poppins has geometric Latin headings, and Noto Sans Devanagari gives the Devanagari body text an even, plain texture beside them."),
         ("Playfair Display", "Noto Sans Devanagari", "Playfair Display gives English headlines high contrast while Noto Sans Devanagari keeps Hindi paragraphs plain and readable."),
     ],
+    # --- mcp r5 (23-Nov-2026)
+    "Graduate": [
+        ("Graduate", "Open Sans", "Open Sans is a neutral, highly readable body face that lets the collegiate slab capitals of Graduate carry team names and banners."),
+        ("Graduate", "Oswald", "Oswald's tall condensed capitals sit well beside Graduate on jerseys, posters and rush flyers where a second loud voice is needed."),
+        ("Graduate", "Lato", "Lato's warm, even text keeps captions and event details easy to read under a Graduate varsity-style headline."),
+        ("Graduate", "Roboto Slab", "Roboto Slab echoes the slab serifs of Graduate in a calmer weight, so headings and sub-headings feel like one athletic system."),
+        ("Graduate", "Source Sans 3", "Source Sans 3 is a clear, slightly narrow sans that keeps schedules and rosters tidy below Graduate headlines."),
+    ],
+    "Bevan": [
+        ("Bevan", "Lato", "Lato's warm, semi-rounded letters soften the very heavy slab of Bevan, which suits school crests, merch and sports posters."),
+        ("Bevan", "Open Sans", "Open Sans gives neutral body text with plenty of breathing room under heavy Bevan slab headlines."),
+        ("Bevan", "Montserrat", "Montserrat's wide geometric capitals add a modern note that contrasts with the vintage weight of Bevan."),
+        ("Bevan", "Source Sans 3", "Source Sans 3 keeps small print and menus tidy beneath the blunt, chunky shapes of Bevan titles."),
+        ("Bevan", "Karla", "Karla is a quirky grotesque with a friendly rhythm, a relaxed counterweight to the stiff slab capitals of Bevan."),
+    ],
+    "Rubik Mono One": [
+        ("Rubik Mono One", "Rubik", "Rubik shares the softened corners of Rubik Mono One, so a loud monospaced headline and readable text feel like one family."),
+        ("Rubik Mono One", "Inter", "Inter's neutral, tall x-height text lets the blocky Rubik Mono One headlines stay the star on posters and landing pages."),
+        ("Rubik Mono One", "Work Sans", "Work Sans is an open, practical sans that stays clear beneath the very wide, heavy letters of Rubik Mono One."),
+        ("Rubik Mono One", "Space Mono", "Space Mono repeats the monospaced rhythm of Rubik Mono One in a lighter weight for labels, dates and fine print."),
+        ("Rubik Mono One", "DM Sans", "DM Sans is a clean geometric body face that balances the heavy, rounded blocks of Rubik Mono One headings."),
+    ],
+    "UnifrakturCook": [
+        ("UnifrakturCook", "Open Sans", "Open Sans is a plain, readable body face that rests the eye after UnifrakturCook blackletter headlines on certificates and invitations."),
+        ("UnifrakturCook", "Lora", "Lora is a contemporary serif with calligraphic roots, a friendly partner for the old-style blackletter shapes of UnifrakturCook."),
+        ("UnifrakturCook", "EB Garamond", "EB Garamond is a classic old-style text serif that keeps the heritage tone of UnifrakturCook masthead and diploma headings."),
+        ("UnifrakturCook", "Lato", "Lato keeps small text clean and modern under the ornate blackletter capitals of UnifrakturCook."),
+        ("UnifrakturCook", "Libre Baskerville", "Libre Baskerville adds a refined, traditional text serif that fits the formal feel of UnifrakturCook crests and mastheads."),
+    ],
+    "Pirata One": [
+        ("Pirata One", "Lato", "Lato's warm, simple letters balance the angular blackletter strokes of Pirata One in posters, menus and game or music branding."),
+        ("Pirata One", "Open Sans", "Open Sans offers neutral, easy body copy so Pirata One headlines can stay bold and gothic without tiring the reader."),
+        ("Pirata One", "Source Serif 4", "Source Serif 4 gives a crisp, readable serif body that suits the old-world character of Pirata One headings."),
+        ("Pirata One", "Oswald", "Oswald's condensed capitals add a sharp secondary headline that holds up beside the gothic shapes of Pirata One on flyers."),
+        ("Pirata One", "Libre Baskerville", "Libre Baskerville brings a classic book-text serif that grounds the dramatic blackletter of Pirata One."),
+    ],
+    "Jacquard 12": [
+        ("Jacquard 12", "Space Mono", "Space Mono echoes the pixel grid of Jacquard 12 with a clean monospaced companion for credits, dates and small labels."),
+        ("Jacquard 12", "Open Sans", "Open Sans provides smooth, neutral body text that contrasts with the pixelated Old English capitals of Jacquard 12 headlines."),
+        ("Jacquard 12", "Work Sans", "Work Sans is a straightforward sans that keeps merch pages and event details readable under Jacquard 12 headings."),
+        ("Jacquard 12", "IBM Plex Sans", "IBM Plex Sans has a technical, engineered feel that suits the retro bitmap look of Jacquard 12 headings."),
+        ("Jacquard 12", "Lato", "Lato's warm, even text relaxes the eye below the dense, pixelated blackletter of Jacquard 12 headlines."),
+    ],
     # --- end mcp r4
 }
 
@@ -750,7 +800,7 @@ if errors:
 families = sorted(GFM)
 with open(OUT, "w", encoding="utf-8") as fh:
     fh.write("// GENERATED by build_font_pairings_curated.py (mcp-gaps-r1, 10-Nov-2026; mcp-gaps-r2, 11-Nov-2026; mcp r4, 13-Nov-2026). Do not edit by hand.\n"
-             "// Editorial pairings for 79 Google Fonts without an MGD guide yet (page: null): r1 added 30; mcp-gaps-r2 added 37\n"
+             "// Editorial pairings for 85 Google Fonts without an MGD guide yet (page: null): r1 added 30; mcp-gaps-r2 added 37; mcp r5 (23-Nov) added 6 varsity/blackletter faces\n"
              "// (7 real zeros from 10-11 Nov + 30 popular display/serif); mcp r4 added 12 Noto families (real zeros 12-Nov). Facts from google/fonts METADATA.pb.\n")
     fh.write("export const CURATED = " + json.dumps(out, ensure_ascii=False, separators=(",", ":")) + ";\n")
     fh.write("export const GF_FAMILIES = " + json.dumps("|".join(families), ensure_ascii=False) + ".split(\"|\");\n")
