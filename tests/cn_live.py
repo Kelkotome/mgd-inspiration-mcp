@@ -12,7 +12,7 @@ import hashlib, json, os, re, sys, urllib.request, urllib.error
 L = sys.argv[1].rstrip("/"); ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UA = {"User-Agent": "curl/8.4.0", "Accept": "*/*"}; ok = fail = 0
 cat = json.load(open(f"{ROOT}/src/tpl_catalog.json")); tree = open(f"{ROOT}/src/ui_tree.js").read()
-blk = tree.split('  "construction": {', 1)[1].split("appPatterns", 1)[0]
+blk = tree.split('  construction: {', 1)[1].split("appPatterns", 1)[0]
 NICHES = re.findall(r'\["([a-z-]+)", "([a-z-]+-website)", "[^"]+", "([a-z-]+-template)", "([a-z-]+)"\]', blk); HUB = "construction-website-templates"
 def t(name, cond, info=""):
     global ok, fail

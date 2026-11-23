@@ -82,7 +82,10 @@ Run from `../mgd-inspiration-tpl-r5` unless noted. R2 first (nothing links it ye
    from origin).
 4. **D1 rows:** `zsh ../deploy-bundle-2026-11-23/d1_apply_r5.sh` (each line of `tpl-r5-construction-rows.sql` as its own
    `wrangler d1 execute --remote --command`, never `--file`; idempotent; 1 s apart). Expect 96 lines `changes=1`.
-5. **Purge** `/inspiration/ui` (`python3 ../.claude-tools/cf_purge.py` prefix purge, token in EtiennAubertBonn/.env).
+5. **Refresh the Worker's row cache, then purge.** `uiAllRows` keeps all UI rows in `shared('ui-rows', 3600)` (isolate memory + caches.default
+   under `/inspiration/mcp/_cache/<worker version>/`). A page hit while step 4 is half applied caches a partial row set for up to an hour
+   (23-Nov: plumber and roofing 404'd). So after step 4 run `npx wrangler deploy` once more (new version id = fresh cache keys) and push, then purge
+   `/inspiration/ui` and `/inspiration/mcp` by prefix. Was: **Purge** `/inspiration/ui` (`python3 ../.claude-tools/cf_purge.py` prefix purge, token in EtiennAubertBonn/.env).
 6. **Live checks** (read only, curl/8.4.0 UA; the scripts retry SSL resets):
    ```
    python3 tests/cn_live.py https://madegooddesigns.com/inspiration
