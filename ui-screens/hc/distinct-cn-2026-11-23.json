@@ -1,9 +1,8 @@
 {
  "cleaning-service": {
-  "designs": 7,
-  "distinct": 7,
+  "designs": 6,
+  "distinct": 6,
   "distinctIds": [
-   "homepage",
    "band",
    "bento",
    "concierge",
@@ -12,14 +11,13 @@
    "project"
   ],
   "maxTreeSimilarity": 0.726,
-  "maxLayoutOverlap": 0.454,
+  "maxLayoutOverlap": 0.44,
   "failedPairs": []
  },
  "construction": {
-  "designs": 7,
-  "distinct": 7,
+  "designs": 6,
+  "distinct": 6,
   "distinctIds": [
-   "homepage",
    "atlas",
    "concierge",
    "dispatch",
@@ -47,10 +45,9 @@
   "failedPairs": []
  },
  "hvac": {
-  "designs": 7,
-  "distinct": 7,
+  "designs": 6,
+  "distinct": 6,
   "distinctIds": [
-   "homepage",
    "band",
    "bento",
    "concierge",
@@ -78,10 +75,9 @@
   "failedPairs": []
  },
  "pest-control": {
-  "designs": 7,
-  "distinct": 7,
+  "designs": 6,
+  "distinct": 6,
   "distinctIds": [
-   "homepage",
    "atlas",
    "band",
    "bento",
@@ -90,7 +86,7 @@
    "project"
   ],
   "maxTreeSimilarity": 0.72,
-  "maxLayoutOverlap": 0.475,
+  "maxLayoutOverlap": 0.392,
   "failedPairs": []
  },
  "plumber": {
