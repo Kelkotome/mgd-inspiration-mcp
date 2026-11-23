@@ -13,7 +13,7 @@ for (const d of list) {
   const png = path.join(shots, `${d.slug}.png`); const p = await b.newPage({ viewport: { width: 1200, height: 900 } });
   await p.goto("file://" + d.html, { waitUntil: "load" }); await p.waitForTimeout(150); await p.screenshot({ path: png }); await p.close();
   const desc = `A block theme for ${d.niche.replace(/-/g, " ")} sites: ${d.about}. All names and details are fictional samples to replace.`;
-  const r = exportTheme({ html: d.html, slug: d.slug, name: d.name, family: d.family, style: d.style, desc, out: OUT_WP, zip: true, niche: d.niche, screenshot: png, version: "1.0.0" });
+  const r = exportTheme({ html: d.html, slug: d.slug, name: d.name, family: d.family, style: d.style, desc, out: OUT_WP, zip: true, niche: d.niche, screenshot: png, version: process.env.TPL_VERSION || "1.0.0" }); // TPL_VERSION: a re-release of a live theme gets a new version (new R2 key), 24-Nov-2026
   fs.writeFileSync(path.join(OUT_WP, `${d.slug}.design.json`), JSON.stringify(d, null, 1));
   summary.push(r); console.log(d.slug, "blocks", r.blocks, "html", r.htmlBlocks, JSON.stringify(r.htmlWhy), "patterns", r.patterns.length, "zip", r.zipBytes);
   if (zips) fs.copyFileSync(path.join(OUT_WP, `${d.slug}.zip`), path.join(zips, `${d.slug}.zip`));

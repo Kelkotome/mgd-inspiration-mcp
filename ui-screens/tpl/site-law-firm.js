@@ -1,7 +1,9 @@
 /* Law firm website template (Whitcombe Hale — fictional law firm for families and small businesses). Full responsive home
    page: nav, hero with book-a-consultation and a first-call availability panel, office photo band, practice areas, how we
-   work and fees (fixed fee vs hourly), attorneys, insights list, client notes, consultation request form, footer with a
-   generic attorney-advertising disclaimer. No outcome promises. "Photos" are inline SVG in fixed natural tones. */
+   work and fees (fixed fee vs hourly, $00 sample fees), lawyers, insights list, consultation request form, footer with a
+   fictional notice and a general-information line. 24-Nov-2026 (r6 follow-up): client notes, admission years, staff count,
+   attorney-advertising and prior-results lines removed; admission and regulatory details left for the owner to add.
+   "Photos" are inline SVG in fixed natural tones. */
 const { ic, esc } = require("../lib");
 const K = require("../sitekit");
 
@@ -113,13 +115,13 @@ const portrait = (i, label) => {
 <path d="M64 108c0-36 22-50 38-50s34 12 34 48c-6-16-22-26-38-26s-28 10-34 28z" fill="${hair}"/>${i % 2 ? `<path d="M64 106c-6 32 0 56 10 66l2-46z" fill="${hair}"/><path d="M136 106c6 32 0 56-10 66l-2-46z" fill="${hair}"/>` : ""}</svg>`;
 };
 
-const AREAS = [["Family law", "Separation, parenting arrangements, property settlements and prenuptial agreements.", "Fixed fee options"],
-  ["Wills & estates", "Wills, powers of attorney, guardianship and estate administration.", "Wills from $450"],
+const AREAS = [["Family law", "Separation, parenting arrangements, dividing property and prenuptial agreements.", "Fixed fee options"],
+  ["Wills & estates", "Wills, powers of attorney, guardianship and estate administration.", "Wills from $00"],
   ["Property & conveyancing", "Buying, selling, leases and first-home purchases.", "Fixed fee"],
-  ["Business formation", "Company set-up, shareholder agreements, partnership deeds.", "Packages from $1,200"],
+  ["Business formation", "Company set-up, shareholder agreements, partnership deeds.", "Packages from $00"],
   ["Employment", "Contracts, workplace policies and advice for small employers and staff.", "Hourly or fixed"],
   ["Disputes & mediation", "Contract disputes, debt recovery and mediation before court.", "Hourly, estimates in writing"]];
-const ATTS = [["Eleanor Whitcombe", "Founding partner", "Admitted 2004", ["Family law", "Mediation"]], ["Daniel Hale", "Partner", "Admitted 2009", ["Business", "Employment"]], ["Ana Sorensen", "Senior associate", "Admitted 2014", ["Wills & estates"]], ["Kwame Mensah", "Associate", "Admitted 2019", ["Property", "French"]]];
+const ATTS = [["Eleanor Whitcombe", "Founding partner", "Admission details: add your own", ["Family law", "Mediation"]], ["Daniel Hale", "Partner", "Admission details: add your own", ["Business", "Employment"]], ["Ana Sorensen", "Senior associate", "Admission details: add your own", ["Wills & estates"]], ["Kwame Mensah", "Associate", "Admission details: add your own", ["Property", "French"]]];
 const POSTS = [["28 Oct 2026", "Wills & estates", "What happens if you die without a will: a plain-English walk-through", "6 min"],
   ["14 Oct 2026", "Business", "Shareholder agreements for two-founder companies: the five clauses to discuss first", "8 min"],
   ["30 Sep 2026", "Family law", "Parenting plans versus court orders: how they differ", "5 min"],
@@ -152,13 +154,13 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Practice areas", "Fees", "Our la
 <section class="sk-sec sk-alt sk-tight" id="fees"><div class="sk-wrap">
   <div class="sk-head"><div><span class="sk-eyebrow">How we work & fees</span><h2 class="sk-h2">You’ll know the cost before we begin</h2></div></div>
   <div class="wh-fees">${[["First call", "Free", "20 minutes by phone, video or in person to understand your situation and whether we’re the right fit.", ["No obligation", "Conflict check before details", "Written next steps by email"], ""],
-    ["Fixed fee", "From $450", "For defined work: wills, conveyancing, company set-up, uncontested separations. One price, agreed in writing.", ["Scope listed line by line", "Pay in two instalments", "No charge for routine calls"], " mid"],
-    ["Hourly", "$290 / hour", "For disputes and matters where the work can’t be predicted. Billed in 6-minute units with a written estimate.", ["Monthly itemised invoices", "We tell you at 80% of estimate", "Junior rates where suitable"], ""]].map(([t, pr, d, list, c]) => `<article class="card wh-fee${c}"><h3 class="sk-h3">${t}</h3><div class="num">${pr}</div><p class="muted" style="font-size:14px">${d}</p><ul>${list.map((x) => `<li>${ic("check", 14)}<span>${x}</span></li>`).join("")}</ul></article>`).join("")}</div>
-  <p class="wh-plain">${ic("shield", 18)}<span>We can’t promise how a matter will end. We do promise to explain each step, answer emails within one working day, and never bill you for work you didn’t agree to.</span></p>
+    ["Fixed fee", "From $00", "For defined work: wills, conveyancing, company set-up, uncontested separations. One price, agreed in writing.", ["Scope listed line by line", "Pay in two instalments", "No charge for routine calls"], " mid"],
+    ["Hourly", "$00 / hour", "For disputes and matters where the work can’t be predicted. Billed in 6-minute units with a written estimate.", ["Monthly itemised invoices", "We tell you before the estimate runs out", "Junior rates where suitable"], ""]].map(([t, pr, d, list, c]) => `<article class="card wh-fee${c}"><h3 class="sk-h3">${t}</h3><div class="num">${pr}</div><p class="muted" style="font-size:14px">${d}</p><ul>${list.map((x) => `<li>${ic("check", 14)}<span>${x}</span></li>`).join("")}</ul></article>`).join("")}</div>
+  <p class="wh-plain">${ic("shield", 18)}<span>No one can say in advance how a matter will end. We explain each step, answer emails by the next working day, and only bill for work you agreed to. Fees shown are sample fees: zero placeholders to replace with your own.</span></p>
 </div></section>
 
 <section class="sk-sec sk-tight" id="our-lawyers"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Our lawyers</span><h2 class="sk-h2">A small team you’ll actually speak to</h2></div><a class="btn sk-btn-lg wh-hide-m" href="#">All 9 staff ${ic("arrow", 16)}</a></div>
+  <div class="sk-head"><div><span class="sk-eyebrow">Our lawyers</span><h2 class="sk-h2">A small team you’ll actually speak to</h2></div><a class="btn sk-btn-lg wh-hide-m" href="#">Meet the team ${ic("arrow", 16)}</a></div>
   <div class="wh-team sk-rail">${ATTS.map(([n, r, a, tags], i) => `<article class="wh-att"><div class="sk-photo">${portrait(i, `Portrait of ${n}`)}</div><div><h3 class="sk-h3">${esc(n)}</h3><small>${r} · ${a}</small></div><div class="wh-tags">${tags.map((t) => `<span class="badge">${t}</span>`).join("")}</div></article>`).join("")}</div>
 </div></section>
 
@@ -168,11 +170,6 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Practice areas", "Fees", "Our la
     <article class="card wh-lead"><div class="sk-photo">${article()}</div><div><span class="badge" style="justify-self:start">Guide · Wills & estates</span><h3 class="sk-h3" style="font-size:calc(22px * var(--hs))">Your first will: a checklist before the appointment</h3><p class="muted" style="font-size:14px">Assets, guardians, executors and the questions people usually forget. Bring this list and your appointment takes half the time.</p></div></article>
     <div class="wh-rows">${POSTS.map(([d, c, t, rt]) => `<a class="wh-row" href="#"><time>${d}</time><div><span class="wh-cat">${c}</span><h3>${t}</h3></div><span class="wh-rt">${rt} read</span></a>`).join("")}</div>
   </div>
-</div></section>
-
-<section class="sk-sec sk-tight"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Client notes</span><h2 class="sk-h2">What working with us is like</h2></div></div>
-  <div class="wh-notes sk-rail">${[["Eleanor explained every option for our parenting plan without pushing us toward any of them. The fixed fee meant one less thing to worry about.", "Jo B.", "Family law client"], ["We set up our company and shareholder agreement in three weeks. Daniel’s notes on each clause were the clearest thing I read all year.", "Ravi & Ines", "Café owners"]].map(([q, n, r]) => `<figure class="card wh-note"><q>${esc(q)}</q><figcaption><b>${esc(n)}</b> · <span class="muted" style="font-size:13px">${esc(r)}</span></figcaption></figure>`).join("")}</div>
 </div></section>
 
 <section class="sk-sec sk-alt sk-tight" id="book-a-consultation"><div class="sk-wrap wh-consult">
@@ -191,11 +188,11 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Practice areas", "Fees", "Our la
   </form>
 </div></section>
 </main>
-${K.footer(p, "Advice for families and small businesses on wills, family law, property, business and employment matters.", [["Office", ["Level 2, 18 Chancery Walk", "Mon–Fri 8:30–5:30", "(555) 016-7720"]], ["Practice areas", ["Family law", "Wills & estates", "Property", "Business & employment"]], ["Firm", ["Our lawyers", "Fees", "Insights", "Complaints procedure"]]], `© 2026 ${p.name}. Attorney advertising.`)}
-<div class="sk-wrap"><p class="wh-disc" style="margin-top:0;border-top:0;padding:0 0 40px">This website is attorney advertising and provides general information only, not legal advice. Contacting ${esc(p.name)} or using this site does not create an attorney–client relationship. Prior results do not guarantee a similar outcome. Please do not send confidential information until we have confirmed in writing that we can act for you.</p></div>`, CSS);
+${K.footer(p, "Advice for families and small businesses on wills, family law, property, business and employment matters.", [["Office", ["Level 2, 18 Chancery Walk", "Mon–Fri 8:30–5:30", "(555) 016-7720"]], ["Practice areas", ["Family law", "Wills & estates", "Property", "Business & employment"]], ["Firm", ["Our lawyers", "Fees", "Insights", "Complaints procedure"]]], `Fictional law firm created for this template. Names, people, fees and places are sample content. Sample fees are zero placeholders: replace them with your own. Admission, registration and regulatory details: add your own here. © 2026 ${p.name}.`)}
+<div class="sk-wrap"><p class="wh-disc" style="margin-top:0;border-top:0;padding:0 0 40px">This page is general information only, not legal advice. Contacting ${esc(p.name)} or using this site does not create a lawyer–client relationship. Please do not send confidential information until we have confirmed in writing that we can act for you. Add the advertising, regulatory and complaints wording your jurisdiction requires (add your own).</p></div>`, CSS);
 
 module.exports = {
   "law-firm-website": K.def("lawfirm", "Law firm website",
-    "a full law firm home page: navigation with book-a-consultation, a hero with consultation and fees buttons beside a free-first-call availability panel with time slots, an office photo band, six numbered practice areas with fee badges, a how-we-work and fees section comparing a free first call, fixed fee and hourly billing with a plain no-outcome-promise note, lawyer profiles with admission year and focus tags, an insights section with a featured guide and a dated article list, client notes, a consultation request form (name, matter type, contact details, preferred call type, description, no-relationship acknowledgement) beside office details and a conflict-check note, and a footer with an attorney-advertising disclaimer",
-    ["navigation-header", "hero", "booking-panel", "time-slots", "practice-areas", "pricing", "fee-comparison", "team", "blog-list", "articles", "testimonials", "contact-form", "radio-group", "checkbox", "disclaimer", "footer", "law-firm"], web),
+    "a full law firm home page: navigation with book-a-consultation, a hero with consultation and fees buttons beside a free-first-call availability panel with time slots, an office photo band, six numbered practice areas with fee badges, a how-we-work and fees section comparing a free first call, fixed fee and hourly billing with a plain no-outcome note and sample fees, lawyer profiles with add-your-own admission details and focus tags, an insights section with a featured guide and a dated article list, a consultation request form (name, matter type, contact details, preferred call type, description, no-relationship acknowledgement) beside office details and a conflict-check note, and a footer with a fictional notice and a general-information disclaimer",
+    ["navigation-header", "hero", "booking-panel", "time-slots", "practice-areas", "pricing", "fee-comparison", "team", "blog-list", "articles", "contact-form", "radio-group", "checkbox", "disclaimer", "footer", "law-firm"], web),
 };

@@ -27,7 +27,7 @@ for (const f of ["color-roles-core.js", "design-md-core.js"]) vm.runInContext(fs
 const R = sandbox.MGDRoles, DM = sandbox.MGDDesignMd; lib.setCore(DM);
 export function palette(family, styleName) {
   const st = STYLES[styleName];
-  sandbox.Math.random = mulberry32(hashStr(FAMILIES[family].name + styleName));
+  sandbox.Math.random = mulberry32(hashStr((FAMILIES[family].paletteSeed || FAMILIES[family].name) + styleName));
   const sd = R.seed({ mood: st.mood, harmony: st.harmony, hue: st.hue });
   const light = R.build(sd, "light").roles, dark = R.build(sd, "dark").roles;
   if (st.mono) for (const [t, g] of [[light, ["#ffffff", "#fafafa", "#e4e4e4", "#111111", "#666666", "#111111", "#ffffff", "#444444"]], [dark, ["#0a0a0a", "#161616", "#2c2c2c", "#f2f2f2", "#a0a0a0", "#f2f2f2", "#0a0a0a", "#c8c8c8"]]])

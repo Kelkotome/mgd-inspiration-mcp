@@ -1,7 +1,8 @@
 /* Financial advisor website template (Lindqvale Planning, a fictional fee-only planning firm). Full responsive home page set like a
    numbered planning document whose single job is booking an intro call: contents rail + statement hero, "Where are you right now?"
    by life stage, plain fee table, first 90 days, mock plan document, advisors with a credentials slot, how we are paid and conflicts
-   of interest, FAQ, short intro-call form, footer. No return figures, no performance, no assets-under-management claims, no percentages. */
+   of interest, FAQ, short intro-call form, footer. No return figures, no performance, no assets-under-management claims, no percentages.
+   24-Nov-2026 (r6 follow-up): $00 sample fees, advisor qualifications and licence/registration lines left for the owner to add, no promises. */
 const { ic, esc } = require("../lib");
 const K = require("../sitekit");
 
@@ -187,25 +188,25 @@ const STAGES = [
 ];
 
 const FEES = [
-  ["Financial plan", "One-off", "Discovery, the full written plan, the plan meeting and the 90-day review.", "Flat fee, agreed in writing before work starts. Half on signing, half when you receive the plan.", "$3,200 to $6,800"],
-  ["Ongoing retainer", "After the plan", "Yearly plan update, a tax-season check-in, a mid-year review, and calls or email when something changes.", "Monthly, billed in arrears. Stop with 30 days’ notice.", "$240 to $520 / mo"],
-  ["Hourly advice", "One question", "A second opinion, a job offer, a pension choice or a mortgage decision. No plan needed.", "Billed in 15-minute steps, two-hour minimum, with a written note of what we said.", "$280 / hour"],
+  ["Financial plan", "One-off", "Discovery, the full written plan, the plan meeting and the 90-day check-in.", "Flat fee, agreed in writing before work starts. Half on signing, half when you receive the plan.", "$00 to $00"],
+  ["Ongoing retainer", "After the plan", "Yearly plan update, a tax-season check-in, a mid-year check-in, and calls or email when something changes.", "Monthly, billed in arrears. Stop with 30 days’ notice.", "$00 to $00 / mo"],
+  ["Hourly advice", "One question", "A second opinion, a job offer, a pension choice or a mortgage decision. No plan needed.", "Billed in 15-minute steps, two-hour minimum, with a written note of what we said.", "$00 / hour"],
 ];
 
 const TIME = [
   ["Day 0", "Intro call", "Thirty minutes. You tell us what prompted the call, we explain how we work and whether we are a fit.", "Free, no paperwork"],
   ["Weeks 1 to 2", "Discovery meeting", "Ninety minutes on goals, family and work. We send a secure list first: recent payslips, tax returns, statements, policies and wills.", "You get your fee quote after this"],
   ["Weeks 4 to 6", "The written plan", "We walk you through it page by page, explain the trade-offs, and agree an action list with names and dates.", "The plan is yours to keep"],
-  ["Day 90", "Review", "What got done, what got stuck and what changed. Then you choose: carry on with a retainer, or take the plan and go.", "Included in the plan fee"],
+  ["Day 90", "Check-in", "What got done, what got stuck and what changed. Then you choose: carry on with a retainer, or take the plan and go.", "Included in the plan fee"],
 ];
 
-const CONTENTS = [["Summary and next steps", "3"], ["Your goals, in your words", "5"], ["Net worth and cash flow", "7"], ["Tax position and options", "11"], ["Retirement projection, assumptions shown", "15"], ["Investments: what you hold and what it costs", "20"], ["Insurance and protection review", "25"], ["Estate documents checklist", "28"], ["Education funding", "30"], ["Action list: who does what, by when", "33"]];
-const ACTIONS = [["Update beneficiaries on the workplace plan", "Dana", "20 Nov"], ["Send policy schedule to the broker for a cover review", "Theo", "28 Nov"], ["Book a will review with your attorney", "Both", "12 Dec"], ["Move the emergency fund to a separate account", "Dana", "15 Dec"], ["Check payroll withholding with your accountant", "Planner", "9 Jan"], ["Open the separate education account", "Theo", "16 Jan"], ["Day 90 review meeting", "All", "21 Jan"]];
+const CONTENTS = [["Summary and next steps", "3"], ["Your goals, in your words", "5"], ["Net worth and cash flow", "7"], ["Tax position and options", "11"], ["Retirement projection, assumptions shown", "15"], ["Investments: what you hold and what it costs", "20"], ["Insurance and protection check", "25"], ["Estate documents checklist", "28"], ["Education funding", "30"], ["Action list: who does what, by when", "33"]];
+const ACTIONS = [["Update beneficiaries on the workplace plan", "Dana", "20 Nov"], ["Send policy schedule to the broker for a cover check", "Theo", "28 Nov"], ["Book a will update with your attorney", "Both", "12 Dec"], ["Move the emergency fund to a separate account", "Dana", "15 Dec"], ["Check payroll withholding with your accountant", "Planner", "9 Jan"], ["Open the separate education account", "Theo", "16 Jan"], ["Day 90 check-in meeting", "All", "21 Jan"]];
 
 const ADVISORS = [
-  ["1", "#d8a884", "#4a3324", "#3f4d52", "Portrait of a planner in a dark jacket", "Marit Ostrand", "Lead planner", "Works mainly with families and people approaching retirement. Started her career in a bank’s lending team.", ["Postgraduate diploma in financial planning", "Professional planning designation", "Retirement income specialist training"]],
-  ["2", "#a97350", "#1e1916", "#5d6650", "Portrait of a planner in an olive jacket", "Daniel Okoye-Fenn", "Planner, business owners", "Former tax accountant. Handles owner pay, company retirement plans and business sales.", ["Degree in accounting and finance", "Professional tax qualification", "Business succession planning training"]],
-  ["3", "#efc9a8", "#8a5a34", "#6c5a4a", "Portrait of a planner in a brown jacket", "Joelle Harrowgate", "Planner, life transitions", "Works with people after a bereavement, a divorce or an inheritance, at whatever pace they need.", ["Diploma in financial planning", "Divorce financial analysis training", "Estate and trust planning training"]],
+  ["1", "#d8a884", "#4a3324", "#3f4d52", "Portrait of a planner in a dark jacket", "Marit Ostrand", "Lead planner", "Works mainly with families and people approaching retirement. Started her career in a bank’s lending team.", ["Qualifications: add your own", "Focus: families and retirement income", "Languages: add your own"]],
+  ["2", "#a97350", "#1e1916", "#5d6650", "Portrait of a planner in an olive jacket", "Daniel Okoye-Fenn", "Planner, business owners", "Former tax accountant. Handles owner pay, company retirement plans and business sales.", ["Qualifications: add your own", "Focus: owner pay and business sales", "Languages: add your own"]],
+  ["3", "#efc9a8", "#8a5a34", "#6c5a4a", "Portrait of a planner in a brown jacket", "Joelle Harrowgate", "Planner, life transitions", "Works with people after a bereavement, a divorce or an inheritance, at whatever pace they need.", ["Qualifications: add your own", "Focus: bereavement, divorce and inheritance", "Languages: add your own"]],
 ];
 
 const CONFLICTS = [
@@ -217,7 +218,7 @@ const CONFLICTS = [
 const FAQ = [
   ["Do you hold my money?", "No. Your accounts stay in your name at the provider of your choice. We give written recommendations, and you decide whether to act on them.", true],
   ["Is there a minimum amount to work with you?", "No. Our fees are based on the work involved, not on what you have, so there is no minimum balance or income."],
-  ["Can you promise how my investments will do?", "No, and nobody can. Plans use stated assumptions that you can read and question, and we update them each year."],
+  ["Can you tell me how my investments will do?", "No, and nobody can. Plans use stated assumptions that you can read and question, and we update them each year."],
   ["We already have an accountant and an attorney. Is that a problem?", "Not at all. With your permission we work alongside them, and we can join a meeting so that everyone is reading the same plan."],
   ["What if we only want one question answered?", "Use hourly advice. There is no plan, no retainer and no pressure to take either. You get a short written note afterwards."],
   ["Do we have to meet in person?", "No. Most meetings are by video. Our office on Tamarind Court is open for anyone who prefers to sit across a table."],
@@ -249,7 +250,7 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Your situation", "Fees", "First 
 
 <section class="fa-sec" id="fees"><div class="sk-wrap fa-doc">${mark("2", "Fees")}
   <div>
-    <div class="fa-intro"><h2 class="sk-h2">What it costs</h2><p>Three ways to work with us. You will have a fixed quote in writing before you commit to anything.</p></div>
+    <div class="fa-intro"><h2 class="sk-h2">What it costs</h2><p>Three ways to work with us. You will have a fixed quote in writing before you commit to anything. Fees below are sample fees: zero placeholders to replace with your own.</p></div>
     <table class="fa-table"><thead><tr><th style="width:21%">Service</th><th style="width:33%">What it covers</th><th>How it is charged</th><th>Fee</th></tr></thead><tbody>${FEES.map(([t, sub, what, how, fee]) => `<tr><td><b>${t}</b><small>${sub}</small></td><td>${what}</td><td class="fa-how">${how}</td><td class="num">${fee}</td></tr>`).join("")}</tbody></table>
     <div class="fa-feeg">
       <div><h3 class="sk-h3">How the fee is worked out</h3><ol>${["How many income sources, employers or businesses are involved", "Whether property, trusts or an estate need reviewing", "Whether two households or two countries are involved", "How much tax work the plan needs"].map((x) => `<li>${x}</li>`).join("")}</ol></div>
@@ -279,8 +280,8 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Your situation", "Fees", "First 
 <section class="fa-sec" id="advisors"><div class="sk-wrap fa-doc">${mark("5", "Advisors")}
   <div>
     <div class="fa-intro" style="margin-bottom:22px"><h2 class="sk-h2">Who you would be talking to</h2><p>You speak to a planner from the first call. There is no sales team.</p></div>
-    <div class="fa-advs">${ADVISORS.map(([id, s, h, c, lbl, n, r, d, q]) => `<article class="fa-adv"><div class="fa-face">${face(id, s, h, c, lbl)}</div><div><h3 class="sk-h3">${n}</h3><div class="muted" style="font-size:13px;font-weight:500">${r}</div><p>${d}</p></div><ul aria-label="Training">${q.map((x) => `<li><span>${ic("check", 14)}</span><span>${x}</span></li>`).join("")}</ul></article>`).join("")}</div>
-    <div class="fa-slot"><span>${ic("edit", 16)}</span>Add your license, registration and professional credentials here</div>
+    <div class="fa-advs">${ADVISORS.map(([id, s, h, c, lbl, n, r, d, q]) => `<article class="fa-adv"><div class="fa-face">${face(id, s, h, c, lbl)}</div><div><h3 class="sk-h3">${n}</h3><div class="muted" style="font-size:13px;font-weight:500">${r}</div><p>${d}</p></div><ul aria-label="Qualifications and focus">${q.map((x) => `<li><span>${ic("check", 14)}</span><span>${x}</span></li>`).join("")}</ul></article>`).join("")}</div>
+    <div class="fa-slot"><span>${ic("edit", 16)}</span>Licence, registration and professional credentials: add your own here</div>
   </div>
 </div></section>
 
@@ -313,10 +314,10 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Your situation", "Fees", "First 
   </form>
 </div></section>
 </main>
-${K.footer(p, "Fee-only financial planning for households and business owners, with a flat fee you can see before we start.", [["Office", ["6 Tamarind Court, Suite 2", "Mon to Fri, 9:00 AM to 5:30 PM", "Evening calls by arrangement"]], ["Contact", ["(555) 014-2230", "hello@lindqvale.example", "Client documents: secure portal"]], ["Firm", ["Fee schedule", "Conflicts of interest policy", "Privacy notice"]]], "Fictional firm created for this template. General information only, not financial advice.")}`, CSS);
+${K.footer(p, "Fee-only financial planning for households and business owners, with a flat fee you can see before we start.", [["Office", ["6 Tamarind Court, Suite 2", "Mon to Fri, 9:00 AM to 5:30 PM", "Evening calls by arrangement"]], ["Contact", ["(555) 014-2230", "hello@lindqvale.example", "Client documents: secure portal"]], ["Firm", ["Fee schedule", "Conflicts of interest policy", "Privacy notice"]]], "Fictional firm created for this template. Names, people, fees and places are sample content. Sample fees are zero placeholders: replace them with your own. Licence and registration details: add your own here. General information only, not financial advice.")}`, CSS);
 
 module.exports = {
   "financial-advisor-website": K.def("advisor", "Financial advisor website",
-    "a full fee-only financial planner home page set like a numbered document: navigation with a book-an-intro-call button, a statement hero with an on-this-page contents rail, next call times and a four-fact strip, a where-are-you-right-now section with six life stages and their planning questions, a plain fee table for flat plan fee, monthly retainer and hourly advice with how the fee is worked out and what is not charged, a first-90-days timeline, a mock plan document with a contents page and action list, advisors with generic training and a credentials slot, how we are paid with a conflicts of interest table, an FAQ, a short intro-call form and a footer",
+    "a full fee-only financial planner home page set like a numbered document: navigation with a book-an-intro-call button, a statement hero with an on-this-page contents rail, next call times and a four-fact strip, a where-are-you-right-now section with six life stages and their planning questions, a plain fee table with $00 sample fees for flat plan fee, monthly retainer and hourly advice with how the fee is worked out and what is not charged, a first-90-days timeline, a mock plan document with a contents page and action list, advisors with add-your-own qualifications and a credentials slot, how we are paid with a conflicts of interest table, an FAQ, a short intro-call form and a footer",
     ["navigation-header", "hero", "table-of-contents", "life-stage-index", "planning-questions", "fee-table", "timeline", "document-preview", "team", "credentials-slot", "conflicts-table", "faq", "booking-form", "footer", "financial-advisor"], web),
 };
