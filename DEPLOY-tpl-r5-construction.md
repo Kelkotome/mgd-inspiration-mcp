@@ -89,7 +89,7 @@ Run from `../mgd-inspiration-tpl-r5` unless noted. R2 first (nothing links it ye
 6. **Live checks** (read only, curl/8.4.0 UA; the scripts retry SSL resets):
    ```
    python3 tests/cn_live.py https://madegooddesigns.com/inspiration
-   node tests/cn_mcp.mjs https://madegooddesigns.com/inspiration/mcp
+   node tests/cn_mcp.mjs https://madegooddesigns.com/inspiration
    IND=construction python3 tests/hc_routes.py https://madegooddesigns.com/inspiration
    for I in real-estate restaurant wedding portfolio beauty-fitness; do IND=$I python3 tests/hc_routes.py https://madegooddesigns.com/inspiration; done
    python3 tests/hc_routes.py https://madegooddesigns.com/inspiration
