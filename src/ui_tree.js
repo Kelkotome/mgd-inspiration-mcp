@@ -146,6 +146,25 @@ export const INDUSTRIES = {
     ],
     appPatterns: ["pro-directory"],
   },
+  // 24-Nov-2026 ninth industry (templates r6). Demand (Keyword Planner, worldwide, 23-Nov-2026, template terms): lawyer/attorney 590, consulting 590,
+  // law firm 390, accounting 320, insurance 260 + insurance agency 110, staffing 170 + recruitment 170, financial advisor 90, tax preparation 40
+  // (tax website template 140, +362 % YoY on 6-Nov); WordPress: lawyer 480 (+78 % YoY), consulting 480, law firm 260, finance 170. hubFirst: no niche is
+  // named like the industry ("professional services", "legal services" -> the hub). law-firm-website (n12, Whitcombe Hale) and financial-advisor-website
+  // (n13) were flat patterns; their hand-built homepages are not signatures (as gym in r4, construction in r5), so they stay plain items.
+  "professional-services": {
+    id: "professional-services", label: "Legal and professional services", hub: "professional-services-website-templates", seg: "professional-services", h1: "Legal and professional services website templates", hubFirst: true,
+    niches: [
+      ["law-firm", "law-firm-website", "Law firm", "law-firm-website-template", "law-firm"],
+      ["lawyer", "lawyer-website", "Lawyer and attorney", "lawyer-website-template", "lawyer"],
+      ["accounting", "accounting-website", "Accounting firm", "accounting-website-template", "accounting"],
+      ["tax-preparation", "tax-preparation-website", "Tax preparation", "tax-preparation-website-template", "tax-preparation"],
+      ["financial-advisor", "financial-advisor-website", "Financial advisor", "financial-advisor-website-template", "financial-advisor"],
+      ["insurance-agency", "insurance-agency-website", "Insurance agency", "insurance-website-template", "insurance"],
+      ["consulting", "consulting-website", "Consulting firm", "consulting-website-template", "consulting"],
+      ["staffing-agency", "staffing-agency-website", "Staffing and recruitment agency", "staffing-agency-website-template", "staffing-agency"],
+    ],
+    appPatterns: [],
+  },
 };
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };

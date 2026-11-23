@@ -75,6 +75,15 @@ const GLYPH = {
   spray: '<path d="M22 24h16v32H22z"/><path d="M26 24v-8h10l6 4M38 14h6M48 10l4-2M48 16h6M48 22l4 2"/><path d="M22 36h16"/>',
   leaf: '<path d="M12 52C12 26 28 10 54 10c0 26-16 42-42 42z"/><path d="M12 52L40 24M24 40h10M30 34v-8"/>',
   bug: '<ellipse cx="32" cy="36" rx="12" ry="16"/><circle cx="32" cy="16" r="6"/><path d="M32 22v30M20 30l-10-6M20 38H8M20 46l-10 6M44 30l10-6M44 38h12M44 46l10 6M28 11l-4-6M36 11l4-6"/>',
+  // 24-Nov-2026 legal and professional services (templates r6)
+  scales: '<path d="M32 8v44M18 56h28M12 16h40"/><path d="M16 16L8 34h16zM48 16l-8 18h16z"/><path d="M8 34a8 5 0 0 0 16 0M40 34a8 5 0 0 0 16 0"/>',
+  pillar: '<path d="M8 22L32 8l24 14z"/><path d="M12 22h40M14 26v22M24 26v22M40 26v22M50 26v22M10 48h44v6H10z"/>',
+  calculator: '<rect x="14" y="6" width="36" height="52" rx="4"/><rect x="20" y="12" width="24" height="10"/><path d="M22 32h4M30 32h4M38 32h4M22 40h4M30 40h4M38 40h4M22 48h4M30 48h4M38 48h4"/>',
+  receipt: '<path d="M16 6h32v52l-5-4-5 4-6-4-6 4-5-4-5 4z"/><path d="M22 18h20M22 26h20M22 34h12M36 42h6"/>',
+  growth: '<path d="M8 56h48M8 56V8"/><path d="M14 46l12-12 9 7 17-19"/><path d="M42 22h10v10"/>',
+  umbrella: '<path d="M6 32a26 22 0 0 1 52 0z"/><path d="M32 10V6M32 32v18a5 5 0 0 1-10 0"/><path d="M19 32a6 5 0 0 1 13 0 6 5 0 0 1 13 0"/>',
+  briefcase: '<rect x="8" y="20" width="48" height="32" rx="3"/><path d="M24 20v-6h16v6M8 34h48M28 34v4h8v-4"/>',
+  badge: '<rect x="14" y="14" width="36" height="44" rx="4"/><path d="M26 8h12v10H26z"/><circle cx="32" cy="32" r="6"/><path d="M22 50c1-6 5-9 10-9s9 3 10 9"/>',
 };
 const glyph = (c, size, sw = 2.2) => `<svg class="i" width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPH[c.motif]}</svg>`;
 // Abstract illustration, drawn from the niche's glyph. Original artwork; a site owner swaps it for a real photo.

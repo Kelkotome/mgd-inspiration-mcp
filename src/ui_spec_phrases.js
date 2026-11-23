@@ -96,6 +96,13 @@ export const INDUSTRY_PHRASES = {
   "makeup-artist-website": ["an independent makeup artist", "a makeup artist"],
   "fitness-website": ["an independent personal trainer", "a trainer"],
   "yoga-website": ["a yoga studio with a weekly timetable", "a studio"],
+  // legal and professional services, 24-Nov-2026 (templates r6). law-firm-website and financial-advisor-website keep their n12/n13 phrases.
+  "lawyer-website": ["a solo attorney's practice", "a law office"],
+  "accounting-website": ["a small accounting firm", "a firm"],
+  "tax-preparation-website": ["a neighbourhood tax preparation office", "an office"],
+  "insurance-agency-website": ["a local independent insurance agency", "an agency"],
+  "consulting-website": ["a small management consulting firm", "a firm"],
+  "staffing-agency-website": ["a local staffing and recruitment agency", "an agency"],
 };
 
 // Hand-written exceptions where the default audience reads oddly with the style: "pattern|style" → [best, notIdeal]

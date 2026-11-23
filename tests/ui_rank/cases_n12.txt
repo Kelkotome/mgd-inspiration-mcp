@@ -20,7 +20,7 @@ real estate landing page with property search | real-estate-website
 construction website template | construction-website
 contractor website get a quote | construction-website
 law firm website template | law-firm-website
-lawyer website | law-firm-website
+lawyer website | lawyer-website law-firm-website
 dental website template | dental-website
 dentist website design | dental-website
 gym website template | gym-website

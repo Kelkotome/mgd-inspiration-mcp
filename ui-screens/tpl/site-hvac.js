@@ -1,8 +1,8 @@
 /* HVAC company website template (Northdraft Heating & Cooling, a fictional local contractor). Full responsive, dispatch-led home page:
-   24/7 emergency bar, nav, hero with dispatch board (ZIP check + today's arrival windows), "What's it doing?" symptom picker (CSS-only radio
+   emergency call bar, nav, hero with dispatch board (ZIP check + today's arrival windows), "What's it doing?" symptom picker (CSS-only radio
    tabs, no JS) routing to repair, tune-up or replacement in a dispatcher's voice, before-you-call safe checks with gas safety line,
    repair/install/replace plus furnace, AC, heat pump and air quality services, all-makes band, maintenance plan table with visit
-   checklists, financing wording, technician roster, reviews, booking, footer. Reviews are fictional. No brand names or logos. */
+   checklists, financing wording, technician roster, booking, footer. No reviews, no round-the-clock promises, licence details left for the owner. No brand names or logos. */
 const { ic, esc } = require("../lib");
 const K = require("../sitekit");
 
@@ -116,12 +116,6 @@ const CSS = `<style>
 .hv-stat{display:flex;gap:7px;align-items:center;font-size:12.5px;font-weight:600;padding:6px 9px;background:var(--bg);border:1px solid var(--border)}
 .hv-stat i{width:8px;height:8px;border-radius:50%;flex:none}
 .hv-tech p{font-size:13.5px;color:var(--muted)}
-.hv-revs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:20px}
-.hv-rev{display:grid;gap:7px;align-content:start;border-left:3px solid var(--text);padding-left:16px}
-.hv-rev p{font-size:14px}
-.hv-rev footer{font-size:12.5px;color:var(--muted)}
-.hv-stars{display:flex;gap:2px;color:color-mix(in oklab,var(--accent) 80%,var(--text))}
-.hv-stars svg{fill:currentColor}
 .hv-book{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:48px;align-items:start}
 .hv-book>div:first-child{display:grid;gap:12px;justify-items:start}
 .hv-book>div:first-child p{color:var(--muted);font-size:15.5px}
@@ -207,14 +201,14 @@ const SYMPTOMS = [
     next: "Still nothing? You go on today’s board. Tell me if there’s a baby, an older person or anyone unwell at home, and I’ll move you up.", cta: "Get on today’s board" },
   { id: 2, g: "snow", t: "No cooling", d: "Running, but the air is warm", route: [["on","Most likely, often today"],["maybe","If it’s only a dirty coil"],["maybe","If it’s leaking old refrigerant"]], say: "Got it. Go look at the outdoor unit for me. Is the fan turning?",
     ask: ["Fan spinning, air warm: often a capacitor, contactor or low refrigerant.", "Ice on the copper line or indoor coil: turn cooling off and set the fan to On. We can’t test a frozen coil.", "Nothing moving outside: check the breaker once. If it trips again, leave it off."],
-    next: "Most of these are a same-day repair, and most of the parts are on the truck.", cta: "Book a repair" },
+    next: "Most of these are fixed on the first visit, and most of the parts are on the truck.", cta: "Book a repair" },
   { id: 3, g: "noise", t: "Strange noise", d: "Banging, squealing, rattling", route: [["on","This week, unless it’s a boom"],["maybe","If it’s only a loose panel"],["maybe","If a worn motor is on an old unit"]], say: "Tell me what it sounds like. The sound usually tells me who to send.",
     ask: ["Boom when the burners light: turn it off and call me now.", "Metal scraping or grinding: turn it off. That’s a blower or a fan hitting something.", "Squeal or hum: a motor or a capacitor on its way out. It can wait a day.", "Rattle: often a loose panel. It can wait for a tune-up."],
     next: "If it’s still running and only annoying, I’ll give you a window this week instead of an emergency rate.", cta: "Book a repair" },
   { id: 4, g: "drop", t: "Water leak", d: "Puddle by the indoor unit", route: [["on","Usually today"],["maybe","A drain flush stops repeats"],["maybe","If the pan or coil has rusted through"]], say: "Turn the system off at the thermostat, then put down a towel or a pan.",
     ask: ["In cooling season, it’s most often a plugged condensate drain or a full pan.", "A furnace can leak too, on high-efficiency models with their own drain.", "If water is near an outlet or wiring, stay clear and switch off the breaker from the panel."],
     next: "Drain clears are quick, so I can usually fit you in today. Every tune-up flushes the drain, which stops most of these.", cta: "Book a repair" },
-  { id: 5, g: "bill", t: "High bills", d: "Costs up, comfort down", route: [["","Only if we find a fault"],["on","Start here"],["maybe","Past 15 years, and repair is over half the cost of new"]], say: "If your usage hasn’t changed, I’d start with a tune-up, not a repair.",
+  { id: 5, g: "bill", t: "High bills", d: "Costs up, comfort down", route: [["","Only if we find a fault"],["on","Start here"],["maybe","If it’s old and the repair costs close to new"]], say: "If your usage hasn’t changed, I’d start with a tune-up, not a repair.",
     ask: ["A dirty coil or filter makes the system run longer for the same comfort.", "We measure airflow and temperature split, so you get numbers rather than a guess.", "Rooms that never reach temperature may point to leaky ducts."],
     next: "No rush on this one. Pick a window that suits you.", cta: "Book a tune-up" },
   { id: 6, g: "smell", t: "Smell", d: "Gas, burning or musty", route: [["on","Once the home is safe"],["maybe","For musty or damp smells"],["maybe","If the heat exchanger has failed"]], say: "First question, and it matters: does it smell like rotten eggs?",
@@ -233,9 +227,9 @@ const SLOTS = [["8 to 10 AM", "Full", "full"], ["10 AM to 12", "1 truck left", "
 const CHECKS = ["Thermostat is on the right mode, with fresh batteries", "Filter isn’t clogged. Swap it if you can’t see light through it", "Breaker hasn’t tripped. Reset once only; if it trips again, leave it", "Furnace switch is on (it looks like a light switch)", "Vents and returns aren’t blocked by furniture", "Outdoor unit is clear of snow, leaves and covers"];
 
 const JOBS = [
-  ["Repair", "Flat-rate pricing by the job, quoted before we start. Common parts are on the truck, so most repairs finish on the first visit.", "Diagnostic $89, credited if you go ahead"],
+  ["Repair", "Flat-rate pricing by the job, quoted before we start. Common parts are on the truck, so most repairs finish on the first visit.", "Diagnostic $00 credited if you go ahead"],
   ["Install", "New systems, additions and finished basements. We do a room-by-room load calculation and check the ductwork before sizing anything.", "Free written proposal"],
-  ["Replace", "Same-week swap-outs. You get good, better and top options on paper, with the running costs and warranty for each.", "Free second opinion on any quote"],
+  ["Replace", "Swap-outs booked around you. You get good, better and top options on paper, with the running costs for each.", "Free second opinion on any quote"],
 ];
 const SYSTEMS = [
   ["Furnaces", ["Gas and electric furnaces", "Ignition and flame sensors", "Blower motors", "Heat exchanger checks"]],
@@ -246,24 +240,18 @@ const SYSTEMS = [
 
 const yes = ic("check", 16);
 const no = `<span class="muted">${ic("minus", 14)}</span>`;
-const PLAN_ROWS = [["Tune-ups each year", "1", "2", "2"], ["Systems covered", "1", "1", "Up to 2"], ["Priority on the dispatch board", no, yes, yes], ["Repair discount", no, "$50 off", "$100 off"], ["After-hours call-out fee", "$149", "$75", "Waived"], ["Filters supplied at each visit", no, no, yes]];
+const PLAN_ROWS = [["Tune-ups each year", "1", "2", "2"], ["Systems covered", "1", "1", "Up to 2"], ["Priority on the dispatch board", no, yes, yes], ["Repair discount", no, "$00 off", "$00 off"], ["After-hours call-out fee", "$00", "$00", "Waived"], ["Filters supplied at each visit", no, no, yes]];
 const COOL = ["Clean the outdoor coil", "Check refrigerant pressures", "Test capacitor and contactor", "Measure temperature split", "Flush the condensate drain", "Check airflow and filter"];
 const HEAT = ["Inspect the heat exchanger", "Test safety and limit switches", "Clean burners and flame sensor", "Check gas pressure and combustion", "Test for carbon monoxide", "Check blower and belts"];
 
 const skinFace = (id, s, h, c) => `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Portrait of a technician in a work shirt"><rect width="100" height="100" fill="#d7dcd8"/><path d="M8 100c3-24 20-34 42-34s39 10 42 34z" fill="${c}"/><rect x="42" y="52" width="16" height="20" fill="${s}"/><ellipse cx="50" cy="40" rx="20" ry="23" fill="${s}"/><path d="M29 36c1-20 11-27 21-27s20 7 21 27c-12-8-30-8-42 0z" fill="${h}"/><path d="M26 37c10-7 38-7 48 0l4 3H24z" fill="#3b4a55"/></svg>`;
 const CREW = [
-  ["1", "#c9956e", "#22201e", "#3f5a6b", "Ruben Tallis", "Lead service tech, Truck 7", "On a no-heat call, Millbrook. Free about 11:40", "warning", "Gas furnaces and heat pumps. Eleven winters on the road."],
+  ["1", "#c9956e", "#22201e", "#3f5a6b", "Ruben Tallis", "Lead service tech, Truck 7", "On a no-heat call, Millbrook. Free about 11:40", "warning", "Gas furnaces and heat pumps."],
   ["2", "#efc7a6", "#7a4d2c", "#3f5a6b", "Dana Wyckley", "Service tech, Truck 12", "Heading to Cooper Flats. Arrives 10:15", "success", "AC diagnostics and refrigerant leak repair."],
   ["3", "#8c5b3e", "#141211", "#3f5a6b", "Kofi Brandvold", "Install lead, Truck 3", "On an install, Eastmere, until 3:00", "warning", "Replacements, ductwork and load calculations."],
 ];
-const STAR = Array.from({ length: 5 }, () => ic("star", 14)).join("");
-const REVIEWS = [
-  ["Called at 6 AM with no heat and two kids at home. The dispatcher walked me through the filter and the switch, then got Ruben here by 9:30.", "Marta V.", "No heat, Millbrook"],
-  ["They told me not to replace the AC yet. A $180 capacitor and contactor job, and it’s been cold all summer.", "Glen H.", "AC repair, Eastmere"],
-  ["Three options on paper, no pressure, and the crew put down floor runners and took the old furnace away.", "Asha P.", "Furnace replacement, Harlow Park"],
-];
 
-const web = (p, st) => K.page(st, `<div class="hv-bar"><div class="sk-wrap"><span><span class="hv-pulse"></span><b>24/7 emergency service.</b><span class="hv-long"> A dispatcher answers, day and night, including holidays.</span></span><a href="#top">${ic("phone", 15)} (555) 019-4470</a></div></div>
+const web = (p, st) => K.page(st, `<div class="hv-bar"><div class="sk-wrap"><span><span class="hv-pulse"></span><b>No heat or no cooling?</b><span class="hv-long"> Call dispatch and we’ll find you the next open truck.</span></span><a href="#top">${ic("phone", 15)} (555) 019-4470</a></div></div>
 ${K.nav(p, ["Services", "Maintenance plans", "Our techs", "Service area"], "Book service", "Call dispatch")}
 <main class="hv" id="top">
 <section class="hv-hero" id="service-area"><div class="sk-wrap">
@@ -305,7 +293,7 @@ ${K.nav(p, ["Services", "Maintenance plans", "Our techs", "Service area"], "Book
 
 <section class="sk-sec" id="maintenance-plans"><div class="sk-wrap">
   <div class="sk-head" style="margin-bottom:22px"><div><span class="sk-eyebrow">Maintenance plans</span><h2 class="sk-h2">Fix it in the shoulder season, not in the cold snap</h2></div></div>
-  <table class="hv-mtbl"><thead><tr><th scope="col">Plan</th><th scope="col">One tune-up<span class="num">$139</span><small>single visit</small></th><th scope="col" class="sel">Home<span class="num">$16</span><small>a month</small></th><th scope="col">Home Plus<span class="num">$26</span><small>a month</small></th></tr></thead><tbody>${PLAN_ROWS.map(([t, a, b, c]) => `<tr><td>${t}</td><td>${a}</td><td class="sel">${b}</td><td>${c}</td></tr>`).join("")}</tbody></table>
+  <table class="hv-mtbl"><thead><tr><th scope="col">Plan</th><th scope="col">One tune-up<span class="num">$00</span><small>single visit</small></th><th scope="col" class="sel">Home<span class="num">$00</span><small>a month</small></th><th scope="col">Home Plus<span class="num">$00</span><small>a month</small></th></tr></thead><tbody>${PLAN_ROWS.map(([t, a, b, c]) => `<tr><td>${t}</td><td>${a}</td><td class="sel">${b}</td><td>${c}</td></tr>`).join("")}</tbody></table>
   <div class="hv-visits">
     <div><h3 class="sk-h3">${ic("sun", 18)} Spring cooling visit</h3><ul>${COOL.map((x) => `<li><span>${ic("check", 13)}</span><span>${x}</span></li>`).join("")}</ul></div>
     <div><h3 class="sk-h3">${ic("bolt", 18)} Fall heating visit</h3><ul>${HEAT.map((x) => `<li><span>${ic("check", 13)}</span><span>${x}</span></li>`).join("")}</ul></div>
@@ -314,31 +302,26 @@ ${K.nav(p, ["Services", "Maintenance plans", "Our techs", "Service area"], "Book
 </div></section>
 
 <section class="sk-sec sk-alt" id="our-techs"><div class="sk-wrap">
-  <div class="sk-head" style="margin-bottom:22px"><div><span class="sk-eyebrow">Our techs</span><h2 class="sk-h2">Who’s out on the road today</h2></div><p class="muted" style="max-width:380px;font-size:14px">All employees, background-checked and licensed. You get the tech’s name and photo by text before they arrive.</p></div>
+  <div class="sk-head" style="margin-bottom:22px"><div><span class="sk-eyebrow">Our techs</span><h2 class="sk-h2">Who’s out on the road today</h2></div><p class="muted" style="max-width:380px;font-size:14px">All employees. Technician license details: add your own here. You get the tech’s name and photo by text before they arrive.</p></div>
   <div class="hv-crew sk-rail">${CREW.map(([id, s, h, c, n, r, st2, col, d]) => `<article class="card hv-tech"><div class="hv-techt"><div class="hv-av">${skinFace(id, s, h, c)}</div><div><h3 class="sk-h3">${n}</h3><div class="muted" style="font-size:13px">${r}</div></div></div><div class="hv-stat"><i style="background:var(--${col})"></i>${st2}</div><p>${d}</p></article>`).join("")}</div>
 </div></section>
 
-<section class="sk-sec" id="reviews" style="padding-top:48px;padding-bottom:48px"><div class="sk-wrap">
-  <div class="sk-head" style="margin-bottom:0"><div><span class="sk-eyebrow">Reviews</span><h2 class="sk-h2">What the neighbors say</h2></div></div>
-  <div class="hv-revs sk-rail">${REVIEWS.map(([q, n, m]) => `<article class="hv-rev"><div class="hv-stars" aria-label="5 out of 5">${STAR}</div><p>${q}</p><footer><b style="color:var(--text)">${n}</b> · ${m}</footer></article>`).join("")}</div>
-</div></section>
-
-<section class="sk-sec sk-alt" id="book"><div class="sk-wrap hv-book">
-  <div><span class="sk-eyebrow">Book service</span><h2 class="sk-h2">Get on the board</h2><p>Give us the address and the problem. We’ll confirm your window by text, usually within 15 minutes.</p>
-    <table class="hv-fees"><tbody>${[["Diagnostic visit", "$89"], ["After-hours call-out", "$149"], ["Tune-up", "$139"], ["Replacement quote", "Free"]].map(([a, b]) => `<tr><td>${a}</td><td class="num">${b}</td></tr>`).join("")}</tbody></table></div>
+<section class="sk-sec" id="book"><div class="sk-wrap hv-book">
+  <div><span class="sk-eyebrow">Book service</span><h2 class="sk-h2">Get on the board</h2><p>Give us the address and the problem. We’ll confirm your window by text.</p>
+    <table class="hv-fees"><tbody>${[["Diagnostic visit", "$00"], ["After-hours call-out", "$00"], ["Tune-up", "$00"], ["Replacement quote", "Free"]].map(([a, b]) => `<tr><td>${a}</td><td class="num">${b}</td></tr>`).join("")}</tbody></table></div>
   <form class="card hv-form" aria-label="Book service">
     <div class="sk-field"><span style="font-weight:500;font-size:13px">What’s it doing?</span><div class="hv-opt">${SYMPTOMS.map((s, i) => `<label><input type="radio" name="hv-b"${i === 0 ? " checked" : ""}> ${s.t}</label>`).join("")}</div></div>
     <div class="sk-g2"><div class="sk-field"><label for="hv-sys">System</label><select class="sk-input" id="hv-sys"><option>Gas furnace</option><option>Central AC</option><option>Heat pump</option><option>Not sure</option></select></div><div class="sk-field"><label for="hv-w">Arrival window</label><select class="sk-input" id="hv-w"><option>Today, 12 to 2 PM</option><option>Today, 2 to 4 PM</option><option>Today, 4 to 6 PM</option></select></div></div>
     <div class="sk-g2"><div class="sk-field"><label for="hv-n">Name</label><input class="sk-input" id="hv-n" value="Marta Vasek"></div><div class="sk-field"><label for="hv-t">Mobile</label><input class="sk-input" id="hv-t" value="(555) 019-2256"></div></div>
-    <div class="sk-field"><label for="hv-a">Service address</label><input class="sk-input" id="hv-a" value="218 Ironbark Road, Millbrook 00142"></div>
+    <div class="sk-field"><label for="hv-a">Service address</label><input class="sk-input" id="hv-a" value="218 Draymoor Road, Millbrook 00142"></div>
     <button class="btn primary sk-btn-lg" type="button">Book 12 to 2 PM</button>
   </form>
 </div></section>
 </main>
-${K.footer(p, "Local heating, cooling and air quality repair, with a dispatcher on the line 24 hours a day.", [["Services", ["Furnace repair", "AC repair", "Heat pumps", "Air quality"]], ["Dispatch", ["(555) 019-4470", "hello@northdraft.example", "Open 24 hours"]], ["Company", ["75 Foundry Road", "License no. 000-0000", "Financing"]]])}`, CSS);
+${K.footer(p, "Local heating, cooling and air quality repair, with our own dispatch desk.", [["Services", ["Furnace repair", "AC repair", "Heat pumps", "Air quality"]], ["Dispatch", ["(555) 019-4470", "hello@northdraft.example", "Mon to Sat, 7 AM to 7 PM"]], ["Company", ["75 Foundry Road", "License details: add your own", "Financing"]]], `Fictional company created for this template. Arrival windows and timings are sample content. Sample prices are zero placeholders: replace them with your own. © 2026 ${p.name}.`)}`, CSS);
 
 module.exports = {
   "hvac-website": K.def("hvac", "HVAC company website",
-    "a full heating and cooling contractor home page led by dispatch: a 24/7 emergency bar, navigation with call and book buttons, a hero with a ZIP code service area check and a board of today’s arrival windows, a what’s-it-doing symptom picker for no heat, no cooling, strange noise, water leak, high bills and smell that answers like a dispatcher and routes to repair, tune-up or replacement, a before-you-call checklist with a gas safety warning, repair, install and replace options, furnace, AC, heat pump and air quality services, a we-service-all-makes band, a maintenance plan table with spring and fall visit checklists, financing wording, a technician roster with live status, customer reviews, a booking form with fees and a footer",
-    ["emergency-bar", "navigation-header", "hero", "zip-check", "time-slots", "symptom-picker", "tabs", "checklist", "safety-warning", "services", "pricing-table", "financing", "team", "status", "testimonials", "booking-form", "footer", "hvac"], web),
+    "a full heating and cooling contractor home page led by dispatch: an emergency call bar, navigation with call and book buttons, a hero with a ZIP code service area check and a board of today’s arrival windows, a what’s-it-doing symptom picker for no heat, no cooling, strange noise, water leak, high bills and smell that answers like a dispatcher and routes to repair, tune-up or replacement, a before-you-call checklist with a gas safety warning, repair, install and replace options, furnace, AC, heat pump and air quality services, a we-service-all-makes band, a maintenance plan table with spring and fall visit checklists, financing wording, a technician roster with live status, a booking form with fees and a footer",
+    ["emergency-bar", "navigation-header", "hero", "zip-check", "time-slots", "symptom-picker", "tabs", "checklist", "safety-warning", "services", "pricing-table", "financing", "team", "status", "booking-form", "footer", "hvac"], web),
 };

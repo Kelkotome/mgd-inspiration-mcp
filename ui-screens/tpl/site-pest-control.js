@@ -1,7 +1,7 @@
 /* Pest control website template (Mothwell Pest Control, a fictional home and commercial pest company). Full responsive, field-guide home page:
    nav, title-page hero with a pinned moth plate and collector's tag, route facts strip, "What did you see?" specimen identifier (six line-drawn plates
    with signs, usual visit and starting price), what happens on a visit beside a filled sample visit report, one-off vs quarterly plan table with add-ons,
-   how to prepare beside children-and-pets safety notes, commercial note beside route days by area, fictional reviews, booking form, footer.
+   how to prepare beside children-and-pets safety notes, commercial note beside route days by area, booking form, footer. No reviews or response-time promises.
    Specimens are inline SVG drawn with currentColor and tokens so all 8 styles and dark mode recolour them. No chemical or product names, no efficacy figures. */
 const { ic, esc } = require("../lib");
 const K = require("../sitekit");
@@ -98,10 +98,6 @@ const CSS = `<style>
 .pc-routes th,.pc-routes td{text-align:left;padding:7px 0;border-bottom:1px solid var(--border)}
 .pc-routes th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .pc-routes td:last-child,.pc-routes th:last-child{text-align:right}
-.pc-notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
-.pc-note{padding:20px 22px;display:grid;gap:10px;align-content:start}
-.pc-note blockquote{font-size:14.5px;line-height:1.5}
-.pc-note footer{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;border-top:1px dashed var(--border);padding-top:10px}
 .pc-book{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:56px;align-items:start}
 .pc-direct{list-style:none;display:grid;gap:0;margin-top:20px;font-size:14px}
 .pc-direct li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--border)}
@@ -117,8 +113,6 @@ const CSS = `<style>
   .pc-title{gap:36px}.pc-title h1{font-size:calc(52px * var(--hs))}
   .pc-specs{grid-template-columns:repeat(2,minmax(0,1fr))}
   .pc-log,.pc-duo,.pc-book{gap:36px}
-  .pc-notes{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .pc-notes>:last-child{display:none}
   .pc-strip>div{padding:16px 16px}
   .pc-care{grid-template-columns:minmax(0,1fr)}
 }
@@ -169,7 +163,6 @@ const CSS = `<style>
   .pc-prep{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:14px -20px 0;padding:0 20px 4px;scrollbar-width:none}
   .pc-prep>div{flex:0 0 78%;scroll-snap-align:start;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg)}
   .pc-safe{padding:20px}
-  .pc-notes{display:flex}.pc-notes>:last-child{display:grid}
   .pc-form{padding:18px;gap:10px}
   .pc-direct li:nth-child(3),.pc-form .sk-field:has(#pc-long){display:none}
   .pc-form>.sk-g2:first-of-type{grid-template-columns:minmax(0,1fr)}
@@ -212,12 +205,12 @@ const moth = () => {
 };
 
 const SPECIES = [
-  ["ant", "Ants", "Formicidae", "2 to 12 mm", ["Trails along baseboards, countertops or paving", "Small piles of fine soil at cracks and slabs", "Winged ants in one spot on a warm day"], "One visit, follow-up at 14 days", "$185"],
-  ["roach", "Cockroaches", "Blattodea", "12 to 40 mm", ["Droppings like ground pepper in cupboards", "Brown egg cases in hinges and corners", "A musty, oily smell and sightings at night"], "Two visits, two weeks apart", "$240"],
-  ["rodent", "Rats and mice", "Muridae", "7 to 25 cm", ["Dark droppings along walls and in attics", "Gnawed packaging, wiring or baseboards", "Scratching in ceilings after dark"], "Survey, proofing, 2 to 3 checks", "$260"],
-  ["bedbug", "Bed bugs", "Cimicidae", "4 to 5 mm", ["Rust-colored spots along mattress seams", "Pale shed skins near the headboard", "Bites alone do not confirm them, we look for the insect"], "Inspection first, then a priced plan", "$120"],
-  ["termite", "Termites", "Isoptera", "4 to 10 mm", ["Mud tubes on foundations or inside walls", "Timber that sounds hollow when tapped", "Discarded wings on sills after a swarm"], "Full inspection, written report", "$95"],
-  ["wasp", "Wasps", "Vespidae", "10 to 20 mm", ["A steady flight line to one gap in the eaves", "Papery nest in an attic, shed or hedge", "Several wasps indoors at one window"], "Same or next day, one visit", "$140"],
+  ["ant", "Ants", "Formicidae", "2 to 12 mm", ["Trails along baseboards, countertops or paving", "Small piles of fine soil at cracks and slabs", "Winged ants in one spot on a warm day"], "One visit, follow-up at 14 days", "$00"],
+  ["roach", "Cockroaches", "Blattodea", "12 to 40 mm", ["Droppings like ground pepper in cupboards", "Brown egg cases in hinges and corners", "A musty, oily smell and sightings at night"], "Two visits, two weeks apart", "$00"],
+  ["rodent", "Rats and mice", "Muridae", "7 to 25 cm", ["Dark droppings along walls and in attics", "Gnawed packaging, wiring or baseboards", "Scratching in ceilings after dark"], "Survey, proofing, 2 to 3 checks", "$00"],
+  ["bedbug", "Bed bugs", "Cimicidae", "4 to 5 mm", ["Rust-colored spots along mattress seams", "Pale shed skins near the headboard", "Bites alone do not confirm them, we look for the insect"], "Inspection first, then a priced plan", "$00"],
+  ["termite", "Termites", "Isoptera", "4 to 10 mm", ["Mud tubes on foundations or inside walls", "Timber that sounds hollow when tapped", "Discarded wings on sills after a swarm"], "Full inspection, written report", "$00"],
+  ["wasp", "Wasps", "Vespidae", "10 to 20 mm", ["A steady flight line to one gap in the eaves", "Papery nest in an attic, shed or hedge", "Several wasps indoors at one window"], "Usually one visit", "$00"],
 ];
 const STEPS = [
   ["Inspect before anything else", "Your technician walks the rooms you flagged and the outside of the building, and lifts what needs lifting."],
@@ -236,7 +229,7 @@ const ROWS = [
   ["Written report", "yes", "yes", "pc-opt"],
   ["Cancelling", "Nothing to cancel", "Stop before your next visit, no fee"],
 ];
-const ADDS = [["Rodent proofing", "from $240"], ["Termite inspection", "$95"], ["Wasp nest removal", "$140"], ["Bed bug inspection", "$120"]];
+const ADDS = [["Rodent proofing", "from $00"], ["Termite inspection", "$00"], ["Wasp nest removal", "$00"], ["Bed bug inspection", "$00"]];
 const PREP = [
   ["Ants and cockroaches", ["Clear countertops and the cupboard under the sink", "Pull the trash can and pet bowls away from walls", "Do not spray beforehand, it scatters them"]],
   ["Bed bugs", ["Leave the room as it is until we have looked", "Do not move bedding or furniture to other rooms", "Keep any bites or marks photos for the technician"]],
@@ -251,11 +244,6 @@ const SAFE = [
   "Ask for the information sheet on anything we plan to use, before we use it.",
 ];
 const ROUTES = [["Alderton and Brackley Heath", "Mon, Thu"], ["Cobham Rise", "Tue"], ["Dunmere and Elmsford", "Tue, Fri"], ["Fenwick Park", "Wed"], ["Greyholt and Hartsfield", "Wed, Sat"]];
-const NOTES = [
-  ["Ants", "Three other visits never found the nest. Rosa traced the trail to a cracked slab by the back door, filled it and showed me what to watch for.", "Hannah V., Alderton"],
-  ["Rats", "He spent longer outside than in. Found the gap behind the boiler flue and sealed it. Nothing in the attic since the last check in spring.", "Tobias L., Greyholt"],
-  ["Wasps", "Called at nine, nest gone by mid afternoon. The note told us exactly when the kids could use the back bedroom again.", "Marisol P., Dunmere"],
-];
 
 const yes = (t) => `<span class="pc-yes">${ic("check", 15)}<span>${t}</span></span>`;
 const cell = (v) => (v === "yes" ? yes("Included") : v === "-" ? `<span class="pc-no2">Not included</span>` : esc(v));
@@ -276,7 +264,7 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["What did you see", "Plans", "On 
   </div>
 </section>
 <section class="pc-strip-wrap" aria-label="Today"><div class="sk-wrap" style="padding-block:0"><div class="pc-strip">
-  <div><b>Next route visit</b><span>Tomorrow, 8 to 10 AM</span></div><div><b>Wasp nests</b><span>Same or next day</span></div><div><b>Mon to Sat, 7 AM to 7 PM</b><span>A person answers the phone</span></div><div><b>Photo ID by text</b><span>(555) 014-2231, free</span></div>
+  <div><b>Next route visit</b><span>Tomorrow, 8 to 10 AM</span></div><div><b>Wasp nests</b><span>Usually one visit</span></div><div><b>Mon to Sat, 7 AM to 7 PM</b><span>A person answers the phone</span></div><div><b>Photo ID by text</b><span>(555) 014-2231, free</span></div>
 </div></div></section>
 
 <section class="sk-sec" id="what-did-you-see"><div class="sk-wrap">
@@ -297,7 +285,7 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["What did you see", "Plans", "On 
 
 <section class="sk-sec" id="plans"><div class="sk-wrap">
   <div class="sk-head"><div><span class="sk-eyebrow">Plans and prices</span><h2 class="sk-h2">One-off visit or quarterly plan</h2></div><p class="muted" style="max-width:400px">A one-off suits a single problem. A quarterly plan suits older homes, homes near woodland or water, and anyone tired of calling us every summer.</p></div>
-  <div class="card pc-plans"><table><thead><tr><th scope="col">What is covered</th><th scope="col"><span class="sk-h3 h">One-off</span><span class="num">$185</span><small>per job, ant or spider rate</small></th><th scope="col" class="pick"><span class="sk-h3 h">Quarterly plan</span><span class="num">$72</span><small>per visit, $288 a year</small></th></tr></thead>
+  <div class="card pc-plans"><table><thead><tr><th scope="col">What is covered</th><th scope="col"><span class="sk-h3 h">One-off</span><span class="num">$00</span><small>per job, ant or spider rate</small></th><th scope="col" class="pick"><span class="sk-h3 h">Quarterly plan</span><span class="num">$00</span><small>per visit, $00 a year</small></th></tr></thead>
   <tbody>${ROWS.map(([h, a, b, c]) => `<tr${c ? ` class="${c}"` : ""}><th scope="row">${h}</th><td>${cell(a)}</td><td class="pick">${cell(b)}</td></tr>`).join("")}</tbody></table></div>
   <div class="pc-adds" aria-label="Priced separately">${ADDS.map(([a, b]) => `<div><span class="muted">${a}</span><span class="num">${b}</span></div>`).join("")}</div>
 </div></section>
@@ -315,19 +303,14 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["What did you see", "Plans", "On 
     <a class="btn sk-btn-lg" href="#book-a-visit">Ask for a site survey</a></div>
   <div><span class="sk-eyebrow">Service areas</span><h2 class="sk-h2" style="margin-top:12px">Where our routes run</h2>
     <table class="pc-routes"><thead><tr><th scope="col">Area</th><th scope="col">Route days</th></tr></thead><tbody>${ROUTES.map(([a, d]) => `<tr><td>${a}</td><td>${d}</td></tr>`).join("")}</tbody></table>
-    <p class="muted" style="font-size:13.5px;margin-top:12px">Further out? We can usually add you to a route within the week.</p></div>
-</div></section>
-
-<section class="sk-sec sk-alt" id="reviews"><div class="sk-wrap">
-  <div class="sk-head" style="margin-bottom:28px"><div><span class="sk-eyebrow">Field notes</span><h2 class="sk-h2">From our customers</h2></div></div>
-  <div class="pc-notes sk-rail">${NOTES.map(([k, q, w]) => `<article class="card pc-note"><span class="badge" style="justify-self:start">${k}</span><blockquote>${esc(q)}</blockquote><footer><span>${w}</span></footer></article>`).join("")}</div>
+    <p class="muted" style="font-size:13.5px;margin-top:12px">Further out? Ask us and we will look for a nearby route.</p></div>
 </div></section>
 
 <section class="sk-sec" id="book-a-visit"><div class="sk-wrap pc-book">
   <div><span class="sk-eyebrow">Book</span><h2 class="sk-h2" style="margin-top:12px">Tell us what you found</h2>
-    <p class="muted" style="margin-top:10px">We reply within two working hours with a visit window and a starting price.</p>
-    <ul class="pc-direct"><li><span>${ic("phone", 18)}</span><span><b>(555) 014-2230</b><br><span class="muted">Mon to Sat, 7 AM to 7 PM</span></span></li><li><span>${ic("image", 18)}</span><span><b>Text a photo to (555) 014-2231</b><br><span class="muted">Free identification, usually within the hour</span></span></li><li><span>${ic("pin", 18)}</span><span><b>41 Tanner's Row, Alderton</b><br><span class="muted">Depot and office</span></span></li></ul>
-    <div class="pc-slot">Add your pest control license number and insurance details here</div></div>
+    <p class="muted" style="margin-top:10px">We reply with a visit window and a starting price.</p>
+    <ul class="pc-direct"><li><span>${ic("phone", 18)}</span><span><b>(555) 014-2230</b><br><span class="muted">Mon to Sat, 7 AM to 7 PM</span></span></li><li><span>${ic("image", 18)}</span><span><b>Text a photo to (555) 014-2231</b><br><span class="muted">Free identification by text</span></span></li><li><span>${ic("pin", 18)}</span><span><b>41 Tanner's Row, Alderton</b><br><span class="muted">Depot and office</span></span></li></ul>
+    <div class="pc-slot">Pest control license and insurance details: add your own here.</div></div>
   <form class="card pc-form" aria-label="Book a visit">
     <div class="sk-g2"><div class="sk-field"><label for="pc-pest">What did you see?</label><select class="sk-input" id="pc-pest"><option>Rats or mice</option><option>Ants</option><option>Cockroaches</option><option>Bed bugs</option><option>Termites</option><option>Wasps</option><option>Not sure</option></select></div>
     <div class="sk-field"><label for="pc-long">How long has it been going on?</label><select class="sk-input" id="pc-long"><option>About two weeks</option><option>Just today</option><option>A few months</option></select></div></div>
@@ -339,10 +322,10 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["What did you see", "Plans", "On 
   </form>
 </div></section>
 </main>
-${K.footer(p, "Local pest control for homes and businesses, starting with an inspection and ending with a written report.", [["Pests", ["Ants and cockroaches", "Rats and mice", "Bed bugs", "Termites and wasps"]], ["Services", ["One-off visits", "Quarterly plans", "Rodent proofing", "Commercial contracts"]], ["Contact", ["(555) 014-2230", "hello@mothwell.example", "41 Tanner's Row, Alderton"]]], `Fictional company created for this template. © 2026 ${p.name}.`)}`, CSS);
+${K.footer(p, "Local pest control for homes and businesses, starting with an inspection and ending with a written report.", [["Pests", ["Ants and cockroaches", "Rats and mice", "Bed bugs", "Termites and wasps"]], ["Services", ["One-off visits", "Quarterly plans", "Rodent proofing", "Commercial contracts"]], ["Contact", ["(555) 014-2230", "hello@mothwell.example", "41 Tanner's Row, Alderton"]]], `Fictional company created for this template. Visit times and route days are sample content. Sample prices are zero placeholders: replace them with your own. © 2026 ${p.name}.`)}`, CSS);
 
 module.exports = {
   "pest-control-website": K.def("pest", "Pest control website",
-    "a full pest control home page in a field-guide style: navigation with book and call buttons, a title-page hero with a pinned moth specimen plate, collector's tag and contents list, a route facts strip, a what-did-you-see identifier of six illustrated specimen cards with signs to look for, usual visit and starting price, what happens on a visit beside a filled sample visit report, a one-off versus quarterly plan table with add-on prices, how to prepare by pest beside children and pets safety notes, a commercial note beside service area route days, customer reviews, a booking form with pest type and where you saw it, and a footer",
-    ["navigation-header", "hero", "specimen-cards", "pest-identifier", "illustration", "steps", "visit-report", "comparison-table", "pricing-table", "checklist", "safety-notes", "service-areas", "reviews", "booking-form", "footer", "pest-control"], web),
+    "a full pest control home page in a field-guide style: navigation with book and call buttons, a title-page hero with a pinned moth specimen plate, collector's tag and contents list, a route facts strip, a what-did-you-see identifier of six illustrated specimen cards with signs to look for, usual visit and starting price, what happens on a visit beside a filled sample visit report, a one-off versus quarterly plan table with add-on prices, how to prepare by pest beside children and pets safety notes, a commercial note beside service area route days, a booking form with pest type and where you saw it, and a footer",
+    ["navigation-header", "hero", "specimen-cards", "pest-identifier", "illustration", "steps", "visit-report", "comparison-table", "pricing-table", "checklist", "safety-notes", "service-areas", "booking-form", "footer", "pest-control"], web),
 };
