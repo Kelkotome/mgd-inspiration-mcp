@@ -256,6 +256,13 @@ export const PATTERN_SEO = {
   "makeup-artist-website": ["makeup-artist-website-template", "Makeup artist website templates"],
   "fitness-website": ["fitness-website-template", "Personal trainer and fitness website templates"],
   "yoga-website": ["yoga-website-template", "Yoga studio website templates"],
+  // 24-Nov-2026 legal and professional services (templates r6): new niches (law-firm-website and financial-advisor-website keep their n12/n13 slugs).
+  "lawyer-website": ["lawyer-website-template", "Lawyer and attorney website templates"],
+  "accounting-website": ["accounting-website-template", "Accounting firm website templates"],
+  "tax-preparation-website": ["tax-preparation-website-template", "Tax preparation website templates"],
+  "insurance-agency-website": ["insurance-website-template", "Insurance agency website templates"],
+  "consulting-website": ["consulting-website-template", "Consulting firm website templates"],
+  "staffing-agency-website": ["staffing-agency-website-template", "Staffing and recruitment agency website templates"],
   // UI components round 1 (7-Nov-2026; Keyword Planner "ui design" + "html css" + "examples", deploy-bundle-2026-11-07/components-audit.md)
   tabs: ["tabs-ui", "Tabs UI design examples"],
   cards: ["card-ui", "Card UI design examples"],

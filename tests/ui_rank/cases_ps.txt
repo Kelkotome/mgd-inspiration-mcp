@@ -1,0 +1,20 @@
+# Legal and professional services tree, 24-Nov-2026 (templates r6)
+law firm website template | law-firm-website
+law firm website | law-firm-website
+lawyer website template | lawyer-website
+attorney website | lawyer-website
+accounting website template | accounting-website
+accountant website | accounting-website
+bookkeeping website | accounting-website
+tax preparation website template | tax-preparation-website
+tax preparer website | tax-preparation-website
+financial advisor website template | financial-advisor-website
+financial planner website | financial-advisor-website
+insurance agency website template | insurance-agency-website
+insurance agent website | insurance-agency-website
+consulting website template | consulting-website
+consultancy website | consulting-website
+staffing agency website template | staffing-agency-website
+recruitment agency website | staffing-agency-website
+navigation bar | navigation-header
+pricing table | pricing

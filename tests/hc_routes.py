@@ -99,4 +99,8 @@ if sig and IND == "restaurant":
 if sig and IND == "construction":
     for nid, pat, htmlSeg, seg in NICHES:
         s, _, nb = text(f"/ui/{HUB}/{htmlSeg}"); ck(not re.search(r"Ironbark|Spruceway|Northdraft|Mothwell", nb.split("Every screen", 1)[0]), f"{nid}: no n12/n13 homepage card")
+# templates r6 (24-Nov-2026): the live n12 law-firm (Whitcombe Hale) and n13 financial-advisor (Lindqvale Planning) homepages are not signatures either.
+if sig and IND == "professional-services":
+    for nid, pat, htmlSeg, seg in NICHES:
+        s, _, nb = text(f"/ui/{HUB}/{htmlSeg}"); ck(not re.search(r"Whitcombe Hale|Lindqvale", nb.split("Every screen", 1)[0]), f"{nid}: no n12/n13 homepage card")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)

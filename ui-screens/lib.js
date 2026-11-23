@@ -145,6 +145,15 @@ const FAMILIES = {
   electrician: { name: "Ambersett Electrical", cat: "electrician", desc: "a local electrical contractor for homes and small businesses", type: { web: "Website", mobile: "Mobile website" } },
   roofing: { name: "Thornlath Roofing", cat: "roofing", desc: "a roofing company for repairs, new roofs, flat roofs and gutters", type: { web: "Website", mobile: "Mobile website" } },
   landscaping: { name: "Oakhurrow Landscapes", cat: "landscaping", desc: "a garden design, build and maintenance company", type: { web: "Website", mobile: "Mobile website" } },
+  // 24-Nov-2026 eighth+1 industry, legal and professional services (templates r6). Coined names, fictional. (content agents: edit only your own line)
+  lawfirmps: { name: "Quarrendale Law", cat: "law-firm", desc: "a small general-practice law firm for families and local businesses", type: { web: "Website", mobile: "Mobile website" } },
+  lawyerps: { name: "Penmarrow Law Office", cat: "lawyer", desc: "a solo attorney's practice for wills, estates and property matters", type: { web: "Website", mobile: "Mobile website" } },
+  accountingps: { name: "Tallowmere Accounts", cat: "accounting", desc: "a small accounting firm for bookkeeping, payroll, year-end accounts and tax for small businesses", type: { web: "Website", mobile: "Mobile website" } },
+  taxps: { name: "Pellbrook Tax Office", cat: "tax-preparation", desc: "a neighbourhood tax preparation office for personal and small-business returns", type: { web: "Website", mobile: "Mobile website" } },
+  advisorps: { name: "Tamberlow Financial Planning", cat: "financial-advisor", desc: "an independent financial planning practice for retirement, savings and family finances", type: { web: "Website", mobile: "Mobile website" } },
+  insuranceps: { name: "Brackenwold Insurance Agency", cat: "insurance-agency", desc: "a local independent insurance agency for home, car, business and life cover", type: { web: "Website", mobile: "Mobile website" } },
+  consultingps: { name: "Tarrowby Consulting", cat: "consulting", desc: "a small management consulting firm", type: { web: "Website", mobile: "Mobile website" } },
+  staffingps: { name: "Brindleholt Staffing", cat: "staffing-agency", desc: "a local staffing and recruitment agency", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 

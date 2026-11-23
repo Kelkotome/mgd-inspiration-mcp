@@ -1,0 +1,122 @@
+{
+ "accounting": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.463,
+  "failedPairs": []
+ },
+ "consulting": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.494,
+  "failedPairs": []
+ },
+ "financial-advisor": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.486,
+  "failedPairs": []
+ },
+ "insurance-agency": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.437,
+  "failedPairs": []
+ },
+ "law-firm": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.442,
+  "failedPairs": []
+ },
+ "lawyer": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.438,
+  "failedPairs": []
+ },
+ "staffing-agency": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.372,
+  "failedPairs": []
+ },
+ "tax-preparation": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.489,
+  "failedPairs": []
+ }
+}

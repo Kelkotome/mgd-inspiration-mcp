@@ -8,7 +8,7 @@ Applies to website templates under `/inspiration/ui/`. Healthcare is the pilot (
 |---|---|---|
 | Platform | HTML, WordPress | Path: `/ui/wordpress-themes/...`. HTML is the default and has no path segment of its own |
 | Type | one-page, website, landing page | Filter. A chip appears only when a page has more than one value |
-| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios, Beauty, fitness and wellness, Construction and home services | Path |
+| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios, Beauty, fitness and wellness, Construction and home services, Legal and professional services | Path |
 | Sub-niche | Cardiology, Dental... | Path, under its industry |
 
 Web and mobile are the **Device** filter, renamed so that Platform is free. The database column stays `country`, and `?platform=web|mobile` still works.
@@ -195,6 +195,27 @@ Hub `construction-website-templates`, WordPress segment `construction`. Chosen o
 **n12/n13 rows.** construction-website, cleaning-service-website, hvac-website and pest-control-website were flat n12/n13 patterns with one hand-built homepage each. Those pages carry testimonials, invented figures and licence or warranty claims, so (as gym in r4 and agency/architecture in r3) they are not signatures and not in the catalog: the nested pages show the six new designs, the old rows stay live as plain items, and the flat URLs 301 once. Fixed versions of the four pages (fictional notice, no testimonials, "add your own" licence lines, builder renamed Ironbark to Stoneharrow) exist in commit 0cb779d (`ui-screens/tpl/site-*.js`) and are NOT in this round: they need an UPDATE bundle like the r4 Ironyard fix and the owner's approval.
 
 **Words.** No trade brands, platforms, trade bodies or certification schemes, no licence, registration, insurance, warranty or guarantee claims unless the sentence tells the owner to add their own or says "sample", no response-time promises outside tables, no before/after, no "safe for children and pets", "non-toxic", germ or allergy claims, no reviews, ratings, awards or invented figures. Safety lines (gas, electrical, carbon monoxide) are general prompts to call the emergency number. Checked by `tests/cn_lint.py` (pages, `CN_LINT_OUT` for signatures, `--readmes` for theme readmes). Readmes say the theme is "not building, electrical, gas or safety advice".
+
+## Legal and professional services tree (templates r6, 24-Nov-2026: ninth industry)
+
+Hub `professional-services-website-templates`, WordPress segment `professional-services`, hubFirst (no niche is named like the industry; "professional services", "legal services", "financial services" get the hub). There was no recorded industry queue after construction, so the lead chose by demand among local-business industries not yet built (Keyword Planner, worldwide, 23-Nov-2026, template terms): lawyer/attorney 590, consulting 590, law firm 390, accounting 320, insurance 260 + insurance agency 110, staffing 170 + recruitment 170, notary 110, financial advisor 90, bookkeeping 90, tax preparation 40 (but "tax website template" 140, +362 % YoY on 6-Nov), about 2,650 a month in all; WordPress theme searches: lawyer 480 (+78 % YoY, the only rising head), consulting 480, law firm 260, finance 170. Runners-up: education (education 1,300, university 390, daycare 170, tutoring 140, preschool 110, about 2,300 but one head term) and automotive (720 + car dealership 480 + car detailing 320 + auto repair 170, about 1,700). Notary and bookkeeping are aliases (bookkeeping → accounting), not niches.
+
+| Sub-niche | id | Pattern | HTML segment | WordPress segment | Layouts |
+|---|---|---|---|---|---|
+| Law firm | law-firm | law-firm-website (n12) | law-firm-website-template | law-firm | ledger, concierge, atlas, folio, band, bento |
+| Lawyer and attorney | lawyer | lawyer-website | lawyer-website-template | lawyer | concierge, folio, ledger, band, bento, atlas |
+| Accounting firm | accounting | accounting-website | accounting-website-template | accounting | ledger, bento, atlas, concierge, folio, band |
+| Tax preparation | tax-preparation | tax-preparation-website | tax-preparation-website-template | tax-preparation | bento, ledger, concierge, band, atlas, folio |
+| Financial advisor | financial-advisor | financial-advisor-website (n13) | financial-advisor-website-template | financial-advisor | folio, concierge, ledger, atlas, bento, band |
+| Insurance agency | insurance-agency | insurance-agency-website | insurance-website-template | insurance | atlas, bento, ledger, concierge, band, folio |
+| Consulting firm | consulting | consulting-website | consulting-website-template | consulting | folio, atlas, band, ledger, bento, concierge |
+| Staffing and recruitment agency | staffing-agency | staffing-agency-website | staffing-agency-website-template | staffing-agency | band, bento, atlas, concierge, ledger, folio |
+
+**Layouts.** Six shared layouts per niche, no new layout: every professional site is read for services, how a first meeting works, fees and people, which the shared set already covers (ledger's fee table, concierge's booking-first hero). 48 designs, 96 screens, 48 themes. New motifs: scales, pillar, calculator, receipt, growth, umbrella, briefcase, badge.
+
+**n12/n13 rows.** law-firm-website (Whitcombe Hale, n12) and financial-advisor-website (Lindqvale Planning, n13) were flat patterns with one hand-built homepage each. As gym in r4 and construction in r5, they are not signatures and not in the catalog: the nested pages show the six new designs, the old rows stay live as plain items and the flat URLs 301 once. "lawyer", "attorney", "solicitor" and "law office" aliases moved from law-firm-website to lawyer-website.
+
+**Words (lint, `tests/ps_lint.py`).** No real firms, networks, software, directories, ranking guides, insurers, fund houses, regulators, tax authorities, professional bodies or designations (CPA, CFP, CFA, EA, chartered); credential words (licensed, registered, certified, admitted, regulated, fiduciary, insured, qualified, member of) only in a sentence that says "add your own" or "sample"; no outcome promises (guarantees, wins, verdicts, settlements, case results, bigger refunds, returns, beat the market, no win no fee, risk-free); no awards, ratings, "best", "trusted", "expert", "specialist"; no reviews, testimonials or client stories; no invented track records; fees only as `$00` placeholders with "sample fees" wording; every page has a fictional notice that says "general information" and "not ... advice". Theme readmes say the theme is "not legal, tax, accounting, insurance or financial advice".
 
 ## Adding an industry
 

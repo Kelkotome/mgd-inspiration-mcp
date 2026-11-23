@@ -2717,7 +2717,7 @@
  },
  "law-firm-website": {
   "h1": "Law firm website templates",
-  "intro": "A law firm site has to feel clear and approachable. These templates include a consultation hero, practice areas, how fees work, attorney profiles, articles, client notes, a consultation request form and a disclaimer line in the footer.",
+  "intro": "A law firm site has to feel clear and approachable. These templates include a consultation hero, practice areas in plain words, how a first meeting works, the lawyers and staff, a sample fee table, questions people ask before they call and a contact form, with a fictional notice and an add-your-own line for registration details.",
   "tips": [
    "Name practice areas in plain words, not just legal terms.",
    "Explain how fees work (fixed fee, hourly, first consultation).",
@@ -3017,7 +3017,7 @@
  },
  "financial-advisor-website": {
   "h1": "Financial advisor website templates",
-  "intro": "Choosing a financial advisor comes down to fit and clear fees. These templates are built around booking an intro call, with planning by life stage, a plain fee table, what the first 90 days look like, a sample plan, how conflicts are handled and an FAQ.",
+  "intro": "Choosing a financial advisor comes down to fit and clear fees. These templates are built around booking an intro call, with planning services, how the first meetings work, the advisers, a sample fee table with zero placeholders, plain questions about how you are paid and a contact form.",
   "tips": [
    "Publish how you are paid in plain words.",
    "Speak to life stages, not products.",
@@ -5050,6 +5050,126 @@
    [
     "How do landscapers show their work?",
     "With recent gardens, the scope of each job and the time it took. The templates use drawn illustrations to replace with your own photos."
+   ]
+  ]
+ },
+ "lawyer-website": {
+  "h1": "Lawyer and attorney website templates",
+  "intro": "A solo lawyer's site is read by people deciding whether to call. These templates put one named lawyer first, with the matters you take on, what to bring to a first meeting, a sample fee table, the small team behind you, plain questions and a short contact form.",
+  "tips": [
+   "Say which matters you take on, and which you do not.",
+   "Explain the first meeting: how long, what it costs and what to bring.",
+   "Show the person clients will actually work with.",
+   "Add your own registration details and any notice your jurisdiction requires."
+  ],
+  "faq": [
+   [
+    "What should a lawyer website include?",
+    "The matters you handle, who you are, how fees and first meetings work, contact details and any notice your jurisdiction requires, such as a line that the site is not legal advice."
+   ],
+   [
+    "Can a lawyer website show reviews or results?",
+    "Rules differ by jurisdiction and many restrict them, so these templates leave them out. Check your own professional rules before adding any."
+   ]
+  ]
+ },
+ "accounting-website": {
+  "h1": "Accounting firm website templates",
+  "intro": "Small businesses pick an accountant on what you do, how you charge and how easy you are to work with. These templates include bookkeeping, payroll, year-end accounts and tax, a sample monthly fee table, how switching accountants works, the team and a contact form.",
+  "tips": [
+   "List services the way a business owner would ask for them.",
+   "Publish a from-price or a monthly fee range, even as a guide.",
+   "Explain how you take over from a previous accountant.",
+   "Add your own registration and professional body details."
+  ],
+  "faq": [
+   [
+    "What should an accounting firm website include?",
+    "Services, who you work with, how fees work, how onboarding and switching work, the team, contact details and your own registration details."
+   ],
+   [
+    "Should accountants publish fees?",
+    "Many do, as from-prices or monthly packages. It answers the first question most owners have. The templates use zero placeholders for you to replace."
+   ]
+  ]
+ },
+ "tax-preparation-website": {
+  "h1": "Tax preparation website templates",
+  "intro": "People come to a tax office with a deadline and a pile of papers. These templates include personal and small-business returns, a what-to-bring list, drop-off and appointments, a sample fee table, the preparers, plain questions and a booking form.",
+  "tips": [
+   "Put the what-to-bring list near the top.",
+   "Say how drop-off, appointments and remote returns work.",
+   "Show sample fees per type of return, as a guide.",
+   "Never promise a refund size: say what you will check instead."
+  ],
+  "faq": [
+   [
+    "What should a tax preparation website include?",
+    "The returns you prepare, what to bring, how appointments and drop-off work, how fees work, who prepares the returns and how to reach you."
+   ],
+   [
+    "Can a tax preparer advertise bigger refunds?",
+    "Refund claims are restricted in many places and can mislead, so these templates leave them out and describe the process instead."
+   ]
+  ]
+ },
+ "insurance-agency-website": {
+  "h1": "Insurance agency website templates",
+  "intro": "An insurance agency site helps people compare cover and talk to a person. These templates include home, car, business and life cover, how a quote and a claim work, a sample premium table with zero placeholders, the agents and a quote request form.",
+  "tips": [
+   "Group cover by what people own or do: home, car, business, life.",
+   "Explain how a quote works and what details to have ready.",
+   "Say how you help when someone makes a claim.",
+   "Add your own licence details and the insurers you work with."
+  ],
+  "faq": [
+   [
+    "What should an insurance agency website include?",
+    "The cover you arrange, how quotes and claims help work, the agents, how you are paid, contact details and your own licence details."
+   ],
+   [
+    "Should an insurance website show prices?",
+    "Premiums depend on the person and the policy, so most agencies show how a quote works instead. These templates use labelled zero placeholders."
+   ]
+  ]
+ },
+ "consulting-website": {
+  "h1": "Consulting firm website templates",
+  "intro": "Clients hire a consultant for a clear problem and a clear way of working. These templates include the kinds of work you take on, how an engagement runs from first call to handover, a sample fee table, the consultants and an enquiry form.",
+  "tips": [
+   "Describe problems you solve, not frameworks.",
+   "Show how an engagement runs, step by step.",
+   "Say how you charge: fixed fee, day rate or retainer.",
+   "Keep the enquiry form short and say when you reply."
+  ],
+  "faq": [
+   [
+    "What should a consulting website include?",
+    "The problems you work on, how an engagement runs, how fees work, who the consultants are and an easy way to start a conversation."
+   ],
+   [
+    "Should consultants publish day rates?",
+    "Some do, as from-prices. It helps clients self-select. The templates use zero placeholders for you to replace."
+   ]
+  ]
+ },
+ "staffing-agency-website": {
+  "h1": "Staffing and recruitment agency website templates",
+  "intro": "A staffing site serves two audiences at once: employers with roles to fill and people looking for work. These templates include separate doors for each, temporary and permanent roles, how registration works, sample employer rates, the recruiters and a contact form.",
+  "tips": [
+   "Give employers and job seekers their own clear starting points.",
+   "Explain how registering and getting matched works.",
+   "Say how employers are charged, as sample rates.",
+   "Use fair-hiring wording: skills and availability, never age or background."
+  ],
+  "faq": [
+   [
+    "What should a staffing agency website include?",
+    "Sections for employers and job seekers, the kinds of roles you fill, how registration and matching work, how fees work, the recruiters and contact details."
+   ],
+   [
+    "Do job seekers pay a staffing agency?",
+    "In many places agencies may not charge job seekers. Check the rules where you work and state your own policy clearly."
    ]
   ]
  }
