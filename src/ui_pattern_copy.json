@@ -2776,8 +2776,8 @@
   ]
  },
  "school-website": {
-  "h1": "School and education website templates",
-  "intro": "A school website serves prospective families first. These templates include a visit-and-apply hero, the stages of the school, an admissions timeline with key dates, academics and co-curricular life, campus life, news and events and an open-day registration form.",
+  "h1": "School website templates",
+  "intro": "A school website serves prospective families first. These templates include a visit-and-apply hero, the stages of the school, how admissions and open days work, a day in school, clubs and activities, a sample fee table, questions parents ask and a visit request form, with a fictional notice and add-your-own lines for accreditation and safeguarding.",
   "tips": [
    "Put open days and the admissions timeline where families can’t miss them.",
    "Explain each stage of the school simply.",
@@ -3196,8 +3196,8 @@
   ]
  },
  "preschool-website": {
-  "h1": "Preschool website templates",
-  "intro": "Parents choosing a preschool want to picture their child's day. These templates walk through a day at preschool, rooms by age, how settling in works, fees and sessions, staff, safeguarding, and a tour booking form.",
+  "h1": "Preschool and kindergarten website templates",
+  "intro": "Parents choosing a preschool want to picture their child's day. These templates walk through a day in the room, how settling in works, sessions with sample fees, what to pack, the team, questions parents ask and a visit booking form, with add-your-own lines for licence, staff-to-child ratio and safeguarding details.",
   "tips": [
    "Show a real day, hour by hour.",
    "Explain how settling in works.",
@@ -5170,6 +5170,126 @@
    [
     "Do job seekers pay a staffing agency?",
     "In many places agencies may not charge job seekers. Check the rules where you work and state your own policy clearly."
+   ]
+  ]
+ },
+ "university-website": {
+  "h1": "University and college website templates",
+  "intro": "A university or college site is read by people deciding whether to apply. These templates include programmes and departments, the steps to apply, open days, campus life, student support, a sample tuition table, questions applicants ask and an enquiry form.",
+  "tips": [
+   "Make the steps to apply and the key dates easy to find.",
+   "Group programmes the way applicants search for them.",
+   "Show campus life and student support, not just courses.",
+   "Add your own accreditation and any information your regulator requires you to publish."
+  ],
+  "faq": [
+   [
+    "What should a university website include?",
+    "Programmes and departments, how to apply and key dates, open days, fees and funding information, campus life, student support and contact details."
+   ],
+   [
+    "Can a college website show rankings or graduate outcomes?",
+    "Only figures you can source and keep current. These templates leave them out, so add your own if you publish them."
+   ]
+  ]
+ },
+ "daycare-website": {
+  "h1": "Daycare and childcare website templates",
+  "intro": "Parents choosing childcare want to know who looks after their child and how a day runs. These templates include rooms by age, a typical day, drop-off and pick-up, before- and after-school care, a sample fee table, questions parents ask and a visit booking form, with add-your-own licence and safeguarding lines.",
+  "tips": [
+   "Show a typical day, hour by hour.",
+   "Explain rooms by age and how children move up.",
+   "Publish sessions, fees and opening hours plainly.",
+   "Add your own licence, inspection and safeguarding details."
+  ],
+  "faq": [
+   [
+    "What should a daycare website include?",
+    "Ages and rooms, a typical day, opening hours, sessions and fees, meals and allergies, the team, policies, licence details and a way to book a visit."
+   ],
+   [
+    "How do daycares help parents choose online?",
+    "Show the people and the routine, answer practical questions about drop-off, meals and settling in, and make booking a visit easy."
+   ]
+  ]
+ },
+ "tutoring-website": {
+  "h1": "Tutoring website templates",
+  "intro": "Parents and adult learners pick a tutor on subjects, approach and fit. These templates include subjects and levels, one-to-one and small-group options, a free first chat, how sessions are planned and progress is shared, a sample fee table, the tutors and a contact form.",
+  "tips": [
+   "List subjects and levels the way parents ask for them.",
+   "Explain how a first session works and what it costs.",
+   "Describe how you share progress, without promising grades.",
+   "Add your own tutor checks and safeguarding details."
+  ],
+  "faq": [
+   [
+    "What should a tutoring website include?",
+    "Subjects and levels, how sessions run (in person or online), fees, the tutors, how progress is shared, safeguarding details and a way to get in touch."
+   ],
+   [
+    "Should a tutoring site promise better grades?",
+    "These templates do not. Describe what happens in sessions and how you report progress instead."
+   ]
+  ]
+ },
+ "online-course-website": {
+  "h1": "Online course and e-learning website templates",
+  "intro": "People buy an online course when they can see what they will do and who teaches it. These templates include a course catalogue, self-paced and cohort courses, how a course works week by week, the teachers, a sample price table, questions buyers ask and a sign-up form.",
+  "tips": [
+   "Say what learners will make or practise, not what they will become.",
+   "Show the course outline and the time it takes.",
+   "Introduce the teachers by what they teach.",
+   "Add your own refund and access policy."
+  ],
+  "faq": [
+   [
+    "What should an online course website include?",
+    "A course catalogue, course outlines and length, prices, the teachers, how access and refunds work, questions buyers ask and a sign-up form."
+   ],
+   [
+    "Can an online course site promise jobs or income?",
+    "These templates do not, and many advertising rules restrict such claims. Describe the course content instead."
+   ]
+  ]
+ },
+ "music-school-website": {
+  "h1": "Music school website templates",
+  "intro": "Families and adults choose a music school on instruments, teachers and how lessons work. These templates include lessons by instrument, ensembles, a trial lesson, how practice and graded exams work if wanted, a sample fee table, the teachers and a booking form.",
+  "tips": [
+   "List instruments and ages up front.",
+   "Explain the trial lesson and what to bring.",
+   "Say how practice, concerts and exams work if you offer them.",
+   "Add your own teacher check and safeguarding details."
+  ],
+  "faq": [
+   [
+    "What should a music school website include?",
+    "Instruments and ages, lesson lengths and fees, ensembles, teachers, term dates, instrument hire, safeguarding details and a way to book a trial lesson."
+   ],
+   [
+    "How do music schools get new students from their website?",
+    "A clear trial lesson, plain fees and an easy booking form."
+   ]
+  ]
+ },
+ "dance-studio-website": {
+  "h1": "Dance studio website templates",
+  "intro": "A dance studio site is built around the timetable. These templates include a weekly class timetable with a filter by style, classes by age, term passes with sample fees, a first class guide, what to wear, the end-of-term show and a booking form.",
+  "tips": [
+   "Put the timetable on the page and keep it current.",
+   "Group classes by age and level.",
+   "Say what to wear and when to arrive for a first class.",
+   "Add your own safeguarding and teacher check details."
+  ],
+  "faq": [
+   [
+    "What should a dance studio website include?",
+    "A class timetable, classes by age and style, fees, teachers, what to wear, show and term dates, safeguarding details and a way to book a first class."
+   ],
+   [
+    "How do dance studios get new students from their website?",
+    "A clear first class, an easy booking and honest information about what a class is like."
    ]
   ]
  }

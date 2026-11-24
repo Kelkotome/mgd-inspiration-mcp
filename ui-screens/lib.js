@@ -154,6 +154,15 @@ const FAMILIES = {
   insuranceps: { name: "Brackenwold Insurance Agency", cat: "insurance-agency", desc: "a local independent insurance agency for home, car, business and life cover", type: { web: "Website", mobile: "Mobile website" } },
   consultingps: { name: "Ostrevane Consulting", paletteSeed: "Tarrowby Consulting" /* renamed 24-Nov-2026; old name kept only as the palette seed so colours stay as published */, cat: "consulting", desc: "a small management consulting firm", type: { web: "Website", mobile: "Mobile website" } },
   staffingps: { name: "Brindleholt Staffing", cat: "staffing-agency", desc: "a local staffing and recruitment agency", type: { web: "Website", mobile: "Mobile website" } },
+  // 25-Nov-2026 tenth industry, education (templates r7, staged). Coined names, fictional, web-checked. (content agents: edit only your own line)
+  schooled: { name: "Fennimarsh School", cat: "school", desc: "an independent day school for ages 4 to 18", type: { web: "Website", mobile: "Mobile website" } },
+  universityed: { name: "Halvercombe University", cat: "university", desc: "a small single-campus university", type: { web: "Website", mobile: "Mobile website" } },
+  preschooled: { name: "Tottlemere Preschool", cat: "preschool", desc: "a play-based preschool and kindergarten for ages 2 to 5", type: { web: "Website", mobile: "Mobile website" } },
+  daycareed: { name: "Quillimore Daycare", cat: "daycare", desc: "a daycare for babies to school age, with before and after-school care", type: { web: "Website", mobile: "Mobile website" } },
+  tutoringed: { name: "Corrowmede Tutoring", cat: "tutoring", desc: "a small local tutoring centre for maths, English, science and study skills", type: { web: "Website", mobile: "Mobile website" } },
+  courseed: { name: "Larkthimble Courses", cat: "online-course", desc: "an independent online school for self-paced and cohort courses in practical skills", type: { web: "Website", mobile: "Mobile website" } },
+  musiced: { name: "Brindlestave Music School", cat: "music-school", desc: "a community music school with one-to-one lessons, ensembles and a beginners' group", type: { web: "Website", mobile: "Mobile website" } },
+  danceed: { name: "Fenlowry Dance Studio", cat: "dance-studio", desc: "a neighbourhood dance studio with classes for children, teens and adults", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 

@@ -103,6 +103,13 @@ export const INDUSTRY_PHRASES = {
   "insurance-agency-website": ["a local independent insurance agency", "an agency"],
   "consulting-website": ["a small management consulting firm", "a firm"],
   "staffing-agency-website": ["a local staffing and recruitment agency", "an agency"],
+  // education, 25-Nov-2026 (templates r7, staged). school-website and preschool-website keep their n12/n13 phrases.
+  "university-website": ["a small university or college", "a university"],
+  "daycare-website": ["a daycare and childcare centre", "a centre"],
+  "tutoring-website": ["a local tutoring centre", "a centre"],
+  "online-course-website": ["an independent online course school", "a course school"],
+  "music-school-website": ["a community music school", "a school"],
+  "dance-studio-website": ["a neighbourhood dance studio with a weekly timetable", "a studio"],
 };
 
 // Hand-written exceptions where the default audience reads oddly with the style: "pattern|style" → [best, notIdeal]

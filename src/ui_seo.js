@@ -263,6 +263,13 @@ export const PATTERN_SEO = {
   "insurance-agency-website": ["insurance-website-template", "Insurance agency website templates"],
   "consulting-website": ["consulting-website-template", "Consulting firm website templates"],
   "staffing-agency-website": ["staffing-agency-website-template", "Staffing and recruitment agency website templates"],
+  // 25-Nov-2026 education (templates r7, staged): new niches (school-website keeps its n12 slug education-website-template, which 301s to the nested school page; preschool-website keeps its n13 slug).
+  "university-website": ["university-website-template", "University and college website templates"],
+  "daycare-website": ["daycare-website-template", "Daycare and childcare website templates"],
+  "tutoring-website": ["tutoring-website-template", "Tutoring website templates"],
+  "online-course-website": ["online-course-website-template", "Online course and e-learning website templates"],
+  "music-school-website": ["music-school-website-template", "Music school website templates"],
+  "dance-studio-website": ["dance-studio-website-template", "Dance studio website templates"],
   // UI components round 1 (7-Nov-2026; Keyword Planner "ui design" + "html css" + "examples", deploy-bundle-2026-11-07/components-audit.md)
   tabs: ["tabs-ui", "Tabs UI design examples"],
   cards: ["card-ui", "Card UI design examples"],

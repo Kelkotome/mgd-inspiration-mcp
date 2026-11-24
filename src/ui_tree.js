@@ -165,6 +165,26 @@ export const INDUSTRIES = {
     ],
     appPatterns: [],
   },
+  // 25-Nov-2026 tenth industry (templates r7, STAGED, not deployed; lead's pick, owner to confirm). Demand (Keyword Planner, worldwide, 25-Nov-2026,
+  // template terms): education 1,300 (school folds into it), university 320, e-learning 260 + online course 90 + course 140, daycare 170 = childcare 170,
+  // tutoring 110, preschool 110 + kindergarten 90, dance studio 70; WordPress: education 720, LMS 390, university 170, kindergarten 110; "tutoring website"
+  // 8,100, "online course website" 1,900, "daycare website" 590. Music school is the long-tail pick (music lessons website 90). hubFirst: no niche is named
+  // like the industry ("education", "e-learning" -> the hub). school-website (n12, Alderbrook Academy) and preschool-website (n13, Puddlewick) were flat
+  // patterns; their hand-built homepages are not signatures (as gym in r4, construction in r5, law firm in r6), so they stay plain items.
+  education: {
+    id: "education", label: "Education", hub: "education-website-templates", seg: "education", h1: "Education website templates", hubFirst: true,
+    niches: [
+      ["school", "school-website", "School", "school-website-template", "school"],
+      ["university", "university-website", "University and college", "university-website-template", "university"],
+      ["preschool", "preschool-website", "Preschool and kindergarten", "preschool-website-template", "preschool"],
+      ["daycare", "daycare-website", "Daycare and childcare", "daycare-website-template", "daycare"],
+      ["tutoring", "tutoring-website", "Tutoring", "tutoring-website-template", "tutoring"],
+      ["online-course", "online-course-website", "Online course and e-learning", "online-course-website-template", "online-course"],
+      ["music-school", "music-school-website", "Music school", "music-school-website-template", "music-school"],
+      ["dance-studio", "dance-studio-website", "Dance studio", "dance-studio-website-template", "dance-studio"],
+    ],
+    appPatterns: ["course-dashboard"],
+  },
 };
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };

@@ -8,7 +8,7 @@ Applies to website templates under `/inspiration/ui/`. Healthcare is the pilot (
 |---|---|---|
 | Platform | HTML, WordPress | Path: `/ui/wordpress-themes/...`. HTML is the default and has no path segment of its own |
 | Type | one-page, website, landing page | Filter. A chip appears only when a page has more than one value |
-| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios, Beauty, fitness and wellness, Construction and home services, Legal and professional services | Path |
+| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios, Beauty, fitness and wellness, Construction and home services, Legal and professional services, Education (r7, staged) | Path |
 | Sub-niche | Cardiology, Dental... | Path, under its industry |
 
 Web and mobile are the **Device** filter, renamed so that Platform is free. The database column stays `country`, and `?platform=web|mobile` still works.
@@ -216,6 +216,27 @@ Hub `professional-services-website-templates`, WordPress segment `professional-s
 **n12/n13 rows.** law-firm-website (Whitcombe Hale, n12) and financial-advisor-website (Lindqvale Planning, n13) were flat patterns with one hand-built homepage each. As gym in r4 and construction in r5, they are not signatures and not in the catalog: the nested pages show the six new designs, the old rows stay live as plain items and the flat URLs 301 once. "lawyer", "attorney", "solicitor" and "law office" aliases moved from law-firm-website to lawyer-website.
 
 **Words (lint, `tests/ps_lint.py`).** No real firms, networks, software, directories, ranking guides, insurers, fund houses, regulators, tax authorities, professional bodies or designations (CPA, CFP, CFA, EA, chartered); credential words (licensed, registered, certified, admitted, regulated, fiduciary, insured, qualified, member of) only in a sentence that says "add your own" or "sample"; no outcome promises (guarantees, wins, verdicts, settlements, case results, bigger refunds, returns, beat the market, no win no fee, risk-free); no awards, ratings, "best", "trusted", "expert", "specialist"; no reviews, testimonials or client stories; no invented track records; fees only as `$00` placeholders with "sample fees" wording; every page has a fictional notice that says "general information" and "not ... advice". Theme readmes say the theme is "not legal, tax, accounting, insurance or financial advice".
+
+## Education tree (templates r7, 25-Nov-2026: tenth industry, STAGED, not deployed)
+
+Hub `education-website-templates`, WordPress segment `education`, hubFirst (no niche is named like the industry; "education", "e-learning", "teaching" get the hub). The industry is the lead's pick (owner to confirm), the runner-up recorded in r6 and independent of the open question on legal and professional services. Demand (Keyword Planner, worldwide, 25-Nov-2026, template terms): education 1,300 ("school website template" folds into it), university 320, e-learning 260 + course 140 + online course 90, daycare 170 = childcare 170, tutoring 110, preschool 110 + kindergarten 90, academy 90, dance studio 70; WordPress: education 720, LMS 390, university 170, kindergarten 110; "website" forms: tutoring website 8,100, online course website 1,900, daycare website 590, dance studio website 260. Music school is the long-tail pick (music lessons website 90); language and driving schools returned no volume.
+
+| Sub-niche | id | Pattern | HTML segment | WordPress segment | Layouts |
+|---|---|---|---|---|---|
+| School | school | school-website (n12) | school-website-template | school | concierge, atlas, bento, ledger, band, folio |
+| University and college | university | university-website | university-website-template | university | folio, band, atlas, ledger, concierge, bento |
+| Preschool and kindergarten | preschool | preschool-website (n13) | preschool-website-template | preschool | bento, concierge, atlas, band, folio, ledger |
+| Daycare and childcare | daycare | daycare-website | daycare-website-template | daycare | concierge, band, ledger, folio, bento, atlas |
+| Tutoring | tutoring | tutoring-website | tutoring-website-template | tutoring | ledger, concierge, bento, atlas, folio, band |
+| Online course and e-learning | online-course | online-course-website | online-course-website-template | online-course | band, folio, atlas, concierge, ledger, bento |
+| Music school | music-school | music-school-website | music-school-website-template | music-school | folio, ledger, concierge, atlas, band, bento |
+| Dance studio | dance-studio | dance-studio-website | dance-studio-website-template | dance-studio | timetable, band, atlas, bento, concierge, ledger, folio |
+
+**Layouts.** Six shared layouts per niche, plus the r4 class timetable for the dance studio (a week of classes by style, term passes at $00): 49 designs, 98 screens, 49 themes. New motifs: schoolhouse, mortarboard, blocks, kite, pencil, laptop, note, dancer. The course-dashboard app screen is linked from the hub (appPatterns).
+
+**n12/n13 rows.** school-website (Alderbrook Academy, n12) and preschool-website (Puddlewick Preschool, n13) were flat patterns with one hand-built homepage each. As in r4 to r6 they are not signatures and not in the catalog: the nested pages show the new designs, the old rows stay live as plain items and the flat URLs 301 once (education-website-template, the n12 slug, goes to the school page). "university/college website" search aliases moved from school-website to university-website, "daycare/childcare" from preschool-website to daycare-website. The old homepages were not re-linted to the r7 word rules (follow-up item).
+
+**Words (lint, `tests/ed_lint.py`).** No real schools, universities, exam boards or tests (SAT, GCSE, A-level, IB, ABRSM, RAD...), curriculum or method names (Montessori, Waldorf, Reggio Emilia, Suzuki...), learning platforms, tutoring or childcare chains, inspectors, regulators, accreditors, rankings or review sites; credential words (accredited, licensed, registered, certified, qualified, inspected, background- or DBS-checked, ratios) only in a sentence that says "add your own" or "sample"; no outcomes (grades or scores going up, results, pass or acceptance rates, "get into", job placement, fluency, "unlock potential", "transform"); no safety claims (safest, fully safe, nut-free, hygienic); no awards, "best", "outstanding", "excellence", "expert", "specialist", "prestigious"; no testimonials or reviews; no invented counts or track records. Every page: fictional notice with "general information" and "not ... advice", a sample-content line, $00 fees with "sample fees" wording, (555) 01xx phones, .example email, no photos; children's niches (school, preschool, daycare, tutoring, music, dance) also carry an add-your-own safeguarding line. Readmes: `python3 tests/ed_lint.py --readmes`.
 
 ## Adding an industry
 

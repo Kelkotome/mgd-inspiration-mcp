@@ -1,0 +1,20 @@
+# Education tree, 25-Nov-2026 (templates r7, staged)
+school website template | school-website
+school website | school-website
+private school website | school-website
+university website template | university-website
+college website | university-website
+daycare website template | daycare-website
+childcare website | daycare-website
+preschool website template | preschool-website
+kindergarten website | preschool-website
+tutoring website template | tutoring-website
+tutor website | tutoring-website
+online course website template | online-course-website
+elearning website | online-course-website
+music school website | music-school-website
+piano lessons website | music-school-website
+dance studio website template | dance-studio-website
+ballet school website | dance-studio-website
+course dashboard | course-dashboard
+learning dashboard | course-dashboard
