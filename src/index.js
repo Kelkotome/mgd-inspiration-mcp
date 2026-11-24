@@ -2284,7 +2284,22 @@ async function mcpCallToolInner(name, a, env, opts) {
         if (m.rows.length) { const seen = new Set(m.rows.map((x) => x.id)); r = { ...r, rows: [...m.rows, ...r.rows.filter((x) => !seen.has(x.id))].slice(0, limit) }; }
       }
     }
-    if (!r) r = await mcpSearchRowsRetry(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
+    if (!r) {
+      // 24-Nov-2026: one tile per brand. A brand guide has 3 tiles (Brand Guidelines / Typeface / Colour Palette) that all match the same
+      // query, so "lingerie brand" showed 2 brands x 3. Fetch up to 2x (cap 24), keep the first tile per brand, then cut to limit.
+      // Searches with no repeated brand are unchanged (same single fetch). Kept as-is when the query asks for a tile type
+      // (typeface / font / palette / colour) or the hits are a single brand (a brand-name query).
+      const cols4 = ["title", "description", "tags", "themes"];
+      r = await mcpSearchRowsRetry(env, where, binds, cols4, q, "created_at DESC", limit);
+      const brandOf = (x) => { const m = /^(.+?) — (?:Brand Guidelines|Typeface|Colour Palette)$/.exec(String(x.title || "")); return m ? m[1].toLowerCase() : null; };
+      const bl = r.rows.map(brandOf).filter(Boolean), brands = new Set(bl);
+      if (brands.size >= 2 && bl.length > brands.size && !/typeface|font|palette|colou?r/i.test(q)) {
+        const wide = await mcpSearchRowsRetry(env, where, binds, cols4, q, "created_at DESC", Math.min(limit * 2, 24));
+        const seenBrand = new Set();
+        const rows = wide.rows.filter((x) => { const k = brandOf(x); if (!k) return true; if (seenBrand.has(k)) return false; seenBrand.add(k); return true; }).slice(0, limit);
+        if (rows.length) r = { rows, note: "" };
+      }
+    }
     return withIpNotice(ip, await mcpIconHinted(q, withMuseumHint(name, q, withUiHint(q, mcpHinted(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design)))), env));
   }
   if (name === "list_inspiration_themes") {
