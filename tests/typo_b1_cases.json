@@ -1,0 +1,19 @@
+{"note": "typo-b1 (25-Nov-2026): B1 guides in get_font_pairing, neutral script wording, style-variant fallback, argument aliases. live=true cases run after the deploy (tests/typo_b1_rpc.py BASE --live-only).",
+ "cases": [
+  {"tool": "get_font_pairing", "args": {"font": "Zilla Slab"}, "want": "Source: https://madegooddesigns.com/zilla-slab-font-pairings/", "live": true},
+  {"tool": "get_font_pairing", "args": {"font": "Patrick Hand"}, "want": "Source: https://madegooddesigns.com/patrick-hand-font-pairings/", "live": true},
+  {"tool": "get_font_pairing", "args": {"font": "Press Start 2P"}, "want": "Source: https://madegooddesigns.com/press-start-2p-font-pairings/", "live": true},
+  {"tool": "get_font_pairing", "args": {"font_name": "Arvo"}, "want": "Source: https://madegooddesigns.com/arvo-font-pairings/", "live": true},
+  {"tool": "get_font_pairing", "args": {"fontFamily": "Spectral"}, "want": "Source: https://madegooddesigns.com/spectral-font-pairings/", "live": true},
+  {"tool": "get_font_pairing", "args": {"font": "Zilla Slab Highlight"}, "want": "Source: https://madegooddesigns.com/zilla-slab-font-pairings/", "live": true},
+  {"tool": "get_font_pairing", "args": {"font": "Bangers Inline"}, "want": "is a style of Bangers with no separate guide", "live": true},
+  {"tool": "get_font_pairing", "args": {"font": "Modak"}, "want": "these are published pairings for similar display fonts (", "live": true},
+  {"tool": "get_font_pairing", "args": {"font": "Bagel Fat One"}, "want": "these are published pairings for similar display fonts (", "live": true},
+  {"tool": "generate_color_scale", "args": {"color": "#e0a775"}, "want": "Tailwind v4 @theme", "live": true},
+  {"tool": "run_design_tool", "args": {"name": "generate_color_scale", "arguments": {"color": "#e0a775"}}, "want": "Tailwind v4 @theme", "live": true},
+  {"tool": "get_ui_screen_code", "args": {"id": "000000000000"}, "want": "No UI screen with that id", "err": true, "live": true},
+  {"tool": "get_ui_screen_code", "args": {"screenId": "000000000000"}, "want": "No UI screen with that id", "err": true, "live": true},
+  {"tool": "check_contrast", "args": {"fg": "#333333", "bg": "#ffffff"}, "want": "12.6", "live": true},
+  {"tool": "generate_website_color_palette", "args": {"primary_color": "#2563eb"}, "want": "#2563eb", "live": true},
+  {"tool": "generate_logo_concepts", "args": {"brand_name": "Acme Coffee"}, "want": "Acme", "live": true}
+ ]}
