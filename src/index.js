@@ -2273,8 +2273,16 @@ async function mcpCallToolInner(name, a, env, opts) {
       const pool = ip ? ip.kind.pool : stylePool;
       const pw = "status=? AND owner_id IS NULL AND collection IN ('design','museum') AND tags LIKE ?", pb = ["published", `%"${pool}"%`], pc = ["title", "description", "tags", "themes"];
       const ord = ipOrder(ip ? ip.franchise : q0), bias = ip ? ipBias(ip.franchise) : "";
-      if (bias) { const b = await mcpSearchRowsRetry(env, pw, pb, pc, bias, ord, limit); if (b.rows.length >= 3) r = b; }
+      let biased = false;
+      if (bias) { const b = await mcpSearchRowsRetry(env, pw, pb, pc, bias, ord, limit); if (b.rows.length >= 3) { r = b; biased = true; } }
       if (!r) { const pr = await mcpSearchRowsRetry(env, pw, pb, pc, "", ord, limit); if (pr.rows.length >= 3) r = pr; }
+      // 24-Nov-2026: anime pool is mostly Edo woodblocks; lead with the modern manga/anime design rows (about half the list), then the rotated pool.
+      // Skipped when a franchise bias already narrowed the answer (Ghibli -> landscape).
+      if (r && pool === "alt-anime" && !biased) {
+        const mw = "status=? AND owner_id IS NULL AND collection='design' AND tags LIKE ?";
+        const m = await mcpSearchRowsRetry(env, mw, pb, pc, "", ord, Math.max(3, Math.ceil(limit / 2)));
+        if (m.rows.length) { const seen = new Set(m.rows.map((x) => x.id)); r = { ...r, rows: [...m.rows, ...r.rows.filter((x) => !seen.has(x.id))].slice(0, limit) }; }
+      }
     }
     if (!r) r = await mcpSearchRowsRetry(env, where, binds, ["title", "description", "tags", "themes"], q, "created_at DESC", limit);
     return withIpNotice(ip, await mcpIconHinted(q, withMuseumHint(name, q, withUiHint(q, mcpHinted(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} design-inspiration result(s) for "${q}"${a.theme ? " in theme "+a.theme : ""}${r.note}`, opts, MCP_SIBLING.design)))), env));
