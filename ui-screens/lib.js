@@ -153,7 +153,16 @@ const FAMILIES = {
   advisorps: { name: "Tamberlow Financial Planning", cat: "financial-advisor", desc: "an independent financial planning practice for retirement, savings and family finances", type: { web: "Website", mobile: "Mobile website" } },
   insuranceps: { name: "Brackenwold Insurance Agency", cat: "insurance-agency", desc: "a local independent insurance agency for home, car, business and life cover", type: { web: "Website", mobile: "Mobile website" } },
   consultingps: { name: "Ostrevane Consulting", paletteSeed: "Tarrowby Consulting" /* renamed 24-Nov-2026; old name kept only as the palette seed so colours stay as published */, cat: "consulting", desc: "a small management consulting firm", type: { web: "Website", mobile: "Mobile website" } },
-  staffingps: { name: "Brindleholt Staffing", cat: "staffing-agency", desc: "a local staffing and recruitment agency", type: { web: "Website", mobile: "Mobile website" } },
+  // 25-Nov-2026 automotive (templates r8, staged; independent of r7 education). Coined names, fictional, web-checked.
+  dealerau: { name: "Harrowdene Motors", cat: "car-dealership", desc: "an independent used and nearly-new car dealership", type: { web: "Website", mobile: "Mobile website" } },
+  repairau: { name: "Kettlewick Auto Repair", cat: "auto-repair", desc: "an independent auto repair and servicing garage", type: { web: "Website", mobile: "Mobile website" } },
+  detailau: { name: "Marlowmere Detailing", cat: "car-detailing", desc: "a car detailing studio with a mobile van", type: { web: "Website", mobile: "Mobile website" } },
+  washau: { name: "Pellowby Car Wash", cat: "car-wash", desc: "a local car wash with drive-through and hand-wash bays", type: { web: "Website", mobile: "Mobile website" } },
+  rentalau: { name: "Tavistrand Car Rental", cat: "car-rental", desc: "an independent car and van rental firm", type: { web: "Website", mobile: "Mobile website" } },
+  bodyau: { name: "Copperhythe Body Shop", cat: "auto-body", desc: "an independent auto body and collision repair shop", type: { web: "Website", mobile: "Mobile website" } },
+  towau: { name: "Dunmarrow Towing", cat: "towing", desc: "a local towing and roadside help firm", type: { web: "Website", mobile: "Mobile website" } },
+  tireau: { name: "Rimbleford Tires", cat: "tire-shop", desc: "an independent tire shop with fitting, balancing and alignment", type: { web: "Website", mobile: "Mobile website" } },
+  staffingps: { name: "Brindleholt Staffing", cat: "staffing-agency", desc:"a local staffing and recruitment agency", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 

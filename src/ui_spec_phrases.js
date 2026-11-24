@@ -103,6 +103,15 @@ export const INDUSTRY_PHRASES = {
   "insurance-agency-website": ["a local independent insurance agency", "an agency"],
   "consulting-website": ["a small management consulting firm", "a firm"],
   "staffing-agency-website": ["a local staffing and recruitment agency", "an agency"],
+  // automotive, 25-Nov-2026 (templates r8, staged)
+  "car-dealership-website": ["an independent used car dealership", "a dealership"],
+  "auto-repair-website": ["an independent auto repair garage", "a garage"],
+  "car-detailing-website": ["a car detailing studio with a mobile van", "a studio"],
+  "car-wash-website": ["a local car wash with drive-through and hand-wash bays", "a car wash"],
+  "car-rental-website": ["an independent car and van rental firm", "a rental firm"],
+  "auto-body-website": ["an independent auto body and collision repair shop", "a body shop"],
+  "towing-website": ["a local towing and roadside help firm", "a towing firm"],
+  "tire-shop-website": ["an independent tire shop", "a tire shop"],
 };
 
 // Hand-written exceptions where the default audience reads oddly with the style: "pattern|style" → [best, notIdeal]

@@ -1,0 +1,123 @@
+{
+ "auto-body": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.463,
+  "failedPairs": []
+ },
+ "auto-repair": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.453,
+  "failedPairs": []
+ },
+ "car-dealership": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.462,
+  "failedPairs": []
+ },
+ "car-detailing": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.397,
+  "failedPairs": []
+ },
+ "car-rental": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.41,
+  "failedPairs": []
+ },
+ "car-wash": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.384,
+  "failedPairs": []
+ },
+ "tire-shop": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.448,
+  "failedPairs": []
+ },
+ "towing": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "dispatch",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.733,
+  "maxLayoutOverlap": 0.476,
+  "failedPairs": []
+ }
+}

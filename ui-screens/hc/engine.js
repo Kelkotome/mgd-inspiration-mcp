@@ -83,6 +83,15 @@ const GLYPH = {
   growth: '<path d="M8 56h48M8 56V8"/><path d="M14 46l12-12 9 7 17-19"/><path d="M42 22h10v10"/>',
   umbrella: '<path d="M6 32a26 22 0 0 1 52 0z"/><path d="M32 10V6M32 32v18a5 5 0 0 1-10 0"/><path d="M19 32a6 5 0 0 1 13 0 6 5 0 0 1 13 0"/>',
   briefcase: '<rect x="8" y="20" width="48" height="32" rx="3"/><path d="M24 20v-6h16v6M8 34h48M28 34v4h8v-4"/>',
+  // 25-Nov-2026 automotive (templates r8, staged)
+  sedan: '<path d="M4 40v-8l8-2 8-10h22l10 10 8 2v8z"/><path d="M22 22l-4 8h30l-6-8z"/><circle cx="17" cy="42" r="6"/><circle cx="47" cy="42" r="6"/><path d="M4 50h56"/>',
+  spanner: '<path d="M14 50l22-22M30 18a10 10 0 0 1 14-10l-6 6 2 6 6 2 6-6a10 10 0 0 1-10 14"/><circle cx="12" cy="52" r="4"/><path d="M40 40l14 14M44 36l4-4 12 12-4 4z"/>',
+  polisher: '<ellipse cx="32" cy="44" rx="22" ry="8"/><path d="M10 44v4c0 4 10 8 22 8s22-4 22-8v-4M24 36V20h16v16M18 20h28M32 20V8M26 8h12"/>',
+  bubbles: '<circle cx="20" cy="40" r="12"/><circle cx="42" cy="28" r="10"/><circle cx="46" cy="50" r="6"/><circle cx="24" cy="14" r="5"/><path d="M14 36a6 6 0 0 1 6-6M38 24a4 4 0 0 1 4-4"/>',
+  carkey: '<rect x="10" y="6" width="22" height="34" rx="8"/><circle cx="21" cy="17" r="3"/><circle cx="21" cy="29" r="3"/><path d="M32 30h8l6 6v20l-4 2-3-4-3 4-4-2V36"/>',
+  spraygun: '<path d="M8 22h30v12H8z"/><path d="M38 26h10M48 22l10-4M48 28l12 0M48 34l10 4M18 34v8l-4 16h12l2-16v-8M14 22v-8h14v8"/>',
+  towhook: '<path d="M4 46V30h22l6-10h12v26z"/><path d="M44 28l14-14M58 14v18a5 5 0 0 1-10 0"/><circle cx="14" cy="48" r="6"/><circle cx="36" cy="48" r="6"/><path d="M30 26h10"/>',
+  tyre: '<circle cx="32" cy="32" r="26"/><circle cx="32" cy="32" r="12"/><circle cx="32" cy="32" r="4"/><path d="M32 6v8M32 50v8M6 32h8M50 32h8M14 14l6 6M44 44l6 6M50 14l-6 6M14 50l6-6"/>',
   badge: '<rect x="14" y="14" width="36" height="44" rx="4"/><path d="M26 8h12v10H26z"/><circle cx="32" cy="32" r="6"/><path d="M22 50c1-6 5-9 10-9s9 3 10 9"/>',
 };
 const glyph = (c, size, sw = 2.2) => `<svg class="i" width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPH[c.motif]}</svg>`;

@@ -165,6 +165,25 @@ export const INDUSTRIES = {
     ],
     appPatterns: [],
   },
+  // 25-Nov-2026 automotive (templates r8, STAGED, not deployed; lead's pick, owner to confirm; built independent of r7 education, which is also staged).
+  // Demand (Keyword Planner, worldwide, 25-Nov-2026): "automotive website template" 720 (= "car website template"), car rental 480, car dealership 390,
+  // car detailing 260, auto repair 170, car wash 140; WordPress: car dealer 320, car rental 260, automotive 210, auto repair 90; "website" forms: car rental
+  // website 8,100, dealership website 1,900, auto repair / car repair website 1,300, auto detailing 880, car wash 720, mechanic 720, body shop 390,
+  // towing 210 (rising: +24 % YoY), tire shop 70. hubFirst: no niche is named like the industry ("automotive", "car website" -> the hub). No n12/n13 rows.
+  automotive: {
+    id: "automotive", label: "Automotive", hub: "automotive-website-templates", seg: "automotive", h1: "Automotive website templates", hubFirst: true,
+    niches: [
+      ["car-dealership", "car-dealership-website", "Car dealership", "car-dealership-website-template", "car-dealership"],
+      ["auto-repair", "auto-repair-website", "Auto repair and mechanic", "auto-repair-website-template", "auto-repair"],
+      ["car-detailing", "car-detailing-website", "Car detailing", "car-detailing-website-template", "car-detailing"],
+      ["car-wash", "car-wash-website", "Car wash", "car-wash-website-template", "car-wash"],
+      ["car-rental", "car-rental-website", "Car rental", "car-rental-website-template", "car-rental"],
+      ["auto-body", "auto-body-website", "Auto body and collision repair", "auto-body-shop-website-template", "auto-body"],
+      ["towing", "towing-website", "Towing and roadside help", "towing-website-template", "towing"],
+      ["tire-shop", "tire-shop-website", "Tire shop", "tire-shop-website-template", "tire-shop"],
+    ],
+    appPatterns: [],
+  },
 };
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };

@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+// Automotive (templates r8, staged; built without r7 education) MCP answers. usage: node tests/au_mcp.mjs http://127.0.0.1:8995/inspiration
+const BASE = process.argv[2].replace(/\/$/, ""); let id = 1, fails = 0, n = 0;
+const call = async (name, args) => { const r = await fetch(`${BASE}/mcp`, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json, text/event-stream", "User-Agent": "curl/8.4.0" }, body: JSON.stringify({ jsonrpc: "2.0", id: id++, method: name === "tools/list" ? "tools/list" : "tools/call", params: name === "tools/list" ? {} : { name, arguments: args } }) }); const j = await r.json(); return name === "tools/list" ? j.result.tools : j.result.content.map((c) => c.text || "").join("\n"); };
+const T = (q, x = {}) => call("search_ui_screens", { query: q, ...x });
+const want = async (label, p, yes = [], no = []) => { const t = await p; n++; const bad = [...yes.filter((y) => !(y instanceof RegExp ? y.test(t) : t.includes(y))).map((y) => `missing ${y}`), ...no.filter((y) => (y instanceof RegExp ? y.test(t) : t.includes(y))).map((y) => `has ${y}`)]; console.log(`${bad.length ? "FAIL" : "ok  "} ${label}`); if (bad.length || process.env.SHOW) console.log(`   ${t.slice(0, process.env.SHOW ? 1500 : 500).replace(/\n/g, "\n   ")}`); if (bad.length) { fails++; console.log("   ->", bad.join("; ")); } };
+const W = "/ui/wordpress-themes/automotive/", H = "/ui/automotive-website-templates/";
+await want("car dealer wordpress theme", T("car dealer wordpress theme"), [`${W}car-dealership`, "Upload Theme", "not mechanical, legal or financial advice", `${H}car-dealership-website-template`], ["medical advice", "fair housing", "allergen", "insurance or financial advice"]);
+await want("auto repair wordpress theme", T("auto repair wordpress theme"), [`${W}auto-repair`]);
+await want("mechanic wordpress theme", T("mechanic wordpress theme"), [`${W}auto-repair`]);
+await want("car detailing wordpress theme", T("car detailing wordpress theme"), [`${W}car-detailing`]);
+await want("car wash wordpress theme", T("car wash wordpress theme"), [`${W}car-wash`]);
+await want("car rental wordpress theme", T("car rental wordpress theme"), [`${W}car-rental`]);
+await want("body shop wordpress theme", T("body shop wordpress theme"), [`${W}auto-body`]);
+await want("towing wordpress theme", T("towing wordpress theme"), [`${W}towing`]);
+await want("tire shop wordpress theme", T("tire shop wordpress theme"), [`${W}tire-shop`]);
+await want("pattern + platform param", call("search_ui_screens", { pattern: "car-wash-website", platform: "wordpress" }), [`${W}car-wash`]);
+await want("free wordpress block theme lists automotive", T("free wordpress block theme"), [/healthcare block themes/, /legal and professional services block themes/, /automotive block themes/]);
+await want("car dealership template gets the niche", T("car dealership website template"), [`${H}car-dealership-website-template`, "6 distinct designs"], ["template hub"]);
+await want("automotive template gets the hub", T("automotive website template"), ["Automotive template hub", "/ui/automotive-website-templates"]);
+await want("car website template gets the hub", T("car website template"), ["Automotive template hub"]);
+await want("used car template", T("used car dealer website template"), [`${H}car-dealership-website-template`]);
+await want("mechanic template", T("mechanic website template"), [`${H}auto-repair-website-template`]);
+await want("auto detailing template", T("auto detailing website template"), [`${H}car-detailing-website-template`]);
+await want("car wash and detailing is car wash", T("car wash and detailing website template"), [`${H}car-wash-website-template`]);
+await want("car hire template", T("car hire website template"), [`${H}car-rental-website-template`]);
+await want("collision repair template", T("collision repair website template"), [`${H}auto-body-shop-website-template`]);
+await want("auto body repair is body shop", T("auto body repair website template"), [`${H}auto-body-shop-website-template`]);
+await want("roadside assistance template", T("roadside assistance website template"), [`${H}towing-website-template`, "7 distinct designs"]);
+await want("tyre fitting template", T("tyre fitting website template"), [`${H}tire-shop-website-template`]);
+await want("vacation rental stays real estate", T("vacation rental website template"), ["/ui/real-estate-website-templates/vacation-rental-website-template"], [H]);
+await want("home builder stays real estate", T("home builder website template"), ["/ui/real-estate-website-templates/home-builder-website-template"], [H]);
+await want("insurance agency stays professional services", T("insurance agency website template"), ["/ui/professional-services-website-templates/insurance-website-template"], [H]);
+await want("shopify car dealer theme, honest none", T("shopify car dealer theme"), ["no Shopify templates", `${H}car-dealership-website-template`], ["download/wordpress"]);
+await want("professional services unchanged", T("lawyer wordpress theme"), ["/ui/wordpress-themes/professional-services/lawyer", "not legal, tax, accounting, insurance or financial advice"], ["mechanical"]);
+await want("healthcare unchanged", T("cardiology WordPress theme"), ["/ui/wordpress-themes/healthcare/cardiology", "not medical advice"], ["mechanical"]);
+for (const q of ["ride sharing app", "car booking app screen", "card component", "dashboard with cards", "vehicle tracking dashboard"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "automotive-website-templates/"]);
+await want("list_ui_patterns themes", call("list_ui_patterns", { kind: "themes" }), ["TEMPLATE TREE, AUTOMOTIVE", `${W}towing`, "TEMPLATE TREE, LEGAL AND PROFESSIONAL SERVICES", "TEMPLATE TREE, HEALTHCARE"]);
+const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 113) { fails++; console.log("FAIL tool count changed"); }
+console.log(`${n} checks, ${fails} failed`); process.exit(fails ? 1 : 0);

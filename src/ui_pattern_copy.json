@@ -5172,5 +5172,165 @@
     "In many places agencies may not charge job seekers. Check the rules where you work and state your own policy clearly."
    ]
   ]
+ },
+ "car-dealership-website": {
+  "h1": "Car dealership website templates",
+  "intro": "A dealership site is read by people comparing cars before they visit. These templates include stock by body type, how buying works step by step, test drive booking, part-exchange valuations as a process, collection and delivery, a sample price table, questions buyers ask and an enquiry form, with add-your-own lines for dealer licence, vehicle history checks and finance.",
+  "tips": [
+   "Show stock by body type and budget, the way buyers search.",
+   "Explain each step of buying, from test drive to collection.",
+   "Keep prices, fees and what is included plain and current.",
+   "Add your own dealer licence, history check and finance details, and only show finance offers your licence allows."
+  ],
+  "faq": [
+   [
+    "What should a car dealership website include?",
+    "Stock with clear prices, how buying and test drives work, part-exchange, opening hours, location, your own licence and finance details, and a way to enquire about a car."
+   ],
+   [
+    "Can a dealership website advertise finance?",
+    "Only in the form the rules where you work allow, usually with full cost details. These templates leave finance as an add-your-own line."
+   ]
+  ]
+ },
+ "auto-repair-website": {
+  "h1": "Auto repair and mechanic website templates",
+  "intro": "An auto repair site answers what you fix, how booking works and what it costs. These templates include servicing, brakes, diagnostics and warning lights, how drop-off, approval before work and collection run, a sample labour-rate table, questions drivers ask and a booking form.",
+  "tips": [
+   "Put booking and your phone number at the top.",
+   "Say how you approve work and prices before you start.",
+   "List the jobs you do most, in drivers' words.",
+   "Add your own registration, technician training and parts warranty details."
+  ],
+  "faq": [
+   [
+    "What should an auto repair website include?",
+    "Services, how booking and drop-off work, how you agree prices before work, opening hours, location, your own registration and warranty details, and a booking form."
+   ],
+   [
+    "Should a garage show prices online?",
+    "Many show labour rates and fixed prices for common jobs, with other work estimated first. The templates include a sample price table to replace."
+   ]
+  ]
+ },
+ "car-detailing-website": {
+  "h1": "Car detailing website templates",
+  "intro": "A detailing site sells care and time, so it has to show what each package covers. These templates include maintenance washes, interior valets, paint correction and protective coatings explained as a process, studio and mobile visits, what happens at drop-off, a sample price table and a booking form.",
+  "tips": [
+   "Explain each package in plain words and how long it takes.",
+   "Say whether you work at a studio, at the customer's address or both.",
+   "Describe coatings honestly: how long they last depends on care and conditions.",
+   "Add your own business registration and insurance details."
+  ],
+  "faq": [
+   [
+    "What should a car detailing website include?",
+    "Packages with what each covers and takes, prices, studio or mobile service, the area you cover, how to prepare the car, and a booking form."
+   ],
+   [
+    "Can a detailer say a coating lasts for years?",
+    "Only what you can stand behind. These templates leave durability claims out and say it depends on care and conditions."
+   ]
+  ]
+ },
+ "car-wash-website": {
+  "h1": "Car wash website templates",
+  "intro": "A car wash site is checked on a phone just before a visit. These templates include a wash menu by tier, drive-through and hand-wash bays, vacuum bays, a wash club with sample monthly prices, what to do before you drive in, opening hours and a fleet enquiry form.",
+  "tips": [
+   "Show opening hours and the wash menu first.",
+   "Say what to do before driving in: mirrors, aerials, roof boxes.",
+   "Explain the wash club in one short paragraph.",
+   "Add your own water, drainage and business registration details."
+  ],
+  "faq": [
+   [
+    "What should a car wash website include?",
+    "The wash menu with prices, opening hours, location, height and vehicle limits, any wash club, and contact details for fleet accounts."
+   ],
+   [
+    "Can a car wash say it is eco-friendly?",
+    "Only with details you can back up. These templates leave environmental claims out and give an add-your-own line for water and drainage."
+   ]
+  ]
+ },
+ "car-rental-website": {
+  "h1": "Car rental website templates",
+  "intro": "A rental site has to answer what can I hire, what do I need and what does it cost. These templates include vehicle classes, how to book and collect, what to bring, mileage and fuel rules, one-way and van hire, a sample daily-rate table, questions renters ask and a booking form.",
+  "tips": [
+   "Show vehicle classes with seats, luggage and gearbox.",
+   "List what renters must bring before they book.",
+   "Make fuel, mileage and return rules easy to find.",
+   "Add your own licence, age, cover and deposit rules."
+  ],
+  "faq": [
+   [
+    "What should a car rental website include?",
+    "Vehicle classes, how booking and collection work, what to bring, fuel and mileage rules, opening hours, locations, your own cover and deposit terms, and a booking form."
+   ],
+   [
+    "Should a rental site show insurance details?",
+    "Show the cover and excess terms you actually offer. These templates leave them as add-your-own lines."
+   ]
+  ]
+ },
+ "auto-body-website": {
+  "h1": "Auto body and collision repair website templates",
+  "intro": "A body shop site is read after a bump, by someone who wants to know what happens next. These templates include dents, scratches, bumpers and panels, paint matching as a process, written estimates from photos, insurance claim help explained step by step, sample repair times and prices, and an estimate form.",
+  "tips": [
+   "Offer an estimate from photos near the top.",
+   "Explain the insurance claim steps in plain words.",
+   "Give sample repair times so people can plan.",
+   "Add your own registration, insurance and repair warranty details."
+  ],
+  "faq": [
+   [
+    "What should an auto body shop website include?",
+    "The repairs you do, how estimates work, how you help with insurance claims, typical repair times, location, your own registration and warranty details, and an estimate form."
+   ],
+   [
+    "Can a body shop say it is approved by insurers?",
+    "Only if it is, and only as your own add-your-own line. These templates make no approval claims."
+   ]
+  ]
+ },
+ "towing-website": {
+  "h1": "Towing and roadside help website templates",
+  "intro": "A towing site is often read at the roadside. These templates put the phone number first, then a booking panel with arrival windows for planned tows, a drawn service-area map, breakdown and roadside help, what to do while you wait, sample rates and a contact form, with a line to call the emergency number when anyone is in danger.",
+  "tips": [
+   "Put the phone number at the top of every page.",
+   "Tell people what to do while they wait, in a few plain lines.",
+   "Show the area you cover by place name.",
+   "Add your own operator licence, insurance and phone line hours."
+  ],
+  "faq": [
+   [
+    "What should a towing website include?",
+    "A phone number at the top, the services you offer, the area you cover, how pricing works, what to do while waiting, your own licence and insurance details, and a contact form."
+   ],
+   [
+    "Should a towing site promise arrival times?",
+    "Only times you can keep. These templates show arrival windows for planned tows as samples and make no response-time promises."
+   ]
+  ]
+ },
+ "tire-shop-website": {
+  "h1": "Tire shop website templates",
+  "intro": "A tire shop site helps drivers find the right size and book a fitting. These templates include new tires by size, fitting, balancing and wheel alignment, puncture repair, seasonal swaps and storage, how to read a tire size, a sample price table and a fitting booking form.",
+  "tips": [
+   "Explain how to find the tire size on the sidewall.",
+   "Show fitting slots and how long a fitting takes.",
+   "List what is included in a fitting price.",
+   "Add your own business registration and warranty details."
+  ],
+  "faq": [
+   [
+    "What should a tire shop website include?",
+    "Tire sizes and options, fitting and alignment services, prices and what they include, opening hours, location and a way to book a fitting."
+   ],
+   [
+    "Should a tire shop name tire brands?",
+    "Only brands you stock and have the right to name. These templates use generic tire tiers so you can add your own range."
+   ]
+  ]
  }
 }

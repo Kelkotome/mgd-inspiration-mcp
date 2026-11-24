@@ -263,6 +263,15 @@ export const PATTERN_SEO = {
   "insurance-agency-website": ["insurance-website-template", "Insurance agency website templates"],
   "consulting-website": ["consulting-website-template", "Consulting firm website templates"],
   "staffing-agency-website": ["staffing-agency-website-template", "Staffing and recruitment agency website templates"],
+  // 25-Nov-2026 automotive (templates r8, staged)
+  "car-dealership-website": ["car-dealership-website-template", "Car dealership website templates"],
+  "auto-repair-website": ["auto-repair-website-template", "Auto repair and mechanic website templates"],
+  "car-detailing-website": ["car-detailing-website-template", "Car detailing website templates"],
+  "car-wash-website": ["car-wash-website-template", "Car wash website templates"],
+  "car-rental-website": ["car-rental-website-template", "Car rental website templates"],
+  "auto-body-website": ["auto-body-shop-website-template", "Auto body and collision repair website templates"],
+  "towing-website": ["towing-website-template", "Towing and roadside help website templates"],
+  "tire-shop-website": ["tire-shop-website-template", "Tire shop website templates"],
   // UI components round 1 (7-Nov-2026; Keyword Planner "ui design" + "html css" + "examples", deploy-bundle-2026-11-07/components-audit.md)
   tabs: ["tabs-ui", "Tabs UI design examples"],
   cards: ["card-ui", "Card UI design examples"],

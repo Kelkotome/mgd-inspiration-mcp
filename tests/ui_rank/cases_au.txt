@@ -1,0 +1,19 @@
+# Automotive tree, 25-Nov-2026 (templates r8, staged)
+car dealership website template | car-dealership-website
+car dealer website | car-dealership-website
+used car dealer website | car-dealership-website
+auto repair website template | auto-repair-website
+mechanic website | auto-repair-website
+car repair website | auto-repair-website
+car detailing website template | car-detailing-website
+auto detailing website | car-detailing-website
+car wash website template | car-wash-website
+car wash website | car-wash-website
+car rental website template | car-rental-website
+car hire website | car-rental-website
+auto body shop website | auto-body-website
+collision repair website | auto-body-website
+towing website template | towing-website
+roadside assistance website | towing-website
+tire shop website template | tire-shop-website
+tyre fitting website | tire-shop-website
