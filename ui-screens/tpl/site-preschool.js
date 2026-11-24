@@ -1,8 +1,8 @@
 /* Preschool website template (Puddlewick Preschool, a fictional play-based preschool for ages 2 to 5). Warm, handmade home page drawn
    with inline SVG cut-paper shapes: nav, a headline in the sky above a full-width illustrated village scene, "A day at ..." as a
-   board-game track of twelve timed stops from arrival to pick-up, rooms by age behind three arched doors with ratios stated as the
-   school's own policy, settling-in stepping stones, sessions + fees + term dates, a pinned weekly menu beside the allergy approach,
-   staff rows with a dashed registration slot, safeguarding beside a pick-up card, parent notes, book-a-visit form, footer.
+   board-game track of twelve timed stops from arrival to pick-up, rooms by age behind three arched doors with add-your-own ratio slots (25-Nov-2026 fix:
+   no fees above $00, ratios, child counts, nut-free claim, invented qualifications or parent notes), settling-in stepping stones, sessions + fees + term dates, a pinned weekly menu beside the allergy approach,
+   staff rows with a dashed registration slot, safeguarding beside a pick-up card, book-a-visit form, footer.
    No real curricula, inspectors or authorities. Artwork uses a fixed crayon palette (illustrative); all UI uses the tokens. */
 const { ic } = require("../lib");
 const K = require("../sitekit");
@@ -275,9 +275,9 @@ const DAY = [
   ["4:15", "door", "Slow hour and pick-up", "Puzzles and being read to. You get a real handover until 5:30."],
 ];
 const ROOMS = [
-  ["tadpoles", "Tadpoles", "Age 2", "1 to 4", "One adult to four children, 12 children in the room", ["Water, sand, playdough and picture books", "Learning to pour, wash hands and find a coat", "One key person for nappies and naps"], face("#E9C3A0", "#6B4A2F", C.moss, "bun", 44), "Imelda Farrowby", "and two key people"],
-  ["froglets", "Froglets", "Age 3", "1 to 6", "One adult to six children, 18 children in the room", ["Dressing up, block building and big paintings", "Taking turns and making first friendships", "Help with toilet training, at your child’s pace"], face("#B9825A", "#2E2A26", C.terra, "short", 44), "Hamid Quillen", "and two key people"],
-  ["wagtails", "Wagtails", "Age 4 to 5", "1 to 8", "One adult to eight children, 24 children in the room", ["Longer projects the children choose themselves", "Letters, sounds and counting through games", "Practice for school: lunch trays, coats, listening"], face("#8A5A3C", C.plum, C.ochre, "scarf", 44), "Noor Penhallow", "and two key people"],
+  ["tadpoles", "Tadpoles", "Age 2", "", "Staff-to-child ratio and room size: add your own here", ["Water, sand, playdough and picture books", "Learning to pour, wash hands and find a coat", "One key person for nappies and naps"], face("#E9C3A0", "#6B4A2F", C.moss, "bun", 44), "Imelda Farrowby", "and two key people"],
+  ["froglets", "Froglets", "Age 3", "", "Staff-to-child ratio and room size: add your own here", ["Dressing up, block building and big paintings", "Taking turns and making first friendships", "Help with toilet training, at your child’s pace"], face("#B9825A", "#2E2A26", C.terra, "short", 44), "Hamid Quillen", "and two key people"],
+  ["wagtails", "Wagtails", "Age 4 to 5", "", "Staff-to-child ratio and room size: add your own here", ["Longer projects the children choose themselves", "Letters, sounds and counting through games", "Practice for school: lunch trays, coats, listening"], face("#8A5A3C", C.plum, C.ochre, "scarf", 44), "Noor Penhallow", "and two key people"],
 ];
 const STONES = [
   ["Hello at home", "Your child’s key person calls or visits and learns the names of their favourite things."],
@@ -286,26 +286,21 @@ const STONES = [
   ["A whole morning", "Your child stays through snack and garden time."],
   ["First full session", "We ring you at ten to say how it is going."],
 ];
-const FEES = [["Mornings", "8:30 to 12:30, with lunch", "$96", "$138", "$215"], ["School day", "8:30 to 3:00", "$148", "$215", "$340"], ["Full day", "8:00 to 5:30", "$192", "$280", "$445"]];
+const FEES = [["Mornings", "8:30 to 12:30, with lunch", "$00", "$00", "$00"], ["School day", "8:30 to 3:00", "$00", "$00", "$00"], ["Full day", "8:00 to 5:30", "$00", "$00", "$00"]];
 const TERMS = [["Autumn", "1 Sep to 18 Dec", "Half term 26 to 30 Oct"], ["Spring", "5 Jan to 26 Mar", "Half term 15 to 19 Feb"], ["Summer", "12 Apr to 16 Jul", "Half term 31 May to 4 Jun"]];
 const MENU = [["Mon", "Lentil and carrot soup, bread, pears"], ["Tue", "Fish pie, peas, stewed apple"], ["Wed", "Chickpea and spinach curry, rice, yoghurt"], ["Thu", "Roast chicken, potatoes, green beans, banana"], ["Fri", "Vegetable pasta bake, salad, melon"]];
 const STAFF = [
-  ["Bronwen Thackaby", "Director", "Degree in early childhood studies. Runs the school and still does Friday story time.", face("#E9C3A0", "#A9A29A", C.plum, "long")],
-  ["Imelda Farrowby", "Tadpoles lead", "Early years diploma, with extra training in caring for under-threes.", face("#E9C3A0", "#6B4A2F", C.moss, "bun")],
-  ["Hamid Quillen", "Froglets lead", "Early years diploma, with training in speech and language support.", face("#B9825A", "#2E2A26", C.terra, "short")],
-  ["Noor Penhallow", "Wagtails lead", "Early years teaching qualification and outdoor learning training.", face("#8A5A3C", C.plum, C.ochre, "scarf")],
-  ["Luis Marrable", "Cook", "Food hygiene and allergy awareness training. Knows every child’s plate.", face("#D9A97E", "#4A3A2C", C.water, "short")],
+  ["Bronwen Thackaby", "Director", "Runs the school and still does Friday story time. Qualifications: add your own.", face("#E9C3A0", "#A9A29A", C.plum, "long")],
+  ["Imelda Farrowby", "Tadpoles lead", "Looks after the youngest room. Qualifications: add your own.", face("#E9C3A0", "#6B4A2F", C.moss, "bun")],
+  ["Hamid Quillen", "Froglets lead", "Loves block building and big paintings. Qualifications: add your own.", face("#B9825A", "#2E2A26", C.terra, "short")],
+  ["Noor Penhallow", "Wagtails lead", "Leads the garden projects. Qualifications: add your own.", face("#8A5A3C", C.plum, C.ochre, "scarf")],
+  ["Luis Marrable", "Cook", "Cooks lunch here every day. Food safety training: add your own.", face("#D9A97E", "#4A3A2C", C.water, "short")],
 ];
 const SAFE = [
-  "Everyone who works here has background checks and references before they start, and safeguarding training every year.",
-  "A named safeguarding lead takes any worry about a child the same day and follows the local reporting process.",
+  "Staff checks, references and safeguarding training: add your own details here.",
+  "A named safeguarding lead looks into any worry about a child and follows the local reporting process. Safeguarding and child protection policy: add your own here.",
   "Personal phones stay in the office. Photos are taken on school tablets only, with your permission.",
   "Doors stay locked. Visitors sign in and are never alone with children.",
-];
-const NOTES = [
-  ["Theo cried at the door for a week. Imelda rang me at ten every morning to say he had stopped. By week three he ran in without looking back.", "Hana, Theo’s mum"],
-  ["The handover is the best part. I actually know what she ate, how long she slept and who she played with.", "Sam, Mirela’s dad"],
-  ["He comes home soaked and happy most days. Keep the spare clothes bag full, they mean it.", "Paula, Oskar’s grandmother"],
 ];
 
 const render = (p, st) => {
@@ -319,7 +314,7 @@ const render = (p, st) => {
       <h1 class="sk-h1">Wellies by the door, <span>paint on the sleeves.</span></h1>
       <p class="sk-lede">${p.name} is a small school where most of the day happens on the floor, in the garden, or up to the elbows in something.</p>
       <div class="sk-row"><a class="btn primary sk-btn-lg" href="#book-a-visit">Book a visit</a><a class="btn sk-btn-lg" href="#a-day-here">See a day here</a></div>
-      <ul class="pw-facts">${[["users", "54 children"], ["clock", "Open 8:00 to 5:30"], ["sun", "Outside every day"], ["heart", "Cooked lunches"]].map(([i, t]) => `<li><span>${ic(i, 16)}</span>${t}</li>`).join("")}</ul>
+      <ul class="pw-facts">${[["users", "Small rooms by age"], ["clock", "Open 8:00 to 5:30"], ["sun", "Outside every day"], ["heart", "Cooked lunches"]].map(([i, t]) => `<li><span>${ic(i, 16)}</span>${t}</li>`).join("")}</ul>
     </div>
     <div class="pw-stick">${burst()}<p><span>Come and see</span><b>Tue and Thu</b><span>at 10:00</span></p></div>
   </div>
@@ -333,12 +328,12 @@ const render = (p, st) => {
 </div></section>
 
 ${wave()}<section class="sk-sec pw-alt" id="rooms"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Rooms by age</span><h2 class="sk-h2">Three rooms, one garden</h2></div><p>Children move up when they are ready, not on a birthday. Each child has a key person who knows them best.</p></div>
+  <div class="sk-head"><div><span class="sk-eyebrow">Rooms by age</span><h2 class="sk-h2">Three rooms, one garden</h2></div><p>Children move up when they are ready, not on a birthday. Each child has a key person who gets to know them well.</p></div>
   <div class="pw-rooms">${ROOMS.map(([k, n, a, r, rt, l, f, who, w]) => `<article class="pw-room"><div class="pw-arch">${ROOM_ART[k]()}</div><div class="pw-rh"><h3>${n}</h3><span class="pw-age">${a}</span></div>
-    <div class="pw-ratio"><b class="num">${r}</b><span>${rt}</span></div>
+    <div class="pw-ratio"${r ? "" : ' style="grid-template-columns:minmax(0,1fr)"'}>${r ? `<b class="num">${r}</b>` : ""}<span>${rt}</span></div>
     <ul>${l.map((x) => `<li><span>${x}</span></li>`).join("")}</ul>
     <div class="pw-who">${f}<span><b>${who}</b> ${w}</span></div></article>`).join("")}</div>
-  <p class="pw-pol">These ratios are our own policy, and at lunch and rest we add another adult to each room. Rules differ from place to place, so check what applies near you.</p>
+  <p class="pw-pol">Add your own staff-to-child ratios and room sizes here. Rules differ from place to place, so check what applies to you.</p>
 </div></section>${wave(1)}
 
 <section class="sk-sec" id="settling-in"><div class="sk-wrap">
@@ -350,7 +345,7 @@ ${wave()}<section class="sk-sec pw-alt" id="fees"><div class="sk-wrap">
   <div class="sk-head"><div><span class="sk-eyebrow">Sessions, fees and term dates</span><h2 class="sk-h2">What it costs, plainly</h2></div></div>
   <div class="pw-fgrid">
     <div class="card pw-ft"><table><thead><tr><th>Session</th><th class="r">2 days</th><th class="r">3 days</th><th class="r">5 days</th></tr></thead><tbody>${FEES.map(([s, h, a, b, c]) => `<tr><td><b>${s}</b><small>${h}</small></td><td class="num">${a}</td><td class="num">${b}</td><td class="num">${c}</td></tr>`).join("")}</tbody></table>
-      <p>Weekly fees, billed monthly, with meals, snacks, nappies and outdoor suits included. <span class="pw-fx">Term-time places run 38 weeks and all-year places run 48. There is a one-off $60 registration fee, and any funded hours you are entitled to come off your bill.</span></p></div>
+      <p>Sample fees: replace them with your own. Weekly fees, billed monthly, with meals, snacks, nappies and outdoor suits included. <span class="pw-fx">Term-time places run 38 weeks and all-year places run 48. There is a one-off $00 registration fee, and any funded hours you are entitled to come off your bill.</span></p></div>
     <div class="pw-terms"><h3>Term dates 2026 to 2027</h3>${TERMS.map(([t, d, h]) => `<div class="pw-term"><b>${t}</b><span>${d}<small>${h}</small></span></div>`).join("")}<p class="muted" style="font-size:13.5px">All-year places carry on through the holidays, closing for two weeks at midwinter and two training days.</p></div>
   </div>
 </div></section>${wave(1)}
@@ -358,13 +353,13 @@ ${wave()}<section class="sk-sec pw-alt" id="fees"><div class="sk-wrap">
 <section class="sk-sec" id="meals"><div class="sk-wrap pw-mgrid">
   <div class="pw-menu"><h3>This week’s lunches</h3>${MENU.map(([d, m]) => `<div class="pw-mrow"><b>${d}</b><span>${m}</span></div>`).join("")}</div>
   <div><span class="sk-eyebrow">Meals and allergies</span><h2 class="sk-h2" style="margin-top:12px">Cooked here, eaten together</h2>
-    <ul class="pw-mlist">${[["Written allergy plans", "We write one with you before your child starts, and it goes up in the kitchen and their room."], ["A nut-free kitchen", "We don’t cook with nuts and ask families not to send them. We can’t promise a food is free of traces."], ["Other diets", "Vegetarian, halal and dairy-free lunches are cooked each day at no extra charge."], ["If something happens", "Staff follow your child’s plan, then phone you straight away."]].map(([h, t]) => `<li><b>${h}</b>${t}</li>`).join("")}</ul></div>
+    <ul class="pw-mlist">${[["Written allergy plans", "We write one with you before your child starts, and it goes up in the kitchen and their room."], ["Nuts and other allergens", "Add your own food and allergy policy here, including how you handle nuts and traces."], ["Other diets", "Vegetarian, halal and dairy-free lunches are cooked each day at no extra charge."], ["If something happens", "Staff follow your child’s plan, then phone you straight away."]].map(([h, t]) => `<li><b>${h}</b>${t}</li>`).join("")}</ul></div>
 </div></section>
 
 ${wave()}<section class="sk-sec pw-alt" id="staff"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">The grown-ups</span><h2 class="sk-h2">Who looks after your child</h2></div><p>All our staff hold paediatric first aid training and spend at least one day a term on further training.</p></div>
+  <div class="sk-head"><div><span class="sk-eyebrow">The grown-ups</span><h2 class="sk-h2">Who looks after your child</h2></div><p>Add your own first aid and staff training details here.</p></div>
   <div class="pw-staff">${STAFF.map(([n, r, t, f]) => `<div class="pw-p">${f}<div><span>${r}</span><b>${n}</b><p>${t}</p></div></div>`).join("")}
-    <div class="pw-slot"><b>Add your registration and inspection details here</b><span class="muted">Your licence number and latest inspection report.</span></div></div>
+    <div class="pw-slot"><b>Add your own registration and inspection details here</b><span class="muted">Add your own licence number and latest inspection report.</span></div></div>
 </div></section>${wave(1)}
 
 <section class="sk-sec" id="safeguarding"><div class="sk-wrap pw-safe">
@@ -376,11 +371,6 @@ ${wave()}<section class="sk-sec pw-alt" id="staff"><div class="sk-wrap">
     <p>We only hand children to the adults on their card. If someone new is coming, call us by noon with your family password, and ask them to bring photo ID.</p></div>
 </div></section>
 
-${wave()}<section class="sk-sec pw-alt" id="parent-notes"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">From the parents’ board</span><h2 class="sk-h2">Notes left by the coat pegs</h2></div></div>
-  <div class="pw-notes sk-rail">${NOTES.map(([t, w]) => `<figure class="pw-note"><p>${t}</p><figcaption>${w}</figcaption></figure>`).join("")}</div>
-</div></section>${wave(1)}
-
 <section class="sk-sec" id="book-a-visit"><div class="sk-wrap pw-book">
   <div class="pw-binfo"><span class="sk-eyebrow">Book a visit</span><h2 class="sk-h2">Come when the rooms are busy</h2>
     <p>Visits are on Tuesdays and Thursdays at 10:00 and take about 40 minutes. Bring your child, and wellies if it has rained. Places for twos go first, so tell us early.</p>
@@ -388,7 +378,7 @@ ${wave()}<section class="sk-sec pw-alt" id="parent-notes"><div class="sk-wrap">
   <form class="card pw-form" aria-label="Book a visit">
     <div class="sk-g2"><div class="sk-field"><label for="pw-name">Your name</label><input class="sk-input" id="pw-name" value="Hana Tesmer"></div><div class="sk-field"><label for="pw-tel">Phone</label><input class="sk-input" id="pw-tel" value="(555) 014-2291"></div></div>
     <div class="pw-g3"><div class="sk-field"><label for="pw-child">Child’s first name</label><input class="sk-input" id="pw-child" value="Theo"></div>
-    <div class="sk-field"><label for="pw-age">Child’s age</label><select class="sk-input" id="pw-age"><option>2 years</option><option selected>3 years</option><option>4 years</option><option>Under 2, joining the list</option></select></div>
+    <div class="sk-field"><label for="pw-age">Child’s age</label><select class="sk-input" id="pw-age"><option>Age 2</option><option selected>Age 3</option><option>Age 4</option><option>Under 2, joining the list</option></select></div>
     <div class="sk-field"><label for="pw-start">Preferred start</label><select class="sk-input" id="pw-start"><option selected>January 2027</option><option>April 2027</option><option>September 2027</option></select></div></div>
     <div class="sk-field"><span style="font-weight:500;font-size:13px">Session you’re thinking about</span><div class="pw-radio"><label><input type="radio" name="pw-s"> Mornings</label><label class="on"><input type="radio" name="pw-s" checked> School day</label><label><input type="radio" name="pw-s"> Full day</label></div></div>
     <div class="sk-field"><label for="pw-note">Anything we should know?</label><textarea class="sk-input" id="pw-note" rows="2">Theo is shy at first and has a dairy allergy.</textarea></div>
@@ -396,11 +386,11 @@ ${wave()}<section class="sk-sec pw-alt" id="parent-notes"><div class="sk-wrap">
   </form>
 </div></section>
 </main>
-${K.footer(p, "A small, play-based preschool for ages 2 to 5, outdoors every day.", [["Visit", ["12 Brambling Lane", "Tuesdays and Thursdays at 10:00", "Pram park by the gate"]], ["For families", ["Term dates", "This week’s menu", "Policies", "What to pack"]], ["Contact", ["(555) 014-7736", "hello@puddlewick.example"]]], "Fictional preschool created for this template. Names, fees and dates are sample content.")}`, CSS);
+${K.footer(p, "A small, play-based preschool for ages 2 to 5, outdoors every day.", [["Visit", ["12 Brambling Lane", "Tuesdays and Thursdays at 10:00", "Pram park by the gate"]], ["For families", ["Term dates", "This week’s menu", "Policies", "What to pack"]], ["Contact", ["(555) 014-7736", "hello@puddlewick.example"]]], "Fictional preschool created for this template. Names, fees and dates are sample content and general information only, not childcare or legal advice. Licence, inspection and safeguarding details: add your own here.")}`, CSS);
 };
 
 module.exports = {
   "preschool-website": K.def("preschool", "Preschool website",
-    "a warm, handmade preschool home page illustrated with cut-paper svg shapes: navigation with phone and book-a-visit, a headline in the sky above a full-width village scene with a visit sticker, a day at the preschool as a board-game track of twelve timed stops from arrival to pick-up, rooms by age behind three arched doors with ratios stated as the school's own policy, what children do and who looks after them, five settling-in stepping stones, a weekly fees table by session with term dates, a pinned weekly menu beside allergy and diet notes, staff rows with early-years training and a dashed slot for registration and inspection details, safeguarding beside a pick-up card, pinned parent notes, a book-a-visit form with child's age and preferred start, footer",
-    ["navigation-header", "illustrated-hero", "sticker-badge", "daily-timeline", "board-game-track", "rooms-by-age", "staff-ratio", "stepping-stones", "steps", "pricing-table", "term-dates", "weekly-menu", "allergy-notes", "team", "credentials-slot", "safeguarding", "pick-up-card", "sticky-notes", "testimonials", "booking-form", "footer", "preschool"], render),
+    "a warm, handmade preschool home page illustrated with cut-paper svg shapes: navigation with phone and book-a-visit, a headline in the sky above a full-width village scene with a visit sticker, a day at the preschool as a board-game track of twelve timed stops from arrival to pick-up, rooms by age behind three arched doors with add-your-own ratio slots, what children do and who looks after them, five settling-in stepping stones, a weekly fees table by session with term dates, a pinned weekly menu beside allergy and diet notes, staff rows with add-your-own qualification lines and a dashed slot for registration and inspection details, safeguarding beside a pick-up card, a book-a-visit form with child's age and preferred start, footer",
+    ["navigation-header", "illustrated-hero", "sticker-badge", "daily-timeline", "board-game-track", "rooms-by-age", "staff-ratio", "stepping-stones", "steps", "pricing-table", "term-dates", "weekly-menu", "allergy-notes", "team", "credentials-slot", "safeguarding", "pick-up-card", "booking-form", "footer", "preschool"], render),
 };
