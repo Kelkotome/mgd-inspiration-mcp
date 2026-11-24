@@ -2194,12 +2194,22 @@ function mcpUsage(name, a, r) {
   r.content[0].text += `\n\n${unknown.length ? `Unknown argument${unknown.length > 1 ? "s" : ""}: ${unknown.join(", ")}. ` : ""}${MCP_USAGE_HEAD}\n- ${list.join("\n- ")}`;
   return r;
 }
+function mcpSnapRadius(v) {
+  const t = String(v).trim().toLowerCase();
+  if (/^(full|pill|round|rounded|circle|circular|9999|999|999px|50%|100%)$/.test(t)) return "full";
+  if (/^(none|square|sharp|flat)$/.test(t)) return "0";
+  const n = parseFloat(t);
+  if (!isFinite(n)) return String(v);
+  return String([0, 4, 8, 12, 16].reduce((b, x) => Math.abs(x - n) < Math.abs(b - n) ? x : b, 8));
+}
 async function mcpCallTool(params, env, ip, ua, who, listed, defer) {
   const name = params.name;
   const a = params.arguments || {};
   if (name === "run_design_tool") {
     const inner = String(a.name || "").trim(), tool = MCP_ALL_BY_NAME()[inner];
     if (!tool) return { content: [{ type: "text", text: `Unknown tool '${inner.slice(0, 60)}'. Find tool names with browse_design_tools.` }], isError: true };
+    // 24-Nov-2026: loose radius values ("6", "10px", 6, "rounded", "pill", "none") snap to the nearest allowed enum value instead of failing validation
+    if (inner === "generate_design_md" && a.arguments && a.arguments.radius != null) a.arguments = { ...a.arguments, radius: mcpSnapRadius(a.arguments.radius) };
     const errs = validateArgs(tool, a.arguments);
     if (errs.length) return { content: [{ type: "text", text: `Invalid arguments for ${inner}: ${errs.join("; ")}. Its input schema: ${JSON.stringify(tool.inputSchema)}` }], isError: true };
     return mcpCallTool({ name: inner, arguments: a.arguments || {} }, env, ip, ua, who, listed, defer);
@@ -2352,7 +2362,15 @@ async function mcpCallToolInner(name, a, env, opts) {
     }
     if (theme) { where += " AND category = ?"; binds.push(theme); }
     if (a.culture) { where += " AND country LIKE ?"; binds.push(`%${a.culture.toString().trim()}%`); }
-    const r = await mcpSearchRowsRetry(env, where, binds, ["title", "designer", "description", "tags", "industry"], q, "featured_rank IS NULL, featured_rank, created_at DESC", limit);
+    // 24-Nov-2026: spelling/term aliases ("travel poster" is tagged travel-poster, "maiolica" is tagged majolica)
+    q = museumAliasTerms(q);
+    const MCOLS = ["title", "designer", "description", "tags", "industry", "country"], MORD = "featured_rank IS NULL, featured_rank, created_at DESC";
+    let r = await mcpSearchRowsRetry(env, where, binds, MCOLS, q, MORD, limit);
+    // Nothing for a specific place ("taormina etna"): retry with the region/country the library does hold, and say so
+    if (!r.rows.length) {
+      const wide = museumPlaceFallback(q);
+      if (wide) { const r2 = await mcpSearchRowsRetry(env, where, binds, MCOLS, wide.q, MORD, limit); if (r2.rows.length) { r = r2; themeNote += ` (no works tagged '${wide.from}', so showing ${wide.region} instead)`; } }
+    }
     return mcpIconHinted(q, mcpHinted(name, q, r.rows, mcpItems(r.rows, `${r.rows.length} museum artwork(s) for "${q}"${theme ? " in theme "+theme : ""}${r.note}${themeNote}`, opts, MCP_SIBLING.museum)), env);
   }
   if (name === "get_share_feedback") {
@@ -2544,6 +2562,11 @@ const MCP_STOP = new Set(["the","and","for","with","from","that","this","are","s
 // D1's LIKE limit is ~50 BYTES, so CJK/accented text must be capped by UTF-8 length, not characters (31-Oct-2026).
 function utf8Len(s) { return new TextEncoder().encode(s).length; }
 function cutBytes(s, n) { let a = Array.from(s); while (a.length && utf8Len(a.join("")) > n) a.pop(); return a.join(""); }
+const MUSEUM_ALIASES = [[/\btravel posters?\b/g, "travel-poster"], [/\bmaiolica\b/g, "majolica"]];
+function museumAliasTerms(q) { let t = String(q || "").toLowerCase(); for (const [re, to] of MUSEUM_ALIASES) t = t.replace(re, to); return t === String(q || "").toLowerCase() ? q : t; }
+const MUSEUM_PLACES = [[/\b(taormina|etna|catania|palermo|messina|syracuse|siracusa|agrigento|cefalu|sicily|sicilian|capri|amalfi|sorrento|positano|naples|napoli|pompeii|vesuvius|tuscany|florence|rome|venice|milan|verona)\b/, "italy italia"],
+  [/\b(santorini|athens|crete|delphi|mykonos)\b/, "greek greece"], [/\b(marrakech|fez|casablanca)\b/, "moroccan morocco"], [/\b(kyoto|osaka|edo|nikko)\b/, "japan japanese"]];
+function museumPlaceFallback(q) { const t = String(q || "").toLowerCase(); for (const [re, region] of MUSEUM_PLACES) { const m = t.match(re); if (m) return { from: m[1], region: ({ italia: "Italy", greece: "Greece", morocco: "Morocco", japan: "Japan" })[region.split(" ")[1]], q: region + " " + t.replace(re, " ").replace(/\s+/g, " ").trim() }; } return null; }
 async function mcpSearchRows(env, where, binds, cols, q, order, limit) {
   const run = (w, wb, ord, ob) => env.DB.prepare(`SELECT * FROM items WHERE ${where}${w} ORDER BY ${ord} LIMIT ?`)
     .bind(...binds, ...wb, ...ob, limit).all().then((r) => r.results || []);
