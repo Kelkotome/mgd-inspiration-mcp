@@ -14,10 +14,10 @@ await want("tour operator wordpress theme", T("tour operator wordpress theme"), 
 await want("campground wordpress theme", T("campground wordpress theme"), [`${W}campground`]);
 await want("tourism wordpress theme", T("tourism wordpress theme"), [`${W}tourism`]);
 await want("pattern + platform param", call("search_ui_screens", { pattern: "hostel-website", platform: "wordpress" }), [`${W}hostel`]);
-await want("free wordpress block theme lists travel", T("free wordpress block theme"), [/healthcare block themes/, /automotive block themes/, /hotels and travel block themes/]);
+await want("free wordpress block theme lists travel", T("free wordpress block theme"), [/healthcare block themes/, /automotive block themes/, /travel, tourism and stays block themes/]);
 await want("hotel template gets the niche", T("hotel website template"), [`${H}hotel-website-template`, "6 distinct designs"], ["template hub"]);
-await want("travel template gets the hub", T("travel website template"), ["Hotels and travel template hub", "/ui/travel-website-templates"]);
-await want("accommodation template gets the hub", T("accommodation website template"), ["Hotels and travel template hub"]);
+await want("travel template gets the hub", T("travel website template"), ["Travel, tourism and stays template hub", "/ui/travel-website-templates"]);
+await want("accommodation template gets the hub", T("accommodation website template"), ["Travel, tourism and stays template hub"]);
 await want("b&b template", T("b&b website template"), [`${H}bed-and-breakfast-website-template`]);
 await want("guest house template", T("guest house website template"), [`${H}bed-and-breakfast-website-template`]);
 await want("backpacker hostel is hostel, not hotel", T("backpacker hostel website template"), [`${H}hostel-website-template`]);
@@ -36,6 +36,6 @@ await want("automotive unchanged", T("car dealer wordpress theme"), ["/ui/wordpr
 await want("education unchanged", T("school website template"), ["/ui/education-website-templates/school-website-template"], [H]);
 await want("healthcare unchanged", T("cardiology WordPress theme"), ["/ui/wordpress-themes/healthcare/cardiology", "not medical advice"], ["not travel"]);
 for (const q of ["flight booking app", "hotel booking app screen", "travel app onboarding", "trip itinerary screen", "map with pins"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "travel-website-templates/"]);
-await want("list_ui_patterns themes", call("list_ui_patterns", { kind: "themes" }), ["TEMPLATE TREE, HOTELS AND TRAVEL", `${W}tour-operator`, "TEMPLATE TREE, AUTOMOTIVE", "TEMPLATE TREE, EDUCATION", "TEMPLATE TREE, HEALTHCARE"]);
+await want("list_ui_patterns themes", call("list_ui_patterns", { kind: "themes" }), ["TEMPLATE TREE, TRAVEL, TOURISM AND STAYS", `${W}tour-operator`, "TEMPLATE TREE, AUTOMOTIVE", "TEMPLATE TREE, EDUCATION", "TEMPLATE TREE, HEALTHCARE"]);
 const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 113) { fails++; console.log("FAIL tool count changed"); }
 console.log(`${n} checks, ${fails} failed`); process.exit(fails ? 1 : 0);

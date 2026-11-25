@@ -24,6 +24,8 @@ Travel agency and tour operator pages must tell people to check official travel 
 Usage: python3 tests/tr_lint.py [niche ...]   (TR_LINT_OUT=<dir> lints another output folder)
        python3 tests/tr_lint.py --readmes      (theme readmes in ui-screens/out-wp)
        TR_LINT_SELFTEST=1 python3 tests/tr_lint.py   (forced-bad sentences must all fail)
+       TR_LINT_HOMEPAGES=1 TR_LINT_OUT=ui-screens/out-trfix python3 tests/tr_lint.py   (owner 25-Nov follow-up: the old n12 hand-built hotel (Halcyon Quay)
+       and travel (Driftmark Journeys) homepages, web + mobile, against the same rules; travel-website gets the travel-advice rule as a tour operator)
 Exit 1 on any failure."""
 import glob, html, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__)); OUT = os.environ.get("TR_LINT_OUT") or os.path.join(HERE, "..", "ui-screens", "out-hc")
@@ -101,10 +103,14 @@ if sys.argv[1:2] == ["--readmes"]:  # theme readmes: the same gates (minus the s
         if "not travel, legal or financial advice" not in t: errs.append("readme lacks the travel Before-you-publish lines")
         print(("FAIL " if errs else "ok   ") + slug, f"({len(errs)})"); [print("   ", e) for e in errs[:8]]; bad += bool(errs)
     print(f"{n} readmes, {bad} failed"); sys.exit(1 if bad or not n else 0)
-fails = 0; want = sys.argv[1:] or NICHES; seen = 0
-for d in sorted(glob.glob(os.path.join(OUT, "*-web-*"))):
-    base = os.path.basename(d); n = next((x for x in sorted(want, key=len, reverse=True) if base.startswith(PATTERN.get(x, x) + "-website-")), None)
-    if not n or "-homepage-" in base: continue   # the n12 hand-built homepages (Halcyon Quay, Driftmark Journeys) are not this round's designs
+fails = 0; want = sys.argv[1:] or NICHES; seen = 0; HOME = bool(os.environ.get("TR_LINT_HOMEPAGES"))
+for d in sorted(glob.glob(os.path.join(OUT, "*-homepage-*" if HOME else "*-web-*"))):
+    base = os.path.basename(d)
+    if HOME: n = {"hotel-website-homepage-": "hotel", "travel-website-homepage-": "tour-operator"}.get(re.sub(r"(web|mobile)-.*$", "", base))
+    else:
+        n = next((x for x in sorted(want, key=len, reverse=True) if base.startswith(PATTERN.get(x, x) + "-website-")), None)
+        if "-homepage-" in base: n = None   # the n12 hand-built homepages (Halcyon Quay, Driftmark Journeys): TR_LINT_HOMEPAGES=1
+    if not n or not os.path.isfile(os.path.join(d, "index.html")): continue
     seen += 1; txt, notab, sents, raw, body = texts(os.path.join(d, "index.html")); errs = gate(txt, sents, notab)
     if re.search(r'<img|<video|<iframe|url\(http|src="http', re.sub(r"<link[^>]+>", "", raw)): errs.append("external image or embed")
     if "@" in txt and not re.search(r"\.example\b", txt): errs.append("email not on .example")
@@ -117,7 +123,7 @@ for d in sorted(glob.glob(os.path.join(OUT, "*-web-*"))):
     if re.search(r"[$£€]\s?\d", txt) and not re.search(r"\bsample (prices?|fees?|rates?|price guide)\b", txt, re.I): errs.append("prices shown but no 'sample prices' wording")
     if n in ("travel-agency", "tour-operator") and not re.search(r"official travel advice", txt, re.I): errs.append("page lacks the check-official-travel-advice line")
     print(("FAIL " if errs else "ok   ") + base, f"({len(errs)})")
-    for e in errs[:14]: print("   ", e)
+    for e in errs[:int(os.environ.get("TR_LINT_MAX", "14"))]: print("   ", e)
     fails += bool(errs)
 if not seen: print("no pages found"); sys.exit(1)
 sys.exit(1 if fails else 0)

@@ -1,5 +1,7 @@
 # DEPLOY: templates r9, hotels and travel (25-Nov-2026), STAGED, NOT DEPLOYED
 
+**Superseded for go-live (owner 25-Nov 18:07: ship r7 + r8 + r9 together): use `DEPLOY-tpl-r7-r8-r9.md`.** This file stays as the r9 reference (files, rebuild). Owner picked label C "Travel, tourism and stays" / "Travel, tourism and accommodation website templates" and notice A. The travel-website 301 and the Halcyon Quay / Driftmark follow-up ship later from branch `tpl-r9-trfix` (`DEPLOY-tpl-r9-trfix.md` there).
+
 Branch `tpl-r9-travel` in `../mgd-inspiration-tpl-r9`, cut from `tpl-r8-automotive` (67ae531) with `tpl-r7-education` (3b6d37b) merged in (783e326). So r9 sits on top of r7 and r8: this branch's tree has the nine live industries plus education, automotive and hotels and travel. Industry 12 in build order.
 Industry choice, demand figures, niches and the word rules: `docs/template-taxonomy.md`, section "Hotels and travel tree".
 Owner decisions needed before go-live: keep hotels and travel as industry 12 and its 8 niches, and the copy options (label + disclosure) in `../docs_updates/lane-templates-2026-11-24.md`, "25-Nov r9" section.
@@ -17,7 +19,7 @@ Owner decisions needed before go-live: keep hotels and travel as industry 12 and
 | Campground and glamping | Fernhallow Campground | campground-website-template | campground |
 | Tourism and destination | Visit Ardlowe Valley | tourism-website-template | tourism |
 
-Hub `/inspiration/ui/travel-website-templates`, WordPress `/inspiration/ui/wordpress-themes/travel/`. The n12 hotel-website rows (Halcyon Quay) stay live as plain items and `/ui/hotel-website-template` 301s once to the nested hotel page. The n12 travel-website pattern (Driftmark Journeys) stays flat.
+Hub `/inspiration/ui/travel-website-templates`, WordPress `/inspiration/ui/wordpress-themes/travel/`. The n12 hotel-website rows (Halcyon Quay) stay live as plain items and `/ui/hotel-website-template` 301s once to the nested hotel page. The n12 travel-website pattern (Driftmark Journeys) stays flat in this go-live (its 301 to the hub ships later with tpl-r9-trfix).
 
 ## Order (read first): r7, then r8, then r9
 

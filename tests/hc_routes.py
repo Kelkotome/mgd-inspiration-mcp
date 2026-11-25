@@ -111,4 +111,5 @@ if sig and IND == "education":
 if sig and IND == "travel":
     for nid, pat, htmlSeg, seg in NICHES:
         s, _, nb = text(f"/ui/{HUB}/{htmlSeg}"); ck(not re.search(r"Halcyon Quay|Driftmark", nb.split("Every screen", 1)[0]), f"{nid}: no n12 homepage card")
+    s, _, hb = text(f"/ui/{HUB}"); ck("Travel, tourism and accommodation website templates" in hb, "hub H1 copy C")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)

@@ -234,7 +234,7 @@ export const INDUSTRIES = {
   // flat patterns. hotel-website is the hotel niche; its hand-built homepage is not a signature (as law firm in r6, school in r7), so it stays a plain item.
   // travel-website stays a flat n12 pattern (the build derives a niche's pattern as <niche>-website); its tour aliases moved to tour-operator-website.
   travel: {
-    id: "travel", label: "Hotels and travel", hub: "travel-website-templates", seg: "travel", h1: "Hotel and travel website templates", hubFirst: true,
+    id: "travel", label: "Travel, tourism and stays", hub: "travel-website-templates", seg: "travel", h1: "Travel, tourism and accommodation website templates", hubFirst: true,
     niches: [
       ["hotel", "hotel-website", "Hotel", "hotel-website-template", "hotel"],
       ["resort", "resort-website", "Resort", "resort-website-template", "resort"],
