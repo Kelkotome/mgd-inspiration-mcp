@@ -110,7 +110,7 @@
  },
  "categories": {
   "health-wellness": {
-   "intro": "Templates for clinics, practices, salons, studios and gyms: businesses where people book a visit, check who they will see and want to know what happens before they arrive.",
+   "intro": "Templates for clinics, practices, salons, spas, studios and gyms: businesses where people book a visit, check who they will see and want to know what happens before they arrive.",
    "choose": [
     "Start from what visitors do first. Clinics and practices usually lead with booking, opening hours and how to register; salons, studios and gyms with services, prices and the team.",
     "Pick the sub-niche closest to your service, not just the industry: a cardiology or orthodontics set already has sections a general clinic does not need, and the reverse.",
@@ -121,6 +121,10 @@
     [
      "Which template should a clinic with several specialties use?",
      "Start from the Medical practice set, which is also the page for the medical specialties, and borrow sections from the specialty sets (hospital, cardiology, dermatology, pediatrics and fertility). Every template comes with a DESIGN.md of colour, type and spacing tokens, so sections from one set can be restyled to match another."
+    ],
+    [
+     "Which template suits a wellness studio, spa or yoga teacher?",
+     "Use the Yoga studio, Spa and massage or Personal trainer and fitness sets in Beauty, fitness and wellness. The Therapist set in Healthcare suits counselling and talking therapy. Each comes with a DESIGN.md, so sections can move between them."
     ],
     [
      "Are the people in the templates real?",
@@ -142,8 +146,12 @@
      "Yes. Start from the hotel or resort set for the rooms and add the menu and booking sections from a restaurant set. Every template comes with a DESIGN.md of colour, type and spacing tokens, so the two can be restyled to match."
     ],
     [
-     "Do the templates take bookings or payments?",
-     "No. Booking, reservation and contact forms are static sample markup. Connect your own booking, reservation or form tool before you publish."
+     "Do the restaurant templates include a menu?",
+     "Yes. Every restaurant set has a menu section with sample dishes and prices to replace. Cafes, bakeries, pizzerias, bars, caterers and food trucks each have a set written for them."
+    ],
+    [
+     "Do the templates take bookings, orders or payments?",
+     "No. Booking, reservation and contact forms are static sample markup, and there is no online ordering or delivery. Connect your own booking, ordering or form tool before you publish."
     ]
    ]
   },
@@ -159,6 +167,10 @@
     [
      "Which template suits a builder who also sells new homes?",
      "Use the Home builder set in Real estate for selling homes and plans, and the Construction company set for contracting work. Each comes with a DESIGN.md of colour, type and spacing tokens, so sections can move between them."
+    ],
+    [
+     "Is there a template for a plumber, electrician or roofer?",
+     "Yes. Construction and home services has sets for plumbers, electricians, roofing, HVAC, cleaning services, landscaping and pest control, alongside construction companies. Each is written for that trade: its services, call-outs and the questions customers ask."
     ],
     [
      "Are the listings, prices and vehicles real?",
@@ -179,6 +191,10 @@
      "The Lawyer and attorney set is written for a solo lawyer or a small team: the matters you take on and what to bring to a first meeting. The Law firm set is written for a small firm with practice areas, several lawyers and staff."
     ],
     [
+     "Is there a template for a small business or a company site?",
+     "These sets are written for firms that sell expertise: law, accounting, tax, financial advice, insurance, consulting and recruitment. For a general company site, the Consulting firm set is the closest start. A local business such as a salon, restaurant, builder or garage has sets written for it in its own industry: see the other categories below."
+    ],
+    [
      "Are the fees and premiums in the templates real?",
      "No. Fees, rates and premiums are zero placeholders, and names and people are fictional samples to replace."
     ]
@@ -197,6 +213,10 @@
      "Yes. Wedding photographer sits in Weddings and events, and the general Photography set sits in Portfolios. Use the one that matches the work you want most."
     ],
     [
+     "Is there a template for a creative agency or design studio?",
+     "Yes: the Creative agency and Marketing agency sets in Portfolios and creative studios, written for studios that show client work and services. Designers, developers, photographers, architects and interior designers each have a portfolio set of their own."
+    ],
+    [
      "Can the wedding templates be used for other events?",
      "The Event and conference and Event planner sets are written for other events: programmes, speakers, tickets, parties and company events. All the text is sample copy to replace."
     ]
@@ -213,6 +233,10 @@
     [
      "Is there a template for an online course or e-learning site?",
      "Yes, the Online course and e-learning set: a course catalogue, self-paced and cohort courses, the teachers and a sign-up form. It is a website, not a learning platform, so lessons, logins and payments need your own tools."
+    ],
+    [
+     "Is there a template for a club, community group or nonprofit?",
+     "Not yet. The sets here are written for schools, colleges, preschools, daycares, tutors, online courses and music and dance teachers. A club or class can start from the Music school or Dance studio set, but a nonprofit, church or community group has no set of its own yet."
     ],
     [
      "Are the term dates and fees real?",

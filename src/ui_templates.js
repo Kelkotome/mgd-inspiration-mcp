@@ -133,6 +133,14 @@ const BUILD_FALLBACK = (h, base, what) => `<h2 class="s">Can't find your ${h.esc
 // Template cards labelled with their niche (benchmark module): the first WordPress theme of a niche, with its own screenshot; HTML niche card otherwise.
 const labelledCard = (n, im, h, base) => { const d = liveThemes(n)[0]; return d ? `<a class="card page" href="${h.escHtml(base)}/ui/${h.escHtml(nichePath(n))}"><div class="th"><img loading="lazy" src="${h.escHtml(shot(d, 1280, base))}" alt="${h.escHtml(`${d.theme.name}, a ${lc(n.label)} template`)}"/></div><div class="meta"><b>${h.escHtml(`${d.theme.name} (${n.label})`)}</b><span>${h.escHtml(`${d.layoutName || "Layout"}: ${d.about}. ${count(liveDesigns(n).length, "design")} in this set.`)}</span></div></a>` : nicheCard(n, im, `${base}/ui/${nichePath(n)}`, h, base, count(liveDesigns(n).length, "design")); };
 
+// "<category> WordPress themes" section (content gap 25-Nov: "business wordpress theme" 1,300/mo and the other "<category> wordpress theme" terms have
+// no page of their own; page 1 for theme terms asks what the theme includes and what needs a plugin). Counts come from the catalog.
+const wpH1 = (h1) => h1.replace(/website templates$/i, "WordPress themes");
+function wpSection(c, f, h, base, h1) {
+  const wpi = f.inds.filter((r) => r.wp.length); if (!f.themes || !wpi.length) return "";
+  return `<h2 class="s" id="wordpress">${h.escHtml(wpH1(h1))}</h2><p class="lede">${h.escHtml(`${f.themes} of these designs are also free WordPress block themes, across ${f.wpNiches} sub-niches:`)} ${wpi.map((r) => `${lk(h, base, wpIndustryPath(r.i.id), `${r.i.label} WordPress themes`)} (${r.wt.designs})`).join(" · ")}. ${h.escHtml(TEST_LINE())}</p><p class="lede">${h.escHtml("Each theme is an installable zip with editable blocks, style variations and the same sample copy. Booking, ordering, payments, listing search and form handling are not built in: add the plugin or service you already use.")}</p>`;
+}
+
 // /ui/<category seg>: a standalone page (not a URL parent) for a top category: counted industries and designs, a child-link module, niche-labelled
 // cards, which sections each kind of site needs, how to choose, questions (FAQPage), and the build-with-your-AI fallback. Copy in tpl_copy.json "categories".
 export async function categoryPage(c, env, base, h, x) {
@@ -150,6 +158,7 @@ export async function categoryPage(c, env, base, h, x) {
 <table class="facts cols"><thead><tr><th scope="col">Industry</th><th scope="col">Sub-niches</th><th scope="col">Designs</th><th scope="col">WordPress themes</th></tr></thead><tbody>${f.inds.map((r) => `<tr><td>${lk(h, base, r.i.hub, r.i.label)}</td><td>${r.t.niches}</td><td>${r.t.designs}</td><td>${r.wt.designs ? lk(h, base, wpIndustryPath(r.i.id), String(r.wt.designs)) : "0"}</td></tr>`).join("")}</tbody></table>
 <h2 class="s">Looking for a more specific type?</h2><ul class="plain">${f.inds.map((r) => `<li><b>${lk(h, base, r.i.hub, r.i.label)}:</b> ${(industryGroups(r.i.id).some((g) => groupLive(g)) ? industryGroups(r.i.id).filter((g) => groupLive(g)).map((g) => `${h.escHtml(g.label)} (${groupNiches(g).map((n) => lk(h, base, nichePath(n), n.label)).join(", ")})`) : r.ns.map((n) => lk(h, base, nichePath(n), n.label))).join(" · ")}</li>`).join("")}</ul>
 ${f.inds.map((r) => `<h2 class="s">${lk(h, base, r.i.hub, r.i.h1)}</h2><p class="lede" style="margin:0 0 .6rem">${h.escHtml(`${count(r.t.designs, "design")} across ${count(r.t.niches, "sub-niche")}. ${((TPL_COPY.industries || {})[r.i.id] || {}).intro || ""}`)}</p><div class="tg">${r.ns.slice(0, 4).map((n) => labelledCard(n, img[n.pattern], h, base)).join("")}</div>`).join("")}
+${wpSection(c, f, h, base, h1)}
 <h2 class="s">Which sections each kind of site needs</h2><ul class="plain">${f.inds.flatMap((r) => r.ns).map((n) => `<li><b>${lk(h, base, nichePath(n), n.label)}.</b> ${h.escHtml(((TPL_COPY.niches || {})[n.id] || {}).intro || "")}</li>`).join("")}</ul>
 ${(cc.choose || []).length ? `<h2 class="s">How to choose</h2><ul class="plain">${cc.choose.map((t) => `<li>${h.escHtml(t)}</li>`).join("")}</ul>` : ""}
 <h2 class="s">What every template includes</h2><ul class="plain"><li>A full, responsive one-page home page written for its sub-niche.</li><li>HTML code and a DESIGN.md of colour, type and spacing tokens, in light and dark.</li><li>Original inline illustrations. No stock photos and no third-party images.</li></ul>
