@@ -107,9 +107,13 @@ if sig and IND == "professional-services":
 if sig and IND == "education":
     for nid, pat, htmlSeg, seg in NICHES:
         s, _, nb = text(f"/ui/{HUB}/{htmlSeg}"); ck(not re.search(r"Alderbrook|Puddlewick", nb.split("Every screen", 1)[0]), f"{nid}: no n12/n13 homepage card")
-# templates r9 (25-Nov-2026, staged): the live n12 hotel (Halcyon Quay) homepage is not a signature either; travel-website (Driftmark Journeys) stays flat.
+# templates r9 (25-Nov-2026, staged): the live n12 hotel (Halcyon Quay) homepage is not a signature either. travel-website (Driftmark Journeys) is not a
+# niche; owner 25-Nov: its flat page 301s to the hub in one hop (hubPatterns), and the sitemap lists the hub once and no flat travel URL.
 if sig and IND == "travel":
     for nid, pat, htmlSeg, seg in NICHES:
         s, _, nb = text(f"/ui/{HUB}/{htmlSeg}"); ck(not re.search(r"Halcyon Quay|Driftmark", nb.split("Every screen", 1)[0]), f"{nid}: no n12 homepage card")
+    for old in ["/ui/travel-website-template", "/ui/travel-website-template/", "/ui/travel-website", "/ui/travel-website/", "/ui/travel-website-template?device=web", "/ui?pattern=travel-website"]:
+        one_hop(old, f"/ui/{HUB}" + ("?device=web" if "device" in old else ""))
+    s, _, sm = text("/ui/sitemap.xml"); ck(s == 200 and sm.count(f"/ui/{HUB}</loc>") == 1 and "/ui/travel-website-template<" not in sm, "sitemap: hub once, no flat travel page")
     s, _, hb = text(f"/ui/{HUB}"); ck("Travel, tourism and accommodation website templates" in hb, "hub H1 copy C")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)

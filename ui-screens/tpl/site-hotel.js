@@ -1,7 +1,9 @@
 /* Hotel website template (Halcyon Quay — fictional boutique harbourside hotel). Full responsive home page:
    nav, centred hero with a docked check-in/check-out/guests booking bar, rooms & suites list with from-rates,
-   dining & bar, spa & amenities, the neighbourhood with walk times, offers & packages, guest notes,
-   location and getting here, a front-desk questions form, footer. Harbour and room "photos" are inline SVG in fixed natural tones. */
+   dining & bar, spa & amenities, the neighbourhood with walk times, offers & packages,
+   location and getting here, a front-desk questions form, footer. Owner follow-up 25-Nov-2026 (r9 word rules, tests/tr_lint.py
+   TR_LINT_HOMEPAGES=1): fictional notice, $00 sample rates, no guest notes or star rating, no 24-hour or lowest-rate lines,
+   cancellation, licence, grading, accessibility and insurance as add-your-own. Harbour and room "photos" are inline SVG in fixed natural tones. */
 const { ic, esc } = require("../lib");
 const K = require("../sitekit");
 
@@ -128,9 +130,9 @@ const mapShot = () => `<svg viewBox="0 0 560 460" preserveAspectRatio="xMidYMid 
 <text x="250" y="400" font-family="sans-serif" font-size="14" fill="#5d7480">Inner Harbour</text>${[[90, 150, "1"], [300, 100, "2"], [470, 160, "3"], [200, 250, "4"], [500, 240, "5"]].map(([x, y, n]) => `<g transform="translate(${x} ${y})"><circle r="13" fill="#2f4c5c"/><text y="5" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#fff">${n}</text></g>`).join("")}<g transform="translate(300 262)"><path d="M0 0c-14-18-22-30-22-42a22 22 0 0 1 44 0c0 12-8 24-22 42z" fill="#c8442f"/><circle cx="0" cy="-42" r="8" fill="#fff"/></g></svg>`;
 
 const ROOMS = [
-  ["harbour", "Harbour King", "26 m²", "2 guests", "Floor-to-ceiling window over the moorings, king bed, rain shower.", "$245"],
-  ["loft", "Sail Loft", "34 m²", "3 guests", "Under the old roof beams, freestanding bath, sofa bed for a third guest.", "$310"],
-  ["suite", "Quay Suite", "48 m²", "4 guests", "Corner suite with a separate lounge, balcony and two harbour views.", "$465"],
+  ["harbour", "Harbour King", "26 m²", "Sleeps 2", "Floor-to-ceiling window over the moorings, king bed, rain shower.", "$00"],
+  ["loft", "Sail Loft", "34 m²", "Sleeps 3", "Under the old roof beams, freestanding bath, sofa bed for a third guest.", "$00"],
+  ["suite", "Quay Suite", "48 m²", "Sleeps 4", "Corner suite with a separate lounge, balcony and two harbour views.", "$00"],
 ];
 
 const web = (p, st) => K.page(st, `${K.nav(p, ["Rooms", "Dining", "Spa", "Neighbourhood", "Offers"], "Book a stay", "Gift a stay")}
@@ -147,14 +149,14 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Rooms", "Dining", "Spa", "Neighb
     <div class="sk-field"><label for="ho-c">Offer code</label><div class="ho-v muted" id="ho-c">${ic("tag", 16)} Optional</div></div>
     <button class="btn primary" type="button">Check availability</button>
   </form>
-  <div class="ho-note"><span>${ic("check", 15)} Lowest rate when you book here</span><span>${ic("check", 15)} Free cancellation to 48 hours</span><span>${ic("clock", 15)} Check-in 3 PM, check-out 11 AM</span></div>
+  <div class="ho-note"><span>${ic("tag", 15)} Sample rates: add your own</span><span>${ic("check", 15)} Cancellation terms: add your own</span><span>${ic("clock", 15)} Check-in 3 PM, check-out 11 AM</span></div>
 </section>
 
 <section class="sk-sec sk-tight sk-alt" id="rooms"><div class="sk-wrap">
   <div class="sk-head"><div><span class="sk-eyebrow">Rooms & suites</span><h2 class="sk-h2">Three rooms, one very good bed</h2></div><a class="btn sk-btn-lg" href="#">Compare all rooms ${ic("arrow", 16)}</a></div>
   <div class="ho-rooms">${ROOMS.map(([k, n, size, g, d, rate], i) => `<article class="ho-room"><div class="sk-photo">${roomShot(k, i)}</div>
     <div><h3 class="sk-h3" style="font-size:calc(24px * var(--hs))">${esc(n)}</h3><p class="muted ho-desc" style="margin-top:4px">${esc(d)}</p><ul><li>${ic("grid", 14)} ${size}</li><li>${ic("users", 14)} ${g}</li><li>${ic("sun", 14)} Harbour view</li></ul></div>
-    <div class="ho-rate"><div><span class="muted" style="font-size:13px">From</span> <span class="num" style="font-size:26px">${rate}</span><div class="muted" style="font-size:12px">per night, breakfast included</div></div><a class="btn${i === 0 ? " primary" : ""}" href="#">Select dates</a></div></article>`).join("")}</div>
+    <div class="ho-rate"><div><span class="muted" style="font-size:13px">From</span> <span class="num" style="font-size:26px">${rate}</span><div class="muted" style="font-size:12px">per night, sample rate</div></div><a class="btn${i === 0 ? " primary" : ""}" href="#">Select dates</a></div></article>`).join("")}</div>
 </div></section>
 
 <section class="sk-sec sk-tight" id="dining"><div class="sk-wrap">
@@ -170,7 +172,7 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Rooms", "Dining", "Spa", "Neighb
 <section class="sk-sec sk-tight sk-alt" id="spa"><div class="sk-wrap">
   <div class="sk-head"><div><span class="sk-eyebrow">Spa & amenities</span><h2 class="sk-h2">A small spa, done properly</h2></div><a class="btn sk-btn-lg" href="#">Book a treatment ${ic("arrow", 16)}</a></div>
   <div class="ho-spa"><div class="sk-photo">${spaShot()}<span class="sk-cap">Rooftop pool, heated year-round</span></div>
-    <div class="ho-amen">${[["sun", "Rooftop plunge pool", "8 m, heated to 32°C, open 7 AM–9 PM."], ["clock", "Sauna & treatment room", "Book 60 or 90-minute massages at reception."], ["bolt", "Gym with harbour view", "Bikes, free weights and mats, open 24 hours."], ["globe", "Bikes to borrow", "Six town bikes with locks and a map, free."], ["key", "Late check-out", "Until 1 PM when we can, free for direct bookings."], ["heart", "Dogs welcome", "In courtyard rooms, with a bed and bowl, $25 a night."]].map(([i, t, d]) => `<div><span class="ho-ic">${ic(i, 18)}</span><div><b>${t}</b><p>${d}</p></div></div>`).join("")}</div></div>
+    <div class="ho-amen">${[["sun", "Rooftop plunge pool", "8 m, heated to 32°C, open 7 AM–9 PM."], ["clock", "Sauna & treatment room", "Book 60 or 90-minute massages at reception."], ["bolt", "Gym with harbour view", "Bikes, free weights and mats, open 6 AM to 10 PM."], ["globe", "Bikes to borrow", "Six town bikes with locks and a map, free."], ["key", "Late check-out", "Until 1 PM when we can, free for direct bookings."], ["heart", "Dogs welcome", "In courtyard rooms, with a bed and bowl, $00 a night (sample fee)."]].map(([i, t, d]) => `<div><span class="ho-ic">${ic(i, 18)}</span><div><b>${t}</b><p>${d}</p></div></div>`).join("")}</div></div>
 </div></section>
 
 <section class="sk-sec sk-tight" id="neighbourhood"><div class="sk-wrap">
@@ -178,25 +180,17 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Rooms", "Dining", "Spa", "Neighb
   <div class="ho-hood"><div class="sk-photo ho-map">${mapShot()}</div>
     <ol class="ho-walks">${[["Ferry pier", "Boats to the outer islands every 40 minutes in summer.", "2 min"], ["Saturday fish market", "On the quay from 6 AM, gone by 10.", "4 min"], ["Old Customs House gallery", "Free entry, local painters and a good café.", "7 min"], ["Lighthouse path", "A flat 3 km loop round the headland.", "9 min"]].map(([t, d, m]) => `<li><div><b>${t}</b><p>${d}</p></div><span class="num" style="font-size:15px">${m}</span></li>`).join("")}</ol>
   </div>
-  <div class="ho-getrow"><h3 class="sk-h3">3 Ropewalk Quay, Inner Harbour</h3>${[["globe", "By train", "12 minutes on foot from Central, or a $9 taxi from the rank."], ["pin", "By car", "No parking at the hotel. The Harbour Street car park is 3 minutes away, $18 a day with our ticket."], ["phone", "Front desk, 24 hours", "(555) 016-7720 · stay@halcyonquay.example"]].map(([i, t, d]) => `<div><span class="muted">${ic(i, 18)}</span><div><b>${t}</b><span class="muted">${d}</span></div></div>`).join("")}</div>
+  <div class="ho-getrow"><h3 class="sk-h3">3 Ropewalk Quay, Inner Harbour</h3>${[["globe", "By train", "12 minutes on foot from Central, or a short taxi ride from the rank."], ["pin", "By car", "No parking at the hotel. The Harbour Street car park is 3 minutes away: add your own parking rates."], ["phone", "Front desk", "(555) 016-7720 · stay@halcyonquay.example"]].map(([i, t, d]) => `<div><span class="muted">${ic(i, 18)}</span><div><b>${t}</b><span class="muted">${d}</span></div></div>`).join("")}</div>
 </div></section>
 
 <section class="sk-sec sk-tight sk-alt" id="offers"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Offers & packages</span><h2 class="sk-h2">Stay a little longer</h2></div><span class="muted" style="font-size:14px">Rates for two guests, taxes included.</span></div>
-  <div class="ho-offers sk-rail">${[["Three nights, pay for two", "Sun–Thu stays, November to March.", "From $490", ["Breakfast daily", "Late check-out", "Any room type"], ""], ["Harbour weekend", "Two nights with dinner on the Saturday.", "From $640", ["Three-course dinner for two", "Bottle of local wine", "Pool & sauna"], "feat"], ["Island day out", "One night plus ferry and a packed lunch.", "From $315", ["Return ferry tickets", "Picnic from the kitchen", "Bikes for the day"], ""]].map(([t, d, pr, li, c]) => `<article class="card sk-card ho-offer ${c}">${c ? `<span class="badge" style="justify-self:start">Most booked</span>` : ""}<h3 class="sk-h3" style="font-size:calc(22px * var(--hs))">${t}</h3><p class="muted">${d}</p><ul>${li.map((x) => `<li>${ic("check", 14)} ${x}</li>`).join("")}</ul><div class="num" style="font-size:24px;margin-top:6px">${pr}</div><a class="btn ${c ? "primary" : ""}" href="#">View dates</a></article>`).join("")}</div>
+  <div class="sk-head"><div><span class="sk-eyebrow">Offers & packages</span><h2 class="sk-h2">Stay a little longer</h2></div><span class="muted" style="font-size:14px">Sample prices for two guests: add your own rates and what they include.</span></div>
+  <div class="ho-offers sk-rail">${[["Three nights, pay for two", "Sun–Thu stays, November to March.", "From $00", ["Breakfast daily", "Late check-out", "Any room type"], ""], ["Harbour weekend", "Two nights with dinner on the Saturday.", "From $00", ["Three-course dinner for two", "Bottle of local wine", "Pool & sauna"], "feat"], ["Island day out", "One night plus ferry and a packed lunch.", "From $00", ["Return ferry tickets", "Picnic from the kitchen", "Bikes for the day"], ""]].map(([t, d, pr, li, c]) => `<article class="card sk-card ho-offer ${c}">${c ? `<span class="badge" style="justify-self:start">Weekend pick</span>` : ""}<h3 class="sk-h3" style="font-size:calc(22px * var(--hs))">${t}</h3><p class="muted">${d}</p><ul>${li.map((x) => `<li>${ic("check", 14)} ${x}</li>`).join("")}</ul><div class="num" style="font-size:24px;margin-top:6px">${pr}</div><a class="btn ${c ? "primary" : ""}" href="#">View dates</a></article>`).join("")}</div>
 </div></section>
 
-<section class="sk-sec sk-tight"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Guest notes</span><h2 class="sk-h2">Guests, this year</h2></div></div>
-  <div class="ho-quotes">
-    <figure class="card ho-big"><div class="ho-stars" aria-label="5 out of 5">${Array.from({ length: 5 }, () => ic("star", 16)).join("")}</div><q>We asked for a quiet room and got the Sail Loft at the top of the building. Heard the rigging on the boats and nothing else. Breakfast by the window was our favourite hour of the trip.</q><figcaption class="sk-row" style="gap:10px"><span class="avatar">GH</span><span><b>Greta H.</b><br><span class="muted" style="font-size:13px">Three nights in October</span></span></figcaption></figure>
-    <div class="ho-small">${[["The bar staff sent us to a fish place on the market we’d never have found. Small hotel, people who actually know the town.", "Daniel R.", "Harbour weekend"], ["Travelled with our dog and the courtyard room had a bed and towels ready. Easy check-in after a late ferry.", "Amira & Joe", "Courtyard Twin"]].map(([q, n, t]) => `<figure class="card"><q>${esc(q)}</q><figcaption class="muted" style="font-size:13px"><b style="color:var(--text)">${esc(n)}</b> · ${esc(t)}</figcaption></figure>`).join("")}</div>
-  </div>
-</div></section>
-
-<section class="sk-sec sk-tight sk-alt" id="location"><div class="sk-wrap">
+<section class="sk-sec sk-tight" id="location"><div class="sk-wrap">
   <form class="ho-ask" aria-label="Ask the front desk">
-    <div class="sk-stack" style="gap:6px"><h2 class="sk-h3" style="font-size:calc(24px * var(--hs))">Questions before you book?</h2><p class="muted" style="font-size:14px">The front desk replies within a few hours, day or night.</p></div>
+    <div class="sk-stack" style="gap:6px"><h2 class="sk-h3" style="font-size:calc(24px * var(--hs))">Questions before you book?</h2><p class="muted" style="font-size:14px">The front desk replies by email.</p></div>
     <div class="sk-field"><label for="ho-n">Name</label><input class="sk-input" id="ho-n" value="Sam Achebe"></div>
     <div class="sk-field"><label for="ho-e">Email</label><input class="sk-input" id="ho-e" value="sam.achebe@example.com"></div>
     <div class="sk-field ho-wide"><label for="ho-m">Question</label><input class="sk-input" id="ho-m" value="Arriving on the 11 PM ferry. Anything to eat that late?"></div>
@@ -204,10 +198,10 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Rooms", "Dining", "Spa", "Neighb
   </form>
 </div></section>
 </main>
-${K.footer(p, "A 36-room hotel in a converted sail warehouse on the Inner Harbour.", [["Stay", ["Rooms & suites", "Offers", "Gift a stay", "Groups & weddings"]], ["Eat & unwind", ["The Net Loft", "Ropewalk Bar", "Rooftop spa", "Opening hours"]], ["Hotel", ["Getting here", "Accessibility", "Sustainability", "Careers"]]])}`, CSS);
+${K.footer(p, "A 36-room hotel in a converted sail warehouse on the Inner Harbour.", [["Stay", ["Rooms & suites", "Offers", "Gift a stay", "Groups & weddings"]], ["Eat & unwind", ["The Net Loft", "Ropewalk Bar", "Rooftop spa", "Opening hours"]], ["Hotel", ["Getting here", "House rules", "Careers"]]], `© 2026 ${p.name}. Fictional hotel created for this template. Names, people, rooms, rates, dates and places are sample content and general information only, not travel, legal or financial advice. Licence, registration, grading, accessibility and insurance details: add your own here. Booking, deposit and cancellation terms: add your own here.`)}`, CSS);
 
 module.exports = {
   "hotel-website": K.def("hotel", "Hotel website",
-    "a full boutique hotel home page: navigation with book-a-stay and gift buttons, a centred hero with a harbour scene and a docked check-in/check-out/guests/offer-code booking bar, a rooms and suites list with size, guests and from-rates, dining room and bar cards with opening hours, spa and amenities with an icon list, the neighbourhood with a numbered map and walk times, offers and packages cards, guest notes with a star rating, the location address with getting-here details, a front-desk questions form, and a footer",
-    ["navigation-header", "hero", "booking-form", "date-picker", "room-list", "price-list", "opening-hours", "amenities", "icon-list", "map", "offer-cards", "pricing", "testimonials", "rating", "contact-form", "footer", "hotel", "hospitality"], web),
+    "a full boutique hotel home page: navigation with book-a-stay and gift buttons, a centred hero with a harbour scene and a docked check-in/check-out/guests/offer-code booking bar, a rooms and suites list with size, guests and from-rates, dining room and bar cards with opening hours, spa and amenities with an icon list, the neighbourhood with a numbered map and walk times, offers and packages cards with sample rates, the location address with getting-here details, a front-desk questions form, and a footer",
+    ["navigation-header", "hero", "booking-form", "date-picker", "room-list", "price-list", "opening-hours", "amenities", "icon-list", "map", "offer-cards", "pricing", "contact-form", "footer", "hotel", "hospitality"], web),
 };

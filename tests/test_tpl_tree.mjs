@@ -15,5 +15,9 @@ const throws = (f) => { try { f(); return false; } catch { return true; } };
 { const m = await load((c) => { c.niches.dental.designs[0].theme.slug = "bad_Slug"; }); t("malformed slug stops the deploy", throws(m.assertTree)); }
 { const m = await load((c) => { c.niches.dental.designs[0].theme.slug = "mgd-abcdef123456"; }); t("slug that looks like an item id stops the deploy", throws(m.assertTree)); }
 { const m = await load(() => {}, (s) => s.replace('["dental", "dental-website", "Dental", "dental-website-template", "dental"]', '["dental", "dental-website", "Dental", "medical-website-template", "medical"]')); t("two niches on one path stops the deploy", throws(m.assertTree)); }
+// r9 (owner 25-Nov): travel-website is a hub pattern: its flat page becomes the travel hub, and only while the hub is live
+{ const m = await load(() => {}); t("hub pattern: travel-website lives at the travel hub", m.nestedPatternPath("travel-website") === "travel-website-templates" && m.hubOfPattern("travel-website").id === "travel"); }
+{ const m = await load((c) => { for (const k of ["hotel", "resort", "bed-and-breakfast", "hostel", "travel-agency", "tour-operator", "campground", "tourism"]) c.niches[k].designs = c.niches[k].designs.slice(0, 5); }); t("hub pattern stays flat when the hub is not live", m.nestedPatternPath("travel-website") === null && m.resolveTree("travel-website-templates") === null); }
+{ const m = await load(() => {}, (s) => s.replace('hubPatterns: ["travel-website"]', 'hubPatterns: ["hotel-website"]')); t("a hub pattern that is also a niche pattern stops the deploy", throws(m.assertTree)); }
 { const m = await load((c) => { c.niches = {}; }); t("empty catalog: everything flat, no tree (the redirect rollback)", m.treePaths().length === 0 && m.nestedPatternPath("cardiology-website") === null); }
 rmSync(dir, { recursive: true, force: true }); console.log(`${n} checks, ${fails} failed`); process.exit(fails ? 1 : 0);

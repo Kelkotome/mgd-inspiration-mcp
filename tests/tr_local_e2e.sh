@@ -37,9 +37,12 @@ $ING --out "$WDW/ui-screens/out" --only "wedding-website-homepage-*" | tail -1
 for n in restaurant coffee-shop; do $ING --out "$RSW/ui-screens/out" --only "$n-website-homepage-*" | tail -1; done
 for n in cardiology medical dental dermatology therapist physical-therapy veterinary pediatrics orthodontics fertility real-estate apartment; do SRC="$MAIN"; case $n in real-estate|apartment) [ -d "$REW/ui-screens/out/$n-website-homepage-web-corporate" ] && SRC="$REW/ui-screens/out";; esac; $ING --out "$SRC" --only "$n-website-homepage-*" | tail -1; done
 # the live n12 agency, architecture and gym homepages (not signatures here): they must stay plain items, not cards on the nested pages; salon stays flat
-for n in agency architecture portfolio-home gym salon class-schedule construction cleaning-service hvac pest-control pro-directory law-firm financial-advisor school preschool course-dashboard hotel travel; do $ING --out "$MAIN" --only "$n-*web-minimal*" | tail -1; done
+for n in agency architecture portfolio-home gym salon class-schedule construction cleaning-service hvac pest-control pro-directory law-firm financial-advisor school preschool course-dashboard; do $ING --out "$MAIN" --only "$n-*web-minimal*" | tail -1; done
+# owner 25-Nov follow-up: the n12 hotel (Halcyon Quay) and travel (Driftmark) homepages as fixed in ui-screens/out-trfix (tests/tr_fix_bundle.py), web + mobile minimal
+[ -d out-trfix ] && $ING --out out-trfix --only "*-minimal" | tail -1 || RC=1
 $ING --out "$MAIN" --only "chat-ai*-web-minimal*" | tail -1
 cd ..
+TR_LINT_HOMEPAGES=1 TR_LINT_OUT=ui-screens/out-trfix python3 tests/tr_lint.py | tail -1; TR_LINT_HOMEPAGES=1 TR_LINT_OUT=ui-screens/out-trfix python3 tests/tr_lint.py >/dev/null || { echo "FAIL trfix homepage lint"; RC=1; }
 python3 tests/hc_routes.py http://127.0.0.1:$PORT/inspiration || RC=1
 for I in real-estate restaurant wedding portfolio beauty-fitness construction professional-services education automotive travel; do IND=$I python3 tests/hc_routes.py http://127.0.0.1:$PORT/inspiration || RC=1; done
 for t in hc re rs wd pf bw cn ps ed au tr; do node tests/${t}_mcp.mjs http://127.0.0.1:$PORT/inspiration || RC=1; done
