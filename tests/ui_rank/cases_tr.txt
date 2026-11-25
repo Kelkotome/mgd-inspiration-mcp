@@ -1,0 +1,18 @@
+# Travel and hotels tree, 25-Nov-2026 (templates r9, staged)
+hotel website template | hotel-website
+boutique hotel website | hotel-website
+resort website template | resort-website
+beach resort website | resort-website
+bed and breakfast website template | bed-and-breakfast-website
+guest house website | bed-and-breakfast-website
+hostel website template | hostel-website
+backpacker hostel website | hostel-website
+travel agency website template | travel-agency-website
+travel agent website | travel-agency-website
+tour operator website template | tour-operator-website
+walking tours website | tour-operator-website
+campground website template | campground-website
+glamping website | campground-website
+campsite website | campground-website
+tourism website template | tourism-website
+destination website | tourism-website

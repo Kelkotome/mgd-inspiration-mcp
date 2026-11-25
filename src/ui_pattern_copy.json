@@ -2837,21 +2837,21 @@
  },
  "hotel-website": {
   "h1": "Hotel website templates",
-  "intro": "A hotel home page should make availability the easiest thing to check. These templates include a booking bar, rooms and suites with rates, dining, spa and amenities, the neighbourhood, offers, guest notes and location.",
+  "intro": "A hotel site is checked by people comparing dates, rooms and the walk from the station. These templates include room types with sample nightly rates, check-in and check-out times, breakfast and the restaurant, meeting rooms, parking and arrival, the neighbourhood with walk times, questions guests ask and a booking enquiry form, with add-your-own lines for grading and accessibility.",
   "tips": [
-   "Keep the date and guest booking bar visible near the top.",
-   "Show each room type with its size, view and from-rate.",
-   "Sell the place, not just the room: dining, spa and the area.",
-   "Make the address, parking and arrival details easy to find."
+   "Keep dates, rooms and how to book near the top.",
+   "Show each room type with its size, beds and a sample rate.",
+   "Give arrival details: parking, the nearest station and check-in times.",
+   "Add your own accessibility details for each room, and only state a grading you hold."
   ],
   "faq": [
    [
     "What should a hotel website include?",
-    "A booking bar, room types with photos and rates, amenities, dining, offers, location and directions and contact details."
+    "Room types with prices, how to book, check-in and check-out times, breakfast and dining, parking and directions, your booking terms, accessibility details and contact information."
    ],
    [
-    "How can a hotel website get more direct bookings?",
-    "Make checking availability fast, show the best rate clearly and add direct-booking perks such as flexible cancellation."
+    "Should a hotel website show the total price?",
+    "Many places require the total price, including taxes and fees, before someone books. These templates use sample prices and leave your booking terms as an add-your-own line."
    ]
   ]
  },
@@ -5450,6 +5450,146 @@
    [
     "How do dance studios get new students from their website?",
     "A clear first class, an easy booking and honest information about what a class is like."
+   ]
+  ]
+ },
+ "resort-website": {
+  "h1": "Resort website templates",
+  "intro": "A resort site has to answer where to stay, what to do and what is included. These templates include villas and rooms, sample board options and rates, pools and the beach, a kids' club with sample ages and hours, water sports, getting there and an enquiry form, with add-your-own lines for lifeguard and pool hours and accessibility.",
+  "tips": [
+   "Show room and villa types with what each board option includes.",
+   "Give kids' club ages and hours, and pool hours, as clear facts.",
+   "Explain how to get there from the nearest airport or station.",
+   "Add your own lifeguard, accessibility and booking terms."
+  ],
+  "faq": [
+   [
+    "What should a resort website include?",
+    "Rooms and villas with prices, board options, pools, beach and activities, children's facilities, getting there, booking terms, accessibility details and contact information."
+   ],
+   [
+    "Can a resort call itself all-inclusive?",
+    "Only if every listed item really is included. These templates show board options as samples so you can list exactly what yours include."
+   ]
+  ]
+ },
+ "bed-and-breakfast-website": {
+  "h1": "Bed and breakfast and guest house website templates",
+  "intro": "A bed and breakfast site sells a small house and its hosts. These templates include the rooms with sample rates, breakfast, arrival and keys, house rules, walks and places nearby, dogs and parking, the hosts and a booking enquiry form.",
+  "tips": [
+   "Show every room with its beds, bathroom and a sample rate.",
+   "Say when breakfast is served and how to tell you about allergies.",
+   "Explain arrival times, keys and parking.",
+   "Add your own booking terms, grading and accessibility details."
+  ],
+  "faq": [
+   [
+    "What should a bed and breakfast website include?",
+    "Each room with prices, breakfast times, arrival and keys, house rules, parking, dogs, things to do nearby, booking terms and contact details."
+   ],
+   [
+    "Should a B&B take bookings online?",
+    "It helps, but an enquiry form works for many small houses. These templates use a static sample form that you replace with a booking or form plugin."
+   ]
+  ]
+ },
+ "hostel-website": {
+  "h1": "Hostel website templates",
+  "intro": "A hostel site is read on a phone by travellers comparing beds. These templates include dorms and private rooms with sample rates, lockers, the shared kitchen and common room, linen and towels, check-in times, quiet hours, how to find it and a booking form, with add-your-own age and ID policy lines.",
+  "tips": [
+   "Show bed types, room sizes and what each price includes.",
+   "Say what is provided: linen, towels, lockers, the kitchen.",
+   "Give check-in times and directions from the station.",
+   "Add your own age, ID and booking policy."
+  ],
+  "faq": [
+   [
+    "What should a hostel website include?",
+    "Dorm and private room prices, what is included, lockers and the kitchen, check-in times, house rules, age and ID policy, directions and contact details."
+   ],
+   [
+    "How do hostels show their house rules?",
+    "In short plain lines near booking: quiet hours, the kitchen, visitors and check-out. These templates include sample rules to replace."
+   ]
+  ]
+ },
+ "travel-agency-website": {
+  "h1": "Travel agency website templates",
+  "intro": "A travel agency site is read by people deciding whether to plan a trip with help. These templates include kinds of trips, how planning works from the first chat to before you go, what the agency books, sample planning fees, the team and an enquiry form, with add-your-own financial protection and licence lines and a check-official-travel-advice line.",
+  "tips": [
+   "Show the kinds of trips you plan and how a first chat works.",
+   "Explain your planning fee and what it covers.",
+   "Name the people who plan the trips.",
+   "Add your own licence, membership and financial protection details."
+  ],
+  "faq": [
+   [
+    "What should a travel agency website include?",
+    "The trips you plan, how planning works, your fees, the team, contact options, your booking terms and your licence and protection details."
+   ],
+   [
+    "Do travel agencies need to show financial protection?",
+    "In many places package trips must be protected and the details shown. These templates leave that as an add-your-own line. Check the rules where you trade."
+   ]
+  ]
+ },
+ "campground-website": {
+  "h1": "Campground and glamping website templates",
+  "intro": "A campground site is checked before a trip and again on arrival. These templates include tent and campervan pitches, cabins and glamping tents with sample nightly rates, hook-ups, the shower block, site rules for fires and quiet hours, dogs, arrival times, the wardens and a booking form.",
+  "tips": [
+   "Show each pitch and stay type with its size, hook-up and a sample rate.",
+   "Give arrival times and how to find the entrance.",
+   "List site rules plainly: fires, quiet hours, dogs.",
+   "Add your own fire procedures, licence and accessibility details."
+  ],
+  "faq": [
+   [
+    "What should a campground website include?",
+    "Pitch and cabin types with prices, facilities, arrival times, site rules, dogs, directions, booking terms and contact details."
+   ],
+   [
+    "Should a campground list its rules online?",
+    "Yes. People choose sites by their fire, dog and quiet-hours rules. These templates include sample rules to replace with your own."
+   ]
+  ]
+ },
+ "tourism-website": {
+  "h1": "Tourism and destination website templates",
+  "intro": "A tourism site helps visitors plan a trip to a place. These templates include things to do, the towns, a sample events list, getting here and around, where to stay by type, visitor information centres and a brochure or enquiry form.",
+  "tips": [
+   "Lead with what visitors can do, grouped by interest.",
+   "Keep events dated and current.",
+   "Explain getting here and around without a car if you can.",
+   "Link to local businesses only with their agreement."
+  ],
+  "faq": [
+   [
+    "What should a tourism website include?",
+    "Things to do, towns and areas, events, getting here and around, where to stay, visitor information centres and a way to ask questions."
+   ],
+   [
+    "Who runs a tourism website?",
+    "Often a tourism board, council or business group. These templates are for any of them, with fictional places to replace with your own."
+   ]
+  ]
+ },
+ "tour-operator-website": {
+  "h1": "Tour operator website templates",
+  "intro": "A tour operator site is read by visitors planning a day or a week. These templates include a week of departures with a filter by kind of tour, sample tour prices, meeting points, what to bring, group sizes, the guides, questions people ask and a booking form, with a line pointing visitors to official travel advice.",
+  "tips": [
+   "Show dates, start times and meeting points before anything else.",
+   "Say how long each tour lasts, how far you walk and what to bring.",
+   "Explain your weather and booking terms in plain words.",
+   "Add your own licence, insurance and accessibility details."
+  ],
+  "faq": [
+   [
+    "What should a tour operator website include?",
+    "Tours with length, start time, meeting point and price, a way to book, what to bring, group sizes, your booking and weather terms, accessibility details and contact information."
+   ],
+   [
+    "Do tour operators need to mention travel advice?",
+    "It helps visitors from abroad to check entry requirements with official travel advice. These templates include that line and leave licence and protection details for you to add."
    ]
   ]
  }

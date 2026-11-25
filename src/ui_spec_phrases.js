@@ -119,6 +119,14 @@ export const INDUSTRY_PHRASES = {
   "auto-body-website": ["an independent auto body and collision repair shop", "a body shop"],
   "towing-website": ["a local towing and roadside help firm", "a towing firm"],
   "tire-shop-website": ["an independent tire shop", "a tire shop"],
+  // travel and hotels, 25-Nov-2026 (templates r9, staged). hotel-website keeps its n12 phrase; travel-website stays flat.
+  "resort-website": ["a coastal resort with villas, pools and a kids' club", "a resort"],
+  "bed-and-breakfast-website": ["a family-run village bed and breakfast", "a guest house"],
+  "hostel-website": ["an independent city hostel with dorms and private rooms", "a hostel"],
+  "travel-agency-website": ["an independent travel agency", "an agency"],
+  "tour-operator-website": ["a local tour operator with walking, food and boat tours", "a tour operator"],
+  "campground-website": ["a campground with pitches, cabins and glamping tents", "a campground"],
+  "tourism-website": ["a regional tourism and visitor information site", "a visitor site"],
 };
 
 // Hand-written exceptions where the default audience reads oddly with the style: "pattern|style" → [best, notIdeal]

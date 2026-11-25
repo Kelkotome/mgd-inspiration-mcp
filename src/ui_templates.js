@@ -27,6 +27,8 @@ const DISCLOSES = {
   education: "Names, people, addresses, phone numbers, courses, classes, timetables, term dates and fees in every template are fictional samples to replace, and fees are zero placeholders. Accreditation, licence, inspection and safeguarding lines are left for the owner to fill in. The templates are designs, not education, childcare or legal advice, and they do not make a site compliant with any licensing, safeguarding, consumer or advertising rule.",
   // automotive (templates r8, 25-Nov-2026, STAGED): the r5 to r7 pattern with this industry's nouns; options in docs_updates/lane-templates-2026-11-24.md (25-Nov r8 section, awaiting approval)
   automotive: "Names, people, addresses, phone numbers, vehicles, services, prices, rates and opening hours in every template are fictional samples to replace, and prices are zero placeholders. Licence, registration, insurance, warranty and finance lines are left for the owner to fill in. The templates are designs, not mechanical, legal or financial advice, and they do not make a site compliant with any licensing, vehicle sale, consumer or advertising rule.",
+  // travel and hotels (templates r9, 25-Nov-2026, STAGED): the r5 to r8 pattern with this industry's nouns; options in docs_updates/lane-templates-2026-11-24.md (25-Nov r9 section, awaiting approval)
+  travel: "Names, people, addresses, phone numbers, places, rooms, tours, events, prices, rates, dates and opening hours in every template are fictional samples to replace, and prices are zero placeholders. Licence, registration, booking protection, grading, accessibility and insurance lines are left for the owner to fill in. The templates are designs, not travel, legal or financial advice, and they do not make a site compliant with any licensing, package travel, consumer, accessibility or advertising rule.",
 };
 const discloseFor = (ids) => [...new Set(ids)].map((i) => DISCLOSES[i]).filter(Boolean).join(" ");
 const DISCLOSE_ALL = () => discloseFor(platformIndustries().map((i) => i.id));
@@ -232,7 +234,18 @@ const ALIASES = [["fine-dining", /\b(fine[- ]dining|tasting[- ]menus?|upscale re
   ["car-detailing", /\b((car |auto |mobile )?detailing|(car |auto |mobile )detailers?|ceramic coatings?|paint correction|car valet(ing)?)\b/],
   ["car-rental", /\b(car (rentals?|hire)|(van|vehicle|auto) (rentals?|hire)|rent[- ]a[- ]car|rental cars?)\b/],
   ["auto-repair", /\b(auto (repair|shops?|mechanics?|service|garages?)|car (repairs?|service|servicing|mechanics?|garages?)|(mobile )?mechanics?|garages?|motor repairs?)\b/],
-  ["car-dealership", /\b(car (dealers?|dealerships?|lots?|sales|showrooms?)|(auto|motor|vehicle|used car) (dealers?|dealerships?|sales)|dealerships?|used cars?|pre-?owned cars?|car yards?)\b/]];
+  ["car-dealership", /\b(car (dealers?|dealerships?|lots?|sales|showrooms?)|(auto|motor|vehicle|used car) (dealers?|dealerships?|sales)|dealerships?|used cars?|pre-?owned cars?|car yards?)\b/],
+  // travel and hotels (25-Nov-2026, templates r9, staged), last so every older niche keeps its match ("spa resort" stays a spa, "holiday cottage" and "cabin
+  // rentals" stay vacation rental, "wedding venue" stays a venue). Most specific first: "hostel" before "hotel", "travel agent" before "tours". The bare
+  // words "travel", "tourism industry", "accommodation" get the hub line (GENERAL.travel).
+  ["hostel", /\b(hostels?|backpackers?|bunk ?houses?|dorm beds?)\b/],
+  ["bed-and-breakfast", /\b(bed (and|&) breakfasts?|b ?& ?bs?|bnbs?|guest ?houses?|country inns?|inns?)\b/],
+  ["campground", /\b(camp ?grounds?|camp ?sites?|camping( sites?| parks?| grounds?)?|glamping|caravan (parks?|sites?)|rv (parks?|resorts?)|holiday parks?)\b/],
+  ["resort", /\b(resorts?)\b/],
+  ["travel-agency", /\b(travel (agenc(y|ies)|agents?|consultants?|advis[eo]rs?|planners?)|holiday (agenc(y|ies)|planners?)|trip planners?|honeymoon planners?)\b/],
+  ["tourism", /\b(tourism( boards?| offices?| sites?| websites?)?|destination (sites?|websites?|marketing|guides?)|visitor (cent(er|re)s?|guides?|information)|tourist (boards?|information|offices?))\b/],
+  ["tour-operator", /\b(tour (operators?|compan(y|ies)|guides?|websites?|bookings?)|tours|guided (tours?|walks?)|walking tours?|food tours?|boat trips?|day trips?|adventure travel|excursions?)\b/],
+  ["hotel", /\b(hotels?|motels?|lodges?)\b/]];
 const OTHER_PLATFORMS = /\b(shopify|magento|joomla|wix|squarespace|webflow|drupal|woocommerce|ghost)\b/;
 export function tplAnswer({ q, platform }, site) {
   const s = String(q || "").toLowerCase(), base = "", u = (rel) => `${site}/ui/${rel}`, m = catalogMeta();
@@ -261,7 +274,7 @@ function indLine(n, s, u) {
 }
 // One line added above normal results when a query names a template sub-niche, so the nested page gets cited.
 // Industry words, for the hub hint and the general WordPress answer.
-const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/, restaurant: /\b(restaurants?|food and drink|hospitality|food business(es)?)\b/, wedding: /\b(weddings?( and events?)?|wedding industry|bridal)\b/, portfolio: /\b(portfolios?|creative studios?)\b/, "beauty-fitness": /\b(beauty( salons?)?|wellness|salons?|health and beauty|beauty and (fitness|wellness)|hair and beauty)\b/, "professional-services": /\b(professional services?|professional firms?|legal services?|financial services?|legal and (professional|financial)|business services)\b/, construction: /\b(construction|home services?|tradespeople|tradesmen|trade business(es)?|trades website)\b/, automotive: /\b(automotive|cars?|vehicles?|auto (industry|business(es)?)|motor (trade|industry))\b/, education: /\b(education(al)?|e-?learning|learning (websites?|platforms?)|edtech|teaching)\b/ };
+const GENERAL = { healthcare: /\b(health ?care|medical|clinics?)\b/, "real-estate": /\b(real estate|realty|propert(y|ies))\b/, restaurant: /\b(restaurants?|food and drink|hospitality|food business(es)?)\b/, wedding: /\b(weddings?( and events?)?|wedding industry|bridal)\b/, portfolio: /\b(portfolios?|creative studios?)\b/, "beauty-fitness": /\b(beauty( salons?)?|wellness|salons?|health and beauty|beauty and (fitness|wellness)|hair and beauty)\b/, "professional-services": /\b(professional services?|professional firms?|legal services?|financial services?|legal and (professional|financial)|business services)\b/, construction: /\b(construction|home services?|tradespeople|tradesmen|trade business(es)?|trades website)\b/, automotive: /\b(automotive|cars?|vehicles?|auto (industry|business(es)?)|motor (trade|industry))\b/, education: /\b(education(al)?|e-?learning|learning (websites?|platforms?)|edtech|teaching)\b/, travel: /\b(travel( and (tourism|hospitality|hotels?))?|tourism industry|travel industry|hospitality and travel|accommodation|lodging|holiday (business(es)?|compan(y|ies)))\b/ };
 // hubFirst industries: words that ask for the niche itself, not the whole industry
 const HUB_SKIP = { restaurant: /\b(casual dining|bistros?|brasseries?|neighbou?rhood)\b/, construction: /\b(compan(y|ies)|firms?|general contractors?|builders?)\b/ };
 export function tplHint({ q }, site) {
@@ -281,6 +294,8 @@ export function tplHint({ q }, site) {
   if (GENERAL.education.test(s) && !id) { const i = INDUSTRIES.education, ns = industryNiches("education"); if (ns.length) return `${i.label} template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   // automotive (25-Nov-2026, staged): no niche is named like the industry, so "automotive website template" or "car website template" gets the hub (hubFirst).
   if (GENERAL.automotive.test(s) && !id) { const i = INDUSTRIES.automotive, ns = industryNiches("automotive"); if (ns.length) return `${i.label} template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
+  // travel and hotels (25-Nov-2026, staged): no niche is named like the industry, so "travel website template" or "accommodation" gets the hub (hubFirst).
+  if (GENERAL.travel.test(s) && !id) { const i = INDUSTRIES.travel, ns = industryNiches("travel"); if (ns.length) return `${i.label} template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   if (GENERAL.construction.test(s)) { const i = INDUSTRIES.construction, ns = industryNiches("construction"); if (ns.length) return `${i.label} template hub: ${totals(ns).designs} designs across ${ns.length} sub-niches at ${u(i.hub)}.`; }
   return "";
 }

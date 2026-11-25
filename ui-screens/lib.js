@@ -172,6 +172,15 @@ const FAMILIES = {
   bodyau: { name: "Copperhythe Body Shop", cat: "auto-body", desc: "an independent auto body and collision repair shop", type: { web: "Website", mobile: "Mobile website" } },
   towau: { name: "Dunmarrow Towing", cat: "towing", desc: "a local towing and roadside help firm", type: { web: "Website", mobile: "Mobile website" } },
   tireau: { name: "Rimbleford Tires", cat: "tire-shop", desc: "an independent tire shop with fitting, balancing and alignment", type: { web: "Website", mobile: "Mobile website" } },
+  // 25-Nov-2026 travel and hotels (templates r9, staged; stacked on r7 education + r8 automotive). Coined names, fictional, web-checked. (content agents: report name changes, do not edit)
+  hoteltr: { name: "The Marrowby Hotel", cat: "hotel", desc: "an independent town-centre hotel with a restaurant and meeting rooms", type: { web: "Website", mobile: "Mobile website" } },
+  resorttr: { name: "Vellanthe Cove Resort", cat: "resort", desc: "a coastal resort with villas, pools, a kids' club and water sports", type: { web: "Website", mobile: "Mobile website" } },
+  bnbtr: { name: "Wrenbeck House", cat: "bed-and-breakfast", desc: "a family-run bed and breakfast and guest house in a village", type: { web: "Website", mobile: "Mobile website" } },
+  hosteltr: { name: "Quillstead Hostel", cat: "hostel", desc: "an independent city hostel with dorms, private rooms and a shared kitchen", type: { web: "Website", mobile: "Mobile website" } },
+  agencytr: { name: "Hollimere Travel", cat: "travel-agency", desc: "an independent travel agency that plans holidays, honeymoons and group trips", type: { web: "Website", mobile: "Mobile website" } },
+  tourtr: { name: "Tarnwick Tours", cat: "tour-operator", desc: "a local tour operator with walking tours, food tours, boat trips and day trips", type: { web: "Website", mobile: "Mobile website" } },
+  camptr: { name: "Fernhallow Campground", cat: "campground", desc: "a campground with tent pitches, campervan pitches, cabins and glamping tents", type: { web: "Website", mobile: "Mobile website" } },
+  tourismtr: { name: "Visit Ardlowe Valley", cat: "tourism", desc: "a regional tourism and visitor information site for a valley of small towns", type: { web: "Website", mobile: "Mobile website" } },
   mentalhealth: { name: "Wrenhollow Mental Health", cat: "mental-health-clinic", desc: "a group outpatient mental health clinic", type: { web: "Website", mobile: "Mobile website" } },
 };
 

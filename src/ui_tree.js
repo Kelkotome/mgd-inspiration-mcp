@@ -204,6 +204,28 @@ export const INDUSTRIES = {
     ],
     appPatterns: [],
   },
+  // 25-Nov-2026 travel and hotels (templates r9, STAGED, not deployed; lead's pick, owner to confirm; stacked on r7 education + r8 automotive).
+  // Demand (Keyword Planner, worldwide, 25-Nov-2026, template terms): travel 1,900 (the hub, hubFirst), hotel 1,300, travel agency 480 (+ travel agent 170),
+  // tourism 480, resort 210, tour 210, hotel booking 260, bed and breakfast 90, hostel 70; WordPress: travel 1,000, hotel 590, travel agency 390; "website"
+  // forms: hotel website 18,100, tourism website 3,600, travel agency website 2,400, resort website 1,600 (+87 % YoY), bed and breakfast website 1,000,
+  // hostel website 1,000, campground website 480, glamping website 260, tour operator website 110 (+59 % 3 mo). hubFirst: no niche is named like the
+  // industry ("travel", "accommodation" -> the hub). hotel-website (n12, Halcyon Quay) and travel-website (n12, Driftmark Journeys, a tour operator) were
+  // flat patterns. hotel-website is the hotel niche; its hand-built homepage is not a signature (as law firm in r6, school in r7), so it stays a plain item.
+  // travel-website stays a flat n12 pattern (the build derives a niche's pattern as <niche>-website); its tour aliases moved to tour-operator-website.
+  travel: {
+    id: "travel", label: "Hotels and travel", hub: "travel-website-templates", seg: "travel", h1: "Hotel and travel website templates", hubFirst: true,
+    niches: [
+      ["hotel", "hotel-website", "Hotel", "hotel-website-template", "hotel"],
+      ["resort", "resort-website", "Resort", "resort-website-template", "resort"],
+      ["bed-and-breakfast", "bed-and-breakfast-website", "Bed and breakfast and guest house", "bed-and-breakfast-website-template", "bed-and-breakfast"],
+      ["hostel", "hostel-website", "Hostel", "hostel-website-template", "hostel"],
+      ["travel-agency", "travel-agency-website", "Travel agency", "travel-agency-website-template", "travel-agency"],
+      ["tour-operator", "tour-operator-website", "Tour operator", "tour-operator-website-template", "tour-operator"],
+      ["campground", "campground-website", "Campground and glamping", "campground-website-template", "campground"],
+      ["tourism", "tourism-website", "Tourism and destination", "tourism-website-template", "tourism"],
+    ],
+    appPatterns: [],
+  },
 };
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };

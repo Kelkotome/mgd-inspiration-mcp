@@ -92,6 +92,15 @@ const GLYPH = {
   spraygun: '<path d="M8 22h30v12H8z"/><path d="M38 26h10M48 22l10-4M48 28l12 0M48 34l10 4M18 34v8l-4 16h12l2-16v-8M14 22v-8h14v8"/>',
   towhook: '<path d="M4 46V30h22l6-10h12v26z"/><path d="M44 28l14-14M58 14v18a5 5 0 0 1-10 0"/><circle cx="14" cy="48" r="6"/><circle cx="36" cy="48" r="6"/><path d="M30 26h10"/>',
   tyre: '<circle cx="32" cy="32" r="26"/><circle cx="32" cy="32" r="12"/><circle cx="32" cy="32" r="4"/><path d="M32 6v8M32 50v8M6 32h8M50 32h8M14 14l6 6M44 44l6 6M50 14l-6 6M14 50l6-6"/>',
+  // 25-Nov-2026 travel and hotels (templates r9, staged)
+  bell: '<path d="M10 46h44M6 52h52"/><path d="M14 46a18 18 0 0 1 36 0"/><path d="M32 28v-6M27 22h10"/><path d="M22 38a10 10 0 0 1 6-6"/>',
+  palm: '<path d="M30 58c2-14 2-26 0-36"/><path d="M30 22c-6-8-16-8-22-4 8 0 14 2 18 6M30 22c4-9 14-12 22-9-8 2-14 6-17 10M30 22c-8-2-16 2-20 10 6-4 12-6 18-6M30 22c8-1 15 4 18 12-5-4-11-7-17-8"/><path d="M8 58h48"/>',
+  teapot: '<path d="M14 30h32v8a16 14 0 0 1-32 0z"/><path d="M46 32h4a6 6 0 0 1 0 12h-6M14 34l-8-6v6l8 8"/><path d="M22 30a8 6 0 0 1 16 0M30 22v2"/><path d="M12 56h36"/>',
+  bunk: '<path d="M10 8v50M54 8v50M10 22h44M10 44h44"/><rect x="14" y="16" width="16" height="6" rx="2"/><rect x="14" y="38" width="16" height="6" rx="2"/><path d="M46 22v22M46 28h8M46 36h8"/>',
+  suitcase: '<rect x="10" y="20" width="44" height="32" rx="5"/><path d="M24 20v-6h16v6M22 20v32M42 20v32"/><circle cx="18" cy="56" r="2"/><circle cx="46" cy="56" r="2"/>',
+  flag: '<path d="M16 58V8"/><path d="M16 10h30l-6 9 6 9H16"/><path d="M10 58h14"/><circle cx="16" cy="6" r="2"/>',
+  tent: '<path d="M4 54L32 10l28 44z"/><path d="M32 10v44M24 54l8-16 8 16"/><path d="M2 54h60M26 10l6 0"/>',
+  signpost: '<path d="M30 6v52"/><path d="M30 12h20l6 6-6 6H30M30 30H12l-6 6 6 6h18"/><path d="M22 58h16"/>',
   badge: '<rect x="14" y="14" width="36" height="44" rx="4"/><path d="M26 8h12v10H26z"/><circle cx="32" cy="32" r="6"/><path d="M22 50c1-6 5-9 10-9s9 3 10 9"/>',
   // 25-Nov-2026 education (templates r7, staged)
   schoolhouse: '<path d="M8 28L32 12l24 16"/><path d="M14 26v28h36V26M26 54V40h12v14M32 12V4l10 3-10 3"/>',

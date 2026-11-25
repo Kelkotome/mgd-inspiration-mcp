@@ -107,4 +107,8 @@ if sig and IND == "professional-services":
 if sig and IND == "education":
     for nid, pat, htmlSeg, seg in NICHES:
         s, _, nb = text(f"/ui/{HUB}/{htmlSeg}"); ck(not re.search(r"Alderbrook|Puddlewick", nb.split("Every screen", 1)[0]), f"{nid}: no n12/n13 homepage card")
+# templates r9 (25-Nov-2026, staged): the live n12 hotel (Halcyon Quay) homepage is not a signature either; travel-website (Driftmark Journeys) stays flat.
+if sig and IND == "travel":
+    for nid, pat, htmlSeg, seg in NICHES:
+        s, _, nb = text(f"/ui/{HUB}/{htmlSeg}"); ck(not re.search(r"Halcyon Quay|Driftmark", nb.split("Every screen", 1)[0]), f"{nid}: no n12 homepage card")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)

@@ -1,0 +1,41 @@
+#!/usr/bin/env node
+// Travel and hotels (templates r9, staged; stacked on r7 education + r8 automotive) MCP answers. usage: node tests/tr_mcp.mjs http://127.0.0.1:8996/inspiration
+const BASE = process.argv[2].replace(/\/$/, ""); let id = 1, fails = 0, n = 0;
+const call = async (name, args) => { const r = await fetch(`${BASE}/mcp`, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json, text/event-stream", "User-Agent": "curl/8.4.0" }, body: JSON.stringify({ jsonrpc: "2.0", id: id++, method: name === "tools/list" ? "tools/list" : "tools/call", params: name === "tools/list" ? {} : { name, arguments: args } }) }); const j = await r.json(); return name === "tools/list" ? j.result.tools : j.result.content.map((c) => c.text || "").join("\n"); };
+const T = (q, x = {}) => call("search_ui_screens", { query: q, ...x });
+const want = async (label, p, yes = [], no = []) => { const t = await p; n++; const bad = [...yes.filter((y) => !(y instanceof RegExp ? y.test(t) : t.includes(y))).map((y) => `missing ${y}`), ...no.filter((y) => (y instanceof RegExp ? y.test(t) : t.includes(y))).map((y) => `has ${y}`)]; console.log(`${bad.length ? "FAIL" : "ok  "} ${label}`); if (bad.length || process.env.SHOW) console.log(`   ${t.slice(0, process.env.SHOW ? 1500 : 500).replace(/\n/g, "\n   ")}`); if (bad.length) { fails++; console.log("   ->", bad.join("; ")); } };
+const W = "/ui/wordpress-themes/travel/", H = "/ui/travel-website-templates/";
+await want("hotel wordpress theme", T("hotel wordpress theme"), [`${W}hotel`, "Upload Theme", "not travel, legal or financial advice", `${H}hotel-website-template`], ["medical advice", "fair housing", "mechanical", "insurance or financial advice"]);
+await want("resort wordpress theme", T("resort wordpress theme"), [`${W}resort`]);
+await want("bed and breakfast wordpress theme", T("bed and breakfast wordpress theme"), [`${W}bed-and-breakfast`]);
+await want("hostel wordpress theme", T("hostel wordpress theme"), [`${W}hostel`]);
+await want("travel agency wordpress theme", T("travel agency wordpress theme"), [`${W}travel-agency`]);
+await want("tour operator wordpress theme", T("tour operator wordpress theme"), [`${W}tour-operator`]);
+await want("campground wordpress theme", T("campground wordpress theme"), [`${W}campground`]);
+await want("tourism wordpress theme", T("tourism wordpress theme"), [`${W}tourism`]);
+await want("pattern + platform param", call("search_ui_screens", { pattern: "hostel-website", platform: "wordpress" }), [`${W}hostel`]);
+await want("free wordpress block theme lists travel", T("free wordpress block theme"), [/healthcare block themes/, /automotive block themes/, /hotels and travel block themes/]);
+await want("hotel template gets the niche", T("hotel website template"), [`${H}hotel-website-template`, "6 distinct designs"], ["template hub"]);
+await want("travel template gets the hub", T("travel website template"), ["Hotels and travel template hub", "/ui/travel-website-templates"]);
+await want("accommodation template gets the hub", T("accommodation website template"), ["Hotels and travel template hub"]);
+await want("b&b template", T("b&b website template"), [`${H}bed-and-breakfast-website-template`]);
+await want("guest house template", T("guest house website template"), [`${H}bed-and-breakfast-website-template`]);
+await want("backpacker hostel is hostel, not hotel", T("backpacker hostel website template"), [`${H}hostel-website-template`]);
+await want("travel agent template", T("travel agent website template"), [`${H}travel-agency-website-template`]);
+await want("walking tours template", T("walking tours website template"), [`${H}tour-operator-website-template`, "7 distinct designs"]);
+await want("tour company template", T("tour company website template"), [`${H}tour-operator-website-template`]);
+await want("glamping template", T("glamping website template"), [`${H}campground-website-template`]);
+await want("campsite template", T("campsite website template"), [`${H}campground-website-template`]);
+await want("beach resort template", T("beach resort website template"), [`${H}resort-website-template`]);
+await want("tourism board template", T("tourism board website template"), [`${H}tourism-website-template`]);
+await want("vacation rental stays real estate", T("vacation rental website template"), ["/ui/real-estate-website-templates/vacation-rental-website-template"], [H]);
+await want("wedding venue stays weddings", T("wedding venue website template"), ["/ui/wedding-website-templates/wedding-venue-website-template"], [H]);
+await want("car rental stays automotive", T("car rental website template"), ["/ui/automotive-website-templates/car-rental-website-template"], [H]);
+await want("shopify hotel theme, honest none", T("shopify hotel theme"), ["no Shopify templates", `${H}hotel-website-template`], ["download/wordpress"]);
+await want("automotive unchanged", T("car dealer wordpress theme"), ["/ui/wordpress-themes/automotive/car-dealership", "not mechanical, legal or financial advice"], ["not travel"]);
+await want("education unchanged", T("school website template"), ["/ui/education-website-templates/school-website-template"], [H]);
+await want("healthcare unchanged", T("cardiology WordPress theme"), ["/ui/wordpress-themes/healthcare/cardiology", "not medical advice"], ["not travel"]);
+for (const q of ["flight booking app", "hotel booking app screen", "travel app onboarding", "trip itinerary screen", "map with pins"]) await want(`not hijacked: ${q}`, T(q), [/Get code: get_ui_screen_code|No screen in the library/], ["block themes", "travel-website-templates/"]);
+await want("list_ui_patterns themes", call("list_ui_patterns", { kind: "themes" }), ["TEMPLATE TREE, HOTELS AND TRAVEL", `${W}tour-operator`, "TEMPLATE TREE, AUTOMOTIVE", "TEMPLATE TREE, EDUCATION", "TEMPLATE TREE, HEALTHCARE"]);
+const tools = await call("tools/list"); n++; console.log(`tools/list: ${tools.length}`); if (tools.length !== 113) { fails++; console.log("FAIL tool count changed"); }
+console.log(`${n} checks, ${fails} failed`); process.exit(fails ? 1 : 0);

@@ -30,7 +30,7 @@ school website | school-website
 nonprofit website template | nonprofit-website
 charity donation website | nonprofit-website
 travel website template | travel-website
-tour operator website | travel-website
+tour operator website | travel-website tour-operator-website
 hotel website template | hotel-website
 boutique hotel website with booking bar | hotel-website
 saas landing page template | saas-landing-page

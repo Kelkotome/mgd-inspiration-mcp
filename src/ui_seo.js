@@ -279,6 +279,15 @@ export const PATTERN_SEO = {
   "auto-body-website": ["auto-body-shop-website-template", "Auto body and collision repair website templates"],
   "towing-website": ["towing-website-template", "Towing and roadside help website templates"],
   "tire-shop-website": ["tire-shop-website-template", "Tire shop website templates"],
+  // 25-Nov-2026 travel and hotels (templates r9, staged): new niches. hotel-website keeps its n12 slug (hotel-website-template, 301s to the nested hotel page);
+  // travel-website (n12 Driftmark Journeys) stays a flat pattern.
+  "resort-website": ["resort-website-template", "Resort website templates"],
+  "bed-and-breakfast-website": ["bed-and-breakfast-website-template", "Bed and breakfast and guest house website templates"],
+  "hostel-website": ["hostel-website-template", "Hostel website templates"],
+  "travel-agency-website": ["travel-agency-website-template", "Travel agency website templates"],
+  "tour-operator-website": ["tour-operator-website-template", "Tour operator website templates"],
+  "campground-website": ["campground-website-template", "Campground and glamping website templates"],
+  "tourism-website": ["tourism-website-template", "Tourism and destination website templates"],
   // UI components round 1 (7-Nov-2026; Keyword Planner "ui design" + "html css" + "examples", deploy-bundle-2026-11-07/components-audit.md)
   tabs: ["tabs-ui", "Tabs UI design examples"],
   cards: ["card-ui", "Card UI design examples"],

@@ -1,0 +1,123 @@
+{
+ "bed-and-breakfast": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.419,
+  "failedPairs": []
+ },
+ "campground": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.733,
+  "maxLayoutOverlap": 0.417,
+  "failedPairs": []
+ },
+ "hostel": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.427,
+  "failedPairs": []
+ },
+ "hotel": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.396,
+  "failedPairs": []
+ },
+ "resort": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.399,
+  "failedPairs": []
+ },
+ "tour-operator": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger",
+   "timetable"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.391,
+  "failedPairs": []
+ },
+ "tourism": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.482,
+  "failedPairs": []
+ },
+ "travel-agency": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.374,
+  "failedPairs": []
+ }
+}

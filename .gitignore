@@ -86,3 +86,7 @@ wrangler.au.jsonc
 ui-screens/out-r2-tpl-r8
 au-e2e.*
 au-last-dev.log
+wrangler.tr.jsonc
+ui-screens/out-r2-tpl-r9
+tr-e2e.*
+tr-last-dev.log
