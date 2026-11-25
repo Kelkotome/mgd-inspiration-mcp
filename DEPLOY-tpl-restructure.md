@@ -14,17 +14,17 @@ This branch contains r7, r8, r9 and trfix code. Order:
 
 ## What changes
 
-- **7 top categories, standalone pages (not URL parents), 6 live:**
+- **7 top categories, standalone pages (not URL parents), 5 live** (owner 25-Nov ~23:10: Learning and community held; labels = H1 names):
 
   | Category | URL `/inspiration/ui/...` | H1 |
   |---|---|---|
   | Health and wellness | `health-and-wellness-website-templates` | Health and wellness website templates |
-  | Food, travel and hospitality | `food-website-templates` | Food and hospitality website templates |
-  | Property, trades and automotive | `property-and-trades-website-templates` | Property and trades website templates |
-  | Business and technology | `business-website-templates` | Business website templates |
-  | Creative, media and events | `creative-website-templates` | Creative website templates |
-  | Learning and community | `learning-and-community-website-templates` | Learning and community website templates |
-  | Shops and online stores | `online-store-website-templates` | (404 until r11 ecommerce) |
+  | Food and hospitality | `food-website-templates` | Food and hospitality website templates |
+  | Property and trades | `property-and-trades-website-templates` | Property and trades website templates |
+  | Business | `business-website-templates` | Business website templates |
+  | Creative | `creative-website-templates` | Creative website templates |
+  | Learning and community | `learning-and-community-website-templates` | HELD: 404, not in the sitemap or any link; Education crumbs go Website templates › Education |
+  | Online store | `online-store-website-templates` | (404 until r11 ecommerce) |
 
   Content is generated from the tree (counts computed, never typed): industry table, "Looking for a more specific type?" child-link module, niche-labelled template cards (theme name + niche), "Which sections each kind of site needs", how to choose, FAQ (FAQPage), "Can't find your kind of site? Build it with your AI" (MCP) fallback, other categories. CollectionPage + ItemList + BreadcrumbList.
 - **Hierarchy without new paths.** Breadcrumbs, visible and in BreadcrumbList, use one root label, "Website templates" (it was "Templates" on industry and niche pages and "Free website templates" on the hub). HTML: `UI screens › Website templates › Health and wellness › Healthcare › Medical › Cardiology`, on the unchanged flat URL `/ui/healthcare-website-templates/cardiology-website-template`. WordPress: `UI screens › WordPress themes › Healthcare › Medical › Cardiology › <theme>`.
@@ -32,7 +32,7 @@ This branch contains r7, r8, r9 and trfix code. Order:
 - The Medical and Dental pages carry a "Looking for a more specific medical / dental type?" module. Member pages get a "Part of medical" strip with their siblings. Every niche page gets a "More <industry> templates" strip. Industry hubs get a "Part of <category>" link and the build-with-your-AI fallback. The hub `/ui/website-templates` gets a "By category" block.
 - Filters stay query parameters, and their canonical is the unfiltered page (unchanged; now tested on category pages too). No template page is paginated: the gallery uses "Show more" on one URL.
 - Each category page also has a "<Category> WordPress themes" section and one sub-type FAQ (content gap 25-Nov, `docs_updates/template-content-gap-2026-11-25.md`).
-- Sitemap: + the 6 category URLs. Every other URL is unchanged by this branch. (The flat travel page leaves the sitemap and 301s to the hub through trfix, which is already live by then.)
+- Sitemap: + the 5 live category URLs. Every other URL is unchanged by this branch. (The flat travel page leaves the sitemap and 301s to the hub through trfix, which is already live by then.)
 - Not in this round: the other flat-page 301s (education, salon, clinic, portfolio-website...). They ship in each industry's fix bundle.
 
 ## Tests (local, 25-Nov)
@@ -68,16 +68,17 @@ Before starting: `pgrep -fl '[w]rangler deploy|[r]un1[5-9][0-9]_brands|[p]ubseq_
    python3 tests/hc_routes.py https://madegooddesigns.com/inspiration
    for I in real-estate restaurant wedding portfolio beauty-fitness construction professional-services education automotive travel; do IND=$I python3 tests/hc_routes.py https://madegooddesigns.com/inspiration; done
    node tests/hc_mcp.mjs https://madegooddesigns.com/inspiration
-   for s in health-and-wellness food property-and-trades business creative learning-and-community; do curl -s -o /dev/null -w "$s %{http_code}\n" -A curl/8.4.0 https://madegooddesigns.com/inspiration/ui/$s-website-templates; done
+   for s in health-and-wellness food property-and-trades business creative; do curl -s -o /dev/null -w "$s %{http_code}\n" -A curl/8.4.0 https://madegooddesigns.com/inspiration/ui/$s-website-templates; done
    zsh ../deploy-bundle-2026-11-25/guard_checks.sh
    ```
 
 ## Rollback
 
-- `npx wrangler rollback <ROLLBACK id>`, then the purge from step 4. The 6 category URLs then 404 again and the crumbs go back to the old labels; no other URL is affected.
+- `npx wrangler rollback <ROLLBACK id>`, then the purge from step 4. The 5 category URLs then 404 again and the crumbs go back to the old labels; no other URL is affected.
 - **No D1 or R2 change is needed** (none was made). Revert the merge in `../mgd-inspiration` and push, so the next deploy does not ship it again.
 
 ## After go-live
 
-- Resubmit `https://madegooddesigns.com/inspiration/ui/sitemap.xml` in Google Search Console and Bing Webmaster Tools. This is the owner's step, because the GSC token is read-only and currently expired. The sitemap now lists the 6 category URLs (the 7th, online-store, joins with r11).
-- Optional: an IndexNow ping for the 6 category URLs.
+- Resubmit `https://madegooddesigns.com/inspiration/ui/sitemap.xml` in Google Search Console and Bing Webmaster Tools. This is the owner's step, because the GSC token is read-only and currently expired. The sitemap now lists the 5 live category URLs (online-store joins with r11, learning-and-community when community sets exist).
+- Optional: an IndexNow ping for the 5 category URLs.
+- Check that `learning-and-community-website-templates` returns 404 live (held).
