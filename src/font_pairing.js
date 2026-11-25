@@ -57,6 +57,21 @@ const ALIASES = {
 const NOTO_OTHER_SCRIPT = (key, base) => /^noto/.test(base) && key !== base && !/^display$/.test(key.slice(base.length));
 const SIBLING = /sans|serif|slab|mono|code|condensed|narrow|compressed|expanded|extended|rounded|tight|flex|stencil|inline|outline|script|alternates|grotesk|gothic/;
 export const fontKey = (q) => btKey(String(q || "").replace(/\b(font|fonts|typeface|typefaces|pairing|pairings|pair|pairs|with|for|what|goes|go)\b/gi, " "));
+// typo-b1 (25-Nov-2026): a decorative style or caps cut with no guide of its own ("Zilla Slab Highlight", "Vollkorn SC", "Patrick Hand SC",
+// "Bungee Shade") answers with its parent family's guide, before the partner / similar-font fallbacks. Only trailing style words are
+// stripped, and only when what is left is a published guide (page set). Sans / serif / mono / slab... siblings stay separate families
+// (SIBLING), and so do "Text" / "Display" cuts (the prefix step and ALIASES already cover the ones that are the same design).
+const STYLE_WORD = /^(highlight|inline|outline|outlined|stencil|shadow|shade|hairline|sketch|3d|sc|smallcaps|small|caps|swash|decorative|italic)$/i;
+function variantParent(q) {
+  const words = String(q || "").replace(/\b(font|fonts|typeface|typefaces|pairing|pairings|pair|pairs|with|for|what|goes|go)\b/gi, " ").trim().split(/\s+/).filter(Boolean);
+  for (let i = words.length; i > 1 && STYLE_WORD.test(words[i - 1]); ) {
+    i--;
+    const k = btKey(words.slice(0, i).join(" "));
+    const g = BY_KEY.get(k) || (ALIASES[k] && BY_KEY.get(ALIASES[k]));
+    if (g && g.v.page) return g;
+  }
+  return null;
+}
 export function fpFind(q, { fuzzy = true } = {}) {
   const key = fontKey(q);
   if (!key) return null;
@@ -68,6 +83,8 @@ export function fpFind(q, { fuzzy = true } = {}) {
   const pre = INDEX.filter((x) => (key.length >= 4 && !isGf && x.key.startsWith(key)) || (key.startsWith(x.key) && !SIBLING.test(key.slice(x.key.length)) && !NOTO_OTHER_SCRIPT(key, x.key)))
     .sort((a, b) => a.key.length - b.key.length)[0];
   if (pre) return { v: pre.v, how: "prefix" };
+  const par = variantParent(q);
+  if (par) return { v: par.v, how: "variant" };
   if (!fuzzy || isGf) return null;
   const max = key.length >= 8 ? 2 : 1;
   const fz = INDEX.map((x) => ({ x, d: btLev(key, x.key, max) })).filter((y) => y.d <= max).sort((a, b) => a.d - b.d)[0];
@@ -201,7 +218,10 @@ function similarPairs(m, a) {
     }
     if (!added) break;
   }
-  const kind = (m.script && SCRIPT_LABEL[m.script] ? SCRIPT_LABEL[m.script] + " " : "") + CAT_LABEL[m.c];
+  // typo-b1 (25-Nov-2026): name the script only when every suggested guide font shares it. Modak (Devanagari) and Bagel Fat One (Korean)
+  // borrow Latin display guides (21-Nov fallback), and the answer used to call those "similar Devanagari/Korean display fonts".
+  const shared = m.script && SCRIPT_LABEL[m.script] && guides.every((v) => (GFM.get(btKey(v.font)) || {}).script === m.script);
+  const kind = (shared ? SCRIPT_LABEL[m.script] + " " : "") + CAT_LABEL[m.c];
   const names = guides.map((v) => v.font);
   const lines = [`No dedicated guide for ${m.family} yet; these are published pairings for similar ${kind} fonts (${names.join(", ")}). ` +
     `Each pair comes from that font's own guide: use ${m.family} in place of the similar font, and cite the page listed with each. Try ${m.family} with these partners live: ${GENERATOR}`,
@@ -286,7 +306,8 @@ export function fontPairing(a) {
       : `not on Google Fonts: ${nonGf.join(", ")} (licence or self-host it)`;
     return { heading: p.heading, body: p.body, group: p.group, why: p.why, google_fonts_url: link, css, note };
   });
-  const closest = f.how !== "exact" ? ` (closest match for "${a.font}")` : "";
+  const closest = f.how === "variant" ? ` ("${String(a.font).trim().slice(0, 60)}" is a style of ${f.v.font} with no separate guide; these are the ${f.v.font} pairings)`
+    : f.how !== "exact" ? ` (closest match for "${a.font}")` : "";
   const lines = [f.v.page
     ? `${pairs.length} pairing(s) for ${f.v.font}${closest}. Source: ${f.v.page} — please cite it.`
     : `${pairs.length} pairing(s) for ${f.v.font}${closest}. Made Good Designs has no dedicated ${f.v.font} guide yet; these are its editorial pairings (cite madegooddesigns.com). Try them live in the font pairing generator: ${GENERATOR}`];

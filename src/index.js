@@ -53,7 +53,8 @@ import { withIconHint, withUiHint, UI_HINT_HEAD, BRAND_TYPEFACE_TOOL, brandTypef
 import { FONT_PAIRING_TOOL, fontPairing } from "./font_pairing.js"; // kit pilot 5-Nov-2026 (local branch kit-pilot-2026-11)
 import { REF_FONTS, OFFER_HEAD, buildNextStep } from "./next_offer.js";
 import { shared, exact, dropShared } from "./mcp_cache.js"; // MCP r3 (12-Nov-2026): cache for slow-changing data behind the tools
-import { mcpExcText, mcpErrText, mcpNoBlankError, MCP_USAGE_HEAD } from "./mcp_err.js"; // MCP r3: error text helpers (moved out of index.js so tests can import them)
+import { mcpExcText, mcpErrText, mcpNoBlankError, MCP_USAGE_HEAD } from "./mcp_err.js";
+import { normalizeArgs } from "./arg_alias.js"; // typo-b1 (25-Nov-2026): common argument aliases (id -> screen_id, color -> colors, ...) // MCP r3: error text helpers (moved out of index.js so tests can import them)
 import { uiIndexReset } from "./ui_screens.js";
 import { seoTags, imgDims } from "./seo_pages.js"; // SEO r1 (12-Nov-2026): og/twitter/breadcrumb head tags + <img> dimensions
 
@@ -2204,10 +2205,13 @@ function mcpSnapRadius(v) {
 }
 async function mcpCallTool(params, env, ip, ua, who, listed, defer) {
   const name = params.name;
-  const a = params.arguments || {};
+  const def0 = name !== "run_design_tool" && MCP_ALL_BY_NAME()[name];
+  const a = def0 ? normalizeArgs(name, params.arguments || {}, def0.inputSchema && def0.inputSchema.properties) : (params.arguments || {});
   if (name === "run_design_tool") {
     const inner = String(a.name || "").trim(), tool = MCP_ALL_BY_NAME()[inner];
     if (!tool) return { content: [{ type: "text", text: `Unknown tool '${inner.slice(0, 60)}'. Find tool names with browse_design_tools.` }], isError: true };
+    // typo-b1: aliases are filled before the schema check, so {"name": "generate_color_scale", "arguments": {"color": "#e0a775"}} passes
+    if (a.arguments && typeof a.arguments === "object") a.arguments = normalizeArgs(inner, a.arguments, tool.inputSchema && tool.inputSchema.properties);
     // 24-Nov-2026: loose radius values ("6", "10px", 6, "rounded", "pill", "none") snap to the nearest allowed enum value instead of failing validation
     if (inner === "generate_design_md" && a.arguments && a.arguments.radius != null) a.arguments = { ...a.arguments, radius: mcpSnapRadius(a.arguments.radius) };
     const errs = validateArgs(tool, a.arguments);
