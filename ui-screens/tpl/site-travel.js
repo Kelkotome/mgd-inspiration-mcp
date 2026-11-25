@@ -1,6 +1,8 @@
 /* Travel website template (Driftmark Journeys — fictional small-group tour operator). Full responsive home page:
    nav, panoramic hero with an overlapping trip-search panel, featured trips with days/group/price/difficulty,
-   destination mosaic, how a trip works timeline, responsible-travel facts, traveller notes, enquiry + brochure form, footer.
+   destination mosaic, how a trip works timeline, how-we-run-trips notes, enquiry + brochure form, footer. Owner follow-up 25-Nov-2026 (r9 word
+   rules, tests/tr_lint.py TR_LINT_HOMEPAGES=1): fictional notice, no real countries or regions, $00 sample prices, no invented counts,
+   percentages, years or traveller notes, deposit, cancellation, licence and protection as add-your-own, official travel advice line.
    Landscapes are inline SVG scenes in fixed natural tones. */
 const { ic, esc } = require("../lib");
 const K = require("../sitekit");
@@ -109,11 +111,11 @@ const scene = (kind, id, label, w = 600, h = 400) => {
 };
 
 const TRIPS = [
-  ["fjord", "Fjords by sea kayak", "Western Norway", "9", "8–12", "$3,480", 3, "Paddle 10–14 km a day between farm guesthouses. No kayak experience needed, a day of training first.", "Jun–Aug"],
-  ["dunes", "Desert camps of the south", "Morocco", "8", "6–10", "$2,140", 2, "Camel-assisted walks of 3–4 hours, two nights in a fixed camp, a cooking day in a village kitchen.", "Oct–Apr"],
-  ["alps", "Hut to hut, the high route", "Austria & Italy", "11", "8–12", "$3,920", 4, "6–8 hours on foot each day with up to 1,100 m of climbing. Luggage meets you every second night.", "Jul–Sep"],
+  ["fjord", "Fjords by sea kayak", "The northern fjord coast", "9", "8–12", "$00", 3, "Paddle 10–14 km a day between farm guesthouses. No kayak experience needed, a day of training first.", "Jun–Aug"],
+  ["dunes", "Desert camps of the south", "The southern desert", "8", "6–10", "$00", 2, "Camel-assisted walks of 3–4 hours, two nights in a fixed camp, a cooking day in a village kitchen.", "Oct–Apr"],
+  ["alps", "Hut to hut, the high route", "A two-country mountain traverse", "11", "8–12", "$00", 4, "6–8 hours on foot each day with up to 1,100 m of climbing. Luggage meets you every second night.", "Jul–Sep"],
 ];
-const DESTS = [["coast", "The Adriatic coast", "14 trips", "Walking & island hops"], ["terraces", "Northern Vietnam", "6 trips", "Rice terraces"], ["forest", "Patagonian forests", "5 trips", "Trekking"], ["alps", "The Dolomites", "8 trips", "Huts"], ["fjord", "Iceland’s east", "4 trips", "Coast"]];
+const DESTS = [["coast", "The island coast", "Walking trips", "Island hops"], ["terraces", "The northern hill country", "Food trips", "Rice terraces"], ["forest", "The southern forests", "Trekking trips", "Trekking"], ["alps", "The limestone peaks", "Hut trips", "Huts"], ["fjord", "The eastern fjords", "Paddling trips", "Coast"]];
 const diff = (n) => `<span class="tr-diff" aria-label="Difficulty ${n} of 5">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</span>`;
 
 const web = (p, st) => K.page(st, `${K.nav(p, ["Trips", "Destinations", "How it works", "Travel lightly"], "Enquire", "Get the brochure")}
@@ -121,23 +123,23 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Trips", "Destinations", "How it 
 <section class="tr-hero" id="top"><div class="sk-wrap">
   <div class="sk-photo tr-pano">${scene("fjord", "hero", "Sea kayaks on a calm fjord below steep green mountains", 1104, 500)}</div>
   <div class="card tr-panel">
-    <div class="sk-stack" style="gap:16px"><span class="sk-eyebrow">Small groups · 12 travellers max</span>
+    <div class="sk-stack" style="gap:16px"><span class="sk-eyebrow">Small groups · up to twelve per departure</span>
       <h1>Small groups, slow routes, leaders who live there</h1>
-      <p class="muted" style="font-size:16px">${esc(p.name)} runs 46 trips in 19 countries with local leaders who live where you’re going.</p></div>
+      <p class="muted" style="font-size:16px">${esc(p.name)} runs small-group walking, paddling and food trips with local leaders who live where you’re going.</p></div>
     <div class="sk-stack" style="gap:14px;justify-items:stretch">
       <form class="tr-search" aria-label="Find a trip">
-        <div class="sk-field"><label for="tr-where">Destination</label><div class="sk-input" id="tr-where">Anywhere in Europe ${ic("chevdown", 16)}</div></div>
+        <div class="sk-field"><label for="tr-where">Destination</label><div class="sk-input" id="tr-where">Anywhere ${ic("chevdown", 16)}</div></div>
         <div class="sk-field"><label for="tr-when">Month</label><div class="sk-input" id="tr-when">June 2027 ${ic("calendar", 16)}</div></div>
         <div class="sk-field"><label for="tr-who">Travellers</label><div class="sk-input" id="tr-who">2 adults ${ic("users", 16)}</div></div>
-        <button class="btn primary sk-btn-lg" type="button">${ic("search", 16)} Show 18 trips</button>
+        <button class="btn primary sk-btn-lg" type="button">${ic("search", 16)} Show trips</button>
       </form>
-      <div class="tr-pills"><span>${ic("check", 15)} Free changes up to 60 days out</span><span>${ic("check", 15)} Deposit from $300</span><span>${ic("check", 15)} Solo rooms on most dates</span></div>
+      <div class="tr-pills"><span>${ic("check", 15)} Change terms: add your own</span><span>${ic("tag", 15)} Sample deposit $00: add your own</span><span>${ic("check", 15)} Solo rooms on most dates</span></div>
     </div>
   </div>
 </div></section>
 
 <section class="sk-sec sk-alt" id="trips"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Featured trips · 2027 dates open</span><h2 class="sk-h2">Three trips with spaces this summer</h2></div><a class="btn sk-btn-lg" href="#">All 46 trips ${ic("arrow", 16)}</a></div>
+  <div class="sk-head"><div><span class="sk-eyebrow">Featured trips · 2027 dates open</span><h2 class="sk-h2">Three trips with spaces this summer</h2><p class="muted" style="font-size:14px;margin-top:6px">Sample prices: add your own.</p></div><a class="btn sk-btn-lg" href="#">All trips ${ic("arrow", 16)}</a></div>
   <div class="tr-trips sk-rail">${TRIPS.map(([k, t, where, days, grp, price, d, blurb, season], i) => `<article class="card tr-trip"><div class="sk-photo">${scene(k, `t${i}`, `${t}, ${where}`)}<span class="sk-cap">${esc(season)}</span></div>
     <div class="tr-trip-b"><div class="muted" style="font-size:13px;display:flex;align-items:center;gap:6px">${ic("pin", 14)} ${esc(where)}</div><h3 class="sk-h3">${esc(t)}</h3><p class="muted" style="font-size:14px">${esc(blurb)}</p>
     <div class="tr-meta"><div><b class="num">${days}</b>days</div><div><b class="num">${grp}</b>people</div><div><b>Level</b>${diff(d)}</div></div>
@@ -151,22 +153,17 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Trips", "Destinations", "How it 
 
 <section class="sk-sec sk-tight sk-alt" id="how-it-works"><div class="sk-wrap">
   <div class="sk-head"><div><span class="sk-eyebrow">How a trip works</span><h2 class="sk-h2">From first question to the last dinner together</h2></div></div>
-  <div class="tr-steps">${[["Ask us anything", "Tell us the trip and dates. A planner who has done the route replies within one working day."], ["Hold your place", "A $300 deposit holds your spot for 14 days while you sort flights and leave."], ["Get ready", "Six weeks out you get a kit list, a training plan for the level and a video call with your leader."], ["Travel together", "Meet the group at the start hotel. Meals, transfers, guides and luggage moves are covered."]].map(([t, d]) => `<div class="tr-step"><h3 class="sk-h3">${t}</h3><p class="muted" style="font-size:14px">${d}</p></div>`).join("")}</div>
+  <div class="tr-steps">${[["Ask us anything", "Tell us the trip and dates. A planner who has done the route replies within one working day."], ["Hold your place", "Add your own deposit and booking terms here (sample deposit: $00)."], ["Get ready", "Six weeks out you get a kit list, a training plan for the level and a video call with your leader. Check official travel advice and entry requirements before you book."], ["Travel together", "Meet the group at the start hotel. Meals, transfers, guides and luggage moves are covered."]].map(([t, d]) => `<div class="tr-step"><h3 class="sk-h3">${t}</h3><p class="muted" style="font-size:14px">${d}</p></div>`).join("")}</div>
 </div></section>
 
 <section class="sk-sec" id="travel-lightly"><div class="sk-wrap tr-resp">
-  <div class="sk-stack" style="gap:18px"><span class="sk-eyebrow">Travel lightly</span><h2 class="sk-h2">How we run trips, in plain numbers</h2>
-    <p class="muted" style="font-size:16px">We publish these each January for the year before. They are counts, not promises, and some years they go the wrong way.</p>
+  <div class="sk-stack" style="gap:18px"><span class="sk-eyebrow">Travel lightly</span><h2 class="sk-h2">How we run trips</h2>
+    <p class="muted" style="font-size:16px">Sample content: these lines show the layout. Add your own figures once you have them, and say which year they cover.</p>
     <div class="sk-photo" style="aspect-ratio:2/1;width:100%">${scene("terraces", "resp", "Terraced fields on a hillside with a footpath")}</div></div>
-  <div class="tr-facts">${[["12", "Maximum group size on every departure, so we fit in family guesthouses rather than large hotels."], ["78%", "of nights in 2025 were in locally owned places to stay, up from 71% the year before."], ["31", "trips reachable by train from a major European hub. We list the rail route on each trip page."], ["$40", "per traveller goes to a project picked by the local leader, shown on your final invoice."], ["2", "trips paused in 2025 after leaders told us visitor numbers on the route had grown too fast."]].map(([n, t]) => `<div class="tr-fact"><span class="num">${n}</span><p class="muted">${t}</p></div>`).join("")}</div>
+  <div class="tr-facts">${[["Small", "groups, so trips fit family guesthouses rather than large hotels."], ["Local", "leaders plan each route with us every winter."], ["Rail", "routes listed on each trip page where there is one."], ["$00", "sample amount per traveller for a project the local leader picks: add your own."], ["Yours", "Add your own figures here, with the year they cover."]].map(([n, t]) => `<div class="tr-fact"><span class="num">${n}</span><p class="muted">${t}</p></div>`).join("")}</div>
 </div></section>
 
-<section class="sk-sec sk-tight sk-alt"><div class="sk-wrap">
-  <div class="sk-head"><div><span class="sk-eyebrow">Traveller notes</span><h2 class="sk-h2">Written after the trip, not before</h2></div></div>
-  <div class="tr-notes sk-rail">${[["I booked the fjords trip on my own and was worried about the paddling. The training day settled that, and by day three I was the one asking for the longer crossing.", "Ellen M.", "Fjords by sea kayak, 2025"], ["Our leader Youssef had us cooking tagine with his aunt. That afternoon is what we still talk about at home.", "Raj & Simone K.", "Desert camps, 2025"], ["Level 4 means it. Hard days, very good huts, and the luggage transfer made it doable at 61.", "Tomasz W.", "Hut to hut, 2024"]].map(([q, n, t]) => `<figure class="card tr-note"><span class="badge">${esc(t)}</span><q>${esc(q)}</q><figcaption class="sk-row" style="gap:10px"><span class="avatar" style="width:34px;height:34px">${n.split(/[ &]+/).map((w) => w[0]).join("").slice(0, 2)}</span><b>${esc(n)}</b></figcaption></figure>`).join("")}</div>
-</div></section>
-
-<section class="sk-sec sk-tight" id="enquire"><div class="sk-wrap">
+<section class="sk-sec sk-tight sk-alt" id="enquire"><div class="sk-wrap">
   <div class="card tr-enq">
     <div class="tr-enq-side"><span class="sk-eyebrow">Plan with a person</span><h2 class="sk-h2" style="font-size:calc(32px * var(--hs))">Ask about a trip or get the 2027 brochure</h2>
       <p class="muted">84 pages of routes, day-by-day plans and honest difficulty notes. Posted free or sent as a PDF.</p>
@@ -182,10 +179,10 @@ const web = (p, st) => K.page(st, `${K.nav(p, ["Trips", "Destinations", "How it 
   </div>
 </div></section>
 </main>
-${K.footer(p, "Small-group walking, paddling and food trips with local leaders, since 2012.", [["Trips", ["Walking & trekking", "Paddling", "Food & culture", "Private departures"]], ["Plan", ["Dates & prices", "Booking conditions", "Travel insurance", "Brochure"]], ["Company", ["Our leaders", "Travel lightly report", "Careers", "Contact"]]], `© 2026 ${p.name}. Prices per person, twin share.`)}`, CSS);
+${K.footer(p, "Small-group walking, paddling and food trips with local leaders.", [["Trips", ["Walking & trekking", "Paddling", "Food & culture", "Private departures"]], ["Plan", ["Dates & prices", "Booking conditions", "Official travel advice", "Brochure"]], ["Company", ["Our leaders", "How we run trips", "Careers", "Contact"]]], `© 2026 ${p.name}. Fictional tour operator created for this template. Names, people, trips, prices, dates and places are sample content and general information only, not travel, legal or financial advice. Sample prices per person, twin share. Licence, registration, bonding and financial protection details: add your own here. Booking, deposit and cancellation terms: add your own here. Check official travel advice and entry requirements before you travel.`)}`, CSS);
 
 module.exports = {
   "travel-website": K.def("travel", "Travel website",
-    "a full small-group tour operator home page: navigation with enquire and brochure buttons, a panoramic landscape hero with an overlapping destination/month/travellers trip search, featured trip cards with days, group size, difficulty level and from-price, a destination mosaic, a four-step how-a-trip-works timeline, responsible-travel facts in plain numbers, traveller notes, an enquiry and brochure request form and a footer",
-    ["navigation-header", "hero", "search-form", "trip-cards", "price-list", "difficulty-rating", "destination-grid", "gallery", "steps", "timeline", "stats", "testimonials", "contact-form", "footer", "travel", "tour-operator"], web),
+    "a full small-group tour operator home page: navigation with enquire and brochure buttons, a panoramic landscape hero with an overlapping destination/month/travellers trip search, featured trip cards with days, group size, difficulty level and from-price, a destination mosaic, a four-step how-a-trip-works timeline, how-we-run-trips notes, an enquiry and brochure request form and a footer",
+    ["navigation-header", "hero", "search-form", "trip-cards", "price-list", "difficulty-rating", "destination-grid", "gallery", "steps", "timeline", "contact-form", "footer", "travel", "tour-operator"], web),
 };

@@ -48,4 +48,15 @@ for nid, pat, seg, wseg in NICHES:
         z = d["theme"]; s, h, zb = fetch(f"/ui/download/wordpress/{z['slug']}.zip")
         t(f"zip {z['slug']} sha256", s == 200 and hashlib.sha256(zb).hexdigest() == z["sha256"], (s, h.get("content-type"), len(zb)))
         if i == 0: s, h, _ = fetch(f"/img/tpl/wordpress/{z['slug']}/{z['version']}/shot-1280.webp", "HEAD"); t(f"shot {z['slug']}", s == 200 and "image/webp" in h.get("content-type", ""), (s, h.get("content-type")))
+# owner 25-Nov: the flat travel-website page now 301s to the hub in one hop
+for old in ["/ui/travel-website-template", "/ui/travel-website", "/ui/travel-website-template/"]:
+    s, h, _ = fetch(old); loc = h.get("location", ""); t(f"{old} one 301 to the hub", s == 301 and loc.split("/inspiration", 1)[-1] == f"/ui/{HUB}", (s, loc))
+# owner 25-Nov follow-up (tests/tr_fix_bundle.py, after d1_apply_trfix.sh): the n12 Halcyon Quay and Driftmark homepages carry the r9 notice, $00 prices, no old wording.
+# TRFIX_IDS=<id,id,...> (default: the web-minimal ids read from the bundle SQL)
+_sql = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "deploy-bundle-2026-11-25", "tpl-trfix.sql")
+_ids = (os.environ.get("TRFIX_IDS") or "").split(",") if os.environ.get("TRFIX_IDS") else (re.findall(r"id = '([0-9a-f]{12})' AND source_url = 'https://madegooddesigns.com/inspiration/ui#(?:hotel|travel)-website-homepage-web-minimal'", open(_sql).read()) if os.path.exists(_sql) else [])
+for iid in [x for x in _ids if x]:
+    s, h, rb = fetch(f"/ui/raw/{iid}.html"); rb = rb.decode("utf-8", "replace")
+    t(f"trfix {iid} notice + $00", s == 200 and "Fictional" in rb and "not travel, legal or financial advice" in rb and not re.search(r"[$£€]\s?0*[1-9]", rb), s)
+    t(f"trfix {iid} no old wording", not re.search(r"Guest notes|Traveller notes|Lowest rate|Norway|Morocco|Dolomites|since 2012|78%", rb))
 print(f"{ok} passed, {fail} failed"); sys.exit(1 if fail else 0)

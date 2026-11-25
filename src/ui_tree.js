@@ -232,7 +232,8 @@ export const INDUSTRIES = {
   // hostel website 1,000, campground website 480, glamping website 260, tour operator website 110 (+59 % 3 mo). hubFirst: no niche is named like the
   // industry ("travel", "accommodation" -> the hub). hotel-website (n12, Halcyon Quay) and travel-website (n12, Driftmark Journeys, a tour operator) were
   // flat patterns. hotel-website is the hotel niche; its hand-built homepage is not a signature (as law firm in r6, school in r7), so it stays a plain item.
-  // travel-website stays a flat n12 pattern (the build derives a niche's pattern as <niche>-website); its tour aliases moved to tour-operator-website.
+  // travel-website stays an n12 pattern (the build derives a niche's pattern as <niche>-website); its tour aliases moved to tour-operator-website.
+  // Owner 25-Nov: its flat page (/ui/travel-website-template) 301s to the hub (hubPatterns), so its links, canonical and sitemap entry are the hub.
   travel: {
     id: "travel", label: "Travel, tourism and stays", hub: "travel-website-templates", seg: "travel", h1: "Travel, tourism and accommodation website templates", hubFirst: true,
     niches: [
@@ -246,6 +247,7 @@ export const INDUSTRIES = {
       ["tourism", "tourism-website", "Tourism and destination", "tourism-website-template", "tourism"],
     ],
     appPatterns: [],
+    hubPatterns: ["travel-website"], // flat patterns whose page is now the hub (one-hop 301 from the flat slug and the old id)
   },
 };
 
@@ -309,7 +311,9 @@ export const categoryPath = (c) => c.seg;
 
 // paths are relative to /ui; flat: never depend on category or group
 export const nichePath = (n) => `${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`;
-export const nestedPatternPath = (p) => { const n = nicheOfPattern(p); return n ? nichePath(n) : null; };
+// trfix (owner 25-Nov): a hub pattern (travel-website) lives at its industry hub while the hub is live: one-hop 301, canonical and sitemap follow
+export const hubOfPattern = (p) => Object.values(INDUSTRIES).find((i) => (i.hubPatterns || []).includes(p) && industryLive(i.id)) || null;
+export const nestedPatternPath = (p) => { const n = nicheOfPattern(p); if (n) return nichePath(n); const i = hubOfPattern(p); return i ? i.hub : null; };
 export const wpHubPath = () => PLATFORMS.wordpress.hub;
 export const wpIndustryPath = (ind) => `${PLATFORMS.wordpress.hub}/${INDUSTRIES[ind].seg}`;
 export const wpNichePath = (n) => `${wpIndustryPath(n.industry)}/${n.seg}`;
@@ -355,6 +359,7 @@ export function assertTree() {
   for (const p of treePaths()) { if (seen.has(p)) throw new Error(`duplicate tree path ${p}`); seen.add(p); for (const s of p.split("/")) if (!ok.test(s) || /[0-9a-f]{12}$/.test(s)) throw new Error(`bad tree segment ${s} in ${p}`); if (!resolveTree(p)) throw new Error(`tree path ${p} does not resolve`); }
   const pats = new Set(), segs = new Set();
   for (const n of NICHES) { if (pats.has(n.pattern)) throw new Error(`pattern ${n.pattern} in two niches`); pats.add(n.pattern); const k = `${n.industry}/${n.seg}`; if (segs.has(k)) throw new Error(`duplicate niche segment ${k}`); segs.add(k); }
+  for (const i of Object.values(INDUSTRIES)) for (const p of i.hubPatterns || []) if (pats.has(p)) throw new Error(`hub pattern ${p} is also a niche pattern`);
   for (const n of NICHES) for (const d of n.designs) if (d.theme && !d.theme.tested) throw new Error(`theme ${d.theme.slug} in the catalog without a passing install test`);
   const cs = new Set(), homes = {};
   for (const c of CATEGORIES) { if (!ok.test(c.seg) || cs.has(c.seg) || Object.values(INDUSTRIES).some((i) => i.hub === c.seg) || c.seg === TEMPLATES_HUB) throw new Error(`bad or duplicate category segment ${c.seg}`); cs.add(c.seg); for (const i of c.industries) { if (!INDUSTRIES[i]) throw new Error(`category ${c.id} lists unknown industry ${i}`); if (homes[i]) throw new Error(`industry ${i} in two categories`); homes[i] = c.id; } }

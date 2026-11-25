@@ -11,7 +11,7 @@
 #        (rows.json) and their R2 objects (r2/<key>) from the local D1/R2 after the tests, for the deploy SQL and manifest.
 #        HC_KEEP=<file> keeps the server up until that file is deleted.
 set -u
-cd "$(dirname "$0")/.."; ROOT=$(pwd); W="$ROOT/node_modules/.bin/wrangler"; PORT=${TR_PORT:-8997}; INSP=${TR_INSP:-9397}; T=$(mktemp -d "${SCRATCH:-$ROOT}/rs-e2e.XXXXXX"); CFG="$ROOT/wrangler.rs.jsonc"; TRW="${TRW:-$ROOT/../mgd-inspiration-tpl-r9}"
+cd "$(dirname "$0")/.."; ROOT=$(pwd); W="$ROOT/node_modules/.bin/wrangler"; PORT=${TR_PORT:-8997}; INSP=${TR_INSP:-9397}; T=$(mktemp -d "${SCRATCH:-$ROOT}/rs-e2e.XXXXXX"); CFG="$ROOT/wrangler.rs.jsonc"; TRW="${TRW:-$ROOT/../mgd-inspiration-tpl-r9}"; TFW="${TFW:-$ROOT/../mgd-inspiration-tpl-r9fix}"
 HCW="${HC_WORKTREE:-$ROOT/../mgd-inspiration-hc}"; REW="${RE_WORKTREE:-$ROOT/../mgd-inspiration-ind2}"; RSW="${RS_WORKTREE:-$ROOT/../mgd-inspiration-ind3}"; WDW="${WD_WORKTREE:-$ROOT/../mgd-inspiration-ind5}"; PFW="${PF_WORKTREE:-$ROOT/../mgd-inspiration-r4tpl}"; BWW="${BW_WORKTREE:-$ROOT/../mgd-inspiration-tpl-r4}"; CNW="${CN_WORKTREE:-$ROOT/../mgd-inspiration-tpl-r5}"; PSW="${PS_WORKTREE:-$ROOT/../mgd-inspiration-tpl-r6}"; EDW="${ED_WORKTREE:-$ROOT/../mgd-inspiration-tpl-r7}"; AUW="${AU_WORKTREE:-$ROOT/../mgd-inspiration-tpl-r8}"; MAIN="$ROOT/../mgd-inspiration/ui-screens/out"
 python3 - <<'PY'
 src = open("wrangler.jsonc").read(); i = src.index('"routes"'); j = src.index("]", i) + 1
@@ -40,9 +40,12 @@ $ING --out "$WDW/ui-screens/out" --only "wedding-website-homepage-*" | tail -1
 for n in restaurant coffee-shop; do $ING --out "$RSW/ui-screens/out" --only "$n-website-homepage-*" | tail -1; done
 for n in cardiology medical dental dermatology therapist physical-therapy veterinary pediatrics orthodontics fertility real-estate apartment; do SRC="$MAIN"; case $n in real-estate|apartment) [ -d "$REW/ui-screens/out/$n-website-homepage-web-corporate" ] && SRC="$REW/ui-screens/out";; esac; $ING --out "$SRC" --only "$n-website-homepage-*" | tail -1; done
 # the live n12 agency, architecture and gym homepages (not signatures here): they must stay plain items, not cards on the nested pages; salon stays flat
-for n in agency architecture portfolio-home gym salon class-schedule construction cleaning-service hvac pest-control pro-directory law-firm financial-advisor school preschool course-dashboard hotel travel; do $ING --out "$MAIN" --only "$n-*web-minimal*" | tail -1; done
+for n in agency architecture portfolio-home gym salon class-schedule construction cleaning-service hvac pest-control pro-directory law-firm financial-advisor school preschool course-dashboard; do $ING --out "$MAIN" --only "$n-*web-minimal*" | tail -1; done
+# trfix (owner 25-Nov): the n12 hotel (Halcyon Quay) and travel (Driftmark) homepages as fixed in the trfix worktree out-trfix (read only), web + mobile minimal
+[ -d "$TFW/ui-screens/out-trfix" ] && $ING --out "$TFW/ui-screens/out-trfix" --only "*-minimal" | tail -1 || RC=1
 $ING --out "$MAIN" --only "chat-ai*-web-minimal*" | tail -1
 cd ..
+TR_LINT_HOMEPAGES=1 TR_LINT_OUT="$TFW/ui-screens/out-trfix" python3 tests/tr_lint.py | tail -1; TR_LINT_HOMEPAGES=1 TR_LINT_OUT="$TFW/ui-screens/out-trfix" python3 tests/tr_lint.py >/dev/null || { echo "FAIL trfix homepage lint"; RC=1; }
 python3 tests/hc_routes.py http://127.0.0.1:$PORT/inspiration || RC=1
 for I in real-estate restaurant wedding portfolio beauty-fitness construction professional-services education automotive travel; do IND=$I python3 tests/hc_routes.py http://127.0.0.1:$PORT/inspiration || RC=1; done
 python3 tests/rs_routes.py http://127.0.0.1:$PORT/inspiration || RC=1
