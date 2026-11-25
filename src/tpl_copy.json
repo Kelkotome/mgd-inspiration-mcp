@@ -107,5 +107,126 @@
   "tour-operator": { "intro": "For a local tour operator: a week of departures with a filter by walking, food, boat and day tours, sample tour prices, meeting points, what to bring, group sizes, the guides and a booking form, with a check-official-travel-advice line for visitors." },
   "campground": { "intro": "For a campground with glamping: tent and campervan pitches, cabins and glamping tents with sample nightly rates, hook-ups, the shower block, site rules for fires and quiet hours, dogs, arrival times, the wardens and a booking form." },
   "tourism": { "intro": "For a regional tourism and visitor information site: things to do, the towns, a sample events list, getting here and around, where to stay by type, visitor information centres and a brochure or enquiry form." }
+ },
+ "categories": {
+  "health-wellness": {
+   "intro": "Templates for clinics, practices, salons, studios and gyms: businesses where people book a visit, check who they will see and want to know what happens before they arrive.",
+   "choose": [
+    "Start from what visitors do first. Clinics and practices usually lead with booking, opening hours and how to register; salons, studios and gyms with services, prices and the team.",
+    "Pick the sub-niche closest to your service, not just the industry: a cardiology or orthodontics set already has sections a general clinic does not need, and the reverse.",
+    "Open the layout at phone width before you choose. The booking button and phone number should be easy to reach there.",
+    "Keep outcome and cure claims out of the copy you add. The templates make none, and the notice below applies to anything you publish."
+   ],
+   "faq": [
+    [
+     "Which template should a clinic with several specialties use?",
+     "Start from the Medical practice set, which is also the page for the medical specialties, and borrow sections from the specialty sets (hospital, cardiology, dermatology, pediatrics and fertility). Every template comes with a DESIGN.md of colour, type and spacing tokens, so sections from one set can be restyled to match another."
+    ],
+    [
+     "Are the people in the templates real?",
+     "No. Names, people, addresses and timings are fictional samples to replace, and the pictures are drawn illustrations, never photographs of real patients or clients."
+    ]
+   ]
+  },
+  "food-travel-hospitality": {
+   "intro": "Templates for restaurants, cafes, bars, caterers, hotels, hostels, tour operators and destinations: places that sell a table, a room or a trip, where the menu, the rooms or the itinerary does most of the selling.",
+   "choose": [
+    "Decide what the page has to sell first: a table, a room, a tour or a visit. Restaurant sets lead with menus and booking; travel sets with rooms, departures or places to see.",
+    "Compare the layouts inside the closest sub-niche. Each set has distinct designs, so pick by how your place feels as well as by its category.",
+    "Replace every sample dish, price, room rate and date. Dietary and allergen labels in the restaurant sets are samples to check with your kitchen.",
+    "Plan how bookings will work. Booking and contact forms are static sample markup until you connect your own booking or form tool."
+   ],
+   "faq": [
+    [
+     "Can a hotel with a restaurant use these templates?",
+     "Yes. Start from the hotel or resort set for the rooms and add the menu and booking sections from a restaurant set. Every template comes with a DESIGN.md of colour, type and spacing tokens, so the two can be restyled to match."
+    ],
+    [
+     "Do the templates take bookings or payments?",
+     "No. Booking, reservation and contact forms are static sample markup. Connect your own booking, reservation or form tool before you publish."
+    ]
+   ]
+  },
+  "property-trades-automotive": {
+   "intro": "Templates for estate agents, property managers, builders, tradespeople and car businesses: local services where visitors compare listings, ask for a quote or book a job.",
+   "choose": [
+    "Lead with the action your customers take: a property search, a quote request, a call-out or a test drive.",
+    "Pick the trade-specific set over the general one when it exists: a roofing, HVAC or towing set carries services and questions a general page leaves out.",
+    "Fill in licence, registration and insurance lines yourself. Where a template has them, they are left for you to complete.",
+    "Use your own photos of finished work, homes and vehicles. The templates use drawn illustrations, never stock photos."
+   ],
+   "faq": [
+    [
+     "Which template suits a builder who also sells new homes?",
+     "Use the Home builder set in Real estate for selling homes and plans, and the Construction company set for contracting work. Each comes with a DESIGN.md of colour, type and spacing tokens, so sections can move between them."
+    ],
+    [
+     "Are the listings, prices and vehicles real?",
+     "No. Listings, prices, rates and vehicles are fictional samples to replace, and prices are zero placeholders in the construction and automotive sets."
+    ]
+   ]
+  },
+  "business-technology": {
+   "intro": "Templates for law firms, lawyers, accountants, tax preparers, financial advisers, insurers, consultants and recruiters: firms that sell expertise, where credentials and a clear way to get in touch matter most.",
+   "choose": [
+    "Show who does the work. These sites lean on team profiles and areas of practice, so pick a layout with room for both.",
+    "Keep the contact path short: a consultation request or phone number should be one step away from every section.",
+    "Add your own registration, licence and regulatory lines. The templates leave them for you to fill in, and they are designs, not legal, tax or financial advice."
+   ],
+   "faq": [
+    [
+     "Should a solo lawyer use the law firm or the lawyer templates?",
+     "The Lawyer and attorney set is written for a solo lawyer or a small team: the matters you take on and what to bring to a first meeting. The Law firm set is written for a small firm with practice areas, several lawyers and staff."
+    ],
+    [
+     "Are the fees and premiums in the templates real?",
+     "No. Fees, rates and premiums are zero placeholders, and names and people are fictional samples to replace."
+    ]
+   ]
+  },
+  "creative-media-events": {
+   "intro": "Templates for portfolios, creative studios and agencies, and for weddings and events: sites that show work, or tell people where to be and when.",
+   "choose": [
+    "For a portfolio, let the work lead: choose a layout whose grid suits your pieces, wide for photography and architecture, tighter for design and code.",
+    "For a wedding or event, put the date, the place and the reply form near the top, and keep the schedule easy to scan on a phone.",
+    "Only show client work, testimonials and results you have permission to share."
+   ],
+   "faq": [
+    [
+     "Is there a template for a wedding photographer?",
+     "Yes. Wedding photographer sits in Weddings and events, and the general Photography set sits in Portfolios. Use the one that matches the work you want most."
+    ],
+    [
+     "Can the wedding templates be used for other events?",
+     "The Event and conference and Event planner sets are written for other events: programmes, speakers, tickets, parties and company events. All the text is sample copy to replace."
+    ]
+   ]
+  },
+  "learning-community": {
+   "intro": "Templates for schools, universities, preschools, daycares, tutors, online course schools and music and dance teachers: places where families or students compare programmes, timetables and how to enrol.",
+   "choose": [
+    "Put enrolment and term dates where parents and students look first, and keep the timetable readable on a phone.",
+    "Pick by who reads the page: parents, for preschools, daycares and schools, or the students themselves, for universities, tutoring and online courses.",
+    "Fill in accreditation, inspection and safeguarding lines yourself. The templates leave them for you to complete."
+   ],
+   "faq": [
+    [
+     "Is there a template for an online course or e-learning site?",
+     "Yes, the Online course and e-learning set: a course catalogue, self-paced and cohort courses, the teachers and a sign-up form. It is a website, not a learning platform, so lessons, logins and payments need your own tools."
+    ],
+    [
+     "Are the term dates and fees real?",
+     "No. Courses, timetables, term dates and fees are fictional samples, and fees are zero placeholders."
+    ]
+   ]
+  }
+ },
+ "groups": {
+  "medical": {
+   "intro": "Hospitals and specialist clinics, each written for its own kind of care, with clear ways to book or be referred."
+  },
+  "dental": {
+   "intro": "Dental specialties, each written for its own kind of treatment, alongside the family dental practice set."
+  }
  }
 }

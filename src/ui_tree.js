@@ -2,12 +2,19 @@
 // Four categories on every template: Platform (HTML, WordPress), Type (one-page, website, landing page), Industry, Sub-niche.
 // Web and mobile are the Device filter, so "Platform" means what a template is delivered as.
 //
+//   Templates hub        /ui/website-templates                     (the websites facet page)
+//   Top category         /ui/business-website-templates            (restructure round, 25-Nov-2026: a standalone page, not a URL parent)
 //   Industry hub         /ui/healthcare-website-templates
 //   Sub-niche            /ui/healthcare-website-templates/cardiology-website-template
 //   Platform hub         /ui/wordpress-themes
 //   Platform + industry  /ui/wordpress-themes/healthcare
 //   Platform + sub-niche /ui/wordpress-themes/healthcare/cardiology
 //   Platform item        /ui/wordpress-themes/healthcare/cardiology/<theme>
+//
+// Restructure round (25-Nov-2026, owner decision after the SEO-structure benchmark): FLAT URLs + visible hierarchy. No URL moves. The tree is the single
+// data source for the hierarchy people and crawlers see: CATEGORIES (category -> industries, own standalone pages), INDUSTRIES (industry -> niches),
+// INDUSTRIES[].groups (group -> niches: H2 sections on the hub, breadcrumbs, child-link and sibling strips). Paths never depend on categories or groups,
+// so re-homing a niche in a group or an industry in a category costs no 301. New niches get flat slugs in the existing pattern.
 //
 // Moving an industry into this tree is a data change: add it to INDUSTRIES, generate its catalog entries, and every link, canonical,
 // sitemap entry and MCP URL follows, with one-hop 301s from the flat URLs. A pattern not listed here stays flat.
@@ -41,6 +48,20 @@ export const INDUSTRIES = {
     ],
     // app and portal screens, not page templates: linked from the hub, their URLs stay flat
     appPatterns: ["clinic-home", "doctor-directory", "telehealth-visit"],
+    // Specialty groups (restructure round, 25-Nov-2026): display only, never in a URL. Every niche of an industry with groups sits in exactly one group.
+    // A group's parent is the niche whose page carries the "more specific type" child-link module and which the breadcrumb links for the group
+    // (Website templates > Health and wellness > Healthcare > Medical > Cardiology). A group without a parent shows as an H2 section on the hub only.
+    // An empty group (nutrition, r14) appears once a niche in it is live. r14 healthcare depth adds: laboratory, plastic surgery, urgent care -> medical;
+    // psychologist -> mental-health; chiropractor -> therapy-rehab; nutritionist, doula, home care -> nutrition-care.
+    groups: [
+      { id: "medical", label: "Medical", parent: "medical", niches: ["hospital", "cardiology", "dermatology", "pediatrics", "fertility"] },
+      { id: "dental", label: "Dental", parent: "dental", niches: ["orthodontics"] },
+      { id: "mental-health", label: "Mental health", niches: ["therapist", "mental-health"] },
+      { id: "therapy-rehab", label: "Therapy and rehab", niches: ["physical-therapy"] },
+      { id: "nutrition-care", label: "Nutrition, pregnancy and care", niches: [] },
+      { id: "eye-care-pharmacy", label: "Eye care and pharmacy", niches: ["optometry", "pharmacy"] },
+      { id: "animal-health", label: "Animal health", niches: ["veterinary"] },
+    ],
   },
   // 7-Nov-2026 second industry. Demand: "real estate website template" 2,900/mo, "real estate wordpress theme" 1,600/mo (Keyword Planner, worldwide).
   "real-estate": {
@@ -228,12 +249,34 @@ export const INDUSTRIES = {
   },
 };
 
+// Top categories (restructure round, 25-Nov-2026; owner decision: 7 standalone pages, not URL parents). One home per industry: an industry sits in exactly one
+// category (assertTree). Order = display order. A category page exists once one of its industries is live, so "Shops and online stores" appears with r11.
+// seg = the page URL under /ui (shares the flat slug namespace, checked in ui_seo assertSlugs). Named after a searched term where one exists (Keyword
+// Planner, worldwide, 25-Nov-2026, "<x> website template": business 1,900, food 1,300, online store 880, technology / creative / events 720 each; health and
+// wellness 0, property 140, community 260). h1 never targets a hub's or niche's own head term ("restaurant website template" is the Restaurant hub's,
+// "travel website template" the Travel hub's, "automotive website template" the Automotive hub's, "technology website template" the r10 Technology hub's, "event website template" the conference niche's, "wedding website template" the Weddings hub's).
+// Planned homes for the queued rounds (add the id in that round): r10 technology -> business-technology, r11 ecommerce -> shops, r12 blog ->
+// creative-media-events, r15 nonprofit -> learning-community.
+export const TEMPLATES_HUB = "website-templates";
+export const CATEGORIES = [
+  { id: "health-wellness", label: "Health and wellness", seg: "health-and-wellness-website-templates", h1: "Health and wellness website templates", industries: ["healthcare", "beauty-fitness"] },
+  { id: "food-travel-hospitality", label: "Food, travel and hospitality", seg: "food-website-templates", h1: "Food and hospitality website templates", industries: ["restaurant", "travel"] },
+  { id: "property-trades-automotive", label: "Property, trades and automotive", seg: "property-and-trades-website-templates", h1: "Property and trades website templates", industries: ["real-estate", "construction", "automotive"] },
+  { id: "business-technology", label: "Business and technology", seg: "business-website-templates", h1: "Business website templates", industries: ["professional-services"] },
+  { id: "shops", label: "Shops and online stores", seg: "online-store-website-templates", h1: "Online store website templates", industries: [] },
+  { id: "creative-media-events", label: "Creative, media and events", seg: "creative-website-templates", h1: "Creative website templates", industries: ["portfolio", "wedding"] },
+  { id: "learning-community", label: "Learning and community", seg: "learning-and-community-website-templates", h1: "Learning and community website templates", industries: ["education"] },
+];
+
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };
 const distinct = (n) => n.designs.filter((d) => d.distinct);
 const themed = (n) => distinct(n).filter((d) => d.theme);
+const GROUP_OF = {}; // niche id -> { g, parent: true|false }
+for (const ind of Object.values(INDUSTRIES)) for (const g of ind.groups || []) { if (g.parent) GROUP_OF[g.parent] = { g, parent: true }; for (const id of g.niches) GROUP_OF[id] = { g, parent: false }; }
 export const NICHES = Object.values(INDUSTRIES).flatMap((ind) => ind.niches.map(([id, pattern, label, htmlSeg, seg]) => {
   const n = { id, pattern, label, htmlSeg, seg, industry: ind.id, ...cat(id) };
   n.designs = n.designs || []; n.htmlLive = distinct(n).length >= MIN_DESIGNS; n.wpLive = themed(n).length >= MIN_DESIGNS;
+  const go = GROUP_OF[id]; n.group = go ? go.g.id : null; n.under = go && !go.parent && go.g.parent ? go.g.parent : null; // under = the group parent niche (display only)
   return n;
 }));
 export const nicheById = (id) => NICHES.find((n) => n.id === id);
@@ -246,8 +289,27 @@ export const industryLive = (ind) => industryNiches(ind).length > 0;
 export const platformIndustries = () => Object.values(INDUSTRIES).filter((i) => industryNiches(i.id, true).length);
 export const catalogMeta = () => ({ wp: CATALOG.wp || null, php: CATALOG.php || null, tested: CATALOG.tested || null, licence: CATALOG.licence || null, version: CATALOG.version || null });
 
-// paths are relative to /ui
-export const nestedPatternPath = (p) => { const n = nicheOfPattern(p); return n ? `${INDUSTRIES[n.industry].hub}/${n.htmlSeg}` : null; };
+// groups (display only)
+export const industryGroups = (ind) => INDUSTRIES[ind].groups || [];
+export const groupOfNiche = (n) => (n.group ? industryGroups(n.industry).find((g) => g.id === n.group) : null);
+export const groupParent = (g) => (g.parent ? nicheById(g.parent) : null);
+const liveFlag = (n, wp) => !!n && (wp ? n.wpLive : n.htmlLive);
+export const groupMembers = (g, wp) => g.niches.map(nicheById).filter((n) => liveFlag(n, wp));
+export const groupNiches = (g, wp) => [groupParent(g), ...g.niches.map(nicheById)].filter((n) => liveFlag(n, wp)); // parent first
+export const groupLive = (g, wp) => groupNiches(g, wp).length > 0;
+// the "more specific type" children shown on a group parent's page
+export const nicheChildren = (n, wp) => { const go = GROUP_OF[n.id]; return go && go.parent ? groupMembers(go.g, wp) : []; };
+
+// categories
+export const categoryOf = (ind) => CATEGORIES.find((c) => c.industries.includes(ind)) || null;
+export const categoryIndustries = (c) => c.industries.map((i) => INDUSTRIES[i]).filter((i) => i && industryLive(i.id));
+export const categoryLive = (c) => categoryIndustries(c).length > 0;
+export const liveCategories = () => CATEGORIES.filter(categoryLive);
+export const categoryPath = (c) => c.seg;
+
+// paths are relative to /ui; flat: never depend on category or group
+export const nichePath = (n) => `${INDUSTRIES[n.industry].hub}/${n.htmlSeg}`;
+export const nestedPatternPath = (p) => { const n = nicheOfPattern(p); return n ? nichePath(n) : null; };
 export const wpHubPath = () => PLATFORMS.wordpress.hub;
 export const wpIndustryPath = (ind) => `${PLATFORMS.wordpress.hub}/${INDUSTRIES[ind].seg}`;
 export const wpNichePath = (n) => `${wpIndustryPath(n.industry)}/${n.seg}`;
@@ -256,6 +318,7 @@ export const themePath = (n, d) => `${wpNichePath(n)}/${d.theme.slug}`;
 // What a path under /ui means, for paths of the tree only. Returns null for anything else, so existing routes are untouched.
 export function resolveTree(rel) {
   const segs = rel.split("/");
+  if (segs.length === 1) { const c = CATEGORIES.find((x) => x.seg === segs[0]); if (c) return categoryLive(c) ? { type: "category", c } : null; }
   const ind = Object.values(INDUSTRIES).find((i) => i.hub === segs[0]);
   if (ind) {
     if (!industryLive(ind.id)) return null;
@@ -278,17 +341,28 @@ export function resolveTree(rel) {
 // Every path the tree serves, for the sitemap and the guarantees below.
 export function treePaths() {
   const out = [];
-  for (const ind of Object.values(INDUSTRIES)) { if (!industryLive(ind.id)) continue; out.push(ind.hub); for (const n of industryNiches(ind.id)) out.push(`${ind.hub}/${n.htmlSeg}`); }
+  for (const c of liveCategories()) out.push(categoryPath(c));
+  for (const ind of Object.values(INDUSTRIES)) { if (!industryLive(ind.id)) continue; out.push(ind.hub); for (const n of industryNiches(ind.id)) out.push(nichePath(n)); }
   if (platformIndustries().length) out.push(PLATFORMS.wordpress.hub);
   for (const ind of platformIndustries()) { out.push(wpIndustryPath(ind.id)); for (const n of industryNiches(ind.id, true)) { out.push(wpNichePath(n)); for (const d of liveThemes(n)) out.push(themePath(n, d)); } }
   return out;
 }
 
-// Fails the deploy (module load) on a gap: no duplicate or malformed path, no theme id collision, nothing live that fails the page test.
+// Fails the deploy (module load) on a gap: no duplicate or malformed path, no theme id collision, nothing live that fails the page test,
+// one home per industry (category) and per niche (group).
 export function assertTree() {
   const seen = new Set(), ok = /^[a-z0-9]+(-[a-z0-9]+)*$/;
   for (const p of treePaths()) { if (seen.has(p)) throw new Error(`duplicate tree path ${p}`); seen.add(p); for (const s of p.split("/")) if (!ok.test(s) || /[0-9a-f]{12}$/.test(s)) throw new Error(`bad tree segment ${s} in ${p}`); if (!resolveTree(p)) throw new Error(`tree path ${p} does not resolve`); }
   const pats = new Set(), segs = new Set();
   for (const n of NICHES) { if (pats.has(n.pattern)) throw new Error(`pattern ${n.pattern} in two niches`); pats.add(n.pattern); const k = `${n.industry}/${n.seg}`; if (segs.has(k)) throw new Error(`duplicate niche segment ${k}`); segs.add(k); }
   for (const n of NICHES) for (const d of n.designs) if (d.theme && !d.theme.tested) throw new Error(`theme ${d.theme.slug} in the catalog without a passing install test`);
+  const cs = new Set(), homes = {};
+  for (const c of CATEGORIES) { if (!ok.test(c.seg) || cs.has(c.seg) || Object.values(INDUSTRIES).some((i) => i.hub === c.seg) || c.seg === TEMPLATES_HUB) throw new Error(`bad or duplicate category segment ${c.seg}`); cs.add(c.seg); for (const i of c.industries) { if (!INDUSTRIES[i]) throw new Error(`category ${c.id} lists unknown industry ${i}`); if (homes[i]) throw new Error(`industry ${i} in two categories`); homes[i] = c.id; } }
+  for (const i of Object.keys(INDUSTRIES)) if (!homes[i]) throw new Error(`industry ${i} has no category`);
+  for (const ind of Object.values(INDUSTRIES)) {
+    const gs = ind.groups || []; if (!gs.length) continue;
+    const ids = ind.niches.map((x) => x[0]), placed = {}, gids = new Set();
+    for (const g of gs) { if (gids.has(g.id)) throw new Error(`duplicate group ${g.id}`); gids.add(g.id); for (const id of [g.parent, ...g.niches].filter(Boolean)) { if (!ids.includes(id)) throw new Error(`group ${g.id} lists ${id}, not a ${ind.id} niche`); if (placed[id]) throw new Error(`niche ${id} in two groups`); placed[id] = g.id; } }
+    for (const id of ids) if (!placed[id]) throw new Error(`niche ${id} has no group in ${ind.id}`);
+  }
 }

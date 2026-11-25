@@ -14,7 +14,7 @@ import { parseDesignMd, uiKitPanel, UI_KIT_CSS, UI_KIT_JS } from "./ui_kit.js";
 import { specBlock, parseSpecJson, parseDesignExtras, SPEC_CSS } from "./ui_spec.js";
 import { UI_COMPONENT_PATTERNS, componentMeta, componentParts, componentDemoHtml, componentCodeHtml, COMPONENT_CSS } from "./ui_component_page.js"; // UI components round 1 (7-Nov-2026)
 import { resolveTree, treePaths, assertTree, nicheOfPattern, nicheOfFlatSeg, MIN_DESIGNS, PLATFORMS, liveDesigns } from "./ui_tree.js";
-import { industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
+import { categoryPage, nicheExtras, categoryBlock, TEMPLATES_CRUMB, industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
 import { patternSlug, flatSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
 import { shared, exact, cacheOff } from "./mcp_cache.js"; // MCP r3 (12-Nov-2026)
 
@@ -152,6 +152,7 @@ export async function uiRoute(path, request, env, ctx, base, h) {
   if (th && tm[2]) { const { rel, md } = treeMd(th, siteOf(env), base); return new Response(md, { headers: { "Content-Type": "text/markdown; charset=utf-8", "Link": `<${siteOf(env)}${base}/ui/${rel}>; rel="canonical"`, "Cache-Control": "public, max-age=3600", "Access-Control-Allow-Origin": "*" } }); }
   if (th) {
     const x = uiX(); const go = (fn) => h.edgeCache(request, ctx, 1800, fn);
+    if (th.type === "category") return go(() => categoryPage(th.c, env, base, h, x));
     if (th.type === "industry") return go(() => industryPage(th.ind, env, base, h, x));
     if (th.type === "niche") return go(() => uiPatternPage(th.n.pattern, env, base, h));
     if (th.type === "platform") return go(() => platformPage(env, base, h, x));
@@ -336,9 +337,9 @@ async function uiGalleryPage(env, base, h, facet) {
     jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: facet ? facet.h1 : "MGD UI Screens", url, description: desc, publisher: MGD_ORG(site), ...licenceLd(site, base),
       ...(facet ? { isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` }, mainEntity: { "@type": "ItemList", numberOfItems: items.length, itemListElement: items.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: site + uiItemPath(it, base) })) } } : {}) } })
   + `${h.backLink(base, "/", "Back to inspiration")}
-${facet ? `<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(facet.h1)}</nav>` : ""}
+${facet ? `<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(facet.value === "websites" && facet.kind === "group" ? TEMPLATES_CRUMB : facet.h1)}</nav>` : ""}
 <h1>${h.escHtml(facet ? facet.h1 : "UI screens")}</h1>
-${facet && facet.value === "websites" && industryLinks(base, h) ? `<p class="lede">By industry: ${industryLinks(base, h)}</p>` : ""}${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an original design by Made Good Designs with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui"><b>all ${all.length} UI screens</b></a> and <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`
+${facet && facet.value === "websites" && facet.kind === "group" ? categoryBlock(base, h) : ""}${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an original design by Made Good Designs with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui"><b>all ${all.length} UI screens</b></a> and <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`
   : `<p class="lede">Original app screens and website sections for web and mobile, designed by Made Good Designs. Unlike screenshot libraries, every screen comes with its <b>HTML code</b> and a <b>DESIGN.md</b> with the colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`}
 <div class="filters">${chips("platform", "Platform", ["web", "mobile"])}${groupChips}${chips("style", "Style", UI_STYLES)}</div>
 <p class="lede" id="count" data-word="${word}" style="margin:-.5rem 0 .5rem">${items.length} ${word}s</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>
@@ -453,6 +454,7 @@ ${tn ? nicheCrumbHtml(tn, h, base) : `<nav class="crumb"><a href="${h.escHtml(ba
 ${tn ? nicheDesignsBlock(tn, items, base, h, uiItemPath) + `<h2 class="s">Every screen, by style and device</h2>` : ""}<div class="filters">${plats.length > 1 ? chips("platform", "Device", plats) : ""}${chips("style", "Style", UI_STYLES.filter((x) => items.some((it) => it.style === x)))}<div>${THEME_SWITCH}</div></div>
 <p class="lede" id="count" data-word="example" style="margin:-.5rem 0 1rem">${items.length} examples</p>
 <div class="grid" id="grid">${cards}</div>
+${tn ? await nicheExtras(tn, env, base, h, uiX()) : ""}
 ${flows.length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">See it in a flow</h2><p class="lede" style="margin:0">${flows.map(([id, n]) => `<a href="${h.escHtml(flowPath(id, base))}"><b>${h.escHtml(n)}</b></a>`).join(" · ")}</p>` : ""}
 ${(c.tips || []).length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .5rem">${h.escHtml(lab)} design tips</h2><ul class="tips">${c.tips.map((t) => `<li>${h.escHtml(t)}</li>`).join("")}</ul>` : ""}
 ${faq.length ? `<h2 style="font-size:1.05rem;margin:2.25rem 0 .25rem">Questions</h2><div class="faq">${faq.map(([q, a]) => `<h3>${h.escHtml(q)}</h3><p>${h.escHtml(a)}</p>`).join("")}</div>` : ""}

@@ -7,7 +7,7 @@
 // Volumes/trends behind each choice: n11 SEO-URL report (slug table).
 // 7-Nov-2026: patterns placed in the template tree (ui_tree.js) get a nested path; patternSlug() returns it, so every link, canonical and
 // sitemap entry follows, and the flat slug and old id each 301 straight to it. Patterns not in the tree stay flat.
-import { nestedPatternPath, INDUSTRIES, PLATFORMS } from "./ui_tree.js";
+import { nestedPatternPath, INDUSTRIES, PLATFORMS, CATEGORIES } from "./ui_tree.js";
 
 // pattern id -> [slug, H1]. The H1 carries the searched phrase; the slug is that phrase without "design/examples".
 export const PATTERN_SEO = {
@@ -401,6 +401,7 @@ export function assertSlugs(patterns) {
   for (const [k, v, s] of FACET_SEO) add(s, `${k}:${v}`);
   for (const i of Object.values(INDUSTRIES)) add(i.hub, `industry:${i.id}`); // hubs share the flat namespace
   for (const pl of Object.values(PLATFORMS)) add(pl.hub, `platform:${pl.id}`);
+  for (const c of CATEGORIES) add(c.seg, `category:${c.id}`); // top-category pages (restructure round, 25-Nov-2026) share the flat namespace too
   // An old pattern id may only be reused as a slug by that same pattern (otherwise its 301 target would be ambiguous).
   for (const p of patterns) if (seen.has(p) && seen.get(p) !== p) throw new Error(`slug ${p} is the old id of pattern ${p} but belongs to ${seen.get(p)}`);
   for (const p of patterns) if (!PATTERN_SEO[p]) throw new Error(`pattern ${p} has no SEO slug`);
