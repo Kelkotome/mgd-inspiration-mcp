@@ -103,4 +103,8 @@ if sig and IND == "construction":
 if sig and IND == "professional-services":
     for nid, pat, htmlSeg, seg in NICHES:
         s, _, nb = text(f"/ui/{HUB}/{htmlSeg}"); ck(not re.search(r"Whitcombe Hale|Lindqvale", nb.split("Every screen", 1)[0]), f"{nid}: no n12/n13 homepage card")
+# templates r7 (25-Nov-2026, staged): the live n12 school (Alderbrook Academy) and n13 preschool (Puddlewick Preschool) homepages are not signatures either.
+if sig and IND == "education":
+    for nid, pat, htmlSeg, seg in NICHES:
+        s, _, nb = text(f"/ui/{HUB}/{htmlSeg}"); ck(not re.search(r"Alderbrook|Puddlewick", nb.split("Every screen", 1)[0]), f"{nid}: no n12/n13 homepage card")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)

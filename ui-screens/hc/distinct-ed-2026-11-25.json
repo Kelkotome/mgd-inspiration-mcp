@@ -1,0 +1,123 @@
+{
+ "dance-studio": {
+  "designs": 7,
+  "distinct": 7,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger",
+   "timetable"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.374,
+  "failedPairs": []
+ },
+ "daycare": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.726,
+  "maxLayoutOverlap": 0.376,
+  "failedPairs": []
+ },
+ "music-school": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.398,
+  "failedPairs": []
+ },
+ "online-course": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.724,
+  "maxLayoutOverlap": 0.487,
+  "failedPairs": []
+ },
+ "preschool": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.444,
+  "failedPairs": []
+ },
+ "school": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.384,
+  "failedPairs": []
+ },
+ "tutoring": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.418,
+  "failedPairs": []
+ },
+ "university": {
+  "designs": 6,
+  "distinct": 6,
+  "distinctIds": [
+   "atlas",
+   "band",
+   "bento",
+   "concierge",
+   "folio",
+   "ledger"
+  ],
+  "maxTreeSimilarity": 0.727,
+  "maxLayoutOverlap": 0.491,
+  "failedPairs": []
+ }
+}

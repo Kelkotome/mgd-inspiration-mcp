@@ -93,6 +93,15 @@ const GLYPH = {
   towhook: '<path d="M4 46V30h22l6-10h12v26z"/><path d="M44 28l14-14M58 14v18a5 5 0 0 1-10 0"/><circle cx="14" cy="48" r="6"/><circle cx="36" cy="48" r="6"/><path d="M30 26h10"/>',
   tyre: '<circle cx="32" cy="32" r="26"/><circle cx="32" cy="32" r="12"/><circle cx="32" cy="32" r="4"/><path d="M32 6v8M32 50v8M6 32h8M50 32h8M14 14l6 6M44 44l6 6M50 14l-6 6M14 50l6-6"/>',
   badge: '<rect x="14" y="14" width="36" height="44" rx="4"/><path d="M26 8h12v10H26z"/><circle cx="32" cy="32" r="6"/><path d="M22 50c1-6 5-9 10-9s9 3 10 9"/>',
+  // 25-Nov-2026 education (templates r7, staged)
+  schoolhouse: '<path d="M8 28L32 12l24 16"/><path d="M14 26v28h36V26M26 54V40h12v14M32 12V4l10 3-10 3"/>',
+  mortarboard: '<path d="M4 24L32 12l28 12-28 12z"/><path d="M16 30v12c4 4 10 6 16 6s12-2 16-6V30M56 26v16"/>',
+  blocks: '<rect x="8" y="34" width="20" height="20"/><rect x="32" y="34" width="20" height="20"/><rect x="20" y="12" width="20" height="20"/><path d="M14 44h8M42 40v8M26 18l8 8M34 18l-8 8"/>',
+  kite: '<path d="M32 6l16 18-16 22-16-22z"/><path d="M16 24h32M32 6v40M32 46c-4 4 4 6 0 10"/>',
+  pencil: '<path d="M14 50l4-14L44 10l10 10-26 26z"/><path d="M38 16l10 10M14 50l14-4M18 36l10 10"/>',
+  laptop: '<rect x="12" y="12" width="40" height="28" rx="2"/><path d="M4 48h56l-4 6H8z"/><path d="M28 20v12l10-6z"/>',
+  note: '<path d="M24 46V12l28-6v34"/><ellipse cx="18" cy="46" rx="7" ry="5"/><ellipse cx="46" cy="40" rx="7" ry="5"/><path d="M24 22l28-6"/>',
+  dancer: '<circle cx="34" cy="10" r="5"/><path d="M34 16l-4 16 10 10-4 14M30 32l-12 8M34 20l14-6M30 32l-8 22"/>',
 };
 const glyph = (c, size, sw = 2.2) => `<svg class="i" width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPH[c.motif]}</svg>`;
 // Abstract illustration, drawn from the niche's glyph. Original artwork; a site owner swaps it for a real photo.

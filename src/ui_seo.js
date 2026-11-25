@@ -263,6 +263,13 @@ export const PATTERN_SEO = {
   "insurance-agency-website": ["insurance-website-template", "Insurance agency website templates"],
   "consulting-website": ["consulting-website-template", "Consulting firm website templates"],
   "staffing-agency-website": ["staffing-agency-website-template", "Staffing and recruitment agency website templates"],
+  // 25-Nov-2026 education (templates r7, staged): new niches (school-website keeps its n12 slug education-website-template, which 301s to the nested school page; preschool-website keeps its n13 slug).
+  "university-website": ["university-website-template", "University and college website templates"],
+  "daycare-website": ["daycare-website-template", "Daycare and childcare website templates"],
+  "tutoring-website": ["tutoring-website-template", "Tutoring website templates"],
+  "online-course-website": ["online-course-website-template", "Online course and e-learning website templates"],
+  "music-school-website": ["music-school-website-template", "Music school website templates"],
+  "dance-studio-website": ["dance-studio-website-template", "Dance studio website templates"],
   // 25-Nov-2026 automotive (templates r8, staged)
   "car-dealership-website": ["car-dealership-website-template", "Car dealership website templates"],
   "auto-repair-website": ["auto-repair-website-template", "Auto repair and mechanic website templates"],

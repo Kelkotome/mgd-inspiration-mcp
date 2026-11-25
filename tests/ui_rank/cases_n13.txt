@@ -49,7 +49,7 @@ ai agent website template | ai-agent-website
 ai agent landing page | ai-agent-website
 ai agents startup website | ai-agent-website
 preschool website template | preschool-website
-daycare website | preschool-website
+daycare website | daycare-website preschool-website
 nursery school landing page | preschool-website
 apartment website template | apartment-website
 apartment community website with floor plans | apartment-website
