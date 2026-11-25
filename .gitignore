@@ -90,3 +90,6 @@ wrangler.tr.jsonc
 ui-screens/out-r2-tpl-r9
 tr-e2e.*
 tr-last-dev.log
+ui-screens/out-trfix
+ui-screens/out-r2-trfix
+ui-screens/out-r2-trfix-rollback

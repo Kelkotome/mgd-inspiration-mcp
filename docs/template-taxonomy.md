@@ -8,7 +8,7 @@ Applies to website templates under `/inspiration/ui/`. Healthcare is the pilot (
 |---|---|---|
 | Platform | HTML, WordPress | Path: `/ui/wordpress-themes/...`. HTML is the default and has no path segment of its own |
 | Type | one-page, website, landing page | Filter. A chip appears only when a page has more than one value |
-| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios, Beauty, fitness and wellness, Construction and home services, Legal and professional services, Education (r7, staged), Automotive (r8, staged), Hotels and travel (r9, staged) | Path |
+| Industry | Healthcare, Real estate, Restaurant, Weddings and events, Portfolios and creative studios, Beauty, fitness and wellness, Construction and home services, Legal and professional services, Education (r7, staged), Automotive (r8, staged), Travel, tourism and stays (r9, staged) | Path |
 | Sub-niche | Cardiology, Dental... | Path, under its industry |
 
 Web and mobile are the **Device** filter, renamed so that Platform is free. The database column stays `country`, and `?platform=web|mobile` still works.
@@ -260,6 +260,8 @@ Hub `automotive-website-templates`, WordPress segment `automotive`, hubFirst (no
 **Merging with r7.** r8 and r7 touch the same lines of `src/ui_tree.js`, `ui_seo.js`, `ui_search.js`, `ui_screens.js`, `ui_spec_phrases.js`, `ui_templates.js`, `ui_pattern_copy.json`, `tpl_copy.json`, `ui-screens/lib.js`, `ui-screens/hc/engine.js` and this doc (both append after professional services), so a merge of the second branch has textual conflicts to resolve by keeping both blocks. `src/tpl_catalog.json` is generated: after merging both, re-run `build_catalog.mjs` with both distinct files (or merge the two catalogs' `niches` maps; older niches are byte-identical in both). The `tools/list` count (113) and test suites are independent. Live order: r7 first (it is older and owner decisions on it are pending), then r8 rebased on it.
 
 ## Hotels and travel tree (templates r9, 25-Nov-2026: industry 12, STAGED, not deployed; stacked on r7 education + r8 automotive)
+
+**Owner decisions 25-Nov 18:07 / 18:40.** Keep the industry and all 8 niches. Label option C: "Travel, tourism and stays", hub H1 "Travel, tourism and accommodation website templates" (slug unchanged, `travel-website-templates`); disclosure A as built. r7 + r8 + r9 ship together (`DEPLOY-tpl-r7-r8-r9.md`); in that go-live `travel-website` stays a flat page. Flat-page 301s are handled per industry later: the `travel-website` -> hub 301 (`hubPatterns`) and the data-only fix of the n12 Halcyon Quay and Driftmark homepages to the r9 word rules are on branch `tpl-r9-trfix`, a separate step after the go-live (`DEPLOY-tpl-r9-trfix.md` there). "spa resort" still goes to the beauty spa niche (left as is).
 
 Hub `travel-website-templates`, WordPress segment `travel`, hubFirst (no niche is named like the industry; "travel", "accommodation", "travel industry" get the hub). Branch `tpl-r9-travel` (worktree `mgd-inspiration-tpl-r9`) is cut from `tpl-r8-automotive` with `tpl-r7-education` merged in (merge commit 783e326: both blocks kept in every conflict, catalog niches maps merged), so this tree has the nine live industries plus education, automotive and travel. If r7 or r8 change before go-live, rebase r9 (or re-merge) on the new heads and rebuild the catalog.
 

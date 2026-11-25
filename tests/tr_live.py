@@ -29,7 +29,7 @@ def fetch(url, method="GET"):
 canon = lambda b, p: re.search(r'rel="canonical" href="[^"]*' + re.escape(p) + '"', b) is not None
 t("8 niches in the tree", len(NICHES) == 8, NICHES)
 s, h, b = fetch(f"/ui/{HUB}"); b = b.decode("utf-8", "replace")
-t("hub 200", s == 200, s); t("hub canonical", canon(b, f"/ui/{HUB}")); t("hub crumbs", '"BreadcrumbList"' in b)
+t("hub 200", s == 200, s); t("hub canonical", canon(b, f"/ui/{HUB}")); t("hub crumbs", '"BreadcrumbList"' in b); t("hub h1 (copy C)", "Travel, tourism and accommodation website templates" in b)
 for nid, pat, seg, wseg in NICHES: t(f"hub links {seg}", f"/ui/{HUB}/{seg}" in b)
 s, h, b = fetch("/ui/wordpress-themes/travel"); b = b.decode("utf-8", "replace"); t("WordPress industry page 200", s == 200, s)
 for nid, pat, seg, wseg in NICHES: t(f"WordPress industry page links {wseg}", f"/ui/wordpress-themes/travel/{wseg}" in b)
