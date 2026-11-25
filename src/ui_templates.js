@@ -85,7 +85,7 @@ function nicheGrid(ind, niches, img, h, base, wp) {
   const card = (n) => nicheCard(n, img[n.pattern], `${base}/ui/${wp ? wpNichePath(n) : nichePath(n)}`, h, base, wp ? count(liveThemes(n).length, "theme") : count(liveDesigns(n).length, "design"));
   const gs = industryGroups(ind.id).filter((g) => groupLive(g, wp));
   if (!gs.length) return `${wp ? "" : `<h2 class="s">Sub-niches</h2>`}<div class="tg">${niches.map(card).join("")}</div>`;
-  return gs.map((g) => { const ns = groupNiches(g, wp); return `<h2 class="s" id="${h.escHtml(g.id)}">${h.escHtml(g.label)}</h2><p class="lede" style="margin:0 0 .6rem">${h.escHtml(`${count(ns.length, "sub-niche")}, ${totals(ns, wp).designs} ${wp ? "themes" : "designs"}`)}</p><div class="tg">${ns.map(card).join("")}</div>`; }).join("");
+  return gs.map((g) => { const ns = groupNiches(g, wp); return `<h2 class="s" id="${h.escHtml(g.id)}">${h.escHtml(g.label)}</h2><p class="lede" style="margin:0 0 .6rem">${h.escHtml(`${count(ns.length, "sub-niche")}, ${totals(ns, wp).designs} ${wp ? "themes" : "designs"}. ${((TPL_COPY.groups || {})[g.id] || {}).hub || ""}`.trim())}</p><div class="tg">${ns.map(card).join("")}</div>`; }).join("");
 }
 
 // /ui/<industry hub>
@@ -147,7 +147,7 @@ export async function categoryPage(c, env, base, h, x) {
   const site = x.siteOf(env), f = categoryFacts(c), rel = categoryPath(c), url = `${site}${base}/ui/${rel}`, cc = (TPL_COPY.categories || {})[c.id] || {}, crumbs = categoryCrumbs(c);
   const h1 = c.h1 || `${c.label} website templates`, u = (r) => `${site}${base}/ui/${r}`;
   const reps = f.inds.flatMap((r) => r.ns.slice(0, 4)), img = await nicheImages(env, h, x, reps);
-  const desc = `${f.designs} free one-page website templates for ${niceList(f.inds.map((r) => r.i.label.toLowerCase()))}, across ${f.niches} sub-niches. Each is a distinct layout with HTML code and a DESIGN.md${f.themes ? `, and ${f.themes} are also WordPress themes` : ""}.`;
+  const desc = `${f.designs} free one-page website templates for ${cc.for || niceList(f.inds.map((r) => r.i.label.toLowerCase()))}, across ${f.niches} sub-niches. Each is a distinct layout with HTML code and a DESIGN.md${f.themes ? `, and ${f.themes} are also WordPress themes` : ""}.`;
   const faq = categoryFaq(c, f, u);
   const jsonld = [{ "@context": "https://schema.org", "@type": "CollectionPage", name: h1, url, description: desc, publisher: x.MGD_ORG(site), ...x.licenceLd(site, base), isPartOf: { "@type": "CollectionPage", name: "Free website templates", url: u(TEMPLATES_HUB) }, hasPart: f.inds.map((r) => ({ "@type": "CollectionPage", name: r.i.h1, url: u(r.i.hub) })),
     mainEntity: { "@type": "ItemList", numberOfItems: f.niches, itemListElement: f.inds.flatMap((r) => r.ns).map((n, i) => ({ "@type": "ListItem", position: i + 1, name: `${n.label} website templates`, url: u(nichePath(n)) })) } }, crumbLd(site, base, crumbs), faqLd(faq)];

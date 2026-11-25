@@ -1,15 +1,16 @@
 # DEPLOY: website-templates restructure (25-Nov-2026), STAGED, NOT DEPLOYED
 
-Branch `tpl-restructure` in `../mgd-inspiration-tpl-restructure`, cut from `tpl-r9-travel` 5ae879d (r7 education + r8 automotive + r9 travel stacked), with the latest `tpl-r9-travel` head merged in (sha in the lane doc, 25-Nov restructure section).
+Branch `tpl-restructure` in `../mgd-inspiration-tpl-restructure`, cut from `tpl-r9-travel` 5ae879d (r7 education + r8 automotive + r9 travel stacked), with `tpl-r9-travel` dd2cb3e (the r7+r8+r9 go-live, live 20:10 25-Nov, Worker c4ebfd00) and `tpl-r9-trfix` d9034c3 (travel-website 301 to the hub + Halcyon Quay/Driftmark rows) merged in. Base for go-live: **origin/museum-collection-2026-10 after the trfix deploy**.
 Owner decision (25-Nov, after `docs_updates/template-seo-structure-benchmark-2026-11-25.md`): **flat URLs + visible hierarchy**. No URL moves and no new 301s in this round.
 **Code only.** No D1 rows, no R2 objects, no catalog change: everything comes from `src/ui_tree.js` (CATEGORIES, INDUSTRIES[].groups) and `src/tpl_copy.json` ("categories", "groups").
 
-## Ships AFTER the combined r7 + r8 + r9 go-live
+## Ships AFTER the r7 + r8 + r9 go-live AND the tpl-r9-trfix deploy
 
-This branch contains r7, r8 and r9 code. Deployed before their R2 objects and D1 rows are live, it would serve hubs with no screens. Order:
-1. r7 + r8 + r9 live per `DEPLOY-tpl-r7-r8-r9.md` on tpl-r9-travel.
-2. If tpl-r9-travel moved past the sha in the lane doc, `git merge tpl-r9-travel` here again (keep both sides), re-run the tests below.
-3. Then this branch.
+This branch contains r7, r8, r9 and trfix code. Order:
+1. r7 + r8 + r9 live per `DEPLOY-tpl-r7-r8-r9.md` (done 20:10 25-Nov, Worker c4ebfd00).
+2. trfix live per `DEPLOY-tpl-r9-trfix.md` (coordinator, ~21:15 25-Nov): its D1 UPDATEs and R2 objects must be live first, because this branch carries the trfix code (travel-website 301s to the hub; Halcyon Quay / Driftmark rows).
+3. If tpl-r9-travel or tpl-r9-trfix moved past dd2cb3e / d9034c3, `git merge` them here again (keep both sides), re-run the tests below.
+4. Then this branch.
 
 ## What changes
 
@@ -30,8 +31,9 @@ This branch contains r7, r8 and r9 code. Deployed before their R2 objects and D1
 - The healthcare hub (HTML and WordPress) groups its niches under H2 sections: Medical, Dental, Mental health, Therapy and rehab, Eye care and pharmacy, Animal health. Nutrition, pregnancy and care stays hidden until r14 adds its niches.
 - The Medical and Dental pages carry a "Looking for a more specific medical / dental type?" module. Member pages get a "Part of medical" strip with their siblings. Every niche page gets a "More <industry> templates" strip. Industry hubs get a "Part of <category>" link and the build-with-your-AI fallback. The hub `/ui/website-templates` gets a "By category" block.
 - Filters stay query parameters, and their canonical is the unfiltered page (unchanged; now tested on category pages too). No template page is paginated: the gallery uses "Show more" on one URL.
-- Sitemap: + the 6 category URLs. Every other URL is unchanged.
-- Not in this round: the flat-page 301s (travel, education, salon, clinic, portfolio-website...). They ship in each industry's fix bundle.
+- Each category page also has a "<Category> WordPress themes" section and one sub-type FAQ (content gap 25-Nov, `docs_updates/template-content-gap-2026-11-25.md`).
+- Sitemap: + the 6 category URLs. Every other URL is unchanged by this branch. (The flat travel page leaves the sitemap and 301s to the hub through trfix, which is already live by then.)
+- Not in this round: the other flat-page 301s (education, salon, clinic, portfolio-website...). They ship in each industry's fix bundle.
 
 ## Tests (local, 25-Nov)
 
@@ -41,7 +43,7 @@ node --import $R tests/test_tpl_tree.mjs          # unchanged suite
 node --import $R tests/test_tpl_restructure.mjs   # every base (5ae879d) path still served, categories, groups, crumbs, schema, MCP URLs
 node tests/test_ui_hint.mjs; node tests/test_next_offer.mjs
 for c in tests/ui_rank/cases*.txt; do node --import $R tests/ui_rank/run.mjs --cases $(basename $c); done   # identical to base
-bash tests/rs_local_e2e.sh   # wrangler dev --local: all 12 industries, hc_routes x12, rs_routes, 11 MCP suites
+bash tests/rs_local_e2e.sh   # wrangler dev --local: all 12 industries + trfix rows (out-trfix lint), hc_routes x11 (travel: one-hop 301 + sitemap), rs_routes, 11 MCP suites
 ```
 
 ## Go-live (not run)
