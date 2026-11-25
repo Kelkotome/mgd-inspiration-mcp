@@ -1,0 +1,197 @@
+{
+ "note": "typo-b2b4 (26-Nov-2026): B2, B3, B4 guides in get_font_pairing (data only). live=true cases run after the deploy (tests/typo_b2b4_rpc.py BASE --live-only).",
+ "cases": [
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Amiri"
+   },
+   "want": "Source: https://madegooddesigns.com/amiri-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Bungee"
+   },
+   "want": "Source: https://madegooddesigns.com/bungee-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Indie Flower"
+   },
+   "want": "Source: https://madegooddesigns.com/indie-flower-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Fira Code"
+   },
+   "want": "Source: https://madegooddesigns.com/fira-code-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Baloo 2"
+   },
+   "want": "Source: https://madegooddesigns.com/baloo-2-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Roboto Serif"
+   },
+   "want": "Source: https://madegooddesigns.com/roboto-serif-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Silkscreen"
+   },
+   "want": "Source: https://madegooddesigns.com/silkscreen-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Comic Neue"
+   },
+   "want": "Source: https://madegooddesigns.com/comic-neue-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Libre Bodoni"
+   },
+   "want": "Source: https://madegooddesigns.com/libre-bodoni-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "GFS Didot"
+   },
+   "want": "Source: https://madegooddesigns.com/gfs-didot-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Mona Sans"
+   },
+   "want": "Source: https://madegooddesigns.com/mona-sans-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Reenie Beanie"
+   },
+   "want": "Source: https://madegooddesigns.com/reenie-beanie-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font_name": "Cal Sans"
+   },
+   "want": "Source: https://madegooddesigns.com/cal-sans-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Cormorant Infant"
+   },
+   "want": "Source: https://madegooddesigns.com/cormorant-infant-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Lobster Two"
+   },
+   "want": "Source: https://madegooddesigns.com/lobster-two-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Baloo"
+   },
+   "want": "baloo-2-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Bungee Shade"
+   },
+   "want": "bungee-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "IM Fell English SC"
+   },
+   "want": "im-fell-english-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Zilla Slab"
+   },
+   "want": "Source: https://madegooddesigns.com/zilla-slab-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Shrikhand"
+   },
+   "want": "Source: https://madegooddesigns.com/shrikhand-font-pairings/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Poppins"
+   },
+   "want": "Source: https://madegooddesigns.com/poppins-font-pairing/",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Modak"
+   },
+   "want": "these are published pairings for similar display fonts (",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Bagel Fat One"
+   },
+   "want": "these are published pairings for similar display fonts (",
+   "live": true
+  },
+  {
+   "tool": "get_font_pairing",
+   "args": {
+    "font": "Hind"
+   },
+   "want": "No dedicated pairing guide for Hind yet",
+   "live": true
+  }
+ ]
+}

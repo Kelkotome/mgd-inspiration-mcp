@@ -7,11 +7,13 @@ fs.writeFileSync(tmp, code);
 try {
   const { fontPairing } = await import(pathToFileURL(tmp));
   const t = (x) => x.content[0].text;
-  const n = fontPairing({ font: "Crimson Text" });
+  // typo-b2b4 (26-Nov): Crimson Text got its own B2 guide, so the partner case moves to Hind (a partner on 4 guides, no guide of its own)
+  assert.equal(fontPairing({ font: "Crimson Text" }).structuredContent.match, "exact");
+  const n = fontPairing({ font: "Hind" });
   assert.equal(n.structuredContent.match, "partner"); assert.ok(n.structuredContent.pairs.length > 0);
-  assert.ok(n.structuredContent.pairs.every((p) => /Crimson Text/.test(p.heading + p.body) && p.page.startsWith("https://madegooddesigns.com/")));
+  assert.ok(n.structuredContent.pairs.every((p) => /Hind/.test(p.heading + p.body) && p.page.startsWith("https://madegooddesigns.com/")));
   assert.ok(/No dedicated pairing guide/.test(t(n)));
-  assert.equal(fontPairing({ font: "Crimson Text font pairing", limit: 1 }).structuredContent.pairs.length, 1);
+  assert.equal(fontPairing({ font: "Hind font pairing", limit: 1 }).structuredContent.pairs.length, 1);
   assert.equal(fontPairing({ font: "Oswald" }).structuredContent.match, "exact");
   assert.equal(fontPairing({ font: "Nunito Sans" }).structuredContent.font, "Nunito Sans"); // round 2: own guide, no longer Nunito
   assert.equal(fontPairing({ font: "Poppins font pairing" }).structuredContent.match, "exact");
