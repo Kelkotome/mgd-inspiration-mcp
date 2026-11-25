@@ -3,13 +3,14 @@
 // R2: tpl/wordpress/<theme>/<version>/theme.zip, shot-1280.webp, shot-390.webp. No D1 table of its own.
 import TPL_COPY from "./tpl_copy.json";
 import { imgDims } from "./seo_pages.js"; // SEO r1: <img> width/height from the D1 row
+import { patternH1 } from "./ui_seo.js"; // "Part of" links use the linked page's own H1 (owner 25-Nov, choice 6 B)
 import { INDUSTRIES, PLATFORMS, NICHES, MIN_DESIGNS, nicheById, nicheOfPattern, liveDesigns, liveThemes, industryNiches, platformIndustries, catalogMeta, wpIndustryPath, wpNichePath, themePath, nestedPatternPath,
-  nichePath, industryGroups, groupOfNiche, groupParent, groupMembers, groupNiches, groupLive, nicheChildren, categoryOf, categoryIndustries, liveCategories, categoryPath, TEMPLATES_HUB } from "./ui_tree.js";
+  nichePath, industryGroups, groupOfNiche, groupParent, groupMembers, groupNiches, groupLive, nicheChildren, categoryOf, homeCategory, categoryIndustries, liveCategories, categoryPath, TEMPLATES_HUB } from "./ui_tree.js";
 
 // Approved by the user on 7-Nov-2026 (Option A: GPL for themes only, HTML templates keep their current terms). export.mjs writes the same sentence into each readme.
 export const WP_LICENCE = "Theme code and patterns: GPL-2.0-or-later. Bundled fonts: SIL Open Font License 1.1. Illustrations: original, included under the same GPL terms.";
 // Per industry. Healthcare's sentence is the approved 7-Nov-2026 text, unchanged. Real estate is new copy (option 1 of the options in deploy-bundle-2026-11-07/real-estate.md).
-const DISCLOSES = {
+export const DISCLOSES = {
   healthcare: "Names, people, addresses, phone numbers and timings in every template are fictional samples to replace. The templates are designs, not medical advice, and they do not make a site compliant with any health, privacy or advertising rule.",
   "real-estate": "Names, people, addresses, phone numbers, listings, prices and fees in every template are fictional samples to replace. The templates are designs, not legal or financial advice, and they do not make a site compliant with any fair housing, licensing or advertising rule.",
   // restaurant: new copy, option 1 of the options in deploy-bundle-2026-11-07/restaurant.md
@@ -52,7 +53,7 @@ const ROOT_CRUMBS = () => [["UI screens", ""], [TEMPLATES_CRUMB, TEMPLATES_HUB]]
 const categoryCrumbs = (c) => [...ROOT_CRUMBS(), [c.label, categoryPath(c)]];
 // Knob (restructure round): false drops the top category from industry, group and niche breadcrumbs (and their BreadcrumbList); the category pages stay.
 export const CRUMB_CATEGORY = true;
-const INDUSTRY_CRUMBS = (ind) => { const c = CRUMB_CATEGORY ? categoryOf(ind.id) : null; return [...(c ? categoryCrumbs(c) : ROOT_CRUMBS()), [ind.label, ind.hub]]; };
+const INDUSTRY_CRUMBS = (ind) => { const c = CRUMB_CATEGORY ? homeCategory(ind.id) : null; return [...(c ? categoryCrumbs(c) : ROOT_CRUMBS()), [ind.label, ind.hub]]; };
 export const nicheCrumbs = (n) => { const ind = INDUSTRIES[n.industry], g = groupOfNiche(n), p = groupHome(g); if (p) { const gc = [...INDUSTRY_CRUMBS(ind), [g.label, nichePath(p)]]; return p === n ? gc : [...gc, [n.label, nichePath(n)]]; } return [...INDUSTRY_CRUMBS(ind), [n.label, nichePath(n)]]; };
 const WP_CRUMBS = () => [["UI screens", ""], [PLATFORMS.wordpress.h1, PLATFORMS.wordpress.hub]];
 const wpIndCrumbs = (ind) => [...WP_CRUMBS(), [ind.label, wpIndustryPath(ind.id)]];
@@ -91,7 +92,7 @@ function nicheGrid(ind, niches, img, h, base, wp) {
 // /ui/<industry hub>
 export async function industryPage(ind, env, base, h, x) {
   const site = x.siteOf(env), niches = industryNiches(ind.id), t = totals(niches), url = `${site}${base}/ui/${ind.hub}`, c = (TPL_COPY.industries || {})[ind.id] || {};
-  const wp = industryNiches(ind.id, true), wt = totals(wp, true), img = await nicheImages(env, h, x, niches), crumbs = INDUSTRY_CRUMBS(ind), cat = categoryOf(ind.id);
+  const wp = industryNiches(ind.id, true), wt = totals(wp, true), img = await nicheImages(env, h, x, niches), crumbs = INDUSTRY_CRUMBS(ind), cat = homeCategory(ind.id);
   const desc = `${t.designs} free one-page ${ind.label.toLowerCase()} website templates across ${t.niches} sub-niches, each a distinct layout with HTML code and a DESIGN.md.`;
   const title = x.fitTitle(`${ind.h1} (${t.designs} free, with code) | MGD`, `${ind.h1} (${t.designs} free) | MGD`, `${ind.h1} | MGD`);
   const jsonld = [{ "@context": "https://schema.org", "@type": "CollectionPage", name: ind.h1, url, description: desc, publisher: x.MGD_ORG(site), ...x.licenceLd(site, base), ...(cat ? { isPartOf: { "@type": "CollectionPage", name: `${cat.label} website templates`, url: `${site}${base}/ui/${categoryPath(cat)}` } } : {}), hasPart: niches.map((n) => ({ "@type": "CollectionPage", name: `${n.label} website templates`, url: `${site}${base}/ui/${nichePath(n)}` })) }, crumbLd(site, base, crumbs)];
@@ -123,7 +124,7 @@ function categoryFaq(c, f, u) {
   out.push([`Are the ${L} templates also WordPress themes?`, wpi.length ? `Yes, ${f.themes} of them are installable WordPress block themes across ${f.wpNiches} sub-niches: ${niceList(wpi.map((r) => `${r.i.label} (${u(wpIndustryPath(r.i.id))})`))}. ${TEST_LINE()}`.trim() : "Not yet. They come as HTML with a DESIGN.md."]);
   out.push([`Can I use them for a client or commercial site?`, `Yes. The HTML templates are free to use and adapt in any project, including commercial ones, with no credit needed in your product. WordPress themes: ${WP_LICENCE}`]);
   for (const qa of cc.faq || []) if (Array.isArray(qa) && qa[0] && qa[1]) out.push(qa);
-  out.push([`Do the templates make a site compliant?`, discloseFor(f.inds.map((r) => r.i.id))]);
+  out.push([`Do the templates make a site compliant?`, (f.inds.length > 1 && cc.notice) || discloseFor(f.inds.map((r) => r.i.id))]); // one merged notice per page (owner 25-Nov, choice 4 B; tests check it keeps every rule of its industries)
   return out;
 }
 
@@ -171,7 +172,10 @@ ${others.length ? `<h2 class="s">Other categories</h2><p class="lede">${others.m
 // The hub's "By category" block (on /ui/website-templates): every live category with its industries and counts.
 export function categoryBlock(base, h) {
   const cs = liveCategories(); if (!cs.length) return "";
-  return `<h2 style="font-size:1.05rem;margin:1rem 0 .5rem">By category</h2><ul class="lede" style="padding-left:1.1rem;margin:0 0 1.25rem">${cs.map((c) => { const f = categoryFacts(c); return `<li><a href="${h.escHtml(base)}/ui/${h.escHtml(categoryPath(c))}"><b>${h.escHtml(c.label)}</b></a> (${f.designs} designs): ${f.inds.map((r) => `<a href="${h.escHtml(base)}/ui/${h.escHtml(r.i.hub)}">${h.escHtml(r.i.label)}</a> ${r.t.designs}`).join(" · ")}</li>`; }).join("")}</ul>`;
+  // industries whose category is held (Learning and community) or not yet placed still get a hub link here, with no category
+  const loose = Object.values(INDUSTRIES).filter((i) => industryNiches(i.id).length && !homeCategory(i.id));
+  const more = loose.length ? `<li><b>More industries:</b> ${loose.map((i) => `<a href="${h.escHtml(base)}/ui/${h.escHtml(i.hub)}">${h.escHtml(i.label)}</a> ${totals(industryNiches(i.id)).designs}`).join(" · ")}</li>` : "";
+  return `<h2 style="font-size:1.05rem;margin:1rem 0 .5rem">By category</h2><ul class="lede" style="padding-left:1.1rem;margin:0 0 1.25rem">${cs.map((c) => { const f = categoryFacts(c); return `<li><a href="${h.escHtml(base)}/ui/${h.escHtml(categoryPath(c))}"><b>${h.escHtml(c.label)}</b></a> (${f.designs} designs): ${f.inds.map((r) => `<a href="${h.escHtml(base)}/ui/${h.escHtml(r.i.hub)}">${h.escHtml(r.i.label)}</a> ${r.t.designs}`).join(" · ")}</li>`; }).join("")}${more}</ul>`;
 }
 
 // Below the designs on a sub-niche page: a group parent lists its specialties; a member links back to its group; every niche links to the rest of its industry.
@@ -181,7 +185,7 @@ export async function nicheExtras(n, env, base, h, x) {
     const img = await nicheImages(env, h, x, kids), gc = (TPL_COPY.groups || {})[g.id] || {};
     out.push(`<h2 class="s" id="specialties">${h.escHtml(`Looking for a more specific ${lc(g.label)} type?`)}</h2><p class="lede" style="margin:0 0 .6rem">${h.escHtml(`${count(kids.length, "specialty", "specialties")}, ${totals(kids).designs} designs. ${gc.intro || ""}`)}</p><div class="tg">${kids.map((k) => nicheCard(k, img[k.pattern], `${base}/ui/${nichePath(k)}`, h, base, count(liveDesigns(k).length, "design"))).join("")}</div>`);
   }
-  if (n.under && g) { const p = nicheById(n.under), sibs = groupMembers(g).filter((k) => k !== n); out.push(`<p class="lede"><b>Part of ${h.escHtml(lc(g.label))}:</b> ${p.htmlLive ? lk(h, base, nichePath(p), `${p.label} website templates`) : lk(h, base, ind.hub + "#" + g.id, `${g.label} on the ${lc(ind.label)} hub`)}${sibs.length ? `. Other ${h.escHtml(lc(g.label))} specialties: ${sibs.map((k) => lk(h, base, nichePath(k), k.label)).join(" · ")}` : ""}.</p>`); }
+  if (n.under && g) { const p = nicheById(n.under), sibs = groupMembers(g).filter((k) => k !== n); out.push(`<p class="lede"><b>Part of ${h.escHtml(lc(g.label))}:</b> ${p.htmlLive ? lk(h, base, nichePath(p), patternH1(p.pattern) || `${p.label} website templates`) : lk(h, base, ind.hub + "#" + g.id, `${g.label} on the ${lc(ind.label)} hub`)}${sibs.length ? `. Other ${h.escHtml(lc(g.label))} specialties: ${sibs.map((k) => lk(h, base, nichePath(k), k.label)).join(" · ")}` : ""}.</p>`); }
   const near = new Set([n, ...kids, ...(n.under && g ? groupNiches(g) : [])]), more = industryNiches(ind.id).filter((k) => !near.has(k));
   if (more.length) out.push(`<p class="lede"><b>More ${h.escHtml(lc(ind.label))} templates:</b> ${more.map((k) => lk(h, base, nichePath(k), k.label)).join(" · ")}. ${lk(h, base, ind.hub, `All ${lc(ind.label)} templates`)}.</p>`);
   return out.join("\n");
@@ -269,7 +273,7 @@ export function treeMd(hit, site, base) {
   const themeLine = (n, d) => `- **${d.theme.name}**: ${d.about}. Page: ${u(themePath(n, d))} Download: ${site}${zipUrl(d, base)}`;
   const nLine = (n) => `- [${n.label}](${u(nichePath(n))}): ${liveDesigns(n).length} designs. ${(TPL_COPY.niches[n.id] || {}).intro || ""}`;
   if (hit.type === "category") { const c = hit.c, f = categoryFacts(c), cc = (TPL_COPY.categories || {})[c.id] || {}; return { rel: categoryPath(c), md: `# ${c.h1 || c.label + " website templates"}\n\n${f.designs} free one-page designs across ${f.niches} sub-niches, each a distinct layout with HTML code and a DESIGN.md. ${cc.intro || ""}\n\n${f.inds.map((r) => `## ${r.i.label} (${u(r.i.hub)})\n${r.t.designs} designs across ${r.t.niches} sub-niches${r.wt.designs ? `; ${r.wt.designs} WordPress themes at ${u(wpIndustryPath(r.i.id))}` : ""}.\n${r.ns.map(nLine).join("\n")}`).join("\n\n")}\n\n${(cc.choose || []).length ? `## How to choose\n${cc.choose.map((x) => `- ${x}`).join("\n")}\n\n` : ""}## Questions\n${categoryFaq(c, f, u).map(([q, a]) => `**${q}** ${a}`).join("\n\n")}\n\nAll website templates: ${u(TEMPLATES_HUB)}\n` }; }
-  if (hit.type === "industry") { const ns = industryNiches(hit.ind.id), t = totals(ns), gs = industryGroups(hit.ind.id).filter((g) => groupLive(g)), cat = categoryOf(hit.ind.id); return { rel: hit.ind.hub, md: `# ${hit.ind.h1}\n\n${t.designs} free one-page templates across ${t.niches} sub-niches, each a distinct layout with HTML code and a DESIGN.md.\n\n${gs.length ? gs.map((g) => `## ${g.label}\n${groupNiches(g).map(nLine).join("\n")}`).join("\n\n") : `## Sub-niches\n${ns.map(nLine).join("\n")}`}\n\nWordPress themes: ${u(wpIndustryPath(hit.ind.id))}\n${cat ? `Category: ${cat.label} ${u(categoryPath(cat))}\n` : ""}\n${DISCLOSE}\n` }; }
+  if (hit.type === "industry") { const ns = industryNiches(hit.ind.id), t = totals(ns), gs = industryGroups(hit.ind.id).filter((g) => groupLive(g)), cat = homeCategory(hit.ind.id); return { rel: hit.ind.hub, md: `# ${hit.ind.h1}\n\n${t.designs} free one-page templates across ${t.niches} sub-niches, each a distinct layout with HTML code and a DESIGN.md.\n\n${gs.length ? gs.map((g) => `## ${g.label}\n${groupNiches(g).map(nLine).join("\n")}`).join("\n\n") : `## Sub-niches\n${ns.map(nLine).join("\n")}`}\n\nWordPress themes: ${u(wpIndustryPath(hit.ind.id))}\n${cat ? `Category: ${cat.label} ${u(categoryPath(cat))}\n` : ""}\n${DISCLOSE}\n` }; }
   if (hit.type === "niche") { const n = hit.n, ind = hit.ind, rel = nichePath(n), kids = nicheChildren(n), g = groupOfNiche(n); return { rel, md: `# ${n.label} website templates\n\n${liveDesigns(n).length} distinct one-page designs with HTML code and a DESIGN.md.\n\n${liveDesigns(n).map((d) => `- **${d.layoutName}**: ${d.about}`).join("\n")}\n\n${kids.length ? `## ${g.label} specialties\n${kids.map(nLine).join("\n")}\n\n` : ""}${n.under && g && groupHome(g) ? `Group: ${g.label} ${u(nichePath(groupHome(g)))}\n` : ""}${n.wpLive ? `WordPress themes: ${u(wpNichePath(n))}\n\n` : ""}Hub: ${u(ind.hub)}\n\n${DISCLOSE}\n` }; }
   if (hit.type === "platform") { const inds = platformIndustries(), ns = inds.flatMap((i) => industryNiches(i.id, true)), t = totals(ns, true); return { rel: PLATFORMS.wordpress.hub, md: `# WordPress themes\n\n${t.designs} free block themes across ${t.niches} sub-niches. ${TEST_LINE()}\n\n${inds.map((i) => `## ${i.label}\n${industryNiches(i.id, true).map((n) => `- [${n.label}](${u(wpNichePath(n))}): ${liveThemes(n).length} themes`).join("\n")}`).join("\n\n")}\n\n${std}\n` }; }
   if (hit.type === "platform-industry") { const ns = industryNiches(hit.ind.id, true), t = totals(ns, true); return { rel: wpIndustryPath(hit.ind.id), md: `# ${hit.ind.label} WordPress themes\n\n${t.designs} free block themes across ${t.niches} sub-niches. ${TEST_LINE()}\n\n${ns.map((n) => `- [${n.label}](${u(wpNichePath(n))}): ${liveThemes(n).length} themes`).join("\n")}\n\n${std}\n` }; }

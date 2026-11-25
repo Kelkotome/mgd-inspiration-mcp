@@ -35,10 +35,10 @@ if SAMPLE: themes = themes[:: max(1, len(themes) // SAMPLE)][:SAMPLE]
 for p in rest + themes:
     s, h, b = get("/ui/" + p); ck(s == 200, f"/ui/{p} status {s} (must stay put, no redirect)")
 # 2. categories
-cats = [c for c in TREE["categories"] if c["live"]]; ck(len(cats) == 6, f"6 live categories, got {len(cats)}")
+cats = [c for c in TREE["categories"] if c["live"]]; ck(len(cats) == 5, f"5 live categories (learning and community held), got {len(cats)}")
 for c in TREE["categories"]:
     p = "/ui/" + c["seg"]; s, h, b = get(p)
-    if not c["live"]: ck(s == 404, f"{p} not live yet should be 404, got {s}"); continue
+    if not c["live"]: ck(s == 404, f"{p} not live yet should be 404, got {s}"); ck(get(p + ".md")[0] == 404, f"{p}.md 404 while held"); continue
     ck(s == 200, f"{p} {s}"); ck(canon(b, p), f"{p} canonical")
     s2, _, b2 = get(p + "?style=minimal&device=web"); ck(s2 == 200 and canon(b2, p), f"{p} query filter canonicalises to the page")
     ck('"BreadcrumbList"' in b and '"Website templates"' in b, f"{p} BreadcrumbList with Website templates"); ck('"FAQPage"' in b and '"ItemList"' in b, f"{p} FAQPage + ItemList")
@@ -51,13 +51,17 @@ for c in TREE["categories"]:
     ck(re.search(r"<b>MGD [^<]+ \([^)]+\)</b>", b), f"{p} niche-labelled template cards")
     s, h, m = get(p + ".md"); ck(s == 200 and "text/markdown" in h.get("Content-Type", "") and c["h1"] in m, f"{p}.md")
 # 3. hub, industry hubs, groups, crumbs
-s, h, b = get("/ui/website-templates"); ck(s == 200 and "By category" in b, "hub category block"); ck('UI screens</a> › Website templates</nav>' in b, "hub crumb reads Website templates")
+s, h, b = get("/ui/website-templates"); hubb = b; ck(s == 200 and "By category" in b, "hub category block"); ck('UI screens</a> › Website templates</nav>' in b, "hub crumb reads Website templates")
 for c in cats: ck(f'/ui/{c["seg"]}"' in b, f"hub links {c['seg']}")
 for ind in TREE["industries"]:
     if not ind["live"]: continue
     s, h, b = get("/ui/" + ind["hub"]); ck(s == 200, f"{ind['hub']} {s}")
-    ck("Templates</a> ›" not in b and ">Website templates</a>" in b, f"{ind['hub']} crumb root label"); cat = next(c for c in TREE["categories"] if c["id"] == ind["category"]); ck(f'/ui/{cat["seg"]}"' in b, f"{ind['hub']} links its category")
-    ck('"BreadcrumbList"' in b and f'"{cat["label"]}"' in b, f"{ind['hub']} BreadcrumbList carries {cat['label']}")
+    ck("Templates</a> ›" not in b and ">Website templates</a>" in b, f"{ind['hub']} crumb root label")
+    for hc_ in [c for c in TREE["categories"] if not c["live"]]: ck(f'/ui/{hc_["seg"]}"' not in b, f"{ind['hub']} has no link to held {hc_['seg']}")
+    if ind["category"] is None:   # its category is held: the crumb goes straight from the root to the industry, and the hub block still links it
+        ck(f'Website templates</a> › {ind["label"]}</nav>' in b and '<b>Part of' not in b, f"{ind['hub']} crumb skips the held category"); ck(f'/ui/{ind["hub"]}"' in hubb, f"hub block still links {ind['hub']}"); continue
+    cat = next(c for c in TREE["categories"] if c["id"] == ind["category"]); ck(f'/ui/{cat["seg"]}"' in b, f"{ind['hub']} links its category")
+    ck('"BreadcrumbList"' in b and f'"{cat["label"]}"' in b and f"<b>Part of {cat['label'].lower()}:</b>" in b, f"{ind['hub']} BreadcrumbList + Part of carry {cat['label']}")
 s, h, b = get("/ui/healthcare-website-templates"); live = [g["id"] for g in next(i for i in TREE["industries"] if i["id"] == "healthcare")["groups"] if g["live"]]
 ck(all(f'id="{g}"' in b for g in live) and 'id="nutrition-care"' not in b, f"healthcare grid grouped under {live}")
 s, h, b = get("/ui/wordpress-themes/healthcare"); ck(s == 200 and 'id="medical"' in b, "WordPress healthcare grouped")
@@ -67,12 +71,14 @@ for parent in ["medical", "dental"]:
     s, h, b = get("/ui/" + n["wp"]); ck(all(f'/ui/{TN[k]["wp"]}"' in b for k in n["children"]), f"{parent} WordPress page lists specialty themes")
 s, h, b = get("/ui/" + TN["cardiology"]["nest"]); flat = b.replace(" ", "")
 ck('"name":"Medical"' in flat and '"name":"Healthandwellness"' in flat, "cardiology BreadcrumbList has Health and wellness and Medical")
-ck("Medical</a> › Cardiology</nav>" in b, "cardiology visible crumb ends Medical › Cardiology"); ck("Part of medical" in b and f'/ui/{TN["hospital"]["nest"]}"' in b, "cardiology sibling strip")
+ck("Medical</a> › Cardiology</nav>" in b, "cardiology visible crumb ends Medical › Cardiology"); ck("Part of medical" in b and ">Medical website templates</a>" in b and f'/ui/{TN["hospital"]["nest"]}"' in b, "cardiology sibling strip, linked with the Medical page H1")
 s, h, b = get("/ui/" + TN["cardiology"]["wp"] + "/" + TN["cardiology"]["themes"][0]); ck(s == 200 and '"name":"WordPressthemes"' in b.replace(" ", "") and '"name":"Medical"' in b.replace(" ", ""), "theme crumbs: UI screens › WordPress themes › Healthcare › Medical › Cardiology › theme")
 # 4. sitemap
 s, h, b = get("/ui/sitemap.xml"); urls = re.findall(r"<loc>([^<]+)</loc>", b); sp = {u.split("/inspiration", 1)[-1] for u in urls}
 ck(len(urls) == len(sp), "sitemap duplicates")
 for p in TREE["paths"]: ck("/ui/" + p in sp, f"sitemap misses {p}")
+for c in TREE["categories"]:
+    if not c["live"]: ck("/ui/" + c["seg"] not in sp, f"sitemap lists held/unlive {c['seg']}")
 for bad in ["/ui/online-store-website-templates", "/ui/website-templates/health-and-wellness", "/ui/healthcare-website-templates/medical-website-template/cardiology-website-template", "/ui/business-website-templates/x"]:
     s, _, _ = get(bad); ck(s == 404, f"{bad} should be 404, got {s}")
 print(f"{checks} checks, {fails} failed"); sys.exit(1 if fails else 0)

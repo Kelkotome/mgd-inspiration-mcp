@@ -131,7 +131,8 @@
      "Are the people in the templates real?",
      "No. Names, people, addresses and timings are fictional samples to replace, and the pictures are drawn illustrations, never photographs of real patients or clients."
     ]
-   ]
+   ],
+   "notice": "Names, people, addresses, phone numbers, places, services, classes, prices and timings in every template are fictional samples to replace, and prices in the beauty, fitness and wellness sets are zero placeholders. People are drawn placeholders, never photographs. The templates are designs, not medical or health advice, and they do not make a site compliant with any health, privacy, licensing, hygiene, consumer or advertising rule."
   },
   "food-travel-hospitality": {
    "for": "restaurants, travel, tourism and places to stay",
@@ -155,7 +156,8 @@
      "Do the templates take bookings, orders or payments?",
      "No. Booking, reservation and contact forms are static sample markup, and there is no online ordering or delivery. Connect your own booking, ordering or form tool before you publish."
     ]
-   ]
+   ],
+   "notice": "Names, people, addresses, phone numbers, dishes, menus, places, rooms, tours, events, prices, rates, dates and opening hours in every template are fictional samples to replace, and prices in the travel sets are zero placeholders. Dietary labels and allergen notes are labelled samples: check every dish with your kitchen. Licence, registration, booking protection, grading, accessibility and insurance lines are left for the owner to fill in. The templates are designs, not food safety, travel, legal or financial advice, and they do not make a site compliant with any allergen, food hygiene, licensing, package travel, consumer, accessibility or advertising rule."
   },
   "property-trades-automotive": {
    "for": "real estate, construction, home services and automotive",
@@ -179,7 +181,8 @@
      "Are the listings, prices and vehicles real?",
      "No. Listings, prices, rates and vehicles are fictional samples to replace, and prices are zero placeholders in the construction and automotive sets."
     ]
-   ]
+   ],
+   "notice": "Names, people, addresses, phone numbers, listings, projects, vehicles, services, prices, fees, rates, arrival windows and opening hours in every template are fictional samples to replace, and prices in the construction and automotive sets are zero placeholders. Licence, registration, insurance, warranty and finance lines are left for the owner to fill in, and safety lines are general prompts. The templates are designs, not legal, financial, building, electrical, gas, safety or mechanical advice, and they do not make a site compliant with any fair housing, licensing, vehicle sale, consumer or advertising rule."
   },
   "business-technology": {
    "intro": "Templates for law firms, lawyers, accountants, tax preparers, financial advisers, insurers, consultants and recruiters: firms that sell expertise, where credentials and a clear way to get in touch matter most.",
@@ -224,7 +227,8 @@
      "Can the wedding templates be used for other events?",
      "The Event and conference and Event planner sets are written for other events: programmes, speakers, tickets, parties and company events. All the text is sample copy to replace."
     ]
-   ]
+   ],
+   "notice": "Names, couples, people, projects, clients, places, prices, dates and schedules in every template are fictional samples to replace. Project pictures are drawn placeholders: replace them with your own work, and only show client work and results you have permission to share. Licence, legal and venue details are left for you to add and check. The templates are designs, not legal or planning advice, and they do not make a site compliant with any marriage, licensing, registration, consumer or advertising rule."
   },
   "learning-community": {
    "intro": "Templates for schools, universities, preschools, daycares, tutors, online course schools and music and dance teachers: places where families or students compare programmes, timetables and how to enrol.",

@@ -40,10 +40,22 @@ t("niche crumbs: UI screens > Website templates > Health and wellness > Healthca
 t("crumb urls (flat; Medical links the medical page)", cr.map((x) => x[1]).join(" ") === " website-templates health-and-wellness-website-templates healthcare-website-templates healthcare-website-templates/medical-website-template healthcare-website-templates/cardiology-website-template");
 t("group parent crumbs end at the group label", P.nicheCrumbs(T.nicheById("medical")).map((x) => x[0]).slice(-2).join() === "Healthcare,Medical");
 t("section-only group not in crumbs", P.nicheCrumbs(T.nicheById("therapist")).map((x) => x[0]).slice(-2).join() === "Healthcare,Therapist");
-t("non-grouped industry crumbs", P.nicheCrumbs(T.nicheById("bakery")).map((x) => x[0]).join(" > ") === "UI screens > Website templates > Food, travel and hospitality > Restaurant > Bakery");
+t("non-grouped industry crumbs", P.nicheCrumbs(T.nicheById("bakery")).map((x) => x[0]).join(" > ") === "UI screens > Website templates > Food and hospitality > Restaurant > Bakery");
 t("no 'Templates' crumb left", T.NICHES.filter((x) => x.htmlLive).every((x) => P.nicheCrumbs(x).every(([l]) => l !== "Templates")));
 t("root crumb label is the same everywhere", P.TEMPLATES_CRUMB === "Website templates" && T.NICHES.filter((x) => x.htmlLive).every((x) => P.nicheCrumbs(x)[1][0] === "Website templates"));
 const ld = P.crumbLd("https://s", "/inspiration", cr); t("BreadcrumbList: 6 items, every item has a URL", ld.itemListElement.length === 6 && ld.itemListElement.every((e, i) => e.position === i + 1 && /^https:\/\/s\/inspiration\/ui/.test(e.item)));
+// owner 25-Nov choices (after the content gap): 1 B hold Learning and community, 2 B labels = H1 names, 4 B one merged notice, 6 B "Part of" uses the page H1
+const lc_ = T.CATEGORIES.find((c) => c.id === "learning-community");
+t("learning and community held: not live, no route, not in tree paths", lc_.hold === true && !T.categoryLive(lc_) && T.resolveTree(lc_.seg) === null && !T.treePaths().includes(lc_.seg) && T.liveCategories().length === 5);
+t("education keeps its placement but shows no category", T.categoryOf("education").id === "learning-community" && T.homeCategory("education") === null);
+t("education crumbs skip the held category", P.nicheCrumbs(T.nicheById("school")).map((x) => x[0]).join(" > ") === "UI screens > Website templates > Education > School");
+t("category labels are the H1 names", T.CATEGORIES.every((c) => `${c.label} website templates`.toLowerCase() === c.h1.toLowerCase()));
+{ const C = (await import(path.join(SRC, "tpl_copy.json"), { with: { type: "json" } })).default.categories; const rules = (txt) => (txt.match(/compliant with any (.*?) rule/) || [, ""])[1].split(/, | or /).filter(Boolean);
+  const advice = (txt) => (txt.match(/not (.*?) advice/) || [, ""])[1].split(/, | or /).filter(Boolean);
+  for (const c of T.liveCategories()) { const inds = T.categoryIndustries(c); if (inds.length < 2) continue; const nt = (C[c.id] || {}).notice || "";
+    const miss = inds.flatMap((i) => [...rules(P.DISCLOSES[i.id]), ...advice(P.DISCLOSES[i.id])].filter((w) => !nt.includes(w)));
+    t(`${c.seg}: one merged notice keeps every rule and advice type of its industries${miss.length ? " (missing " + miss.join(", ") + ")" : ""}`, nt && miss.length === 0 && (nt.match(/fictional samples/g) || []).length === 1); } }
+{ const html = await P.nicheExtras(T.nicheById("cardiology"), {}, "/inspiration", { escHtml: (x) => String(x) }, { uiRows: async () => [] }); t('"Part of medical" links with the page H1', html.includes(">Medical website templates</a>")); }
 // MCP output unchanged in URL shape
 const lines = P.tplListLines("https://s").join("\n"); t("list_ui_patterns prints flat URLs", lines.includes("/ui/healthcare-website-templates/cardiology-website-template") && lines.includes("/ui/wordpress-themes/healthcare/cardiology") && !lines.includes("medical-website-template/cardiology"));
 t("hint unchanged", P.tplHint({ q: "dermatology website template" }, "https://s").includes("/ui/healthcare-website-templates/dermatology-website-template"));

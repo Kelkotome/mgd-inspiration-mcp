@@ -261,13 +261,14 @@ export const INDUSTRIES = {
 // creative-media-events, r15 nonprofit -> learning-community.
 export const TEMPLATES_HUB = "website-templates";
 export const CATEGORIES = [
+  // labels = the H1 without "website templates" (owner 25-Nov, choice 2 B): crumbs, FAQ questions, "Other categories", the hub block
   { id: "health-wellness", label: "Health and wellness", seg: "health-and-wellness-website-templates", h1: "Health and wellness website templates", industries: ["healthcare", "beauty-fitness"] },
-  { id: "food-travel-hospitality", label: "Food, travel and hospitality", seg: "food-website-templates", h1: "Food and hospitality website templates", industries: ["restaurant", "travel"] },
-  { id: "property-trades-automotive", label: "Property, trades and automotive", seg: "property-and-trades-website-templates", h1: "Property and trades website templates", industries: ["real-estate", "construction", "automotive"] },
-  { id: "business-technology", label: "Business and technology", seg: "business-website-templates", h1: "Business website templates", industries: ["professional-services"] },
-  { id: "shops", label: "Shops and online stores", seg: "online-store-website-templates", h1: "Online store website templates", industries: [] },
-  { id: "creative-media-events", label: "Creative, media and events", seg: "creative-website-templates", h1: "Creative website templates", industries: ["portfolio", "wedding"] },
-  { id: "learning-community", label: "Learning and community", seg: "learning-and-community-website-templates", h1: "Learning and community website templates", industries: ["education"] },
+  { id: "food-travel-hospitality", label: "Food and hospitality", seg: "food-website-templates", h1: "Food and hospitality website templates", industries: ["restaurant", "travel"] },
+  { id: "property-trades-automotive", label: "Property and trades", seg: "property-and-trades-website-templates", h1: "Property and trades website templates", industries: ["real-estate", "construction", "automotive"] },
+  { id: "business-technology", label: "Business", seg: "business-website-templates", h1: "Business website templates", industries: ["professional-services"] },
+  { id: "shops", label: "Online store", seg: "online-store-website-templates", h1: "Online store website templates", industries: [] },
+  { id: "creative-media-events", label: "Creative", seg: "creative-website-templates", h1: "Creative website templates", industries: ["portfolio", "wedding"] },
+  { id: "learning-community", label: "Learning and community", seg: "learning-and-community-website-templates", h1: "Learning and community website templates", industries: ["education"], hold: true }, // owner 25-Nov (gap analysis, choice 1 B): held until a community, nonprofit or church set exists
 ];
 
 const cat = (id) => (CATALOG.niches && CATALOG.niches[id]) || { designs: [] };
@@ -303,9 +304,11 @@ export const groupLive = (g, wp) => groupNiches(g, wp).length > 0;
 export const nicheChildren = (n, wp) => { const go = GROUP_OF[n.id]; return go && go.parent ? groupMembers(go.g, wp) : []; };
 
 // categories
-export const categoryOf = (ind) => CATEGORIES.find((c) => c.industries.includes(ind)) || null;
+export const categoryOf = (ind) => CATEGORIES.find((c) => c.industries.includes(ind)) || null; // placement, live or not
+// the category an industry shows (crumbs, "Part of", isPartOf, .md): only a live one, so a held category leaves no link anywhere
+export const homeCategory = (ind) => { const c = categoryOf(ind); return c && categoryLive(c) ? c : null; };
 export const categoryIndustries = (c) => c.industries.map((i) => INDUSTRIES[i]).filter((i) => i && industryLive(i.id));
-export const categoryLive = (c) => categoryIndustries(c).length > 0;
+export const categoryLive = (c) => !c.hold && categoryIndustries(c).length > 0; // hold: placed but not published (no route, sitemap, nav or crumb)
 export const liveCategories = () => CATEGORIES.filter(categoryLive);
 export const categoryPath = (c) => c.seg;
 
