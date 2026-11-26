@@ -56,7 +56,7 @@ import { shared, exact, dropShared } from "./mcp_cache.js"; // MCP r3 (12-Nov-20
 import { mcpExcText, mcpErrText, mcpNoBlankError, MCP_USAGE_HEAD } from "./mcp_err.js";
 import { normalizeArgs } from "./arg_alias.js"; // typo-b1 (25-Nov-2026): common argument aliases (id -> screen_id, color -> colors, ...) // MCP r3: error text helpers (moved out of index.js so tests can import them)
 import { uiIndexReset } from "./ui_screens.js";
-import { GALLERY_TOOLS, GALLERY_TOOL_META, GALLERY_OUTPUT_SCHEMA, GALLERY_CAPS, galleryItem, galleryRpc, addThumbBlocks, serveThumb, transformStats } from "./mcp_gallery.js"; // mcp-img-r1: pictures + MCP Apps gallery
+import { GALLERY_TOOLS, GALLERY_TOOL_META, GALLERY_OUTPUT_SCHEMA, GALLERY_CAPS, galleryItem, galleryRpc, addThumbBlocks, serveThumb, isAppThumb, transformStats } from "./mcp_gallery.js"; // mcp-img-r1: pictures + MCP Apps gallery
 import { seoTags, imgDims } from "./seo_pages.js"; // SEO r1 (12-Nov-2026): og/twitter/breadcrumb head tags + <img> dimensions
 
 // Aggressive AI-training / SEO / bulk crawlers that spider the JSON read API (which is
@@ -210,7 +210,7 @@ async function route(request, env, ctx) {
       if (path === "/auth/dev-login" && method === "GET") return devLogin(request, url, env, base);
 
       // ---- Image serving from R2 ----
-      if (path.startsWith("/img/t/") && method === "GET") return edgeCache(request, ctx, 2592000, () => serveThumb(path.slice(7), env, ctx, base)); // mcp-img-r1: gallery thumbnails (colo cache, 30 days)
+      if (path.startsWith("/img/t/") && method === "GET") return edgeCache(request, ctx, 2592000, () => serveThumb(path.slice(7), env, ctx, base, { storedOnly: isAppThumb(url) })); // mcp-img-r1: gallery thumbnails (colo cache, 30 days); thumbs-r1: ?src=app = stored-only (never transforms; 302s are not edge-cached)
       if (path.startsWith("/img/") && method === "GET") return serveImage(path.slice(5), env);
 
       // ---- Newsletter subscribe (public; WP footer + app) ----

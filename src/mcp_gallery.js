@@ -177,8 +177,32 @@ export async function addThumbBlocks(r, env, defer) {
   return r;
 }
 
-// GET /img/t/<image_key>: the thumbnail (for the widget), else a redirect to the original.
-export async function serveThumb(key, env, ctx, base) {
+// ---- stored-only mode (thumbs-r1, 27-Nov-2026): GET /img/t/<image_key>?src=app ----
+// The phone app's grid. CONTRACT: never transforms and never touches the monthly transform counter. Serves the pre-made R2
+// thumbnail thumb/<image_key>.jpg when it exists (long cache), otherwise a 302 to the original with a short cache, so the
+// grid upgrades to the thumbnail soon after the backfill (scripts/thumbs_backfill.py) stores it. Also accepts ui/ screen keys
+// (stored thumb or the original; the transform path still only takes items|museum|annual). X-MGD-Thumb: stored | none tells
+// the backfill script that this mode is live before it relies on it for skip-if-exists checks.
+const APP_KEY = /^(items|museum|annual|ui)\/[A-Za-z0-9._-]{1,80}\.(jpe?g|png|webp)$/;
+export const okAppKey = (k) => APP_KEY.test(String(k || ""));
+export const APP_REDIRECT_MAX_AGE = 600;   // seconds: browsers and the app re-ask after 10 minutes
+export const isAppThumb = (url) => !!url && url.searchParams.get("src") === "app";
+export async function serveStoredThumb(key, env, base) {
+  if (!okAppKey(key)) return new Response("not found", { status: 404 });
+  let bytes = null;
+  try {
+    const t = env && env.BUCKET ? await env.BUCKET.get(thumbKey(key)) : null;
+    if (t) { const b = new Uint8Array(await t.arrayBuffer()); if (b.byteLength && b.byteLength <= THUMB_MAX) bytes = b; }
+  } catch (_) { bytes = null; }
+  if (bytes) return new Response(bytes, { headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=31536000, immutable",
+    "Access-Control-Allow-Origin": "*", "X-MGD-Thumb": "stored" } });
+  return new Response(null, { status: 302, headers: { Location: `${(env && env.PUBLIC_ORIGIN) || ORIGIN}${base}/img/${key}`,
+    "Cache-Control": `public, max-age=${APP_REDIRECT_MAX_AGE}`, "Access-Control-Allow-Origin": "*", "X-MGD-Thumb": "none" } });
+}
+
+// GET /img/t/<image_key>: the thumbnail (for the widget), else a redirect to the original. opts.storedOnly -> serveStoredThumb.
+export async function serveThumb(key, env, ctx, base, opts) {
+  if (opts && opts.storedOnly) return serveStoredThumb(key, env, base);
   const defer = ctx && typeof ctx.waitUntil === "function" ? (p) => ctx.waitUntil(p) : null;
   if (!okImageKey(key)) return new Response("not found", { status: 404 });
   const t = await getThumb(env, key, defer);

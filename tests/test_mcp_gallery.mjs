@@ -151,5 +151,51 @@ const imgs = (r) => r.content.filter((c) => c.type === "image");
   t("month key is UTC", G.monthKey(Date.UTC(2026, 11, 1, 0, 30)) === "2026-12");
   G._resetCapMemory();
 }
+// thumbs-r1: stored-only mode (GET /img/t/<key>?src=app) for the phone app. Never transforms, never touches the counter.
+{
+  G._resetCapMemory();
+  const month = G.monthKey(), ck = G.counterKey(month);
+  const files = { "items/big.png": { bytes: JPG(500000) }, "items/small.png": { bytes: JPG(2000), ct: "image/png" },
+    "thumb/museum/has.jpg.jpg": { bytes: JPG(30000) }, "museum/has.jpg": { bytes: JPG(500000) },
+    "thumb/ui/s1-abc.webp.jpg": { bytes: JPG(20000) }, "thumb/items/huge.png.jpg": { bytes: JPG(90000) }, [ck]: { bytes: new TextEncoder().encode(JSON.stringify({ count: 7 })) } };
+  const gets = [], b = bucket(files); const get0 = b.get.bind(b); b.get = async (k) => { gets.push(k); return get0(k); };
+  let calls = 0; const IMAGES = { input() { calls++; return images(JPG(25000)).input(); } };
+  const env = { BUCKET: b, IMAGES, PUBLIC_ORIGIN: "https://madegooddesigns.com" };
+  const app = { storedOnly: true };
+  const s1 = await G.serveThumb("museum/has.jpg", env, null, "/inspiration", app);
+  t("app: stored thumb 200 image/jpeg", s1.status === 200 && s1.headers.get("Content-Type") === "image/jpeg" && (await s1.arrayBuffer()).byteLength === 30000, s1.status);
+  t("app: stored thumb long cache + marker", /max-age=31536000/.test(s1.headers.get("Cache-Control")) && s1.headers.get("X-MGD-Thumb") === "stored", s1.headers.get("Cache-Control"));
+  const s2 = await G.serveThumb("items/big.png", env, null, "/inspiration", app);
+  t("app: no stored thumb -> 302 to original", s2.status === 302 && s2.headers.get("Location") === "https://madegooddesigns.com/inspiration/img/items/big.png", s2.status + " " + s2.headers.get("Location"));
+  t("app: redirect short cache + marker", s2.headers.get("Cache-Control") === `public, max-age=${G.APP_REDIRECT_MAX_AGE}` && G.APP_REDIRECT_MAX_AGE <= 3600 && s2.headers.get("X-MGD-Thumb") === "none", s2.headers.get("Cache-Control"));
+  const s3 = await G.serveThumb("items/small.png", env, null, "/inspiration", app);
+  t("app: small original still redirects (no original bytes served)", s3.status === 302, s3.status);
+  const s4 = await G.serveThumb("ui/s1-abc.webp", env, null, "/inspiration", app);
+  t("app: ui/ keys accepted (stored)", s4.status === 200, s4.status);
+  const s5 = await G.serveThumb("ui/none-xyz.webp", env, null, "/inspiration", app);
+  t("app: ui/ keys accepted (redirect)", s5.status === 302 && s5.headers.get("Location").endsWith("/inspiration/img/ui/none-xyz.webp"), s5.status);
+  const s6 = await G.serveThumb("items/huge.png", env, null, "/inspiration", app);
+  t("app: stored thumb over 60 KB is not served -> 302", s6.status === 302, s6.status);
+  for (const bad of ["../x.jpg", "user/a/b.jpg", "items/a.gif", "thumb/_meta/transforms-2026-11.json", ""])
+    t("app: bad key 404 " + bad, (await G.serveThumb(bad, env, null, "/inspiration", app)).status === 404);
+  t("app: never called the Images binding", calls === 0, calls);
+  t("app: never wrote to R2", b.puts.length === 0, JSON.stringify(b.puts));
+  t("app: only thumb/ reads (no original, no counter)", gets.every((k) => k.startsWith("thumb/") && !k.startsWith("thumb/_meta/")), JSON.stringify(gets));
+  const thr = { BUCKET: bucket({}, { throws: true }), IMAGES };
+  const s7 = await G.serveThumb("items/big.png", thr, null, "/inspiration", app);
+  t("app: R2 error -> 302, no throw", s7.status === 302 && calls === 0, s7.status);
+  // capped month: the app mode behaves the same and the counter stays put
+  const capped = { BUCKET: bucket({ ...files, [ck]: { bytes: new TextEncoder().encode(JSON.stringify({ count: 4900 })) } }), IMAGES };
+  t("app: capped month, stored thumb still 200", (await G.serveThumb("museum/has.jpg", capped, null, "/inspiration", app)).status === 200);
+  t("app: capped month, no counter write", capped.BUCKET.puts.length === 0);
+  // the default (widget) path is unchanged: it transforms when there is no stored thumb
+  const s8 = await G.serveThumb("items/big.png", env, null, "/inspiration");
+  t("default path still transforms + counts", s8.status === 200 && calls === 1 && b.puts.some((x) => x[0] === ck) && b.puts.some((x) => x[0] === "thumb/items/big.png.jpg"), `${s8.status} ${calls} ${JSON.stringify(b.puts)}`);
+  t("default path rejects ui/ keys", (await G.serveThumb("ui/s1-abc.webp", env, null, "/inspiration")).status === 404);
+  // the query flag
+  const U = (q) => new URL("https://madegooddesigns.com/inspiration/img/t/items/a.png" + q);
+  t("isAppThumb", G.isAppThumb(U("?src=app")) && !G.isAppThumb(U("")) && !G.isAppThumb(U("?src=mcp")) && !G.isAppThumb(U("?src=APP")) && !G.isAppThumb(null));
+  G._resetCapMemory();
+}
 console.log(`${ok} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

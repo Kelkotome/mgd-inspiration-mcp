@@ -4,6 +4,7 @@
 #   a) with the Images binding (miniflare's local Images, sharp): big originals become <= 60 KB JPEG thumbnails, stored to thumb/…
 #   b) without it (binding removed from the config): only originals already <= 60 KB become image blocks; nothing fails
 #   c) with the binding but MCP_THUMB_MONTHLY_CAP=0 (monthly cap reached): must behave exactly like b (no transform, /img/t/ redirects)
+# thumbs-r1: every run first checks GET /img/t/<key>?src=app (stored-only: 200 stored / 302 missing, no transform, no counter).
 # Run a also checks the monthly transform counter in local R2 (thumb/_meta/transforms-YYYY-MM.json) and GET /api/admin/thumb-transforms.
 # Each run: tests/img/img_rpc.py (text leads with our page, no outbound museum URLs, <= 3 valid image blocks, structuredContent,
 # resources/list + read, old clients still get text + images, cache repeat, thumbnail route).
@@ -48,6 +49,54 @@ seed() { # $1 = a|b
   R2 annual/aaaaaaaaaaa2.jpg "$T/fx/annual_small.jpg" && R2 annual/aaaaaaaaaaa3.jpg "$T/fx/museum_big.jpg" && R2 museum/bbbbbbbbbbb1.jpg "$T/fx/museum_big.jpg" &&
   R2 museum/bbbbbbbbbbb2.jpg "$T/fx/annual_small.jpg" && R2 items/c0000000000d.png "$T/fx/design_a.png" && R2 items/c0000000000f.png "$T/fx/design_b.png" &&
   R2 items/c00000000016.png "$T/fx/design_a.png" || { echo "r2 seed failed"; tail -5 "$T/setup.log"; return 1; }
+  # thumbs-r1: one pre-made (backfilled) thumbnail + a ui/ screen with and without one
+  R2 thumb/museum/bbbbbbbbbbb2.jpg.jpg "$T/fx/annual_small.jpg" && R2 ui/aaaa1111bbbb-xyz.webp "$T/fx/annual_small.jpg" &&
+  R2 thumb/ui/aaaa1111bbbb-xyz.webp.jpg "$T/fx/annual_small.jpg" || { echo "r2 thumb seed failed"; tail -5 "$T/setup.log"; return 1; }
+}
+
+# thumbs-r1: GET /img/t/<key>?src=app (stored-only) BEFORE anything else touches the server: stored thumb -> 200, missing -> 302
+# (short cache, not edge-cached), never a transform, no counter written, nothing stored for the missing key.
+app_checks() { # $1 = run letter
+  local M=$1
+  python3 - "http://127.0.0.1:$PORT/inspiration" <<'PY' || return 1
+import sys, urllib.request, urllib.error
+B = sys.argv[1]; fails = []; ok = 0
+class NoRedir(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *a, **k): return None
+op = urllib.request.build_opener(NoRedir)
+def get(path):
+    try:
+        r = op.open(B + path, timeout=20); return r.status, r.headers, r.read()
+    except urllib.error.HTTPError as e: return e.code, e.headers, e.read()
+def chk(name, cond, info=""):
+    global ok
+    if cond: ok += 1
+    else: fails.append(f"{name} ({info})")
+for i in range(2):  # twice: the 302 must not be edge-cached into a 200 or vice versa
+    s, h, b = get("/img/t/items/c00000000016.png?src=app")
+    chk(f"missing thumb -> 302 [{i}]", s == 302 and h.get("Location", "").endswith("/inspiration/img/items/c00000000016.png"), f"{s} {h.get('Location')}")
+    chk(f"302 short cache [{i}]", h.get("Cache-Control") == "public, max-age=600" and h.get("X-MGD-Thumb") == "none", h.get("Cache-Control"))
+    s, h, b = get("/img/t/museum/bbbbbbbbbbb2.jpg?src=app")
+    chk(f"stored thumb -> 200 jpeg [{i}]", s == 200 and h.get("Content-Type") == "image/jpeg" and b[:2] == b"\xff\xd8" and 0 < len(b) <= 61440, f"{s} {h.get('Content-Type')} {len(b)}")
+    ma = [int(x.split("=")[1]) for x in (h.get("Cache-Control") or "").replace(" ", "").split(",") if x.startswith("max-age=")]
+    chk(f"stored thumb long cache [{i}]", ma and ma[0] >= 86400, h.get("Cache-Control"))
+s, h, b = get("/img/t/ui/aaaa1111bbbb-xyz.webp?src=app"); chk("ui stored -> 200", s == 200 and h.get("Content-Type") == "image/jpeg", s)
+s, h, b = get("/img/t/ui/ffff0000ffff-none.webp?src=app"); chk("ui missing -> 302", s == 302, s)
+s, h, b = get("/img/t/user/x/y.jpg?src=app"); chk("bad key -> 404", s == 404, s)
+s, h, b = get("/img/t/museum/bbbbbbbbbbb1.jpg?src=app"); chk("big original, no thumb -> 302 (no transform)", s == 302, s)
+print(("FAIL app mode: " + "; ".join(fails)) if fails else f"PASS app mode (?src=app): {ok} checks")
+sys.exit(1 if fails else 0)
+PY
+  local MON=$(date -u +%Y-%m) CFG="$T/wrangler.$M.jsonc" ST="$T/state.$M"
+  ADMJ=$(curl -s -H "Authorization: Bearer $ADM" http://127.0.0.1:$PORT/inspiration/api/admin/thumb-transforms)
+  rm -f "$T/appc.json" "$T/appt.jpg"
+  "$W" r2 object get "mgd-inspiration-images/thumb/_meta/transforms-$MON.json" --local -c "$CFG" --persist-to "$ST" --file "$T/appc.json" >/dev/null 2>&1
+  "$W" r2 object get "mgd-inspiration-images/thumb/items/c00000000016.png.jpg" --local -c "$CFG" --persist-to "$ST" --file "$T/appt.jpg" >/dev/null 2>&1
+  local f=""
+  [ -s "$T/appc.json" ] && f="$f counter-written"
+  [ -s "$T/appt.jpg" ] && f="$f thumb-stored-for-missing-key"
+  echo "$ADMJ" | grep -q '"count":0' || f="$f admin-count($ADMJ)"
+  [ -z "$f" ] && echo "PASS app mode ($M): no transform counted, nothing written" || { echo "FAIL app mode ($M):$f"; return 1; }
 }
 
 RC=0
@@ -61,6 +110,7 @@ for M in a b c; do
   "$W" dev --local -c "$T/wrangler.$M.jsonc" --persist-to "$T/state.$M" --port $PORT --inspector-port $INSP --show-interactive-dev-session=false "${EXTRA[@]}" > "$T/dev.$M.log" 2>&1 &
   DEVPID=$!; up=0; for i in $(seq 1 90); do curl -s -o /dev/null http://127.0.0.1:$PORT/inspiration/mcp && { up=1; break; }; sleep 1; done
   [ $up = 1 ] || { echo "dev server did not start"; tail -20 "$T/dev.$M.log"; exit 1; }
+  app_checks $M || RC=1
   RM=$M; [ $M = c ] && RM=b
   python3 tests/img/img_rpc.py http://127.0.0.1:$PORT/inspiration --mode $RM > "$T/rpc.$M" 2>&1; grep -E '^FAIL|^sizes' "$T/rpc.$M"; echo "img_rpc ($M): $(tail -1 "$T/rpc.$M")"; grep -q ' 0 failed$' "$T/rpc.$M" || RC=1
   if [ $M = a ]; then  # the resized thumbnail was stored back to R2 (local)
@@ -94,5 +144,5 @@ sys.exit(1 if fails else 0)
 PY
   cleanup
 done
-[ $RC = 0 ] && echo "mcp-img-r1 local e2e: all checks passed" || echo "mcp-img-r1 local e2e: FAILED"
+[ $RC = 0 ] && echo "mcp-img-r1 + thumbs-r1 local e2e: all checks passed" || echo "mcp-img-r1 + thumbs-r1 local e2e: FAILED"
 exit $RC
