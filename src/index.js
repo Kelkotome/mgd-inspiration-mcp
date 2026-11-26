@@ -56,7 +56,7 @@ import { shared, exact, dropShared } from "./mcp_cache.js"; // MCP r3 (12-Nov-20
 import { mcpExcText, mcpErrText, mcpNoBlankError, MCP_USAGE_HEAD } from "./mcp_err.js";
 import { normalizeArgs } from "./arg_alias.js"; // typo-b1 (25-Nov-2026): common argument aliases (id -> screen_id, color -> colors, ...) // MCP r3: error text helpers (moved out of index.js so tests can import them)
 import { uiIndexReset } from "./ui_screens.js";
-import { GALLERY_TOOLS, GALLERY_TOOL_META, GALLERY_OUTPUT_SCHEMA, GALLERY_CAPS, galleryItem, galleryRpc, addThumbBlocks, serveThumb } from "./mcp_gallery.js"; // mcp-img-r1: pictures + MCP Apps gallery
+import { GALLERY_TOOLS, GALLERY_TOOL_META, GALLERY_OUTPUT_SCHEMA, GALLERY_CAPS, galleryItem, galleryRpc, addThumbBlocks, serveThumb, transformStats } from "./mcp_gallery.js"; // mcp-img-r1: pictures + MCP Apps gallery
 import { seoTags, imgDims } from "./seo_pages.js"; // SEO r1 (12-Nov-2026): og/twitter/breadcrumb head tags + <img> dimensions
 
 // Aggressive AI-training / SEO / bulk crawlers that spider the JSON read API (which is
@@ -249,6 +249,8 @@ async function route(request, env, ctx) {
       if (path === "/api/admin/export/users.csv" && method === "GET") return exportUsers(request, env);
       if (path === "/api/admin/reenrich" && method === "POST") return reenrich(request, env);
       if (path === "/api/admin/mcp-stats" && method === "GET") return mcpStats(request, env);
+      // mcp-img-r1: this month's Cloudflare Images transform count vs the cap (one R2 read, no D1)
+      if (path === "/api/admin/thumb-transforms" && method === "GET") return isAdmin(request, env) ? json(await transformStats(env), 200, env, request) : json({ error: "unauthorized" }, 401, env, request);
       if (path === "/api/admin/subscribers" && method === "GET") return subscriberStats(request, env);
       if (path === "/api/admin/subscribers.csv" && method === "GET") return exportSubscribers(request, env);
 

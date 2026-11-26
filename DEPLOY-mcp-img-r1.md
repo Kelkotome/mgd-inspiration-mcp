@@ -19,7 +19,15 @@ Local commit only. Nothing deployed, nothing written to remote D1 or R2.
   `capabilities.resources` and `capabilities.extensions["io.modelcontextprotocol/ui"]`.
 - **New route** `GET /inspiration/img/t/<image_key>`: the thumbnail (colo-cached 30 days), else 302 to the original.
 - **wrangler.jsonc:** `"images": { "binding": "IMAGES" }`.
-- No new D1 queries. Kill switches (vars): `MCP_THUMBS="0"` (no image blocks), `MCP_THUMB_STORE="0"` (no R2 writes).
+- **Monthly transform cap (owner OK 27-Nov, hard cap 5,000 per UTC calendar month):** every attempted Images transform (success or
+  failure) is counted in R2 `thumb/_meta/transforms-YYYY-MM.json` (read-modify-write, no D1) before the call. New transforms stop at
+  `MCP_THUMB_MONTHLY_CAP` (default **4900**, a 100-transform margin for races between isolates; reservations inside one isolate are
+  serialised). The counter is also remembered per isolate, so a capped isolate stops reading R2. Once capped: stored thumbnails and
+  originals ≤ 60 KB still work, other items get no picture, `/img/t/` redirects to the original. An unreadable counter = no transform.
+  The count resets with the new month's object (UTC). A log line `mcp-thumbs: monthly transform cap reached (n/cap, YYYY-MM)` is printed once per isolate.
+- **Read the count:** `curl -s -A curl/8.4.0 -H "Authorization: Bearer $ADMIN_TOKEN" https://madegooddesigns.com/inspiration/api/admin/thumb-transforms`
+  → `{ month, count, cap, capped, binding, key }` (admin-only, one R2 read, no D1). Or open the R2 object in the dashboard.
+- No new D1 queries. Kill switches (vars): `MCP_THUMBS="0"` (no image blocks), `MCP_THUMB_STORE="0"` (no thumbnail writes; the counter is still written), `MCP_THUMB_MONTHLY_CAP="0"` (no transforms at all).
 
 ## Before deploying
 1. Cloudflare bot protection challenges browser requests to `/inspiration/img/*` from some IPs (`cf-mitigated: challenge` seen 27-Nov for
@@ -27,7 +35,7 @@ Local commit only. Nothing deployed, nothing written to remote D1 or R2.
    Add a WAF custom rule **Skip** (or a Configuration Rule turning off Bot Fight / security level) for
    `http.request.uri.path starts_with "/inspiration/img/"`. Images are static and public, so this is low-risk.
 2. Cloudflare Images must be available on the account (free plan: 5,000 unique transformations / month; each item is resized once, then
-   served from R2 `thumb/…`). If you would rather not, delete the `"images"` block: image blocks then come only from originals ≤ 60 KB
+   served from R2 `thumb/…`; the code stops at 4,900 attempts a month, see above). If you would rather not, delete the `"images"` block: image blocks then come only from originals ≤ 60 KB
    (most annual reports, few museum or design images) and the gallery falls back to full-size images.
 
 ## Deploy
@@ -55,8 +63,8 @@ Code-free switches without a redeploy of new code: set `MCP_THUMBS=0` in the das
 R2 `thumb/` objects are harmless if left; to remove: list and delete the `thumb/` prefix in the R2 dashboard.
 
 ## Tests (local, 27-Nov)
-- `bash tests/img_local_e2e.sh` (wrangler dev --local, throwaway D1 + R2; run a with the Images binding, run b without): **495 + 423 passed, 0 failed**; resized thumbnail stored to local R2.
-- `node tests/test_mcp_gallery.mjs`: 21 passed (fallbacks, R2/Images errors, timeout budget, kill switches, item shape, resources).
+- `bash tests/img_local_e2e.sh` (wrangler dev --local, throwaway D1 + R2; run a with the Images binding, run b without, run c with the binding and `MCP_THUMB_MONTHLY_CAP=0`): **495 + 423 + 423 passed, 0 failed**; resized thumbnail stored to local R2; counter object (a: 7) and `/api/admin/thumb-transforms` checked in all three (401 without the token).
+- `node tests/test_mcp_gallery.mjs`: 41 passed (fallbacks, R2/Images errors, timeout budget, kill switches, item shape, resources; monthly cap: reached then no transform, /img/t/ redirect when capped, stored count from other isolates honoured, failed attempts counted, unreadable counter fails closed, cap 0, env override, UTC month rollover, parallel reservations).
 - `node tests/img/widget_render.mjs`: 33 passed (fake MCP Apps host: ui/initialize → tool-result → render, tap → ui/open-link, size-changed, dark theme; ChatGPT window.openai path; foreign URLs dropped). Screenshots in `out/`.
 - `bash tests/test_nc_exclusion.sh`: all passed (assertion updated to the new lead line). `bash tests/r7_local_e2e.sh`: same result as the base commit (1 known failure, `get_font_pairing 'Noto Sans Thai'`, also fails on 5f12444).
 - Node suites unchanged vs base: test_next_offer, test_ui_hint, test_ip_notice, test_search_n11, test_text_filter, test_mcp_errors_r1, test_app_boards, test_tools80, test_design.

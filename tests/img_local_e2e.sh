@@ -3,6 +3,8 @@
 # temp dir, no routes, nothing remote). Two runs on separate state:
 #   a) with the Images binding (miniflare's local Images, sharp): big originals become <= 60 KB JPEG thumbnails, stored to thumb/…
 #   b) without it (binding removed from the config): only originals already <= 60 KB become image blocks; nothing fails
+#   c) with the binding but MCP_THUMB_MONTHLY_CAP=0 (monthly cap reached): must behave exactly like b (no transform, /img/t/ redirects)
+# Run a also checks the monthly transform counter in local R2 (thumb/_meta/transforms-YYYY-MM.json) and GET /api/admin/thumb-transforms.
 # Each run: tests/img/img_rpc.py (text leads with our page, no outbound museum URLs, <= 3 valid image blocks, structuredContent,
 # resources/list + read, old clients still get text + images, cache repeat, thumbnail route).
 # Usage: bash tests/img_local_e2e.sh   (env IMG_PORT / IMG_INSP, default 8981 / 9381; SCRATCH=<dir> for temp files)
@@ -49,17 +51,47 @@ seed() { # $1 = a|b
 }
 
 RC=0
-for M in a b; do
-  echo "-- run $M ($([ $M = a ] && echo 'Images binding' || echo 'no Images binding'))"
+cp "$T/wrangler.a.jsonc" "$T/wrangler.c.jsonc"
+ADM=img-e2e-admin-token
+for M in a b c; do
+  case $M in a) D="Images binding";; b) D="no Images binding";; c) D="Images binding, monthly cap reached (MCP_THUMB_MONTHLY_CAP=0)";; esac
+  echo "-- run $M ($D)"
   seed $M || exit 1
-  "$W" dev --local -c "$T/wrangler.$M.jsonc" --persist-to "$T/state.$M" --port $PORT --inspector-port $INSP --show-interactive-dev-session=false > "$T/dev.$M.log" 2>&1 &
+  EXTRA=(--var ADMIN_TOKEN:$ADM); [ $M = c ] && EXTRA+=(--var MCP_THUMB_MONTHLY_CAP:0)
+  "$W" dev --local -c "$T/wrangler.$M.jsonc" --persist-to "$T/state.$M" --port $PORT --inspector-port $INSP --show-interactive-dev-session=false "${EXTRA[@]}" > "$T/dev.$M.log" 2>&1 &
   DEVPID=$!; up=0; for i in $(seq 1 90); do curl -s -o /dev/null http://127.0.0.1:$PORT/inspiration/mcp && { up=1; break; }; sleep 1; done
   [ $up = 1 ] || { echo "dev server did not start"; tail -20 "$T/dev.$M.log"; exit 1; }
-  python3 tests/img/img_rpc.py http://127.0.0.1:$PORT/inspiration --mode $M > "$T/rpc.$M" 2>&1; grep -E '^FAIL|^sizes' "$T/rpc.$M"; echo "img_rpc ($M): $(tail -1 "$T/rpc.$M")"; grep -q ' 0 failed$' "$T/rpc.$M" || RC=1
+  RM=$M; [ $M = c ] && RM=b
+  python3 tests/img/img_rpc.py http://127.0.0.1:$PORT/inspiration --mode $RM > "$T/rpc.$M" 2>&1; grep -E '^FAIL|^sizes' "$T/rpc.$M"; echo "img_rpc ($M): $(tail -1 "$T/rpc.$M")"; grep -q ' 0 failed$' "$T/rpc.$M" || RC=1
   if [ $M = a ]; then  # the resized thumbnail was stored back to R2 (local)
     "$W" r2 object get "mgd-inspiration-images/thumb/museum/bbbbbbbbbbb1.jpg.jpg" --local -c "$T/wrangler.a.jsonc" --persist-to "$T/state.a" --file "$T/thumb.jpg" >/dev/null 2>&1
     sz=$(wc -c < "$T/thumb.jpg" 2>/dev/null || echo 0); [ "$sz" -gt 0 ] && [ "$sz" -le 61440 ] && echo "PASS thumb stored to R2 thumb/ ($sz bytes)" || { echo "FAIL thumb not stored to R2 ($sz)"; RC=1; }
   fi
+  # monthly transform counter: R2 object + admin endpoint (a: > 0 and below the cap; c: no counter written, count 0, capped)
+  MON=$(date -u +%Y-%m)
+  "$W" r2 object get "mgd-inspiration-images/thumb/_meta/transforms-$MON.json" --local -c "$T/wrangler.$M.jsonc" --persist-to "$T/state.$M" --file "$T/counter.$M.json" >/dev/null 2>&1
+  ADMJ=$(curl -s -H "Authorization: Bearer $ADM" http://127.0.0.1:$PORT/inspiration/api/admin/thumb-transforms)
+  NOAUTH=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:$PORT/inspiration/api/admin/thumb-transforms)
+  python3 - "$M" "$T/counter.$M.json" "$ADMJ" "$NOAUTH" "$MON" <<'PY' || RC=1
+import json, os, sys
+m, path, adm, noauth, mon = sys.argv[1:6]
+c = json.load(open(path))["count"] if os.path.exists(path) and os.path.getsize(path) else None
+a = json.loads(adm)
+fails = []
+if noauth != "401": fails.append(f"admin endpoint without token -> {noauth}")
+if a.get("month") != mon or a.get("key") != f"thumb/_meta/transforms-{mon}.json": fails.append(f"admin month/key {a}")
+if m == "a":
+    if not (c and 0 < c < 4900): fails.append(f"R2 counter {c}")
+    if a.get("count") != c or a.get("cap") != 4900 or a.get("capped") or a.get("binding") is not True: fails.append(f"admin {a}")
+elif m == "b":
+    if c is not None: fails.append(f"no binding but counter written ({c})")
+    if a.get("binding") is not False or a.get("count") != 0: fails.append(f"admin {a}")
+else:
+    if c is not None: fails.append(f"capped but counter written ({c})")
+    if a.get("cap") != 0 or a.get("capped") is not True or a.get("binding") is not True: fails.append(f"admin {a}")
+print(("FAIL " + "; ".join(fails)) if fails else f"PASS monthly counter ({m}): R2 count={c}, admin={json.dumps(a)}")
+sys.exit(1 if fails else 0)
+PY
   cleanup
 done
 [ $RC = 0 ] && echo "mcp-img-r1 local e2e: all checks passed" || echo "mcp-img-r1 local e2e: FAILED"

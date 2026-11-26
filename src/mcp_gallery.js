@@ -11,6 +11,10 @@
 //      the 4 tools reference with _meta.ui.resourceUri (+ openai/outputTemplate for ChatGPT). Hosts without MCP Apps keep the text +
 //      image blocks. The widget loads images only from madegooddesigns.com (resource _meta.ui.csp.resourceDomains).
 // Kill switches (wrangler vars): MCP_THUMBS="0" (no image blocks), MCP_THUMB_STORE="0" (never write thumb/… to R2).
+// Monthly cap (owner, 27-Nov-2026): Cloudflare Images transforms are capped at 5,000 per calendar month (UTC). Every attempted
+// transform is counted in R2 thumb/_meta/transforms-YYYY-MM.json (read-modify-write, no D1); new transforms stop at
+// MCP_THUMB_MONTHLY_CAP (default 4,900, leaving a margin for races between isolates). When capped, stored thumbnails and small
+// originals still work; other items get no picture (the /img/t/ route redirects to the original).
 
 export const GALLERY_TOOLS = new Set(["search_design_inspiration", "browse_inspiration_by_theme", "search_museum_art", "search_annual_reports"]);
 export const GALLERY_URI = "ui://mgd/gallery-v1.html";
@@ -66,8 +70,57 @@ const mimeOf = (key, obj) => (obj && obj.httpMetadata && obj.httpMetadata.conten
 const IMG_KEY = /^(items|museum|annual)\/[A-Za-z0-9._-]{1,80}\.(jpe?g|png|webp)$/;
 export const okImageKey = (k) => IMG_KEY.test(String(k || ""));
 
+// ---- monthly transform cap ----
+export const DEFAULT_MONTHLY_CAP = 4900;
+export const monthKey = (now = Date.now()) => new Date(now).toISOString().slice(0, 7);   // UTC "YYYY-MM"
+export const counterKey = (month) => `thumb/_meta/transforms-${month}.json`;
+export function monthlyCap(env) {
+  const v = env && env.MCP_THUMB_MONTHLY_CAP;
+  if (v == null || String(v).trim() === "") return DEFAULT_MONTHLY_CAP;
+  const n = Math.floor(Number(v));
+  return Number.isFinite(n) && n >= 0 ? n : DEFAULT_MONTHLY_CAP;
+}
+const CAPMEM = { month: "", count: 0, capped: false };   // per isolate
+export function _resetCapMemory() { CAPMEM.month = ""; CAPMEM.count = 0; CAPMEM.capped = false; }
+async function readCount(env, month) {
+  const o = await env.BUCKET.get(counterKey(month));
+  if (!o) return 0;
+  const j = JSON.parse(await o.text());
+  return Number.isFinite(+j.count) ? +j.count : 0;
+}
+// Reserve one transform for this month. True = go ahead (already counted); false = capped or the counter is unreadable (fail closed).
+// Reservations in one isolate run one after another (a promise chain), so its counter writes land in order; races between isolates
+// can lose a few increments, which the 100-transform margin (4,900 of 5,000) absorbs.
+let CHAIN = Promise.resolve();
+export function reserveTransform(env, now = Date.now()) {
+  const run = CHAIN.then(() => reserveOne(env, now));
+  CHAIN = run.catch(() => false);
+  return run;
+}
+async function reserveOne(env, now) {
+  try {
+    const month = monthKey(now), cap = monthlyCap(env);
+    if (CAPMEM.month !== month) { CAPMEM.month = month; CAPMEM.count = 0; CAPMEM.capped = false; }
+    if (CAPMEM.capped || CAPMEM.count >= cap) { CAPMEM.capped = true; return false; }
+    const count = Math.max(await readCount(env, month), CAPMEM.count);
+    if (count >= cap) { CAPMEM.count = count; CAPMEM.capped = true; console.log(`mcp-thumbs: monthly transform cap reached (${count}/${cap}, ${month})`); return false; }
+    CAPMEM.count = count + 1;
+    await env.BUCKET.put(counterKey(month), JSON.stringify({ month, count: CAPMEM.count, cap, updated_at: new Date(now).toISOString() }),
+      { httpMetadata: { contentType: "application/json", cacheControl: "no-store" } });
+    return true;
+  } catch (_) { return false; }
+}
+// Read-only view for the admin endpoint (one R2 read).
+export async function transformStats(env, now = Date.now()) {
+  const month = monthKey(now), cap = monthlyCap(env);
+  let count = null, error = null;
+  try { count = await readCount(env, month); } catch (e) { error = String((e && e.message) || e).slice(0, 120); }
+  return { month, count, cap, capped: count != null && count >= cap, binding: !!(env && env.IMAGES), key: counterKey(month), ...(error ? { error } : {}) };
+}
+
 async function resize(env, body) {
   for (const [width, quality] of [[320, 72], [240, 55]]) {
+    if (!(await reserveTransform(env))) return null;   // counted before the call: an attempt counts, success or failure
     const out = await env.IMAGES.input(body()).transform({ width, height: 400, fit: "scale-down", background: "#ffffff" }).output({ format: "image/jpeg", quality });
     const bytes = new Uint8Array(await out.response().arrayBuffer());
     if (bytes.byteLength && bytes.byteLength <= THUMB_MAX) return bytes;
