@@ -30,6 +30,11 @@
     }
   ],
 
+  // mcp-img-r1 (27-Nov-2026): Cloudflare Images binding, used only to make small thumbnails for the MCP image blocks and the
+  // gallery widget (src/mcp_gallery.js). Each thumbnail is stored back to R2 (thumb/...) so an item is resized once.
+  // Remove this block to turn resizing off: the code then uses only stored thumbnails or originals under 60 KB.
+  "images": { "binding": "IMAGES" },
+
   "vars": {
     // Vision enrichment on NVIDIA Build (NIM), OpenAI-compatible.
     // Primary + automatic fallback (fallback fires on error / 429 / empty result).

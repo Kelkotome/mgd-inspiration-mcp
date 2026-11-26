@@ -93,3 +93,6 @@ tr-last-dev.log
 ui-screens/out-trfix
 ui-screens/out-r2-trfix
 ui-screens/out-r2-trfix-rollback
+
+# mcp-img-r1 local screenshots (tests/img/widget_render.mjs)
+out/

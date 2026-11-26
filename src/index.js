@@ -56,6 +56,7 @@ import { shared, exact, dropShared } from "./mcp_cache.js"; // MCP r3 (12-Nov-20
 import { mcpExcText, mcpErrText, mcpNoBlankError, MCP_USAGE_HEAD } from "./mcp_err.js";
 import { normalizeArgs } from "./arg_alias.js"; // typo-b1 (25-Nov-2026): common argument aliases (id -> screen_id, color -> colors, ...) // MCP r3: error text helpers (moved out of index.js so tests can import them)
 import { uiIndexReset } from "./ui_screens.js";
+import { GALLERY_TOOLS, GALLERY_TOOL_META, GALLERY_OUTPUT_SCHEMA, GALLERY_CAPS, galleryItem, galleryRpc, addThumbBlocks, serveThumb } from "./mcp_gallery.js"; // mcp-img-r1: pictures + MCP Apps gallery
 import { seoTags, imgDims } from "./seo_pages.js"; // SEO r1 (12-Nov-2026): og/twitter/breadcrumb head tags + <img> dimensions
 
 // Aggressive AI-training / SEO / bulk crawlers that spider the JSON read API (which is
@@ -209,6 +210,7 @@ async function route(request, env, ctx) {
       if (path === "/auth/dev-login" && method === "GET") return devLogin(request, url, env, base);
 
       // ---- Image serving from R2 ----
+      if (path.startsWith("/img/t/") && method === "GET") return edgeCache(request, ctx, 2592000, () => serveThumb(path.slice(7), env, ctx, base)); // mcp-img-r1: gallery thumbnails (colo cache, 30 days)
       if (path.startsWith("/img/") && method === "GET") return serveImage(path.slice(5), env);
 
       // ---- Newsletter subscribe (public; WP footer + app) ----
@@ -1769,6 +1771,9 @@ const MCP_OUTPUT_SCHEMAS = {
     spec: { type: "string" }, edit_url: { type: "string" }, contrast_failures: { type: "integer" } }, required: ["design_md", "tokens"] },
 };
 Object.assign(MCP_OUTPUT_SCHEMAS, OUTPUT_SCHEMAS48);
+// mcp-img-r1: the 4 library searches return structuredContent items and point MCP Apps hosts at the gallery widget.
+for (const n of GALLERY_TOOLS) MCP_OUTPUT_SCHEMAS[n] = GALLERY_OUTPUT_SCHEMA;
+for (const t of MCP_TOOLS) if (GALLERY_TOOLS.has(t.name)) t._meta = { ...(t._meta || {}), ...GALLERY_TOOL_META };
 let MCP_TOOLS_STRUCTURED = MCP_TOOLS.map((t) => MCP_OUTPUT_SCHEMAS[t.name] ? { ...t, outputSchema: MCP_OUTPUT_SCHEMAS[t.name] } : t);
 function mcpShape(r, structured) {
   if (r && r.structuredContent && (!structured || r.isError)) { const { structuredContent, ...rest } = r; return rest; }
@@ -1998,9 +2003,10 @@ async function mcpHandler(request, env, profile, wctx) {
     const { id, method, params } = msg;
     if (method === "initialize") {
       const pv = (params && params.protocolVersion) || "2025-06-18";
-      return rpcOk(id, { protocolVersion: pv, capabilities: { tools: { listChanged: false }, prompts: { listChanged: false } },
-        serverInfo: { name: "MGD Inspiration", version: "1.2" }, instructions: P.instructions });
+      return rpcOk(id, { protocolVersion: pv, capabilities: { tools: { listChanged: false }, prompts: { listChanged: false }, ...GALLERY_CAPS },
+        serverInfo: { name: "MGD Inspiration", version: "1.3" }, instructions: P.instructions });
     }
+    if (typeof method === "string" && method.startsWith("resources/")) { const g = galleryRpc(method, params); if (g) return g.error ? rpcErr(id, g.error.code, g.error.message) : rpcOk(id, g); }
     if (typeof method === "string" && method.startsWith("notifications/")) return null; // notifications: no reply
     if (method === "ping") return rpcOk(id, {});
     if (method === "tools/list") return rpcOk(id, { tools: structured ? P.structured : P.tools });
@@ -2094,6 +2100,13 @@ function mcpUtm(result, tool, ua) {
   if (!result || !Array.isArray(result.content)) return result;
   const client = mcpClientTag(ua);
   const tag = "utm_source=mcp&utm_medium=referral&utm_campaign=" + encodeURIComponent(tool || "mcp") + (client ? "&utm_content=" + client : "");
+  // mcp-img-r1: the gallery's page links carry the same tags (the widget opens them)
+  const sc = result.structuredContent;
+  if (sc && Array.isArray(sc.items)) sc.items.forEach((x) => {
+    if (!x || typeof x.page_url !== "string" || !x.page_url.startsWith("https://madegooddesigns.com/") || /[?&]utm_/.test(x.page_url)) return;
+    const h = x.page_url.indexOf("#"), core = h >= 0 ? x.page_url.slice(0, h) : x.page_url, hash = h >= 0 ? x.page_url.slice(h) : "";
+    x.page_url = core + (core.includes("?") ? "&" : "?") + tag + hash;
+  });
   result.content.forEach((c) => {
     if (!c || c.type !== "text" || typeof c.text !== "string") return;
     c.text = c.text.replace(/https:\/\/madegooddesigns\.com\/[^\s)\]>"'`<]*/g, (u) => {
@@ -2234,7 +2247,10 @@ async function mcpCallTool(params, env, ip, ua, who, listed, defer) {
   // so a failed call can be replayed (on 5-Nov seven tools failed with an empty query and the arguments were lost).
   await mcpLater(defer, logMcp(env, name, (a.query || a.q || (name === "get_brand_typeface" ? [].concat(a.brands || [], a.brand || []).map(String).join(", ").slice(0, 200) : "") || (name === "get_font_pairing" ? String(a.font || "").slice(0, 80) : "") || a.screen_id || a.theme || a.project_name || a.brand_color || a.name || a.document || a.keyword || a.title || (a.country ? a.country + " " + (a.year || "") : "") || (Array.isArray(a.words) ? a.words.slice(0, 6).join(" ") : "") || (typeof a.text === "string" ? a.text.slice(0, 80) : "") || (typeof a.data === "string" ? a.data.slice(0, 80) : "") || (typeof a.colors === "string" ? a.colors.slice(0, 80) : Array.isArray(a.colors) ? a.colors.slice(0, 6).map((x) => (x && typeof x === "object" ? JSON.stringify(x) : String(x))).join(" ").slice(0, 200) : a.colors && typeof a.colors === "object" ? JSON.stringify(a.colors).slice(0, 200) : "") || (Array.isArray(a.pairs) ? JSON.stringify(a.pairs).slice(0, 200) : "") || a.preset || "") || mcpArgsText(a), ip, ua, who));
   const opts = who ? { ids: true } : undefined; // authenticated endpoint also shows item_id (needed by save_to_board)
-  try { return mcpUsage(name, a, mcpCite(name, mcpAddNext(name, mcpNoBlankError(name, await mcpCallToolInner(name, a, env, opts))))); }
+  try {
+    const r = mcpUsage(name, a, mcpCite(name, mcpAddNext(name, mcpNoBlankError(name, await mcpCallToolInner(name, a, env, opts)))));
+    return GALLERY_TOOLS.has(name) ? await addThumbBlocks(r, env, defer) : r; // mcp-img-r1: top-3 thumbnails as image blocks
+  }
   catch (e) {
     if (MCP_D1_TOOLS.has(name)) return { content: [{ type: "text", text: MCP_BUSY(e) }], isError: true };
     throw e;
@@ -2662,10 +2678,16 @@ function mcpBoardItemPage(r, it) {
   if (r.collection === "ui") return "https://madegooddesigns.com" + uiItemPath({ id: r.id, ...uiFields(r), style: r.style }, "/inspiration");
   return `${MCP_SITE}/#i/${encodeURIComponent(it.id)}`;
 }
+// mcp-img-r1 (27-Nov-2026): each public item leads with its Made Good Designs page ("View on Made Good Designs: …"); the museum's
+// own object-page URL is no longer printed (the museum is still named, with its licence). structuredContent.items (src/mcp_gallery.js)
+// carries the same items for the gallery widget and the image blocks; mcpShape drops it for clients older than 2025-06-18.
 function mcpItems(rows, header, opts, sibling) {
-  if (!rows.length) return { content: [{ type: "text", text: header + ". No matches — try a broader query or a different theme." + (sibling ? " " + sibling : "") + " Browse all at " + MCP_SITE + "/" }] };
+  if (!rows.length) return { content: [{ type: "text", text: header + ". No matches — try a broader query or a different theme." + (sibling ? " " + sibling : "") + " Browse all at " + MCP_SITE + "/" }], structuredContent: { title: header, site: MCP_SITE + "/", items: [] } };
+  const gallery = [];
   const blocks = rows.map((r) => {
     const it = rowToItem(r, null);
+    const page = isLinkOnly(r) ? null : mcpBoardItemPage(r, it);
+    const g = galleryItem(it, page, MCP_SITE, isLinkOnly(r)); if (g) gallery.push(g);
     const isReport = it.collection === "annual-report";
     const isMuseum = it.collection === "museum";
     if (isLinkOnly(r)) {
@@ -2686,6 +2708,7 @@ function mcpItems(rows, header, opts, sibling) {
     }
     return [
       `• ${it.title || it.company || "Untitled"}`,
+      `  View on Made Good Designs: ${page}`,
       opts && opts.ids ? `  item_id: ${it.id}` : null,
       isReport && it.company ? `  company: ${it.company}${it.report_year ? " ("+it.report_year+")" : ""}` : null,
       isReport && it.designer ? `  designer/agency: ${it.designer}` : null,
@@ -2697,19 +2720,16 @@ function mcpItems(rows, header, opts, sibling) {
       isMuseum && it.type ? `  type: ${it.type}` : null,
       isMuseum && it.culture ? `  culture: ${it.culture}` : null,
       isMuseum && it.museum ? `  collection: ${it.museum} (public domain / CC0)` : null,
-      isMuseum && it.source_link ? `  museum page: ${it.source_link}` : null,
       it.description ? `  ${it.description}` : null,
       it.tags.length ? `  tags: ${it.tags.join(", ")}` : null,
       it.themes.length ? `  themes: ${it.themes.join(", ")}` : null,
       it.palette.length ? `  palette: ${it.palette.join(" ")}` : null,
       (it.source || it.source_host) ? `  source: ${it.source || it.source_host}` : null,
-      isMuseum ? `  page (cite this): ${MCP_SITE}/museum/${slugify(it.title || it.artist || "artwork")}${it.year ? "-" + it.year : ""}-${it.id}` : null,
-      isReport ? `  page (cite this): ${MCP_SITE}/annual-reports/${slugify(it.company || it.title)}${it.report_year ? "-" + it.report_year : ""}-${it.id}` : null,
-      `  image: ${MCP_SITE}${it.image}`,
+      r.image_key ? `  image: ${MCP_SITE}${it.image}` : null,
     ].filter(Boolean).join("\n");
   });
   const text = `${header}. Source: Made Good Designs — ${MCP_SITE}/ (please cite/link this).\n\n` + blocks.join("\n\n");
-  return { content: [{ type: "text", text }] };
+  return { content: [{ type: "text", text }], structuredContent: { title: header, site: MCP_SITE + "/", items: gallery } };
 }
 
 // ---------------------------------------------------------------------------
@@ -2880,13 +2900,14 @@ async function mcpMeHandler(request, env, ctx, url, base) {
     const { id, method, params } = msg;
     if (method === "initialize") {
       const pv = (params && params.protocolVersion) || "2025-06-18";
-      return rpcOk(id, { protocolVersion: pv, capabilities: { tools: { listChanged: false } },
-        serverInfo: { name: "MGD Inspiration (my boards)", version: "1.0" },
+      return rpcOk(id, { protocolVersion: pv, capabilities: { tools: { listChanged: false }, ...GALLERY_CAPS },
+        serverInfo: { name: "MGD Inspiration (my boards)", version: "1.1" },
         instructions: "Curated typography & brand-design inspiration from Made Good Designs (madegooddesigns.com), plus the signed-in user's own mood boards. Search with the search tools, then save results to a board with save_to_board using the item_id. Cite the madegooddesigns.com links in results." });
     }
     if (typeof method === "string" && method.startsWith("notifications/")) return null;
     if (method === "ping") return rpcOk(id, {});
     if (method === "tools/list") return rpcOk(id, { tools: mcpMeTools(auth.scopes) });
+    if (typeof method === "string" && method.startsWith("resources/")) { const g = galleryRpc(method, params); if (g) return g.error ? rpcErr(id, g.error.code, g.error.message) : rpcOk(id, g); }
     if (method === "tools/call") {
       const p = params || {};
       try {

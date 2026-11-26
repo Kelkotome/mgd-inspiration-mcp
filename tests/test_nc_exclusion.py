@@ -65,7 +65,7 @@ if A.mode == "with":
 else:
     ok("Licence: CC BY-NC — non-commercial use only — " in blk, "NC block (old schema) still shows a licence line")
 pdblk = [x for x in t.split("\n\n") if "Pdtestco" in x]; pdblk = pdblk[0] if pdblk else ""
-ok("page (cite this): " in pdblk and "/img/annual/" in pdblk and "Licence" not in pdblk, "PD block unchanged (MGD page + img)")
+ok("View on Made Good Designs: " in pdblk and "/img/annual/" in pdblk and "Licence" not in pdblk, "PD block unchanged (MGD page + img)")
 # open-licence (CC BY) row: with migration = published WITH attribution; old schema = still staged-open (hidden)
 OP = "dddddddddd01"
 s, b = get(f"/annual-reports/optestlanz-ag-1927-{OP}")
