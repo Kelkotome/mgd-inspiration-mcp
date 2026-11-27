@@ -1,6 +1,6 @@
 // Node unit tests for src/next_offer.js (5-Nov-2026): palette merge, skip rules, offer text.
 // Run: node tests/test_next_offer.mjs   (prints "N passed, M failed", exits 1 on failure)
-import { mergePalette, offerSkip, buildOffer, contrast, toOklab, fromOklab, normHex, OFFER_HEAD, pickFonts } from "../src/next_offer.js";
+import { mergePalette, offerSkip, buildOffer, contrast, toOklab, fromOklab, normHex, OFFER_HEAD, pickFonts, crossHint, buildNextStep } from "../src/next_offer.js";
 let ok = 0, fail = 0;
 const t = (name, cond, info) => { cond ? ok++ : fail++; console.log((cond ? "PASS " : "FAIL ") + name + (cond ? "" : " | " + JSON.stringify(info).slice(0, 400))); };
 const HEX = /^#[0-9A-F]{6}$/;
@@ -64,6 +64,17 @@ t("offer: no palettes → null", buildOffer("search_museum_art", "Klimt gold", i
 t("offer: bad ids dropped", buildOffer("search_museum_art", "Klimt", [{ id: "nothex", palette: pals[0] }]) === null);
 t("pickFonts calm wellness → Lora / Nunito Sans (query wins over tags)", JSON.stringify(buildOffer("search_design_inspiration", "calm gentle branding wellness coach", items.map((x) => ({ ...x, tags: ["playful"] }))).fonts) === JSON.stringify(["Lora", "Nunito Sans"]));
 t("pickFonts swiss", JSON.stringify(pickFonts("swiss typography")) === JSON.stringify(["Inter Tight", "Inter"]));
+
+// cross-tool-hints-r1 (28-Nov-2026)
+{
+  const o = buildOffer("search_design_inspiration", "editorial magazine layout", items);
+  const on = crossHint(o, "on");
+  t("crossHint on: text check + font pair + tool names", /Text check: #[0-9A-F]{6} on #[0-9A-F]{6} = \d+\.\d:1/.test(on) && on.includes("check_contrast") && on.includes("get_font_pairing"), on);
+  t("crossHint off → empty (rollback = old palette line only)", crossHint(o, "off") === "");
+  t("crossHint null/garbage never throws", crossHint(null, "on") === "" && typeof crossHint({}, "on") === "string");
+  t("palette line still leads, hint appended", buildNextStep("search_design_inspiration", "editorial magazine layout", items).text.startsWith("Palette from these references: "));
+  t("coding query still skipped (no hint)", buildNextStep("search_design_inspiration", "pricing table component tailwind", items) === null);
+}
 
 console.log(`${ok} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

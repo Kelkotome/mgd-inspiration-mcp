@@ -16,6 +16,12 @@ import { iconIntent, uiIntent } from "./search_extras.js";
 // and no palette/offer, so the answer carries one pointer, not two.
 export const NEXT_STEP_MODE = "palette";
 
+// ONE SWITCH (28-Nov-2026, cross-tool-hints-r1): "on" = the palette line also carries a computed text-contrast check and a font
+// suggestion (names check_contrast / get_font_pairing with real values, zero extra calls); search_ui_screens also names
+// check_contrast + get_font_pairing (index.js reads CROSS_HINT_MODE). "off" = the 8-Nov behaviour exactly (palette line only).
+// ROLLBACK: set "off" and redeploy (or `git revert` the cross-tool-hints-r1 commit). mcp_report.py counts the 2nd-tool rate.
+export const CROSS_HINT_MODE = "on";
+
 export const OFFER_TOOLS = new Set(["search_design_inspiration", "browse_inspiration_by_theme", "search_museum_art", "search_annual_reports"]);
 // Calls that count as "following" the offer in mcp_report.py (kept in sync there).
 export const OFFER_FOLLOW_TOOLS = ["generate_website_color_palette", "design_md_from_references", "generate_design_md", "generate_type_scale", "save_moodboard"];
@@ -145,7 +151,7 @@ export function buildOffer(tool, q, items) {
     `• Palette: generate_website_color_palette(brand_color="${m.accent}")\n` +
     `• Type pairing${fonts ? ` (${fonts[0]} / ${fonts[1]})` : ""} + DESIGN.md: ${typeCall}\n` +
     `• Mood board: save_moodboard(items=${board}, title="${title}")`;
-  return { text, palette: m.palette, accent: m.accent, fonts, references: top.map((it) => it.id), board: list.slice(0, 8).map((it) => it.id), title };
+  return { text, palette: m.palette, dark: m.dark, light: m.light, accent: m.accent, fonts, references: top.map((it) => it.id), board: list.slice(0, 8).map((it) => it.id), title };
 }
 
 // What mcpOffer (index.js) appends, per NEXT_STEP_MODE. Returns { text, kind } or null; kind 'offer' is logged as an mcp_events row.
@@ -154,5 +160,25 @@ export function buildNextStep(tool, q, items, mode = NEXT_STEP_MODE) {
   const o = buildOffer(tool, q, items);
   if (!o) return null;
   if (mode === "offer") return { text: o.text, kind: "offer" };
-  return { text: `Palette from these references: ${o.palette.join(" ")}`, kind: null };
+  return { text: `Palette from these references: ${o.palette.join(" ")}` + crossHint(o), kind: null };
+}
+
+// cross-tool-hints-r1: facts computed from the merged palette + the mood's font pair, naming the tools that go further.
+// Returns "" when off or when anything is missing (never throws).
+export function crossHint(o, mode = CROSS_HINT_MODE) {
+  if (mode !== "on" || !o) return "";
+  try {
+    const lines = [];
+    if (o.dark && o.light) {
+      const r1 = contrast(o.dark, o.light);
+      let t = `Text check: ${o.dark} on ${o.light} = ${r1.toFixed(1)}:1 (${r1 >= 7 ? "AA and AAA pass" : r1 >= 4.5 ? "AA pass" : "fails AA"})`;
+      if (o.accent && o.accent !== o.dark && o.accent !== o.light) {
+        const r2 = contrast(o.accent, o.light);
+        t += `. Accent ${o.accent} on ${o.light} = ${r2.toFixed(1)}:1 (${r2 >= 4.5 ? "passes for text" : r2 >= 3 ? "large text and UI only" : "decoration only"}; check_contrast finds the nearest passing shade)`;
+      } else t += " (check_contrast for any other pair)";
+      lines.push(t + ".");
+    }
+    if (o.fonts) lines.push(`Type that suits this mood: ${o.fonts[0]} + ${o.fonts[1]} (get_font_pairing(font="${o.fonts[0]}") for the full pairing).`);
+    return lines.length ? "\n" + lines.join("\n") : "";
+  } catch (_) { return ""; }
 }

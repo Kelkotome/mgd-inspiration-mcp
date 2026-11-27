@@ -167,6 +167,19 @@ for _k, _label, _tools in [("font_hint", "font hint → get_font_pairing", "('ge
     for r in _r: r["rate_pct"] = round(100.0 * (r["followed"] or 0) / r["shown"], 1) if r["shown"] else None
     _hint_rows += _r
 table("Intent hints on library searches (r7): shown, followed within 30 min by the named tool (same visitor)", _hint_rows)
+# 28-Nov-2026 (cross-tool-hints-r1, CROSS_HINT_MODE in src/next_offer.js): the palette line gained a computed text-contrast check + font
+# suggestion, and search_ui_screens names check_contrast / get_font_pairing. Metric = after a successful non-empty call of one of the 5
+# searches, did the same visitor call a DIFFERENT tool within 30 min? Compared 14 d before vs since CROSS_SINCE (ms; set the real deploy
+# time with CROSS_SINCE=... if it differs). Also the share of visitors' first-day sessions that used 2+ distinct tools.
+CROSS_SINCE = int(os.environ.get("CROSS_SINCE", "0")) or 1795812289000  # ~deploy time 28-Nov-2026
+_CT = "('search_design_inspiration','browse_inspiration_by_theme','search_museum_art','search_annual_reports','search_ui_screens')"
+def _cross(label, where):
+    return (f"SELECT '{label}' period, o.tool, COUNT(*) searches, SUM(EXISTS (SELECT 1 FROM mcp_events f WHERE f.kind='call' AND f.visitor=o.visitor "
+            f"AND f.tool != o.tool AND f.created_at > o.created_at AND f.created_at <= o.created_at + 1800000)) followed_by_other_tool "
+            f"FROM mcp_events o WHERE o.{BOT}{NB} AND o.kind='call' AND o.tool IN {_CT} AND o.ok=1 AND COALESCE(o.zero,0)=0 AND {where} GROUP BY o.tool")
+_cr = (sql(_cross("before (14 d)", f"o.created_at BETWEEN {CROSS_SINCE}-14*86400000 AND {CROSS_SINCE}")) or []) + (sql(_cross(f"since change (last {DAYS} d max)", f"o.created_at >= {CROSS_SINCE} AND o.{W}")) or [])
+for r in _cr: r["rate_pct"] = round(100.0 * (r["followed_by_other_tool"] or 0) / r["searches"], 1) if r["searches"] else None
+table("Cross-tool hints (r1): searches followed by a different tool from the same visitor within 30 min", _cr)
 table("Countries (desktop clients; claude.ai shows Anthropic's servers)", sql(
     f"SELECT country, COUNT(DISTINCT visitor) visitors, COUNT(*) events {EV} AND ua NOT LIKE 'Claude-User%' GROUP BY 1 ORDER BY 2 DESC LIMIT 10"))
 print("\nVisits from MCP answers: GA4 → Reports → Acquisition → Traffic acquisition, filter Session source = 'mcp' "
