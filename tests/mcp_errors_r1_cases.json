@@ -45,6 +45,8 @@
     {"tool": "get_banner_spec", "args": {"width": "3 ft"}, "want": "Give both width and height", "err": true, "live": true},
     {"tool": "design_md_from_references", "args": {"query": "Eco-Friendly AI Product Launch Visual"}, "want_any": ["Design system from", "0 results"], "live": true, "src": "5-Nov 17:07 (error 'No references with colour palettes found')"},
     {"tool": "design_md_from_references", "args": {"references": ["0123456789ab"], "query": "zzqx qqvv xxkj"}, "want": "0 results", "live": true},
+    {"tool": "check_contrast", "args": {"foreground": "#0f0f0f #ebff96", "background": ""}, "want": "on", "live": false, "src": "26-Nov frienda/agent: both colours in foreground, empty background"},
+    {"tool": "check_contrast", "args": {"foreground": "#969696 / #0f0f0f"}, "want": "WCAG", "live": false},
     {"tool": "make_word_search", "args": {"x": "y"}, "want": "This tool accepts:", "err": true, "live": false}
   ]
 }

@@ -320,6 +320,13 @@ function contrast(a) {
   const yes = (b) => (b ? "✅ pass" : "❌ fail");
   const pairs = pairList(a.pairs) || pairList(a.colors);
   if (pairs && !(a.foreground && a.background)) return contrastPairs(pairs, target);
+  // 28-Nov-2026: an agent sent both colours in ONE field ("#0f0f0f #ebff96", background empty) → treat as the pair
+  if (!!a.foreground !== !!a.background) {
+    const one = str(a.foreground || a.background, 200);
+    let two = colorList(one, 3);
+    if (two.length < 2 && typeof one === "string") two = one.split(/\s*(?:\/|\||\bon\b|\bvs\.?\b|\s)\s*/i).map((t) => t.trim()).filter(Boolean);
+    if (two.length === 2) { a = { ...a, foreground: two[0], background: two[1] }; }
+  }
   if (a.foreground && a.background) {
     let c;
     try { c = MGDContrast.check(str(a.foreground, 80), str(a.background, 80)); } catch (e) { return err("Couldn't read those colours: " + str(e && e.message, 200)); }
