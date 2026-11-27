@@ -1,5 +1,6 @@
+# app-collections-feed (28-Nov-2026): featured image per font-pairing guide -> src/app_font_pairings.js. Run: python3 -I scripts/app_font_pairings_media.py
 import json, urllib.request, urllib.parse, sys, time
-J = json.load(open("/Users/eugeneleow/Downloads/EtiennAubertBonn/mgd-inspiration-appfeed/src/font_pairings.json"))
+J = json.load(open("src/font_pairings.json"))  # run from the repo root
 H = {"User-Agent": "curl/8.4.0", "Accept": "*/*"}
 def get(u):
     for a in range(3):
@@ -34,7 +35,7 @@ for s, k in slugs.items():
     if not p: print("noposts", s, file=sys.stderr); continue
     m = media.get(p.get("featured_media"))
     out.append({"key": k, "slug": s, "date": p["date_gmt"], "title": p["title"]["rendered"], "page": J[k]["page"], "img": m})
-json.dump(out, open("fp_media.json", "w"), indent=0)
+json.dump(out, open("/tmp/fp_media.json", "w"), indent=0)  # intermediate: featured image per guide
 print("done", len(out), sum(1 for o in out if o["img"]), file=sys.stderr)
 
 # Step 2: write src/app_font_pairings.js (newest guide first; guides without a featured image left out).
