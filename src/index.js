@@ -53,7 +53,7 @@ import { intentHint, withIntentHint, hintKindOf } from "./intent_hints.js"; // M
 import { ipFranchise, ipBias, ipOrder, ipStylePool, withIpNotice } from "./ip_notice.js";
 import { withIconHint, withUiHint, UI_HINT_HEAD, BRAND_TYPEFACE_TOOL, brandTypeface, ftsSearch, withMuseumHint, MUSEUM_HINT_HEAD, isGeneric, GENERIC_W } from "./search_extras.js";
 import { FONT_PAIRING_TOOL, fontPairing } from "./font_pairing.js"; // kit pilot 5-Nov-2026 (local branch kit-pilot-2026-11)
-import { REF_FONTS, OFFER_HEAD, buildNextStep } from "./next_offer.js";
+import { REF_FONTS, OFFER_HEAD, buildNextStep, CROSS_HINT_MODE } from "./next_offer.js";
 import { shared, exact, dropShared } from "./mcp_cache.js"; // MCP r3 (12-Nov-2026): cache for slow-changing data behind the tools
 import { mcpExcText, mcpErrText, mcpNoBlankError, MCP_USAGE_HEAD } from "./mcp_err.js";
 import { normalizeArgs } from "./arg_alias.js"; // typo-b1 (25-Nov-2026): common argument aliases (id -> screen_id, color -> colors, ...) // MCP r3: error text helpers (moved out of index.js so tests can import them)
@@ -1805,6 +1805,8 @@ const MCP_NEXT = {
   generate_logo_concepts: "Next step: generate_color_combinations or generate_website_color_palette(brand_color=…) for the brand colours.",
   generate_color_combinations: "Next step: generate_website_color_palette(brand_color=<one of these hex codes>) gives a full light + dark website scheme.",
 };
+// cross-tool-hints-r1 (28-Nov-2026): search_ui_screens → check_contrast / get_font_pairing were top 2nd-tool paths (29 / ~18 sessions in 14 d).
+if (CROSS_HINT_MODE === "on") MCP_NEXT.search_ui_screens += "\nAlso useful on a screen like this: check_contrast on its text and button colours, or get_font_pairing for its typeface.";
 Object.assign(MCP_NEXT, NEXT48);
 Object.assign(MCP_NEXT, NEXT49);
 Object.assign(MCP_NEXT, NEXT50);
