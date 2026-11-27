@@ -9,11 +9,13 @@ try {
   const t = (x) => x.content[0].text;
   // typo-b2b4 (26-Nov): Crimson Text got its own B2 guide, so the partner case moves to Hind (a partner on 4 guides, no guide of its own)
   assert.equal(fontPairing({ font: "Crimson Text" }).structuredContent.match, "exact");
-  const n = fontPairing({ font: "Hind" });
+  // typo-b6 (26-Nov): Hind got its own B6 guide, so the partner case moves again, to Reem Kufi (a partner on 3 guides, no guide of its own)
+  assert.equal(fontPairing({ font: "Hind" }).structuredContent.match, "exact");
+  const n = fontPairing({ font: "Reem Kufi" });
   assert.equal(n.structuredContent.match, "partner"); assert.ok(n.structuredContent.pairs.length > 0);
-  assert.ok(n.structuredContent.pairs.every((p) => /Hind/.test(p.heading + p.body) && p.page.startsWith("https://madegooddesigns.com/")));
+  assert.ok(n.structuredContent.pairs.every((p) => /Reem Kufi/.test(p.heading + p.body) && p.page.startsWith("https://madegooddesigns.com/")));
   assert.ok(/No dedicated pairing guide/.test(t(n)));
-  assert.equal(fontPairing({ font: "Hind font pairing", limit: 1 }).structuredContent.pairs.length, 1);
+  assert.equal(fontPairing({ font: "Reem Kufi font pairing", limit: 1 }).structuredContent.pairs.length, 1);
   assert.equal(fontPairing({ font: "Oswald" }).structuredContent.match, "exact");
   assert.equal(fontPairing({ font: "Nunito Sans" }).structuredContent.font, "Nunito Sans"); // round 2: own guide, no longer Nunito
   assert.equal(fontPairing({ font: "Poppins font pairing" }).structuredContent.match, "exact");
