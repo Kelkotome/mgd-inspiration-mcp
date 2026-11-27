@@ -34,8 +34,10 @@ export async function appFeed(col, url, env, deps) {
   let sql;
   if (col === "website-templates" || col === "ui-screens") {
     const pats = deps.pagePatterns;
-    const where = [`collection = 'ui'`, PUBLIC, `category ${col === "ui-screens" ? "NOT IN" : "IN"} (${pats.map(() => "?").join(",")})`];
-    binds.push(...pats);
+    // Inlined as quoted literals, not binds: D1 allows at most 100 bound parameters per query and there are 105+ patterns
+    // (28-Nov: binding them threw -> 1101). The patterns are our own constants; quotes are doubled anyway.
+    const lits = pats.map((p) => "'" + String(p).replace(/'/g, "''") + "'").join(",");
+    const where = [`collection = 'ui'`, PUBLIC, `category ${col === "ui-screens" ? "NOT IN" : "IN"} (${lits})`];
     if (cursor) { where.push("created_at < ?"); binds.push(cursor); }
     sql = `SELECT * FROM items INDEXED BY idx_items_feed WHERE ${where.join(" AND ")} ORDER BY created_at DESC LIMIT ?`;
   } else if (col === "brand-guides") {
