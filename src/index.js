@@ -46,6 +46,8 @@ import { MOODBOARD_TOOL, callMoodboard, moodboardRoute, moodboardAdmin } from ".
 import { APP_BOARD_TOOL, callGetSharedBoard, appBoardRoute, appBoardsApi, appBoardAdmin, appBoardsCleanup } from "./app_boards.js";
 import { DISCOVERY_TOOLS, META_TOOLS, TAXONOMY, browseDesignTools, validateArgs } from "./discovery.js";
 import { uiItemPath } from "./ui_screens.js";
+import { UI_PAGE_PATTERNS } from "./ui_screens.js";
+import { appFeed, isAppCollection } from "./app_feed.js"; // app-collections-feed (28-Nov-2026): the app's template/UI/brand/font chips
 import { foldLower } from "./fold.js"; // MCP r7: accent folding in the JS ranking of the LIKE search
 import { intentHint, withIntentHint, hintKindOf } from "./intent_hints.js"; // MCP r7: font / brand / palette hints on library searches
 import { ipFranchise, ipBias, ipOrder, ipStylePool, withIpNotice } from "./ip_notice.js";
@@ -388,12 +390,23 @@ async function addItem(request, env) {
   }, env), enrich_error: ai.enrich_error || null, enrich_model: ai.model || null }, 200, env, request);
 }
 
+const KNOWN_FEED_COLS = ["design", "museum", "annual-report", "ui"];
 async function feed(url, env, request) {
+  // app-collections-feed (28-Nov-2026): the app's own-content collections (website-templates, ui-screens, brand-guides,
+  // font-pairings; src/app_feed.js). `col` is accepted as a short alias of `collection`; an unknown `col` falls back to the
+  // default gallery (an unknown `collection` keeps its old behaviour: an empty list).
+  const colParam = (url.searchParams.get("col") || "").trim();
+  const appCol = (url.searchParams.get("collection") || colParam).trim();
+  if (isAppCollection(appCol)) {
+    const page = await appFeed(appCol, url, env, { pagePatterns: UI_PAGE_PATTERNS, rowToItem, uiItemPath, base: "/inspiration", isPublicRow,
+      cache: (name, loader) => shared(env, name, 21600, loader, { global: true }) });
+    return noEdgeIfEmpty(json(page, 200, env, request), page.items);
+  }
   const limit = clampInt(url.searchParams.get("limit"), 24, 1, 60);
   const style = (url.searchParams.get("style") || "").trim();
   const theme = (url.searchParams.get("theme") || "").trim();
   // Collection scope: defaults to the design gallery so annual reports never leak in.
-  const collection = (url.searchParams.get("collection") || "design").trim();
+  const collection = (url.searchParams.get("collection") || (colParam && KNOWN_FEED_COLS.includes(colParam) ? colParam : "") || "design").trim();
   const category = (url.searchParams.get("category") || "").trim().toLowerCase(); // discipline tab
   const year = parseInt(url.searchParams.get("year"), 10) || null;
   const industry = (url.searchParams.get("industry") || "").trim();
