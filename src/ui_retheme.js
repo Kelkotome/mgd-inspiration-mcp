@@ -256,7 +256,7 @@ export function rethemePanel(esc) {
 // cfg = { tokens } (the kit's parsed DESIGN.md tokens, or null when the template has none: preview only, no panel).
 const DATA = JSON.stringify({ P: RT_PALETTES, F: RT_FONTS });
 export function rtPageJs(cfg) {
-  return `<script>(function(){var RT=(${RT_CORE.toString()})(),D=${DATA},T=${JSON.stringify(cfg.tokens || null).replace(/</g, "\\u003c")},MSG=${JSON.stringify(RT_COPY.status)};
+  return `<script>(function(){var __name=function(f){return f};var RT=(${RT_CORE.toString()})(),D=${DATA},T=${JSON.stringify(cfg.tokens || null).replace(/</g, "\\u003c")},MSG=${JSON.stringify(RT_COPY.status)};
 var st=document.querySelector(".pvstage");if(!st)return;var bar=document.querySelector(".pvbar"),panel=document.querySelector(".rt"),f=null,ready=false,V={pal:null,font:null},pi=0,fi=0,raw={};
 var track=function(a,x){try{if(window.gtag)gtag("event","tpl_preview",{action:a,value:x||""})}catch(e){}};
 var W=function(){var b=bar.querySelector('[data-pv-dev][aria-pressed="true"]');return +(b?b.dataset.w:1280)};
