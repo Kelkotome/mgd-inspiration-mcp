@@ -206,7 +206,7 @@ export function withCredit(text, kind, page, root) {
 }
 
 // The folded filter rows and the "Popular" row on /ui/website-templates (see uiGalleryPage).
-export const POPULAR_N = 12;
+export const POPULAR_N = 18;
 const FILTERS_FOLD_CSS = `.pop{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:0 0 1rem}.pop b{font-size:.75rem;color:var(--muted);font-weight:600;margin-right:.25rem}.pop .chip[aria-current]{background:var(--text);color:var(--bg);border-color:var(--text)}.filters .ffold>summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:.35rem;font:600 .82rem var(--font);border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:.4rem .8rem;width:max-content}.filters .ffold>summary::-webkit-details-marker{display:none}.filters .ffold>summary::after{content:"\\25BE";font-size:.7rem;color:var(--muted)}.filters .ffold[open]>summary::after{content:"\\25B4"}.filters .ffold .fin{display:grid;gap:.5rem;margin-top:.6rem;padding:.75rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}`;
 const PAGE_CSS = `:root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
