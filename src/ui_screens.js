@@ -13,10 +13,12 @@ import { extractCopy } from "./ui_copy.js";
 import { parseDesignMd, uiKitPanel, UI_KIT_CSS, UI_KIT_JS } from "./ui_kit.js";
 import { specBlock, parseSpecJson, parseDesignExtras, SPEC_CSS } from "./ui_spec.js";
 import { UI_COMPONENT_PATTERNS, componentMeta, componentParts, componentDemoHtml, componentCodeHtml, COMPONENT_CSS } from "./ui_component_page.js"; // UI components round 1 (7-Nov-2026)
+import { previewHtml, rethemePanel, rtPageJs, RT_PAGE_CSS, RT_NOSCRIPT } from "./ui_retheme.js"; // template live preview + "Try it with" re-theming (28-Nov-2026)
 import { resolveTree, treePaths, assertTree, nicheOfPattern, nicheOfFlatSeg, MIN_DESIGNS, PLATFORMS, liveDesigns } from "./ui_tree.js";
-import { categoryPage, nicheExtras, categoryBlock, TEMPLATES_CRUMB, industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
+import { categoryPage, nicheExtras, categoryBlock, CATEGORY_CSS, TEMPLATES_CRUMB, industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
 import { patternSlug, flatSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
 import { shared, exact, cacheOff } from "./mcp_cache.js"; // MCP r3 (12-Nov-2026)
+import { hubCardAttrs, hubFacetRows, hubActiveBar, hubSummary, HUB_JS, HUB_CSS, curatedRows, collectionsStrip, tplDesigns, COLLECTION_BY_SLUG, collectionPage, liveCollectionSlugs, assertCollections, hubHref } from "./ui_hub.js"; // hub colour/font filters, rows, collections (28-Nov-2026)
 
 export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts", "login", "sign-up", "forgot-password", "two-factor",
   "welcome", "onboarding-step", "permissions-request", "home", "feed", "list-view", "detail-view", "kanban-board", "calendar",
@@ -161,6 +163,8 @@ export async function uiRoute(path, request, env, ctx, base, h) {
     if (th.type === "theme") return go(() => themePage(th.n, th.d, env, base, h, x));
   }
   const pm = path.match(/^\/ui\/([a-z0-9-]+)$/);
+  const col = pm && COLLECTION_BY_SLUG[pm[1]]; // "Best <use case> website templates" collections (ui_hub.js)
+  if (col) return h.edgeCache(request, ctx, 1800, () => collectionPage(col, env, base, h, uiX(), hubF()));
   const hit = pm && resolveUiSlug(pm[1], UI_PATTERNS);
   // a nested niche's own segment typed flat (/ui/real-estate-agency-website-template, never live flat): one hop to its nested page
   const flatSeg = !hit && pm && nicheOfFlatSeg(pm[1]);
@@ -179,7 +183,10 @@ export async function uiRoute(path, request, env, ctx, base, h) {
 const uiX = () => ({ uiRows, uiItemPath: (it, base) => uiItemPath(it, base), head, page, siteOf, fitTitle, MGD_ORG, licenceLd, patternSlug, label, MCP_NOTE, RIGHTS });
 export function uiMovedPath(rel) { const hit = resolveUiSlug(rel, UI_PATTERNS); if (hit && hit.type === "old") return patternSlug(hit.pattern); const fs = !hit && nicheOfFlatSeg(rel); return fs ? patternSlug(fs.pattern) : null; }
 assertTree();
-assertSlugs(UI_PATTERNS); // fails the deploy (module load) if a slug is missing, duplicated or collides with an old pattern id
+assertSlugs(UI_PATTERNS);
+// Helpers the hub module needs from this file (it cannot import ui_screens: circular).
+const hubF = () => ({ pagePatterns: UI_PAGE_PATTERNS, fields: uiFields, itemPath: uiItemPath, label, slug: patternSlug, h1: patternH1 });
+assertCollections((seg) => !!(resolveUiSlug(seg, UI_PATTERNS) || resolveTree(seg) || nicheOfFlatSeg(seg) || ["flows", "terms", "raw", "sitemap.xml", "download", "tpl"].includes(seg))); // fails the deploy (module load) if a slug is missing, duplicated or collides with an old pattern id
 
 async function uiRaw(id, kind, env, base) {
   const [obj, row] = await Promise.all([env.BUCKET.get(`ui/${id}/${kind === "html" ? "index.html" : "DESIGN.md"}`),
@@ -205,6 +212,9 @@ export function withCredit(text, kind, page, root) {
   return /^---\n[^]*?\n---\n/.test(text) ? text.replace(/^(---\n[^]*?\n---\n)/, "$1" + cm) : cm + text;
 }
 
+// The folded filter rows and the "Popular" row on /ui/website-templates (see uiGalleryPage).
+export const POPULAR_N = 18;
+const FILTERS_FOLD_CSS = `.pop{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:0 0 1rem}.pop b{font-size:.75rem;color:var(--muted);font-weight:600;margin-right:.25rem}.pop .chip[aria-current]{background:var(--text);color:var(--bg);border-color:var(--text)}.filters .ffold>summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:.35rem;font:600 .82rem var(--font);border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:.4rem .8rem;width:max-content}.filters .ffold>summary::-webkit-details-marker{display:none}.filters .ffold>summary::after{content:"\\25BE";font-size:.7rem;color:var(--muted)}.filters .ffold[open]>summary::after{content:"\\25B4"}.filters .ffold .fin{display:grid;gap:.5rem;margin-top:.6rem;padding:.75rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}`;
 const PAGE_CSS = `:root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
 a{color:inherit}.wrap{max-width:1200px;margin:0 auto;padding:1.25rem 1rem 4rem}
@@ -275,7 +285,7 @@ async function uiRows(env, keep) {
   return rows.sort((a, b) => order(a.category) - order(b.category) || (a.country === b.country ? 0 : a.country === "web" ? -1 : 1) || si(a.style) - si(b.style) || String(a.title).localeCompare(String(b.title)));
 }
 const dims = (it) => (it.width && it.height ? ` width="${+it.width}" height="${+it.height}"` : "");
-const card = (it, base, h, metaHtml) => `<a class="card ${h.escHtml(it.platform)}${UI_PAGE_PATTERNS.includes(it.pattern) ? " page" : ""}" href="${h.escHtml(uiItemPath(it, base))}" data-platform="${h.escHtml(it.platform)}" data-pattern="${h.escHtml(it.pattern)}" data-group="${UI_GROUP_OF[it.pattern] || "tools"}" data-style="${h.escHtml(it.style)}">
+const card = (it, base, h, metaHtml, extra = "") => `<a class="card ${h.escHtml(it.platform)}${UI_PAGE_PATTERNS.includes(it.pattern) ? " page" : ""}" href="${h.escHtml(uiItemPath(it, base))}" data-platform="${h.escHtml(it.platform)}" data-pattern="${h.escHtml(it.pattern)}" data-group="${UI_GROUP_OF[it.pattern] || "tools"}" data-style="${h.escHtml(it.style)}"${extra}>
 <div class="th"><img loading="lazy"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(it.title)}"/></div><div class="meta">${metaHtml}</div></a>`;
 
 // Filter-chip script shared by the gallery and its facet pages. Chips are real links to the clean URL of the state they
@@ -298,7 +308,7 @@ q=q.toString();return B+"/ui"+(seg?"/"+seg:"")+(q?"?"+q:"")}
 function next(b){var s={};for(var k in f)s[k]=f[k];s[b.dataset.f]=b.dataset.v;if(b.dataset.f==="group")s.pattern="";if(b.dataset.f==="pattern"&&b.dataset.v)s.group=grp(b.dataset.v);return s}
 function inside(s){return !SCOPE||s[SCOPE.k]===SCOPE.v}
 function apply(){var n=0;cards.forEach(function(c){var ok=true;for(var k in f)if(f[k]&&c.dataset[k]!==f[k])ok=false;if(ok)n++;c.style.display=ok&&n<=shown?"":"none"});
-cnt.textContent=n+" "+word+(n===1?"":"s");if(more)more.hidden=n<=shown;document.querySelectorAll(".sub").forEach(function(s){s.hidden=s.dataset.g!==f.group});
+cnt.textContent=n+" "+word+(n===1?"":"s");var fd=document.querySelector(".filters .ffold");if(fd&&(f.platform||f.pattern||f.group!==(SCOPE&&SCOPE.k==="group"?SCOPE.v:"")))fd.open=true;if(more)more.hidden=n<=shown;document.querySelectorAll(".sub").forEach(function(s){s.hidden=s.dataset.g!==f.group});
 document.querySelectorAll(".chip[data-f]").forEach(function(b){var s=b.closest(".sub");b.setAttribute("aria-pressed",String(f[b.dataset.f]===b.dataset.v&&(!s||s.dataset.g===f.group)));
 var h=url(next(b));b.setAttribute("href",h);if(h.indexOf("?")>0)b.setAttribute("rel","nofollow");else b.removeAttribute("rel")})}
 if(more)more.addEventListener("click",function(){shown+=PAGE*2;apply()});
@@ -316,6 +326,9 @@ async function uiGalleryPage(env, base, h, facet) {
   const items = all.filter(match);
   if (!items.length) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
   const state = { platform: "", group: "", pattern: "", style: "" }; if (facet) state[facet.kind] = facet.value;
+  // /ui/website-templates (owner, 28-Nov-2026): category cards replace the ~90-chip niche row, and the Platform/Screens/Components/Websites
+  // rows fold behind one "Filters" <details> (closed; FILTER_JS opens it when a non-default filter is active). Other facet pages unchanged.
+  const isTpl = !!(facet && facet.kind === "group" && facet.value === "websites");
   const hrefFor = (k, v) => { const s = { ...state, [k]: v }; if (k === "group") s.pattern = ""; if (k === "pattern" && v) s.group = UI_GROUP_OF[v] || ""; return cleanUiUrl(s, base); };
   const chip = (k, v, text) => { const href = hrefFor(k, v); return `<a class="chip" data-f="${k}" data-v="${h.escHtml(v)}" href="${h.escHtml(href)}"${href.includes("?") ? ' rel="nofollow"' : ""} aria-pressed="${state[k] === v ? "true" : "false"}">${h.escHtml(text)}</a>`; };
   const chips = (k, lab, vals) => `<div><b>${lab}</b>${chip(k, "", "All")}${vals.map((v) => chip(k, v, label(v))).join("")}</div>`;
@@ -323,28 +336,39 @@ async function uiGalleryPage(env, base, h, facet) {
   const groupChips = `<div><b>Screens</b>${chip("group", "", "All")}${groups.filter((g) => g[0] !== "sections" && g[0] !== "websites" && g[0] !== "components").map((g) => chip("group", g[0], g[1])).join("")}</div>`
     + (groups.some((g) => g[0] === "components") ? `<div><b>Components</b>${chip("group", "components", "UI components")}</div>` : "")
     + (groups.some((g) => g[0] === "sections" || g[0] === "websites") ? `<div><b>Websites</b>${groups.some((g) => g[0] === "websites") ? chip("group", "websites", "Website templates") : ""}${groups.some((g) => g[0] === "sections") ? chip("group", "sections", "Website sections") : ""}</div>` : "")
-    + groups.map(([id, name, ps]) => `<div class="sub" data-g="${id}"${state.group === id ? "" : " hidden"}><b></b>${chip("pattern", "", "All " + name.toLowerCase())}${ps.map((p) => chip("pattern", p, label(p))).join("")}</div>`).join("");
-  const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</b> · ${h.escHtml(it.platform)} <span>· ${h.escHtml(it.style)}</span>`)).join("");
+    + groups.filter(([id]) => !(isTpl && id === "websites")).map(([id, name, ps]) => `<div class="sub" data-g="${id}"${state.group === id ? "" : " hidden"}><b></b>${chip("pattern", "", "All " + name.toLowerCase())}${ps.map((p) => chip("pattern", p, label(p))).join("")}</div>`).join("");
+  // "Popular" row above the cards on /ui/website-templates (owner, 28-Nov-2026): the first POPULAR_N chips of the old websites sub row, in
+  // their old order and with their old hrefs, so the big non-niche patterns (Agency, Ecommerce, SaaS, AI) stay prominent. Plain links (no data-f).
+  const tplPs = isTpl ? UI_PAGE_PATTERNS.filter((p) => have.has(p)) : [];
+  const popularRow = isTpl ? `<nav class="pop" aria-label="Popular website templates"><b>Popular</b><a class="chip" href="${h.escHtml(hrefFor("pattern", ""))}" aria-current="page">All website templates</a>${tplPs.slice(0, POPULAR_N - 1).map((p) => `<a class="chip" href="${h.escHtml(hrefFor("pattern", p))}">${h.escHtml(label(p).replace(/ website$/i, ""))}</a>`).join("")}</nav>` : "";
+  const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</b> · ${h.escHtml(it.platform)} <span>· ${h.escHtml(it.style)}</span>`, isTpl ? hubCardAttrs(it, h) : "")).join("");
+  // Hub (28-Nov-2026): every template has a desktop and a phone screenshot (two rows), so the old "1726 templates" counted each template twice.
+  // The hub now counts and shows the desktop screenshots by default (Platform: Desktop | Phone), so the number is the number of templates.
+  const webItems = isTpl ? items.filter((it) => it.platform === "web") : items, listed = isTpl ? webItems : items;
+  const hubChip = (k, v, text, n) => `<a class="chip" data-f="${k}" data-v="${h.escHtml(v)}" href="${h.escHtml(hubHref(base, { [k]: v }))}"${hubHref(base, { [k]: v }).includes("?") ? ' rel="nofollow"' : ""} aria-pressed="${(k === "platform" ? v === "web" : !v) ? "true" : "false"}">${h.escHtml(text)}<span class="n">${n}</span></a>`;
+  const hubFilters = isTpl ? `<details class="ffold">${hubSummary(webItems.length)}<div class="fin"><div><b>Platform</b>${hubChip("platform", "web", "Desktop", webItems.length)}${hubChip("platform", "mobile", "Phone", items.length - webItems.length)}</div>${groupChips}`
+    + `<div><b>Style</b>${hubChip("style", "", "All", webItems.length)}${UI_STYLES.filter((st) => webItems.some((it) => it.style === st)).map((st) => hubChip("style", st, label(st), webItems.filter((it) => it.style === st).length)).join("")}</div>${hubFacetRows(webItems, base, h)}</div></details>` : "";
+  const hubD = isTpl ? tplDesigns(await uiRows(env), hubF()) : null;
   const nP = new Set(items.map((x) => x.pattern)).size, nS = new Set(items.map((x) => x.style)).size;
   const word = facet && facet.kind === "group" && (facet.value === "emails" || facet.value === "websites") ? "template" : facet && facet.kind === "group" && facet.value === "components" ? "component" : "screen";
   const url = facet ? `${site}${base}/ui/${facet.slug}` : `${site}${base}/ui`;
   const desc = facet
-    ? `${items.length} free ${lcFirst(facet.h1.replace(/^Free /, ""))} across ${nP} patterns${facet.kind === "style" ? "" : ` in ${nS} styles`}, each with copyable HTML and a DESIGN.md token file (light and dark). Original designs by Made Good Designs.`
+    ? `${listed.length} free ${lcFirst(facet.h1.replace(/^Free /, ""))} across ${nP} patterns${facet.kind === "style" ? "" : ` in ${nS} styles`}, each with copyable HTML and a DESIGN.md token file (light and dark). Original designs by Made Good Designs.`
     : `${items.length} original app screens and website sections across ${nP} patterns, for web and mobile in ${UI_STYLES.length} styles, plus ${Object.keys(UI_FLOWS).length} multi-step flows. Each one comes with copyable HTML and a DESIGN.md token file for AI coding agents. Free.`;
   const title = facet ? facet.title : "Free UI screens with HTML code & DESIGN.md | MGD";
-  const body = head(h, { title, ogTitle: facet ? facet.h1 : "MGD UI Screens", desc, canonical: url,
+  const body = head(h, { title, ogTitle: facet ? facet.h1 : "MGD UI Screens", desc, canonical: url, css: isTpl ? CATEGORY_CSS + FILTERS_FOLD_CSS + HUB_CSS : "",
     image: items[0] ? site + base + items[0].image : null,
     jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: facet ? facet.h1 : "MGD UI Screens", url, description: desc, publisher: MGD_ORG(site), ...licenceLd(site, base),
-      ...(facet ? { isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` }, mainEntity: { "@type": "ItemList", numberOfItems: items.length, itemListElement: items.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: site + uiItemPath(it, base) })) } } : {}) } })
+      ...(facet ? { isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` }, mainEntity: { "@type": "ItemList", numberOfItems: listed.length, itemListElement: listed.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: site + uiItemPath(it, base) })) } } : {}) } })
   + `${h.backLink(base, "/", "Back to inspiration")}
 ${facet ? `<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(facet.value === "websites" && facet.kind === "group" ? TEMPLATES_CRUMB : facet.h1)}</nav>` : ""}
 <h1>${h.escHtml(facet ? facet.h1 : "UI screens")}</h1>
-${facet && facet.value === "websites" && facet.kind === "group" ? categoryBlock(base, h) : ""}${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an original design by Made Good Designs with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui"><b>all ${all.length} UI screens</b></a> and <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`
+${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an original design by Made Good Designs with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui"><b>all ${all.length} UI screens</b></a> and <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`
   : `<p class="lede">Original app screens and website sections for web and mobile, designed by Made Good Designs. Unlike screenshot libraries, every screen comes with its <b>HTML code</b> and a <b>DESIGN.md</b> with the colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`}
-<div class="filters">${chips("platform", "Platform", ["web", "mobile"])}${groupChips}${chips("style", "Style", UI_STYLES)}</div>
-<p class="lede" id="count" data-word="${word}" style="margin:-.5rem 0 .5rem">${items.length} ${word}s</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>
-<div class="grid" id="grid">${cards}</div><p style="text-align:center;margin:1.5rem 0"><button class="btn" id="more" hidden>Show more</button></p>${patternIndex(base, h, have)}${facetIndex(base, h, all)}${MCP_NOTE(base)}${RIGHTS}
-</div>${FILTER_JS(base, facet ? { k: facet.kind, v: facet.value } : null, 48)}${THEME_JS}${h.saveWidget(base)}</body></html>`;
+${isTpl ? popularRow + categoryBlock(base, h, all) + curatedRows(hubD, base, h, hubF()) + collectionsStrip(hubD, base, h) : ""}<div class="filters">${isTpl ? hubFilters : `${chips("platform", "Platform", ["web", "mobile"])}${groupChips}${chips("style", "Style", UI_STYLES)}`}</div>
+${isTpl ? hubActiveBar(webItems.length) : `<p class="lede" id="count" data-word="${word}" style="margin:-.5rem 0 .5rem">${items.length} ${word}s</p>`}<p style="margin:0 0 1rem">${THEME_SWITCH}</p>
+<div class="grid${isTpl ? " hubg" : ""}" id="grid">${cards}</div><p style="text-align:center;margin:1.5rem 0"><button class="btn" id="more" hidden>Show more</button></p>${patternIndex(base, h, have)}${facetIndex(base, h, all)}${MCP_NOTE(base)}${RIGHTS}
+</div>${isTpl ? HUB_JS(base, 48) : FILTER_JS(base, facet ? { k: facet.kind, v: facet.value } : null, 48)}${THEME_JS}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 // Facet slugs that have at least one screen (sitemap + crawlable index).
@@ -401,15 +425,18 @@ dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:.3rem 1rem;margi
 .acts{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1rem}
 .tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 1rem}.tags span{font-size:.72rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.1rem .55rem}
 .flows{font-size:.9rem;margin:0 0 1rem}.flows a{font-weight:600}
-h2{font-size:1.05rem;margin:2.25rem 0 .75rem}${specHtml ? SPEC_CSS : ""}${isComp ? COMPONENT_CSS : ""}${tokens ? UI_KIT_CSS : ""}` })
+h2{font-size:1.05rem;margin:2.25rem 0 .75rem}${specHtml ? SPEC_CSS : ""}${isComp ? COMPONENT_CSS : ""}${tokens ? UI_KIT_CSS : ""}${isPage ? RT_PAGE_CSS : ""}` })
   + `${h.backLink(base, "/ui", "Back to UI screens")}
 ${itemSibling(it, base, h)}<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/${h.escHtml(patternSlug(it.pattern))}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
 <div class="detail ${h.escHtml(it.platform)}">
-  <div style="position:relative"${isPage ? ' class="pagebox"' : ""}>${isComp && compParts ? componentDemoHtml(it, base, h, name, it.height) + `<details style="margin-top:.6rem"><summary class="muted" style="font-size:.85rem;cursor:pointer">Screenshot</summary>` : ""}<button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button>${isPage ? '<div class="shotscroll">' : ""}<img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${isPage ? "</div>" : ""}${isComp && compParts ? "</details>" : ""}${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>
+  ${isPage ? `<div style="position:relative" class="pagebox">${RT_NOSCRIPT}${previewHtml({ src: base + it.code, name, mobile: it.platform === "mobile", esc: h.escHtml,
+    saveHtml: `<button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button>`,
+    shotHtml: `<img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>` })}${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}${tokens ? rethemePanel(h.escHtml) : ""}</div>`
+  : `<div style="position:relative"${isPage ? ' class="pagebox"' : ""}>${isComp && compParts ? componentDemoHtml(it, base, h, name, it.height) + `<details style="margin-top:.6rem"><summary class="muted" style="font-size:.85rem;cursor:pointer">Screenshot</summary>` : ""}<button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button>${isPage ? '<div class="shotscroll">' : ""}<img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${isPage ? "</div>" : ""}${isComp && compParts ? "</details>" : ""}${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>`}
   <div><h1>${h.escHtml(name)}</h1>${it.description ? `<p class="desc">${h.escHtml(it.description)}</p>` : ""}
     <div class="acts"><a class="btn dark" href="${h.escHtml(base + it.code)}" target="_blank" rel="noopener nofollow">Open live HTML ↗</a>
-      <button class="btn" data-copy="${h.escHtml(base + it.code)}">Copy HTML</button><button class="btn" data-copy="${h.escHtml(base + it.design_md)}">Copy DESIGN.md</button>
-      <a class="btn" href="${h.escHtml(base + it.design_md)}" download="DESIGN.md" rel="nofollow">Download DESIGN.md</a></div>
+      <button class="btn" data-copy="${h.escHtml(base + it.code)}"${isPage ? ' data-rt="html"' : ""}>Copy HTML</button><button class="btn" data-copy="${h.escHtml(base + it.design_md)}"${isPage ? ' data-rt="md"' : ""}>Copy DESIGN.md</button>
+      <a class="btn" href="${h.escHtml(base + it.design_md)}" download="DESIGN.md" rel="nofollow"${isPage ? ' data-rt="md"' : ""}>Download DESIGN.md</a></div>
     ${flows.length ? `<p class="flows">Part of ${flows.map((f) => `<a href="${h.escHtml(flowPath(f.id, base, it.platform, it.style))}">${h.escHtml(UI_FLOWS[f.id])}</a> (step ${f.step})`).join(", ")}</p>` : ""}
     <dl class="facts">${facts.filter((f) => f[1]).map(([k, v, href]) => `<dt>${h.escHtml(k)}</dt><dd>${href ? `<a href="${h.escHtml(href)}">${h.escHtml(v)}</a>` : h.escHtml(v)}</dd>`).join("")}</dl>
     ${specHtml}${pal && !specHtml.includes('class="sc"') ? `<div class="pal" aria-label="Colour roles: background, surface, border, text, muted, primary, on-primary, accent">${pal}</div>` : ""}
@@ -421,7 +448,7 @@ ${related.length ? `<h2>More ${h.escHtml(label(it.pattern).toLowerCase())} ${kin
 ${MCP_NOTE(base)}${RIGHTS}
 </div><script>document.addEventListener("click",function(e){var c=e.target.closest("[data-copy-el]");if(c){var x=document.getElementById(c.dataset.copyEl),ct=c.textContent;navigator.clipboard.writeText(x?x.textContent:"").then(function(){c.textContent="Copied ✓";setTimeout(function(){c.textContent=ct},1600)},function(){c.textContent="Copy failed";setTimeout(function(){c.textContent=ct},1600)});return}var b=e.target.closest("[data-copy]");if(!b)return;var t=b.textContent;
 fetch(b.dataset.copy).then(function(r){return r.text()}).then(function(s){return navigator.clipboard.writeText(s)}).then(function(){b.textContent="Copied ✓";setTimeout(function(){b.textContent=t},1600)},function(){b.textContent="Copy failed";setTimeout(function(){b.textContent=t},1600)})});</script>
-${THEME_JS}${tokens ? UI_KIT_JS : ""}${h.saveWidget(base)}</body></html>`;
+${THEME_JS}${tokens ? UI_KIT_JS : ""}${isPage ? rtPageJs({ tokens }) : ""}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 
@@ -540,6 +567,7 @@ async function uiSitemap(env, base) {
   const have = new Set(rows.map((r) => r.category)); // only patterns that have screens (new patterns appear after their ingest)
   const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...UI_PATTERNS.filter((p) => have.has(p)).map((p) => `${site}${base}/ui/${patternSlug(p)}`), ...uiFacetsPresent(rows).map((slug) => `${site}${base}/ui/${slug}`), ...(await availableFlows(env)).map((id) => `${site}${base}/ui/flows/${id}`),
     ...[...new Set(treePaths())].filter((p) => !UI_PATTERNS.some((x) => patternSlug(x) === p)).map((p) => `${site}${base}/ui/${p}`),
+    ...(await liveCollectionSlugs(rows, hubF())).map((slug) => `${site}${base}/ui/${slug}`),
     ...rows.map((r) => site + uiItemPath({ id: r.id, ...uiFields(r), style: r.style }, base))];
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${u}</loc></url>`).join("\n")}\n</urlset>`,
     { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
