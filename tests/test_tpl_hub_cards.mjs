@@ -60,7 +60,7 @@ t("tile picture is the niche pattern's first web screen (deterministic)", (() =>
 t("tile labels drop a trailing ' website'", !/<span class="tl">[^<]* website<\/span>/i.test(cardsHtml));
 // filters fold
 const fstart = html.indexOf('<div class="filters">'), fhtml = html.slice(fstart, html.indexOf('id="count"'));
-t('filters wrapped in a closed <details class="ffold"> with a "Filters" summary', /^<div class="filters"><details class="ffold"><summary>Filters<\/summary>/.test(fhtml));
+t('filters wrapped in a closed <details class="ffold"> with a "Filters" summary (badge + live count since 28-Nov)', /^<div class="filters"><details class="ffold"><summary>Filters[ <]/.test(fhtml) && /<summary>Filters <span class="fb" id="fbadge" hidden><\/span> <span class="fct">· <span id="fcount">\d+ templates<\/span><\/span><\/summary>/.test(fhtml));
 const fold = fhtml.slice(0, fhtml.indexOf("</details>"));
 t("Platform, Screens, Components, Websites and Style rows are all inside the fold", ["<b>Platform</b>", "<b>Screens</b>", "<b>Components</b>", "<b>Websites</b>", "<b>Style</b>"].every((x) => fold.includes(x)) && /<\/details><\/div>$/.test(fhtml.slice(0, fhtml.indexOf("</details>") + 16)), fold.slice(0, 200));
 // "Popular" row: the first POPULAR_N chips of the old websites sub row, same order and hrefs, directly above the cards

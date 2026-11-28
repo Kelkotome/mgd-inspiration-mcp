@@ -17,6 +17,7 @@ import { resolveTree, treePaths, assertTree, nicheOfPattern, nicheOfFlatSeg, MIN
 import { categoryPage, nicheExtras, categoryBlock, CATEGORY_CSS, TEMPLATES_CRUMB, industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
 import { patternSlug, flatSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
 import { shared, exact, cacheOff } from "./mcp_cache.js"; // MCP r3 (12-Nov-2026)
+import { hubCardAttrs, hubFacetRows, hubActiveBar, hubSummary, HUB_JS, HUB_CSS, curatedRows, collectionsStrip, tplDesigns, COLLECTION_BY_SLUG, collectionPage, liveCollectionSlugs, assertCollections, hubHref } from "./ui_hub.js"; // hub colour/font filters, rows, collections (28-Nov-2026)
 
 export const UI_SCREEN_PATTERNS = ["dashboard", "data-table", "analytics-charts", "login", "sign-up", "forgot-password", "two-factor",
   "welcome", "onboarding-step", "permissions-request", "home", "feed", "list-view", "detail-view", "kanban-board", "calendar",
@@ -161,6 +162,8 @@ export async function uiRoute(path, request, env, ctx, base, h) {
     if (th.type === "theme") return go(() => themePage(th.n, th.d, env, base, h, x));
   }
   const pm = path.match(/^\/ui\/([a-z0-9-]+)$/);
+  const col = pm && COLLECTION_BY_SLUG[pm[1]]; // "Best <use case> website templates" collections (ui_hub.js)
+  if (col) return h.edgeCache(request, ctx, 1800, () => collectionPage(col, env, base, h, uiX(), hubF()));
   const hit = pm && resolveUiSlug(pm[1], UI_PATTERNS);
   // a nested niche's own segment typed flat (/ui/real-estate-agency-website-template, never live flat): one hop to its nested page
   const flatSeg = !hit && pm && nicheOfFlatSeg(pm[1]);
@@ -179,7 +182,10 @@ export async function uiRoute(path, request, env, ctx, base, h) {
 const uiX = () => ({ uiRows, uiItemPath: (it, base) => uiItemPath(it, base), head, page, siteOf, fitTitle, MGD_ORG, licenceLd, patternSlug, label, MCP_NOTE, RIGHTS });
 export function uiMovedPath(rel) { const hit = resolveUiSlug(rel, UI_PATTERNS); if (hit && hit.type === "old") return patternSlug(hit.pattern); const fs = !hit && nicheOfFlatSeg(rel); return fs ? patternSlug(fs.pattern) : null; }
 assertTree();
-assertSlugs(UI_PATTERNS); // fails the deploy (module load) if a slug is missing, duplicated or collides with an old pattern id
+assertSlugs(UI_PATTERNS);
+// Helpers the hub module needs from this file (it cannot import ui_screens: circular).
+const hubF = () => ({ pagePatterns: UI_PAGE_PATTERNS, fields: uiFields, itemPath: uiItemPath, label, slug: patternSlug, h1: patternH1 });
+assertCollections((seg) => !!(resolveUiSlug(seg, UI_PATTERNS) || resolveTree(seg) || nicheOfFlatSeg(seg) || ["flows", "terms", "raw", "sitemap.xml", "download", "tpl"].includes(seg))); // fails the deploy (module load) if a slug is missing, duplicated or collides with an old pattern id
 
 async function uiRaw(id, kind, env, base) {
   const [obj, row] = await Promise.all([env.BUCKET.get(`ui/${id}/${kind === "html" ? "index.html" : "DESIGN.md"}`),
@@ -278,7 +284,7 @@ async function uiRows(env, keep) {
   return rows.sort((a, b) => order(a.category) - order(b.category) || (a.country === b.country ? 0 : a.country === "web" ? -1 : 1) || si(a.style) - si(b.style) || String(a.title).localeCompare(String(b.title)));
 }
 const dims = (it) => (it.width && it.height ? ` width="${+it.width}" height="${+it.height}"` : "");
-const card = (it, base, h, metaHtml) => `<a class="card ${h.escHtml(it.platform)}${UI_PAGE_PATTERNS.includes(it.pattern) ? " page" : ""}" href="${h.escHtml(uiItemPath(it, base))}" data-platform="${h.escHtml(it.platform)}" data-pattern="${h.escHtml(it.pattern)}" data-group="${UI_GROUP_OF[it.pattern] || "tools"}" data-style="${h.escHtml(it.style)}">
+const card = (it, base, h, metaHtml, extra = "") => `<a class="card ${h.escHtml(it.platform)}${UI_PAGE_PATTERNS.includes(it.pattern) ? " page" : ""}" href="${h.escHtml(uiItemPath(it, base))}" data-platform="${h.escHtml(it.platform)}" data-pattern="${h.escHtml(it.pattern)}" data-group="${UI_GROUP_OF[it.pattern] || "tools"}" data-style="${h.escHtml(it.style)}"${extra}>
 <div class="th"><img loading="lazy"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(it.title)}"/></div><div class="meta">${metaHtml}</div></a>`;
 
 // Filter-chip script shared by the gallery and its facet pages. Chips are real links to the clean URL of the state they
@@ -334,27 +340,34 @@ async function uiGalleryPage(env, base, h, facet) {
   // their old order and with their old hrefs, so the big non-niche patterns (Agency, Ecommerce, SaaS, AI) stay prominent. Plain links (no data-f).
   const tplPs = isTpl ? UI_PAGE_PATTERNS.filter((p) => have.has(p)) : [];
   const popularRow = isTpl ? `<nav class="pop" aria-label="Popular website templates"><b>Popular</b><a class="chip" href="${h.escHtml(hrefFor("pattern", ""))}" aria-current="page">All website templates</a>${tplPs.slice(0, POPULAR_N - 1).map((p) => `<a class="chip" href="${h.escHtml(hrefFor("pattern", p))}">${h.escHtml(label(p).replace(/ website$/i, ""))}</a>`).join("")}</nav>` : "";
-  const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</b> · ${h.escHtml(it.platform)} <span>· ${h.escHtml(it.style)}</span>`)).join("");
+  const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</b> · ${h.escHtml(it.platform)} <span>· ${h.escHtml(it.style)}</span>`, isTpl ? hubCardAttrs(it, h) : "")).join("");
+  // Hub (28-Nov-2026): every template has a desktop and a phone screenshot (two rows), so the old "1726 templates" counted each template twice.
+  // The hub now counts and shows the desktop screenshots by default (Platform: Desktop | Phone), so the number is the number of templates.
+  const webItems = isTpl ? items.filter((it) => it.platform === "web") : items, listed = isTpl ? webItems : items;
+  const hubChip = (k, v, text, n) => `<a class="chip" data-f="${k}" data-v="${h.escHtml(v)}" href="${h.escHtml(hubHref(base, { [k]: v }))}"${hubHref(base, { [k]: v }).includes("?") ? ' rel="nofollow"' : ""} aria-pressed="${(k === "platform" ? v === "web" : !v) ? "true" : "false"}">${h.escHtml(text)}<span class="n">${n}</span></a>`;
+  const hubFilters = isTpl ? `<details class="ffold">${hubSummary(webItems.length)}<div class="fin"><div><b>Platform</b>${hubChip("platform", "web", "Desktop", webItems.length)}${hubChip("platform", "mobile", "Phone", items.length - webItems.length)}</div>${groupChips}`
+    + `<div><b>Style</b>${hubChip("style", "", "All", webItems.length)}${UI_STYLES.filter((st) => webItems.some((it) => it.style === st)).map((st) => hubChip("style", st, label(st), webItems.filter((it) => it.style === st).length)).join("")}</div>${hubFacetRows(webItems, base, h)}</div></details>` : "";
+  const hubD = isTpl ? tplDesigns(await uiRows(env), hubF()) : null;
   const nP = new Set(items.map((x) => x.pattern)).size, nS = new Set(items.map((x) => x.style)).size;
   const word = facet && facet.kind === "group" && (facet.value === "emails" || facet.value === "websites") ? "template" : facet && facet.kind === "group" && facet.value === "components" ? "component" : "screen";
   const url = facet ? `${site}${base}/ui/${facet.slug}` : `${site}${base}/ui`;
   const desc = facet
-    ? `${items.length} free ${lcFirst(facet.h1.replace(/^Free /, ""))} across ${nP} patterns${facet.kind === "style" ? "" : ` in ${nS} styles`}, each with copyable HTML and a DESIGN.md token file (light and dark). Original designs by Made Good Designs.`
+    ? `${listed.length} free ${lcFirst(facet.h1.replace(/^Free /, ""))} across ${nP} patterns${facet.kind === "style" ? "" : ` in ${nS} styles`}, each with copyable HTML and a DESIGN.md token file (light and dark). Original designs by Made Good Designs.`
     : `${items.length} original app screens and website sections across ${nP} patterns, for web and mobile in ${UI_STYLES.length} styles, plus ${Object.keys(UI_FLOWS).length} multi-step flows. Each one comes with copyable HTML and a DESIGN.md token file for AI coding agents. Free.`;
   const title = facet ? facet.title : "Free UI screens with HTML code & DESIGN.md | MGD";
-  const body = head(h, { title, ogTitle: facet ? facet.h1 : "MGD UI Screens", desc, canonical: url, css: isTpl ? CATEGORY_CSS + FILTERS_FOLD_CSS : "",
+  const body = head(h, { title, ogTitle: facet ? facet.h1 : "MGD UI Screens", desc, canonical: url, css: isTpl ? CATEGORY_CSS + FILTERS_FOLD_CSS + HUB_CSS : "",
     image: items[0] ? site + base + items[0].image : null,
     jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: facet ? facet.h1 : "MGD UI Screens", url, description: desc, publisher: MGD_ORG(site), ...licenceLd(site, base),
-      ...(facet ? { isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` }, mainEntity: { "@type": "ItemList", numberOfItems: items.length, itemListElement: items.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: site + uiItemPath(it, base) })) } } : {}) } })
+      ...(facet ? { isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` }, mainEntity: { "@type": "ItemList", numberOfItems: listed.length, itemListElement: listed.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: site + uiItemPath(it, base) })) } } : {}) } })
   + `${h.backLink(base, "/", "Back to inspiration")}
 ${facet ? `<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(facet.value === "websites" && facet.kind === "group" ? TEMPLATES_CRUMB : facet.h1)}</nav>` : ""}
 <h1>${h.escHtml(facet ? facet.h1 : "UI screens")}</h1>
 ${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an original design by Made Good Designs with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui"><b>all ${all.length} UI screens</b></a> and <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`
   : `<p class="lede">Original app screens and website sections for web and mobile, designed by Made Good Designs. Unlike screenshot libraries, every screen comes with its <b>HTML code</b> and a <b>DESIGN.md</b> with the colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`}
-${isTpl ? popularRow + categoryBlock(base, h, all) : ""}<div class="filters">${isTpl ? `<details class="ffold"><summary>Filters</summary><div class="fin">${chips("platform", "Platform", ["web", "mobile"])}${groupChips}${chips("style", "Style", UI_STYLES)}</div></details>` : `${chips("platform", "Platform", ["web", "mobile"])}${groupChips}${chips("style", "Style", UI_STYLES)}`}</div>
-<p class="lede" id="count" data-word="${word}" style="margin:-.5rem 0 .5rem">${items.length} ${word}s</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>
-<div class="grid" id="grid">${cards}</div><p style="text-align:center;margin:1.5rem 0"><button class="btn" id="more" hidden>Show more</button></p>${patternIndex(base, h, have)}${facetIndex(base, h, all)}${MCP_NOTE(base)}${RIGHTS}
-</div>${FILTER_JS(base, facet ? { k: facet.kind, v: facet.value } : null, 48)}${THEME_JS}${h.saveWidget(base)}</body></html>`;
+${isTpl ? popularRow + categoryBlock(base, h, all) + curatedRows(hubD, base, h, hubF()) + collectionsStrip(hubD, base, h) : ""}<div class="filters">${isTpl ? hubFilters : `${chips("platform", "Platform", ["web", "mobile"])}${groupChips}${chips("style", "Style", UI_STYLES)}`}</div>
+${isTpl ? hubActiveBar(webItems.length) : `<p class="lede" id="count" data-word="${word}" style="margin:-.5rem 0 .5rem">${items.length} ${word}s</p>`}<p style="margin:0 0 1rem">${THEME_SWITCH}</p>
+<div class="grid${isTpl ? " hubg" : ""}" id="grid">${cards}</div><p style="text-align:center;margin:1.5rem 0"><button class="btn" id="more" hidden>Show more</button></p>${patternIndex(base, h, have)}${facetIndex(base, h, all)}${MCP_NOTE(base)}${RIGHTS}
+</div>${isTpl ? HUB_JS(base, 48) : FILTER_JS(base, facet ? { k: facet.kind, v: facet.value } : null, 48)}${THEME_JS}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 // Facet slugs that have at least one screen (sitemap + crawlable index).
@@ -550,6 +563,7 @@ async function uiSitemap(env, base) {
   const have = new Set(rows.map((r) => r.category)); // only patterns that have screens (new patterns appear after their ingest)
   const urls = [`${site}${base}/ui`, `${site}${base}/ui/flows`, `${site}${base}/ui/terms`, ...UI_PATTERNS.filter((p) => have.has(p)).map((p) => `${site}${base}/ui/${patternSlug(p)}`), ...uiFacetsPresent(rows).map((slug) => `${site}${base}/ui/${slug}`), ...(await availableFlows(env)).map((id) => `${site}${base}/ui/flows/${id}`),
     ...[...new Set(treePaths())].filter((p) => !UI_PATTERNS.some((x) => patternSlug(x) === p)).map((p) => `${site}${base}/ui/${p}`),
+    ...(await liveCollectionSlugs(rows, hubF())).map((slug) => `${site}${base}/ui/${slug}`),
     ...rows.map((r) => site + uiItemPath({ id: r.id, ...uiFields(r), style: r.style }, base))];
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${u}</loc></url>`).join("\n")}\n</urlset>`,
     { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
