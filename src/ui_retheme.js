@@ -15,7 +15,7 @@
 
 // Visible copy in one place so the owner can swap the wording (options in the round report).
 export const RT_COPY = {
-  title: "Try it with",
+  title: "Make it yours",
   helper: "Preview this template in another palette or font pairing. Copy HTML and DESIGN.md will use what you pick.",
   palettes: "Colours",
   fonts: "Fonts",
@@ -217,7 +217,9 @@ export const RT_PAGE_CSS = `.pvbar{display:flex;flex-wrap:wrap;align-items:cente
 .pvstage iframe.on{opacity:1}.pvstage.live>.shotscroll{visibility:hidden}.pvstage[data-dev=phone] iframe,.pvstage[data-dev=tablet] iframe{box-shadow:0 0 0 1px var(--border)}
 .pvbar .card__save{position:static;box-shadow:none}
 .rt{margin:1rem 0 0;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
-.rt .rth{display:flex;align-items:center;justify-content:space-between;gap:.5rem}.rt h2{font-size:1rem;margin:0}
+.rt .rth{display:flex;align-items:center;justify-content:space-between;gap:.5rem;list-style:none;cursor:default}.rt .rth::-webkit-details-marker{display:none}.rt h2{font-size:1rem;margin:0}
+.rt .rta{display:none}
+@media(max-width:720px){.rt .rth{cursor:pointer}.rt .rta{display:inline-block;margin-left:.3rem;transition:transform .15s}.rt[open] .rta{transform:rotate(90deg)}.rt:not([open]) [data-rt-reset]{display:none}}
 .rt .rtn{color:var(--muted);font-size:.85rem;line-height:1.45;margin:.3rem 0 .75rem}
 .rt .rtg{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:0 0 .6rem}.rt .rtg>b{font-size:.75rem;color:var(--muted);min-width:3.6rem;font-weight:600}
 .rt .chip{display:inline-flex;align-items:center;gap:.4rem}.rt .chip[aria-pressed=true]{background:var(--text);color:var(--bg);border-color:var(--text)}
@@ -239,13 +241,15 @@ export function previewHtml({ src, name, mobile, shotHtml, saveHtml, esc }) {
 
 const stripes = (p) => [p.light.background, p.light.surface, p.light.primary, p.light.accent].map((c) => `<s style="background:${c}"></s>`).join("");
 export function rethemePanel(esc) {
-  return `<section class="rt" aria-labelledby="rt-h" data-nosnippet><div class="rth"><h2 id="rt-h">${esc(RT_COPY.title)}</h2><button type="button" class="chip" data-rt-reset>${esc(RT_COPY.reset)}</button></div>
+  // <details>: folded by default on phones (≤720px); the inline script opens it before first paint on wider screens (no shift there),
+  // and the page script keeps it open (summary clicks do nothing) above 720px.
+  return `<details class="rt" data-nosnippet><summary class="rth"><h2 id="rt-h">${esc(RT_COPY.title)}<span class="rta" aria-hidden="true">▸</span></h2><button type="button" class="chip" data-rt-reset>${esc(RT_COPY.reset)}</button></summary>
 <p class="rtn">${esc(RT_COPY.helper)}</p>
 <div class="rtg" role="group" aria-label="${esc(RT_COPY.palettes)}"><b>${esc(RT_COPY.palettes)}</b><button type="button" class="chip" data-rt-pal="0" aria-pressed="true">${esc(RT_COPY.original)}</button>${RT_PALETTES.map((p, i) =>
     `<button type="button" class="chip" data-rt-pal="${i + 1}" aria-pressed="false"><i aria-hidden="true">${stripes(p)}</i>${esc(p.name)}</button>`).join("")}</div>
 <div class="rtg" role="group" aria-label="${esc(RT_COPY.fonts)}"><b>${esc(RT_COPY.fonts)}</b><button type="button" class="chip" data-rt-font="0" aria-pressed="true">${esc(RT_COPY.original)}</button>${RT_FONTS.map((f, i) =>
     `<button type="button" class="chip" data-rt-font="${i + 1}" aria-pressed="false">${esc(f.heading + " + " + f.body)}</button>`).join("")}</div>
-<p class="rts" aria-live="polite"></p></section>`;
+<p class="rts" aria-live="polite"></p></details><script>(function(d){if(matchMedia("(min-width:721px)").matches)d.open=true})(document.currentScript.previousElementSibling)</script>`;
 }
 
 // Client script: preview (lazy iframe, device toggle, fit-to-column, theme) + re-theming (panel, hash, exports, kit panel).
@@ -278,13 +282,22 @@ kitOrig.forEach(function(o){o[0].setAttribute("data-kit-copy",o[1]);o[0].innerHT
 if(!t)return;kit.querySelectorAll(".sws").forEach(function(g){var o=g.dataset.kitTheme==="dark"?t.dark:t.light;g.querySelectorAll(".sw").forEach(function(b){var r=b.querySelector("b").textContent,c=o[r];if(!c)return;b.setAttribute("data-kit-copy",c);b.title="Copy "+c;b.querySelector("i").style.background=c;b.querySelector("span").textContent=c})});
 var cs=kit.querySelector('[data-act="copy_css"]'),tw=kit.querySelector('[data-act="copy_tailwind"]');if(cs)cs.setAttribute("data-kit-copy",RT.kitCss(t));if(tw)tw.setAttribute("data-kit-copy",RT.kitTw(t));
 if(n&&V.font)n.innerHTML="Fonts: <b>"+(t.heading+" + "+t.body).replace(/[<&]/g,"")+"</b> (Google Fonts)"}
+// right-hand Spec block: colour swatches and the Fonts line follow the variant
+var spec=document.querySelector(".spec");
+function fontsClause(t){return t.heading&&t.body?(t.heading===t.body?t.heading+" (headings and body)":t.heading+" (headings), "+t.body+" (body)"):t.heading||t.body?(t.heading||t.body)+" ("+(t.heading?"headings":"body")+")":""}
+function specSet(t){if(!spec)return;spec.querySelectorAll("dt").forEach(function(dt){var dd=dt.nextElementSibling,k=dt.textContent;if(!dd)return;
+if(/^Colours [(](light|dark)[)]$/.test(k)){var o=t?(k.indexOf("dark")>0?t.dark:t.light):null;dd.querySelectorAll(".sc").forEach(function(sc){var c=sc.querySelector("code"),i=sc.querySelector("i");if(!sc.dataset.orig)sc.dataset.orig=c.textContent;var r=sc.textContent.replace(c.textContent,"").trim(),v=o&&o[r]?o[r]:sc.dataset.orig;c.textContent=v;i.style.background=v})}
+else if(k==="Fonts"){if(dd.dataset.orig==null)dd.dataset.orig=dd.textContent;var a=fontsClause(T);dd.textContent=t&&V.font&&a&&dd.dataset.orig.indexOf(a)===0?fontsClause(t)+dd.dataset.orig.slice(a.length):dd.dataset.orig}})}
 function get(k){if(raw[k])return Promise.resolve(raw[k]);var u=document.querySelector('[data-rt="'+k+'"]');return fetch(u.getAttribute(k==="md"&&u.hasAttribute("href")?"href":"data-copy")).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(s){raw[k]=s;return s})}
 function set(p,ft,quiet){pi=p;fi=ft;V={pal:p?D.P[p-1]:null,font:ft?D.F[ft-1]:null};var on=!!(V.pal||V.font);
 panel.querySelectorAll("[data-rt-pal]").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.rtPal===p))});panel.querySelectorAll("[data-rt-font]").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.rtFont===ft))});
 panel.classList.toggle("on",on);panel.querySelector(".rts").textContent=on?MSG.replace("{v}",RT.short(V)):"";
 if(on){get("html").catch(function(){});get("md").catch(function(){})}
 try{history.replaceState(null,"",location.pathname+location.search+(on?"#"+[p?"palette="+p:"",ft?"fonts="+ft:""].filter(Boolean).join("&"):""))}catch(e){}
-if(ready)paint();kitSet(on?RT.tokens(T,V):null);if(!quiet)track(on?"variant":"reset",RT.label(V))}
+if(ready)paint();kitSet(on?RT.tokens(T,V):null);specSet(on?RT.tokens(T,V):null);if(!quiet)track(on?"variant":"reset",RT.label(V))}
+var wide=window.matchMedia("(min-width:721px)");
+panel.querySelector("summary").addEventListener("click",function(e){if(wide.matches||e.target.closest("[data-rt-reset]"))e.preventDefault()});
+var onWide=function(){if(wide.matches)panel.open=true};if(wide.addEventListener)wide.addEventListener("change",onWide);
 panel.addEventListener("click",function(e){var b=e.target.closest("[data-rt-pal],[data-rt-font],[data-rt-reset]");if(!b)return;
 if(b.hasAttribute("data-rt-reset"))set(0,0);else if(b.hasAttribute("data-rt-pal"))set(+b.dataset.rtPal,fi);else set(pi,+b.dataset.rtFont)});
 // Copy HTML / Copy DESIGN.md / Download DESIGN.md export the chosen variant (capture phase: runs before the page's generic copy handler)
