@@ -14,7 +14,7 @@ import { parseDesignMd, uiKitPanel, UI_KIT_CSS, UI_KIT_JS } from "./ui_kit.js";
 import { specBlock, parseSpecJson, parseDesignExtras, SPEC_CSS } from "./ui_spec.js";
 import { UI_COMPONENT_PATTERNS, componentMeta, componentParts, componentDemoHtml, componentCodeHtml, COMPONENT_CSS } from "./ui_component_page.js"; // UI components round 1 (7-Nov-2026)
 import { resolveTree, treePaths, assertTree, nicheOfPattern, nicheOfFlatSeg, MIN_DESIGNS, PLATFORMS, liveDesigns } from "./ui_tree.js";
-import { categoryPage, nicheExtras, categoryBlock, TEMPLATES_CRUMB, industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
+import { categoryPage, nicheExtras, categoryBlock, CATEGORY_CSS, TEMPLATES_CRUMB, industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
 import { patternSlug, flatSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
 import { shared, exact, cacheOff } from "./mcp_cache.js"; // MCP r3 (12-Nov-2026)
 
@@ -205,6 +205,8 @@ export function withCredit(text, kind, page, root) {
   return /^---\n[^]*?\n---\n/.test(text) ? text.replace(/^(---\n[^]*?\n---\n)/, "$1" + cm) : cm + text;
 }
 
+// The folded filter rows on /ui/website-templates (see uiGalleryPage).
+const FILTERS_FOLD_CSS = `.filters .ffold>summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:.35rem;font:600 .82rem var(--font);border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:.4rem .8rem;width:max-content}.filters .ffold>summary::-webkit-details-marker{display:none}.filters .ffold>summary::after{content:"\\25BE";font-size:.7rem;color:var(--muted)}.filters .ffold[open]>summary::after{content:"\\25B4"}.filters .ffold .fin{display:grid;gap:.5rem;margin-top:.6rem;padding:.75rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}`;
 const PAGE_CSS = `:root{--bg:#fafafa;--surface:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
 a{color:inherit}.wrap{max-width:1200px;margin:0 auto;padding:1.25rem 1rem 4rem}
@@ -298,7 +300,7 @@ q=q.toString();return B+"/ui"+(seg?"/"+seg:"")+(q?"?"+q:"")}
 function next(b){var s={};for(var k in f)s[k]=f[k];s[b.dataset.f]=b.dataset.v;if(b.dataset.f==="group")s.pattern="";if(b.dataset.f==="pattern"&&b.dataset.v)s.group=grp(b.dataset.v);return s}
 function inside(s){return !SCOPE||s[SCOPE.k]===SCOPE.v}
 function apply(){var n=0;cards.forEach(function(c){var ok=true;for(var k in f)if(f[k]&&c.dataset[k]!==f[k])ok=false;if(ok)n++;c.style.display=ok&&n<=shown?"":"none"});
-cnt.textContent=n+" "+word+(n===1?"":"s");if(more)more.hidden=n<=shown;document.querySelectorAll(".sub").forEach(function(s){s.hidden=s.dataset.g!==f.group});
+cnt.textContent=n+" "+word+(n===1?"":"s");var fd=document.querySelector(".filters .ffold");if(fd&&(f.platform||f.pattern||f.group!==(SCOPE&&SCOPE.k==="group"?SCOPE.v:"")))fd.open=true;if(more)more.hidden=n<=shown;document.querySelectorAll(".sub").forEach(function(s){s.hidden=s.dataset.g!==f.group});
 document.querySelectorAll(".chip[data-f]").forEach(function(b){var s=b.closest(".sub");b.setAttribute("aria-pressed",String(f[b.dataset.f]===b.dataset.v&&(!s||s.dataset.g===f.group)));
 var h=url(next(b));b.setAttribute("href",h);if(h.indexOf("?")>0)b.setAttribute("rel","nofollow");else b.removeAttribute("rel")})}
 if(more)more.addEventListener("click",function(){shown+=PAGE*2;apply()});
@@ -316,6 +318,9 @@ async function uiGalleryPage(env, base, h, facet) {
   const items = all.filter(match);
   if (!items.length) return new Response("not found", { status: 404, headers: { "Content-Type": "text/plain" } });
   const state = { platform: "", group: "", pattern: "", style: "" }; if (facet) state[facet.kind] = facet.value;
+  // /ui/website-templates (owner, 28-Nov-2026): category cards replace the ~90-chip niche row, and the Platform/Screens/Components/Websites
+  // rows fold behind one "Filters" <details> (closed; FILTER_JS opens it when a non-default filter is active). Other facet pages unchanged.
+  const isTpl = !!(facet && facet.kind === "group" && facet.value === "websites");
   const hrefFor = (k, v) => { const s = { ...state, [k]: v }; if (k === "group") s.pattern = ""; if (k === "pattern" && v) s.group = UI_GROUP_OF[v] || ""; return cleanUiUrl(s, base); };
   const chip = (k, v, text) => { const href = hrefFor(k, v); return `<a class="chip" data-f="${k}" data-v="${h.escHtml(v)}" href="${h.escHtml(href)}"${href.includes("?") ? ' rel="nofollow"' : ""} aria-pressed="${state[k] === v ? "true" : "false"}">${h.escHtml(text)}</a>`; };
   const chips = (k, lab, vals) => `<div><b>${lab}</b>${chip(k, "", "All")}${vals.map((v) => chip(k, v, label(v))).join("")}</div>`;
@@ -323,7 +328,7 @@ async function uiGalleryPage(env, base, h, facet) {
   const groupChips = `<div><b>Screens</b>${chip("group", "", "All")}${groups.filter((g) => g[0] !== "sections" && g[0] !== "websites" && g[0] !== "components").map((g) => chip("group", g[0], g[1])).join("")}</div>`
     + (groups.some((g) => g[0] === "components") ? `<div><b>Components</b>${chip("group", "components", "UI components")}</div>` : "")
     + (groups.some((g) => g[0] === "sections" || g[0] === "websites") ? `<div><b>Websites</b>${groups.some((g) => g[0] === "websites") ? chip("group", "websites", "Website templates") : ""}${groups.some((g) => g[0] === "sections") ? chip("group", "sections", "Website sections") : ""}</div>` : "")
-    + groups.map(([id, name, ps]) => `<div class="sub" data-g="${id}"${state.group === id ? "" : " hidden"}><b></b>${chip("pattern", "", "All " + name.toLowerCase())}${ps.map((p) => chip("pattern", p, label(p))).join("")}</div>`).join("");
+    + groups.filter(([id]) => !(isTpl && id === "websites")).map(([id, name, ps]) => `<div class="sub" data-g="${id}"${state.group === id ? "" : " hidden"}><b></b>${chip("pattern", "", "All " + name.toLowerCase())}${ps.map((p) => chip("pattern", p, label(p))).join("")}</div>`).join("");
   const cards = items.map((it) => card(it, base, h, `<b>${h.escHtml(label(it.pattern))}${it.variant ? " · " + h.escHtml(label(it.variant)) : ""}</b> · ${h.escHtml(it.platform)} <span>· ${h.escHtml(it.style)}</span>`)).join("");
   const nP = new Set(items.map((x) => x.pattern)).size, nS = new Set(items.map((x) => x.style)).size;
   const word = facet && facet.kind === "group" && (facet.value === "emails" || facet.value === "websites") ? "template" : facet && facet.kind === "group" && facet.value === "components" ? "component" : "screen";
@@ -332,16 +337,16 @@ async function uiGalleryPage(env, base, h, facet) {
     ? `${items.length} free ${lcFirst(facet.h1.replace(/^Free /, ""))} across ${nP} patterns${facet.kind === "style" ? "" : ` in ${nS} styles`}, each with copyable HTML and a DESIGN.md token file (light and dark). Original designs by Made Good Designs.`
     : `${items.length} original app screens and website sections across ${nP} patterns, for web and mobile in ${UI_STYLES.length} styles, plus ${Object.keys(UI_FLOWS).length} multi-step flows. Each one comes with copyable HTML and a DESIGN.md token file for AI coding agents. Free.`;
   const title = facet ? facet.title : "Free UI screens with HTML code & DESIGN.md | MGD";
-  const body = head(h, { title, ogTitle: facet ? facet.h1 : "MGD UI Screens", desc, canonical: url,
+  const body = head(h, { title, ogTitle: facet ? facet.h1 : "MGD UI Screens", desc, canonical: url, css: isTpl ? CATEGORY_CSS + FILTERS_FOLD_CSS : "",
     image: items[0] ? site + base + items[0].image : null,
     jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: facet ? facet.h1 : "MGD UI Screens", url, description: desc, publisher: MGD_ORG(site), ...licenceLd(site, base),
       ...(facet ? { isPartOf: { "@type": "Collection", name: "MGD UI Screens", url: `${site}${base}/ui` }, mainEntity: { "@type": "ItemList", numberOfItems: items.length, itemListElement: items.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: site + uiItemPath(it, base) })) } } : {}) } })
   + `${h.backLink(base, "/", "Back to inspiration")}
 ${facet ? `<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › ${h.escHtml(facet.value === "websites" && facet.kind === "group" ? TEMPLATES_CRUMB : facet.h1)}</nav>` : ""}
 <h1>${h.escHtml(facet ? facet.h1 : "UI screens")}</h1>
-${facet && facet.value === "websites" && facet.kind === "group" ? categoryBlock(base, h) : ""}${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an original design by Made Good Designs with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui"><b>all ${all.length} UI screens</b></a> and <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`
+${facet ? `<p class="lede">${h.escHtml(facet.intro)} Every ${word} is an original design by Made Good Designs with its <b>HTML code</b> and a <b>DESIGN.md</b> of colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui"><b>all ${all.length} UI screens</b></a> and <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`
   : `<p class="lede">Original app screens and website sections for web and mobile, designed by Made Good Designs. Unlike screenshot libraries, every screen comes with its <b>HTML code</b> and a <b>DESIGN.md</b> with the colour, type and spacing tokens, so you (or your AI coding agent) can build from it directly. Free to copy and adapt. See also <a href="${h.escHtml(base)}/ui/flows"><b>${Object.keys(UI_FLOWS).length} multi-step flows</b></a>.</p>`}
-<div class="filters">${chips("platform", "Platform", ["web", "mobile"])}${groupChips}${chips("style", "Style", UI_STYLES)}</div>
+${isTpl ? categoryBlock(base, h, all) : ""}<div class="filters">${isTpl ? `<details class="ffold"><summary>Filters</summary><div class="fin">${chips("platform", "Platform", ["web", "mobile"])}${groupChips}</div></details>` : `${chips("platform", "Platform", ["web", "mobile"])}${groupChips}`}${chips("style", "Style", UI_STYLES)}</div>
 <p class="lede" id="count" data-word="${word}" style="margin:-.5rem 0 .5rem">${items.length} ${word}s</p><p style="margin:0 0 1rem">${THEME_SWITCH}</p>
 <div class="grid" id="grid">${cards}</div><p style="text-align:center;margin:1.5rem 0"><button class="btn" id="more" hidden>Show more</button></p>${patternIndex(base, h, have)}${facetIndex(base, h, all)}${MCP_NOTE(base)}${RIGHTS}
 </div>${FILTER_JS(base, facet ? { k: facet.kind, v: facet.value } : null, 48)}${THEME_JS}${h.saveWidget(base)}</body></html>`;

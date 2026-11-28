@@ -169,13 +169,44 @@ ${others.length ? `<h2 class="s">Other categories</h2><p class="lede">${others.m
   return x.page(h, body);
 }
 
-// The hub's "By category" block (on /ui/website-templates): every live category with its industries and counts.
-export function categoryBlock(base, h) {
+// The hub's category cards (on /ui/website-templates; owner picked option 1 on 28-Nov-2026, image tiles added the same day): one card per
+// live category plus "More industries" for industries with no live category (Learning and community is held). Each card: the category
+// name (its page), the design count, its industry hubs as links, then its sub-niches as image tiles, the top CAT_TOP by design count first
+// and the rest inside a <details> "+N more" (no JS needed; every link stays in the HTML). This replaces the old "By category" list and the
+// ~90-chip "Website templates" sub-filter row. Tile pictures: the first web screen of the niche's pattern in the gallery's own order
+// (deterministic), served from the stored-only thumbnail route (/img/t/<key>?src=app: the pre-made 320 px R2 thumb, else a 302 to the
+// original; never a transform). Niches with no screen yet get a plain placeholder box.
+export const CAT_TOP = 6;
+export const CATEGORY_CSS = `.cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:0 0 1.5rem}@media(max-width:960px){.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.cats{grid-template-columns:minmax(0,1fr)}}
+.cat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.85rem .85rem .75rem;min-width:0}
+.cat h2{font-size:1rem;margin:0;letter-spacing:-.01em}.cat h2 a{text-decoration:none}.cat h2 a:hover{text-decoration:underline}
+.cat .cn{font-size:.8rem;color:var(--muted);margin:.15rem 0 .45rem}.cat .ci{font-size:.8rem;line-height:1.45;margin:0 0 .65rem;color:var(--muted)}.cat .ci a{color:var(--text)}
+.ctl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem .5rem}
+.ct{display:block;text-decoration:none;min-width:0}.ct .ti{display:block;aspect-ratio:4/3;background:#ececec;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.ct img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}.ct:hover .ti{border-color:var(--text)}
+.ct .tl{display:block;font-size:.76rem;line-height:1.25;margin-top:.3rem;overflow-wrap:anywhere}.ct .tn{display:block;font-size:.7rem;color:var(--muted)}
+.cat details{margin-top:.6rem}.cat summary{cursor:pointer;font-size:.8rem;font-weight:600;list-style:none;display:inline-block;border:1px solid var(--border);border-radius:999px;padding:.2rem .7rem}
+.cat summary::-webkit-details-marker{display:none}.cat details[open] summary{margin-bottom:.6rem}.cat details[open] .sm{display:none}.cat details:not([open]) .sl{display:none}`;
+const shortNiche = (n) => n.label.replace(/ website$/i, "");
+export function categoryBlock(base, h, items) {
   const cs = liveCategories(); if (!cs.length) return "";
-  // industries whose category is held (Learning and community) or not yet placed still get a hub link here, with no category
+  const pic = {}; for (const it of items || []) if (it.platform === "web" && it.image && !pic[it.pattern]) pic[it.pattern] = it;
+  const e = h.escHtml, B = e(base);
+  const tile = (n) => { const it = pic[n.pattern], k = String((it && it.image) || "").replace(/^\/img\//, ""), d = liveDesigns(n).length;
+    const img = it ? `<img loading="lazy" decoding="async" width="320" height="${it.width && it.height ? Math.round((320 * it.height) / it.width) : 240}" src="${B}/img/t/${e(k)}?src=app" alt="${e(shortNiche(n))}"/>` : "";
+    return `<a class="ct" href="${B}/ui/${e(nichePath(n))}"><span class="ti">${img}</span><span class="tl">${e(shortNiche(n))}</span><span class="tn">${count(d, "design")}</span></a>`; };
+  const card = (title, href, inds) => {
+    const ns = inds.flatMap((i) => industryNiches(i.id)).map((n, ix) => ({ n, ix, d: liveDesigns(n).length })).sort((a, b) => b.d - a.d || a.ix - b.ix).map((r) => r.n);
+    const top = ns.slice(0, CAT_TOP), rest = ns.slice(CAT_TOP), designs = totals(ns).designs;
+    return `<section class="cat"><h2>${href ? `<a href="${B}/ui/${e(href)}">${e(title)}</a>` : e(title)}</h2><p class="cn">${designs} designs · ${count(ns.length, "sub-niche")}</p>`
+      + `<p class="ci">${inds.map((i) => `<a href="${B}/ui/${e(i.hub)}">${e(i.label)}</a>`).join(" · ")}</p>`
+      + `<div class="ctl">${top.map(tile).join("")}</div>`
+      + (rest.length ? `<details><summary><span class="sm">+${rest.length} more</span><span class="sl">Show fewer</span></summary><div class="ctl">${rest.map(tile).join("")}</div></details>` : "")
+      + `</section>`;
+  };
+  // industries whose category is held (Learning and community) or not yet placed still get their card, with no category page
   const loose = Object.values(INDUSTRIES).filter((i) => industryNiches(i.id).length && !homeCategory(i.id));
-  const more = loose.length ? `<li><b>More industries:</b> ${loose.map((i) => `<a href="${h.escHtml(base)}/ui/${h.escHtml(i.hub)}">${h.escHtml(i.label)}</a> ${totals(industryNiches(i.id)).designs}`).join(" · ")}</li>` : "";
-  return `<h2 style="font-size:1.05rem;margin:1rem 0 .5rem">By category</h2><ul class="lede" style="padding-left:1.1rem;margin:0 0 1.25rem">${cs.map((c) => { const f = categoryFacts(c); return `<li><a href="${h.escHtml(base)}/ui/${h.escHtml(categoryPath(c))}"><b>${h.escHtml(c.label)}</b></a> (${f.designs} designs): ${f.inds.map((r) => `<a href="${h.escHtml(base)}/ui/${h.escHtml(r.i.hub)}">${h.escHtml(r.i.label)}</a> ${r.t.designs}`).join(" · ")}</li>`; }).join("")}${more}</ul>`;
+  return `<div class="cats">${cs.map((c) => card(c.label, categoryPath(c), categoryIndustries(c).filter((i) => industryNiches(i.id).length))).join("")}${loose.length ? card("More industries", null, loose) : ""}</div>`;
 }
 
 // Below the designs on a sub-niche page: a group parent lists its specialties; a member links back to its group; every niche links to the rest of its industry.
