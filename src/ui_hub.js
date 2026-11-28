@@ -15,11 +15,11 @@ import COPY from "./tpl_collections.json"; // collection + row copy (user-facing
 
 // ---- Colour family -------------------------------------------------------------------------------------------------------------
 // Rules (deterministic, documented for the owner):
-//   1. Convert primary (role 6) and accent (role 8) to HSL.
+//   1. Convert primary (role 6) to HSL. The accent (role 8) is NOT used: owner pick 28-Nov-2026, the filter is the main colour only.
 //   2. Achromatic: saturation < 0.15, or lightness < 0.10, or lightness > 0.93 → "black" when lightness < 0.5, else "white".
 //   3. Brown & gold: hue 15–50° and (saturation < 0.40, or lightness < 0.36, or lightness < 0.45 with saturation < 0.65) → "brown" (dark, dusty or bronze oranges and golds).
 //   4. Otherwise by hue: red < 15° or ≥ 345°, orange 15–42°, yellow 42–70°, green 70–165°, teal 165–195°, blue 195–255°, purple 255–290°, pink 290–345°.
-//   5. A template gets the primary's family plus the accent's family when that is chromatic (a template "uses" both colours).
+//   5. A template gets its primary's family (one hue family, or black/white), plus at most one background tone from rule 6.
 //   6. Background (role 1) tone, by chroma (max − min channel, 0–1): "white" when lightness ≥ 0.90 and chroma ≤ 0.03 (near-neutral);
 //      "pastel" when lightness ≥ 0.85 and chroma ≥ 0.04 (visibly tinted) and not a cream (hue 20–60°, which reads as warm white).
 export const COLOURS = [["red", "Red", "#d33a3a"], ["orange", "Orange", "#ea7a1f"], ["yellow", "Yellow", "#e5bd1c"], ["green", "Green", "#3a9a48"],
@@ -45,11 +45,11 @@ export function bgTone(hex) {
   if (c.l >= 0.85 && chroma >= 0.04 && !(c.h >= 20 && c.h < 60)) return "pastel";
   return null;
 }
-// palette: the D1 JSON string or the parsed array (rowToItem). Returns families in display order of importance: primary, accent, background tone.
+// palette: the D1 JSON string or the parsed array (rowToItem). Returns [primary family, background tone?].
 export function colourFamilies(palette) {
   let p = palette; if (typeof p === "string") { try { p = JSON.parse(p); } catch (_) { p = []; } } if (!Array.isArray(p) || p.length < 8) return [];
   const out = [], add = (f) => { if (f && !out.includes(f)) out.push(f); };
-  add(hueFamily(p[5])); const a = hueFamily(p[7]); if (a !== "black" && a !== "white") add(a); add(bgTone(p[0]));
+  add(hueFamily(p[5])); add(bgTone(p[0])); // main (primary) colour only: owner pick 28-Nov (the accent is not a facet)
   return out;
 }
 
@@ -168,7 +168,7 @@ export function hubFacetRows(webItems, base, h) {
   const fchip = (f) => chip("font", fontSlug(f), e(f), fc[f], ` title="${e(`${f} headings${body[f] && body[f] !== f ? `, ${body[f]} body text` : ", same font for body text"}`)}"`);
   const top = fonts.slice(0, FONTS_TOP), rest = fonts.slice(FONTS_TOP);
   const guides = fonts.filter((f) => FONT_GUIDES[f]).map((f) => `<a href="${e(FONT_GUIDES[f])}">${e(f)}</a>`).join(" · ");
-  return `<div class="crow-f"><b title="The main or accent colour of the template">Colour</b>${chip("colour", "", "All", webItems.length).replace(' rel="nofollow" aria-pressed="false"', ' aria-pressed="true"')}${colours}</div>`
+  return `<div class="crow-f"><b title="The main (primary) colour of the template">Colour</b>${chip("colour", "", "All", webItems.length).replace(' rel="nofollow" aria-pressed="false"', ' aria-pressed="true"')}${colours}</div>`
     + `<div><b>Heading font</b>${chip("font", "", "All", webItems.length).replace(' rel="nofollow" aria-pressed="false"', ' aria-pressed="true"')}${top.map(fchip).join("")}${rest.length ? `<span class="fmore" hidden>${rest.map(fchip).join("")}</span><button type="button" class="chip" data-more>+${rest.length} more</button>` : ""}</div>`
     + (guides ? `<p class="fguide">Font pairing guides: ${guides}</p>` : "");
 }
@@ -283,7 +283,7 @@ export async function collectionPage(c, env, base, h, x, F) {
   const inds = [...new Map(niches.map((nn) => INDUSTRIES[nn.industry]).filter(Boolean).map((i) => [i.id, i])).values()];
   const flat = [...new Set(picks.filter((t) => !t.niche).map((t) => t.pattern))];
   const img = (t) => (c.rule.dark && t.image_dark ? t.image_dark : t.image);
-  const cards = picks.map((t) => `<a class="card page" href="${e(t.path(base))}"><div class="th"${c.rule.dark ? ' style="background:#141414"' : ""}><img loading="lazy"${t.width && t.height ? ` width="${+t.width}" height="${+t.height}"` : ""} src="${e(base + img(t))}" alt="${e(`${nicheShort(t, F)} website template, ${layoutName(t, F)} layout, ${t.style} style${c.rule.dark ? ", dark mode" : ""}`)}"/></div><div class="meta"><b>${e(`${nicheShort(t, F)} · ${layoutName(t, F)}`)}</b><span>${e(`${cap1(t.style)} · ${t.font.heading} headings · ${t.colours.slice(0, 2).map((f) => (COLOURS.find((k) => k[0] === f) || [, f])[1]).join(" and ")}`)}</span></div></a>`).join("");
+  const cards = picks.map((t) => `<a class="card page" href="${e(t.path(base))}"><div class="th"${c.rule.dark ? ' style="background:#141414"' : ""}><img loading="lazy"${t.width && t.height ? ` width="${+t.width}" height="${+t.height}"` : ""} src="${e(base + img(t))}" alt="${e(`${nicheShort(t, F)} website template, ${layoutName(t, F)} layout, ${t.style} style${c.rule.dark ? ", dark mode" : ""}`)}"/></div><div class="meta"><b>${e(`${nicheShort(t, F)} · ${layoutName(t, F)}`)}</b><span>${e(`${cap1(t.style)} · ${t.font.heading} headings · ${(COLOURS.find((k) => k[0] === t.colours[0]) || [, t.colours[0] || ""])[1]}`)}</span></div></a>`).join("");
   const jsonld = [{ "@context": "https://schema.org", "@type": "CollectionPage", name: h1, url, description: desc, publisher: x.MGD_ORG(site), ...x.licenceLd(site, base),
     isPartOf: { "@type": "CollectionPage", name: "Free website templates", url: `${site}${base}/ui/${TEMPLATES_HUB}` },
     mainEntity: { "@type": "ItemList", numberOfItems: n, itemListElement: picks.map((t, i) => ({ "@type": "ListItem", position: i + 1, url: site + t.path(base) })) } }, crumbLd(site, base, crumbs), faqLd(faq)];

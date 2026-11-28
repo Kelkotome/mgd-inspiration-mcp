@@ -18,7 +18,7 @@ const fam = { "#d33a3a": "red", "#ea7a1f": "orange", "#e5bd1c": "yellow", "#3a9a
 const famBad = Object.entries(fam).filter(([hx, f]) => H.hueFamily(hx) !== f).map(([hx, f]) => `${hx}→${H.hueFamily(hx)} (want ${f})`);
 t("hueFamily: hue bands, brown & gold, achromatic", famBad.length === 0, famBad);
 t("bgTone: neutral white, tinted pastel, cream is neither", H.bgTone("#ffffff") === "white" && H.bgTone("#f5f8fb") === "white" && H.bgTone("#fbeef6") === "pastel" && H.bgTone("#fff7ec") === null);
-t("colourFamilies: primary, chromatic accent, bg tone; JSON string or array", H.colourFamilies('["#fff7ec","#ffffff","#e6d4be","#241705","#71604a","#b73642","#ffffff","#338440"]').join() === "red,green"
+t("colourFamilies: primary only (accent ignored) + bg tone; JSON string or array", H.colourFamilies('["#fff7ec","#ffffff","#e6d4be","#241705","#71604a","#b73642","#ffffff","#338440"]').join() === "red"
   && H.colourFamilies(["#ffffff", "#fafafa", "#e4e4e4", "#111111", "#666666", "#111111", "#ffffff", "#444444"]).join() === "black,white" && H.colourFamilies("[]").length === 0);
 // fonts = ui-screens/lib.js STYLES hf/bf (the DESIGN.md typography tokens are built from them)
 { const lib = readFileSync(new URL("../ui-screens/lib.js", import.meta.url), "utf8"), got = {};
@@ -56,7 +56,7 @@ t(`heading-font chip counts match (${Object.keys(gotF).length} fonts)`, JSON.str
 const fhrefs = [...html.matchAll(/class="chip(?: sw)?" data-f="(colour|font|style|platform)" data-v="([^"]*)" href="([^"]+)"/g)].map((m) => [m[1], m[2], m[3].replace(/&amp;/g, "&")]);
 const RESERVED = /[?&](name|p|page|s|m|w|cat|tag|author|year|order|orderby|type|feed|preview|title|term|taxonomy|paged|post_type|attachment)=/;
 const badHref = fhrefs.filter(([k, v, u]) => RESERVED.test(u) || /[<>"'(){}]/.test(u) || (v && k !== "platform" && !u.includes(`${k === "platform" ? "device" : k}=${v}`)) || !u.startsWith("/inspiration/ui/website-templates"));
-t(`filter chip hrefs: ?device/style/colour/font with slug values, never WP-reserved (${fhrefs.length})`, fhrefs.length > 30 && badHref.length === 0, JSON.stringify(badHref.slice(0, 3)));
+t(`filter chip hrefs: ?device/style/colour/font with slug values, never WP-reserved (${fhrefs.length})`, fhrefs.length >= 25 && badHref.length === 0, JSON.stringify(badHref.slice(0, 3)));
 t("filter chips with a query are rel=nofollow", [...html.matchAll(/<a class="chip(?: sw)?" data-f="(?:colour|font)" data-v="[a-z0-9-]+" href="[^"]+\?[^"]*" ([^>]*)>/g)].every((m) => m[1].startsWith('rel="nofollow"')));
 t("font pairing guides linked internally", [...html.matchAll(/<p class="fguide">(.*?)<\/p>/g)].length === 1 && Object.entries(H.FONT_GUIDES).filter(([f]) => wantF[H.fontSlug(f)]).every(([, u]) => html.includes(`href="${u}"`)));
 t("active-filter bar + Clear all logic + fold opener in the hub script", html.includes('<div class="active" id="active" hidden></div>') && html.includes("Clear all") && html.includes('document.querySelector(".filters .ffold")') && html.includes("fd.open=true"));
