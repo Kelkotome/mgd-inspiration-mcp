@@ -13,6 +13,7 @@ import { extractCopy } from "./ui_copy.js";
 import { parseDesignMd, uiKitPanel, UI_KIT_CSS, UI_KIT_JS } from "./ui_kit.js";
 import { specBlock, parseSpecJson, parseDesignExtras, SPEC_CSS } from "./ui_spec.js";
 import { UI_COMPONENT_PATTERNS, componentMeta, componentParts, componentDemoHtml, componentCodeHtml, COMPONENT_CSS } from "./ui_component_page.js"; // UI components round 1 (7-Nov-2026)
+import { previewHtml, rethemePanel, rtPageJs, RT_PAGE_CSS, RT_NOSCRIPT } from "./ui_retheme.js"; // template live preview + "Try it with" re-theming (28-Nov-2026)
 import { resolveTree, treePaths, assertTree, nicheOfPattern, nicheOfFlatSeg, MIN_DESIGNS, PLATFORMS, liveDesigns } from "./ui_tree.js";
 import { categoryPage, nicheExtras, categoryBlock, CATEGORY_CSS, TEMPLATES_CRUMB, industryPage, platformPage, platformIndustryPage, platformNichePage, themePage, treeMd, themeDownload, nicheDesignsBlock, nicheCss, nicheCrumbs, nicheCrumbHtml, crumbLd, itemSibling, industryLinks, tplAnswer, tplHint, tplListLines } from "./ui_templates.js";
 import { patternSlug, flatSlug, patternH1, facetSlug, resolveUiSlug, cleanUiUrl, UI_SLUG_JS, assertSlugs } from "./ui_seo.js"; // clean keyword URLs (5-Nov-2026) // copy deck (visible strings by role) for get_ui_screen_code format=copy
@@ -411,15 +412,18 @@ dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:.3rem 1rem;margi
 .acts{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1rem}
 .tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 1rem}.tags span{font-size:.72rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.1rem .55rem}
 .flows{font-size:.9rem;margin:0 0 1rem}.flows a{font-weight:600}
-h2{font-size:1.05rem;margin:2.25rem 0 .75rem}${specHtml ? SPEC_CSS : ""}${isComp ? COMPONENT_CSS : ""}${tokens ? UI_KIT_CSS : ""}` })
+h2{font-size:1.05rem;margin:2.25rem 0 .75rem}${specHtml ? SPEC_CSS : ""}${isComp ? COMPONENT_CSS : ""}${tokens ? UI_KIT_CSS : ""}${isPage ? RT_PAGE_CSS : ""}` })
   + `${h.backLink(base, "/ui", "Back to UI screens")}
 ${itemSibling(it, base, h)}<nav class="crumb"><a href="${h.escHtml(base)}/ui">UI screens</a> › <a href="${h.escHtml(base)}/ui/${h.escHtml(patternSlug(it.pattern))}">${h.escHtml(label(it.pattern))}</a> › ${h.escHtml(it.platform)}, ${h.escHtml(it.style)}</nav>
 <div class="detail ${h.escHtml(it.platform)}">
-  <div style="position:relative"${isPage ? ' class="pagebox"' : ""}>${isComp && compParts ? componentDemoHtml(it, base, h, name, it.height) + `<details style="margin-top:.6rem"><summary class="muted" style="font-size:.85rem;cursor:pointer">Screenshot</summary>` : ""}<button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button>${isPage ? '<div class="shotscroll">' : ""}<img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${isPage ? "</div>" : ""}${isComp && compParts ? "</details>" : ""}${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>
+  ${isPage ? `<div style="position:relative" class="pagebox">${RT_NOSCRIPT}${previewHtml({ src: base + it.code, name, mobile: it.platform === "mobile", esc: h.escHtml,
+    saveHtml: `<button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button>`,
+    shotHtml: `<img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>` })}${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}${tokens ? rethemePanel(h.escHtml) : ""}</div>`
+  : `<div style="position:relative"${isPage ? ' class="pagebox"' : ""}>${isComp && compParts ? componentDemoHtml(it, base, h, name, it.height) + `<details style="margin-top:.6rem"><summary class="muted" style="font-size:.85rem;cursor:pointer">Screenshot</summary>` : ""}<button class="card__save" data-id="${h.escHtml(it.id)}" title="Save to a board">♥ Save</button>${isPage ? '<div class="shotscroll">' : ""}<img class="shot" fetchpriority="high"${dims(it)} src="${h.escHtml(base + it.image)}"${it.image_dark ? ` data-dark="${h.escHtml(base + it.image_dark)}"` : ""} alt="${h.escHtml(name)}"/>${isPage ? "</div>" : ""}${isComp && compParts ? "</details>" : ""}${it.image_dark ? `<div style="margin-top:.6rem">${THEME_SWITCH}</div>` : ""}</div>`}
   <div><h1>${h.escHtml(name)}</h1>${it.description ? `<p class="desc">${h.escHtml(it.description)}</p>` : ""}
     <div class="acts"><a class="btn dark" href="${h.escHtml(base + it.code)}" target="_blank" rel="noopener nofollow">Open live HTML ↗</a>
-      <button class="btn" data-copy="${h.escHtml(base + it.code)}">Copy HTML</button><button class="btn" data-copy="${h.escHtml(base + it.design_md)}">Copy DESIGN.md</button>
-      <a class="btn" href="${h.escHtml(base + it.design_md)}" download="DESIGN.md" rel="nofollow">Download DESIGN.md</a></div>
+      <button class="btn" data-copy="${h.escHtml(base + it.code)}"${isPage ? ' data-rt="html"' : ""}>Copy HTML</button><button class="btn" data-copy="${h.escHtml(base + it.design_md)}"${isPage ? ' data-rt="md"' : ""}>Copy DESIGN.md</button>
+      <a class="btn" href="${h.escHtml(base + it.design_md)}" download="DESIGN.md" rel="nofollow"${isPage ? ' data-rt="md"' : ""}>Download DESIGN.md</a></div>
     ${flows.length ? `<p class="flows">Part of ${flows.map((f) => `<a href="${h.escHtml(flowPath(f.id, base, it.platform, it.style))}">${h.escHtml(UI_FLOWS[f.id])}</a> (step ${f.step})`).join(", ")}</p>` : ""}
     <dl class="facts">${facts.filter((f) => f[1]).map(([k, v, href]) => `<dt>${h.escHtml(k)}</dt><dd>${href ? `<a href="${h.escHtml(href)}">${h.escHtml(v)}</a>` : h.escHtml(v)}</dd>`).join("")}</dl>
     ${specHtml}${pal && !specHtml.includes('class="sc"') ? `<div class="pal" aria-label="Colour roles: background, surface, border, text, muted, primary, on-primary, accent">${pal}</div>` : ""}
@@ -431,7 +435,7 @@ ${related.length ? `<h2>More ${h.escHtml(label(it.pattern).toLowerCase())} ${kin
 ${MCP_NOTE(base)}${RIGHTS}
 </div><script>document.addEventListener("click",function(e){var c=e.target.closest("[data-copy-el]");if(c){var x=document.getElementById(c.dataset.copyEl),ct=c.textContent;navigator.clipboard.writeText(x?x.textContent:"").then(function(){c.textContent="Copied ✓";setTimeout(function(){c.textContent=ct},1600)},function(){c.textContent="Copy failed";setTimeout(function(){c.textContent=ct},1600)});return}var b=e.target.closest("[data-copy]");if(!b)return;var t=b.textContent;
 fetch(b.dataset.copy).then(function(r){return r.text()}).then(function(s){return navigator.clipboard.writeText(s)}).then(function(){b.textContent="Copied ✓";setTimeout(function(){b.textContent=t},1600)},function(){b.textContent="Copy failed";setTimeout(function(){b.textContent=t},1600)})});</script>
-${THEME_JS}${tokens ? UI_KIT_JS : ""}${h.saveWidget(base)}</body></html>`;
+${THEME_JS}${tokens ? UI_KIT_JS : ""}${isPage ? rtPageJs({ tokens }) : ""}${h.saveWidget(base)}</body></html>`;
   return page(h, body);
 }
 

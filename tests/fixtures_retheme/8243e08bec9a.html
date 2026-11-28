@@ -1,0 +1,206 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Elodie &amp; Ravi — Concierge layout (mobile, luxury) · MGD UI screens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<!--
+  UI by Made Good Designs — https://madegooddesigns.com/inspiration/ui/wedding-invitation-website-concierge-mobile-luxury-8243e08bec9a
+  Free to use and adapt in any project, including commercial ones; no credit needed in your product.
+  Republishing the screens themselves (a gallery, template pack, article or dataset)? Credit Made Good Designs with a link. Terms: https://madegooddesigns.com/inspiration/ui/terms
+-->
+<style>:root{--danger:oklch(0.55 0.2 27);--on-danger:#ffffff;--success:oklch(0.5 0.12 150);--warning:oklch(0.58 0.13 65);--ink:#21190d;--on-ink:#fbf7f0;--bg:#fbf7f0;--surface:#ffffff;--border:#dfd5c6;--text:#21190d;--muted:#6c6251;--primary:#786037;--on-primary:#ffffff;--accent:#6f7848;
+--radius-sm:0px;--radius:0px;--radius-lg:0px;--shadow-sm:none;--shadow:none;--shadow-lg:none;
+--font-h:"Cormorant Garamond",Georgia,serif;--font-b:"Manrope",system-ui,sans-serif;--hw:500;--ls:0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--danger:oklch(0.72 0.17 25);--on-danger:oklch(0.2 0.03 25);--success:oklch(0.76 0.14 150);--warning:oklch(0.82 0.13 80);--ink:#110b04;--on-ink:#f1ede7;--bg:#110b04;--surface:#20190e;--border:#362f23;--text:#f1ede7;--muted:#b9b0a1;--primary:#bca47e;--on-primary:#111111;--accent:#b6c18e;color-scheme:dark}}:root[data-theme="dark"]{--danger:oklch(0.72 0.17 25);--on-danger:oklch(0.2 0.03 25);--success:oklch(0.76 0.14 150);--warning:oklch(0.82 0.13 80);--ink:#110b04;--on-ink:#f1ede7;--bg:#110b04;--surface:#20190e;--border:#362f23;--text:#f1ede7;--muted:#b9b0a1;--primary:#bca47e;--on-primary:#111111;--accent:#b6c18e;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font:14px/1.5 var(--font-b);-webkit-font-smoothing:antialiased}
+.num{font-family:var(--font-b);font-weight:600;letter-spacing:-0.025em;line-height:1.15;font-variant-numeric:tabular-nums}
+h1,h2,h3,.h{font-family:var(--font-h);font-weight:var(--hw);letter-spacing:var(--ls);line-height:1.15}
+.i{flex:none}
+.muted{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text);font:500 13px var(--font-b);white-space:nowrap}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.btn.block{width:100%;height:42px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm)}
+.badge{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font:600 11px var(--font-b);background:color-mix(in oklab,var(--accent) 16%,var(--surface));color:color-mix(in oklab,var(--accent) 70%,var(--text))}
+.field{display:grid;gap:6px}
+.field label{font-weight:500;font-size:13px}
+.input{height:40px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:0 12px;display:flex;align-items:center;color:var(--muted);font-size:14px}
+.input.filled{color:var(--text)}
+.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:600 11px var(--font-b);background:color-mix(in oklab,var(--primary) 18%,var(--surface));color:color-mix(in oklab,var(--primary) 80%,var(--text))}
+.logo{display:flex;align-items:center;gap:8px;font:600 15px var(--font-b);letter-spacing:-0.01em}
+.logo b{width:22px;height:22px;border-radius:var(--radius-sm);background:var(--primary);display:inline-block}
+/* web app shell */
+.shell{display:grid;grid-template-columns:232px 1fr;height:100%}
+.side{border-right:1px solid var(--border);padding:18px 12px;display:flex;flex-direction:column;gap:2px;background:color-mix(in oklab,var(--surface) 60%,var(--bg))}
+.side .logo{padding:2px 8px 18px}
+.nav{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:var(--radius);color:var(--muted);font-weight:500}
+.nav.on{background:color-mix(in oklab,var(--primary) 10%,var(--surface));color:var(--text)}
+.side .grp{font:600 11px var(--font-b);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:16px 8px 6px}
+.side .foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding:8px}
+.main{overflow:hidden;display:flex;flex-direction:column}
+.main>.top{flex:none}
+.top{height:60px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 28px}
+.top .search{flex:0 1 320px;margin-left:auto;height:34px;border:1px solid var(--border);border-radius:var(--radius);display:flex;align-items:center;gap:8px;padding:0 10px;color:var(--muted);background:var(--surface)}
+.page{padding:28px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-content:start}
+.ph h1{font-size:35px}
+.ph p{color:var(--muted);margin-top:4px}
+/* mobile frame */
+.phone{height:100%;display:flex;flex-direction:column;overflow:hidden}
+.status{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font:600 14px var(--font-b);flex:none}
+.status span:last-child{letter-spacing:2px;font-size:11px}
+.mtop{display:flex;align-items:center;justify-content:space-between;padding:6px 20px 12px;flex:none}
+.mbody{flex:1;overflow:hidden;padding:4px 20px 20px;display:flex;flex-direction:column;gap:14px}
+.tabs{flex:none;height:78px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 8px 26px;background:var(--surface)}
+.tabs div{display:grid;justify-items:center;gap:2px;font:500 10px var(--font-b);color:var(--muted)}
+.tabs .on{color:var(--primary)}
+.muted{letter-spacing:.01em}.side .grp,.badge{letter-spacing:.14em;text-transform:uppercase;font-size:10px}.btn{letter-spacing:.08em;text-transform:uppercase;font-size:11px}.card{box-shadow:none}</style></head><body><style>
+:root{--hs:1.35}
+html,body{height:auto;min-height:100%}
+body{font-size:15px;line-height:1.6}
+img,svg{max-width:100%}
+a{color:inherit;text-decoration:none}
+.sk-wrap{width:100%;max-width:1200px;margin:0 auto;padding:0 48px}
+.sk-sec{padding:96px 0}
+.sk-sec.sk-tight{padding:64px 0}
+.sk-alt{background:var(--surface);border-block:1px solid var(--border)}
+.sk-eyebrow{display:inline-block;font:600 12px/1.4 var(--font-b);letter-spacing:.09em;text-transform:uppercase;color:color-mix(in oklab,var(--primary) 82%,var(--text))}
+.sk-h1{font-size:calc(60px * var(--hs));line-height:1.03}
+.sk-h2{font-size:calc(40px * var(--hs));line-height:1.08}
+.sk-h3{font-size:calc(20px * var(--hs));line-height:1.25}
+.sk-lede{font-size:18px;color:var(--muted);max-width:580px}
+.sk-stack{display:grid;gap:18px;justify-items:start;align-content:start}
+.sk-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.sk-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+.sk-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.sk-g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.sk-split{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:64px;align-items:center}
+.sk-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:44px}
+.sk-head>div:first-child{display:grid;gap:12px;max-width:640px}
+.sk-btn-lg{height:48px;padding:0 22px;font-size:15px}
+.sk-card{padding:28px}
+.sk-photo{position:relative;overflow:hidden;border-radius:var(--radius-lg);background:color-mix(in oklab,var(--primary) 14%,var(--surface))}
+.sk-photo>svg{display:block;width:100%;height:100%}
+.sk-cap{position:absolute;left:14px;bottom:14px;font:600 12px var(--font-b);padding:5px 10px;border-radius:var(--radius);background:color-mix(in oklab,var(--bg) 88%,transparent);color:var(--text)}
+/* nav: links + CTA on wide screens, a no-JS <details> menu on phones */
+.sk-nav{border-bottom:1px solid var(--border);background:var(--bg)}
+.sk-nav>.sk-wrap{display:flex;align-items:center;gap:32px;height:76px}
+.sk-links{display:flex;gap:28px;font-weight:500;color:var(--muted)}
+.sk-links a:hover{color:var(--text)}
+.sk-navend{margin-left:auto;display:flex;align-items:center;gap:12px}
+.sk-menu{display:none;margin-left:auto}
+.sk-menu summary{list-style:none;cursor:pointer;width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--border);border-radius:var(--radius)}
+.sk-menu summary::-webkit-details-marker{display:none}
+.sk-menu[open]>nav{position:absolute;left:0;right:0;top:76px;z-index:5;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 20px 20px;display:grid;gap:4px}
+.sk-menu nav a{padding:10px 0;font-weight:500;border-bottom:1px solid var(--border)}
+.sk-nav{position:relative}
+/* footer */
+.sk-foot{border-top:1px solid var(--border);padding:64px 0 40px;font-size:14px}
+.sk-foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:40px}
+.sk-foot h4{font:600 13px var(--font-b);margin-bottom:12px}
+.sk-foot ul{list-style:none;display:grid;gap:8px;color:var(--muted)}.sk-foot li{overflow-wrap:anywhere}
+.sk-foot-base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+.sk-field{display:grid;gap:6px}.sk-field label{font-weight:500;font-size:13px}
+.sk-input{width:100%;height:46px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:0 14px;color:var(--text);font:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+textarea.sk-input{height:auto;min-height:110px;padding:12px 14px;white-space:normal}
+@media (max-width:1024px){
+  .sk-g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sk-g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sk-split{gap:40px}
+  .sk-links{gap:20px}
+}
+/* tablets: the link row plus two nav buttons overflowed at 768 px, so the phone menu takes over below 960 px */
+@media (max-width:960px){
+  .sk-links,.sk-navend{display:none}
+  .sk-menu{display:block}
+}
+@media (max-width:760px){
+  body{font-size:15px}
+  .sk-wrap{padding:0 20px}
+  .sk-sec{padding:64px 0}.sk-sec.sk-tight{padding:44px 0}
+  .sk-h1{font-size:calc(40px * var(--hs))}
+  .sk-h2{font-size:calc(30px * var(--hs))}
+  .sk-lede{font-size:16px}
+  .sk-g2,.sk-g3,.sk-g4,.sk-split{grid-template-columns:minmax(0,1fr);gap:20px}
+  .sk-head{flex-direction:column;align-items:flex-start;margin-bottom:28px}
+  .sk-nav>.sk-wrap{height:64px;gap:12px}
+  .sk-links,.sk-navend{display:none}
+  .sk-menu{display:block}
+  .sk-menu[open]>nav{top:64px}
+  .sk-foot-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+  .sk-foot-grid>:first-child{grid-column:1/-1}
+  .sk-card{padding:22px}
+  /* .sk-rail: a grid on wide screens, a swipeable scroll-snap row on phones (keeps long pages short) */
+  .sk-rail{display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:20px;gap:14px!important;align-items:flex-start;margin:0 -20px;padding:0 20px 6px;scrollbar-width:none}
+  .sk-rail>*{flex:0 0 82%;scroll-snap-align:start}
+  .sk-btn-lg{height:46px}
+}
+</style><style>
+.hc-alert{background:var(--danger);color:var(--on-danger);font-size:14px;font-weight:500}
+.hc-alert .sk-wrap{padding-top:9px;padding-bottom:9px}
+.hc-alert p{display:flex;gap:10px;align-items:center}
+.hc-notice{border-top:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:13px}
+.hc-notice .sk-wrap{padding-top:16px;padding-bottom:16px}
+.hc-formnote{font-size:12.5px}
+details>summary{cursor:pointer;font-weight:600}
+form.card{padding:28px;display:grid;gap:14px}
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:24px}
+@media (max-width:760px){form.card{padding:22px}}
+</style><style>
+.cc-top{border-bottom:1px solid var(--border)}
+.cc-hero{text-align:center;padding-block:84px 44px;display:grid;justify-items:center;gap:18px}
+.cc-h1{font-size:calc(66px * var(--hs));line-height:1.04;max-width:900px}
+.cc-doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;padding-bottom:76px}
+.cc-door{padding:28px;display:grid;gap:10px;align-content:start;text-align:left;border-top:3px solid var(--primary)}
+.cc-duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+.cc-duo .sk-photo{aspect-ratio:1/1;position:sticky;top:24px}
+.cc-acc details{padding:18px 0;border-bottom:1px solid var(--border)}
+.cc-acc summary{font:var(--hw) calc(22px * var(--hs))/1.2 var(--font-h)}
+.cc-acc p{margin-top:10px;color:var(--muted)}
+.cc-narrow{max-width:760px;margin:0 auto}
+.cc-steps{list-style:none;counter-reset:s;display:grid;gap:26px;margin-top:28px}
+.cc-steps li{counter-increment:s;display:grid;grid-template-columns:56px minmax(0,1fr);gap:18px}
+.cc-steps li::before{content:counter(s);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--primary);color:color-mix(in oklab,var(--primary) 80%,var(--text));font:var(--hw) 18px/1 var(--font-h)}
+.cc-steps b{display:block;font-size:17px}
+.cc-table{width:100%;border-collapse:collapse;margin-top:22px}
+.cc-table th,.cc-table td{text-align:left;padding:12px 16px 12px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.cc-table th{font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.cc-people{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.cc-people article{padding:24px;display:grid;gap:6px}
+.cc-end{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:48px;align-items:start}
+.cc-loc{padding:14px 0;border-top:1px solid var(--border);display:grid;gap:2px}
+@media (max-width:1024px){.cc-h1{font-size:calc(52px * var(--hs))}.cc-duo,.cc-end{grid-template-columns:minmax(0,1fr)}.cc-duo .sk-photo{position:static;aspect-ratio:16/9}}
+@media (max-width:760px){.cc-hero{padding-block:40px 28px}.cc-h1{font-size:calc(38px * var(--hs))}.cc-doors{grid-template-columns:minmax(0,1fr);padding-bottom:44px}.cc-people{grid-template-columns:minmax(0,1fr)}.cc-table th:nth-child(3),.cc-table td:nth-child(3){display:none}}
+</style><div class="sk"><header class="sk-nav cc-top"><div class="sk-wrap"><a class="logo" href="#"><b></b>Elodie &amp; Ravi</a>
+<nav class="sk-links" aria-label="Main"><a href="#services">The details</a><a href="#process">How to reply</a><a href="#team">Who to ask</a><a href="#faq">Questions</a><a href="#visit">Finding us</a></nav>
+<div class="sk-navend"><a class="btn primary" href="#visit">RSVP</a></div>
+<details class="sk-menu"><summary aria-label="Open menu"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav aria-label="Mobile"><a class="btn primary block" style="margin-top:12px" href="#rsvp">RSVP</a></nav></details>
+</div></header>
+<main class="cc">
+<section class="sk-wrap cc-hero"><span class="sk-eyebrow">Saturday 22 May 2027 · Corrisham</span><h1 class="cc-h1">Elodie and Ravi would love you to come</h1><p class="sk-lede">A short ceremony at Corrisham Town Hall at noon, then a long lunch in a marquee at Lantry Mead. About sixty of us, one afternoon, and plenty of cake.</p></section>
+<section class="sk-wrap cc-doors"><article class="card cc-door"><h2 class="sk-h3">Save the date</h2><p class="muted">Saturday 22 May 2027, from noon until about 7:00 PM.</p><p><a class="btn" href="#services">See the details</a></p></article><article class="card cc-door"><h2 class="sk-h3">Reply to the invitation</h2><p class="muted">Tell us who is coming and choose lunch for each guest.</p><p><a class="btn" href="#visit">Go to the RSVP</a></p></article><article class="card cc-door"><h2 class="sk-h3">Ask us something</h2><p class="muted">Dress, children, parking and the walk between the two places.</p><p><a class="btn" href="#faq">Read the questions</a></p></article></section>
+<section class="sk-sec sk-alt" id="services"><div class="sk-wrap cc-duo"><div class="sk-photo"><svg width="640" height="640" viewBox="0 0 640 640" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration for a one-page digital wedding invitation with the details and an RSVP"><rect width="640" height="640" style="fill:color-mix(in oklab,var(--primary) 16%,var(--surface))"/><circle cx="524.8" cy="128" r="217.60000000000002" style="fill:color-mix(in oklab,var(--accent) 24%,var(--surface))"/><circle cx="89.60000000000001" cy="550.4" r="268.8" style="fill:color-mix(in oklab,var(--primary) 30%,var(--surface))"/><g transform="translate(121.6 121.6) scale(6.2)" fill="none" style="stroke:color-mix(in oklab,var(--primary) 78%,var(--text))" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="16" width="52" height="36" rx="3"/><path d="M6 18l26 20 26-20"/><path d="M32 30c-4-4-9-1-7 3l7 6 7-6c2-4-3-7-7-3z"/></g></svg></div><div><span class="sk-eyebrow">The details</span><h2 class="sk-h2">Who, when, where and what to wear</h2><p class="muted">Everything on the printed card, plus the bits that did not fit.</p><div class="cc-acc"><details><summary>Save the date</summary><p>Saturday 22 May 2027. Please keep the afternoon free until about 7:00 PM.</p></details><details><summary>The ceremony</summary><p>Twenty minutes in the old council chamber at Corrisham Town Hall. Please be seated by 11:45 AM.</p></details><details><summary>Lunch in the garden</summary><p>A marquee on the lawn at Lantry Mead, a ten-minute walk down Bridle Row from the town hall.</p></details><details><summary>What to wear</summary><p>Garden smart. Flat shoes help on the lawn, and a light layer for later.</p></details><details><summary>Getting there</summary><p>Park once in the Wharf Lane car park. Both places are a short walk from it.</p></details><details><summary>Reply</summary><p>One form for each invitation, with a lunch choice for every guest named on it.</p></details></div></div></div></section>
+<section class="sk-sec" id="process"><div class="sk-wrap cc-narrow"><h2 class="sk-h2">How to reply</h2><p class="muted">One reply for each invitation. If anything changes, just send it again.</p><ol class="cc-steps"><li><span><b>Add your names</b><span class="muted">Exactly as they appear on the card, so we can tick you off.</span></span></li><li><span><b>Say yes or no</b><span class="muted">If you can't come, we will miss you, and there is no need to explain.</span></span></li><li><span><b>Choose lunch</b><span class="muted">One choice for each guest, plus anything the kitchen should know.</span></span></li><li><span><b>Look out for a note</b><span class="muted">We send the final times and the taxi number in early May.</span></span></li></ol></div></section>
+<section class="sk-sec sk-alt"><div class="sk-wrap cc-narrow"><h2 class="sk-h2">The details at a glance</h2><p class="muted">If you only read one part of this page, read this.</p><table class="cc-table"><thead><tr><th scope="col">Detail</th><th scope="col">What to know</th><th scope="col">When</th></tr></thead><tbody><tr><td>Ceremony</td><td>Corrisham Town Hall, Market Square. Seats for everyone.</td><td>12:00 PM, seated by 11:45 AM</td></tr><tr><td>Lunch</td><td>The marquee at Lantry Mead, three courses and cake</td><td>From 1:30 PM</td></tr><tr><td>Dress</td><td>Garden smart, flat shoes for the lawn</td><td>All day</td></tr><tr><td>Children</td><td>Welcome, with a children's plate at lunch</td><td>Tick it on the RSVP</td></tr><tr><td>Reply by</td><td>One form for each invitation</td><td>10 April 2027</td></tr></tbody></table></div></section>
+<section class="sk-sec" id="team"><div class="sk-wrap"><div class="sk-head"><div><h2 class="sk-h2">Who to ask</h2></div><p class="muted">Questions before the day go to us. On the day, find one of these two.</p></div><div class="cc-people"><article class="card"><h3 class="sk-h3">Elodie Marchbank</h3><p class="muted">One of the two getting married</p><p>Knows the lunch menu by heart and has opinions about the cake.</p></article><article class="card"><h3 class="sk-h3">Ravi Kellaway</h3><p class="muted">The other one</p><p>In charge of the music in the marquee and the taxi list.</p></article><article class="card"><h3 class="sk-h3">Wren Marchbank</h3><p class="muted">Elodie's sister</p><p>Will be at the town hall door from 11:30 AM with the order of service.</p></article><article class="card"><h3 class="sk-h3">Tomasz Fairleigh</h3><p class="muted">Ravi's oldest friend</p><p>Will walk anyone who gets lost from the town hall to the marquee.</p></article></div></div></section>
+<section class="sk-sec sk-alt" id="faq"><div class="sk-wrap cc-narrow"><h2 class="sk-h2">Questions</h2><div class="cc-acc"><details class=""><summary>What should I wear?</summary><p>Garden smart. Lunch is on a lawn, so heels that sink are best left at home.</p></details><details class=""><summary>Can I bring a plus-one?</summary><p>If your invitation names a guest, yes. Please add their name on the reply.</p></details><details class=""><summary>Are children invited?</summary><p>Yes, if they are named on the card. There is a children's plate and a box of lawn games.</p></details><details class=""><summary>Where do I park?</summary><p>Wharf Lane car park, which is free on Saturdays. Both places are a short walk from it.</p></details><details class=""><summary>What if it rains?</summary><p>The marquee has sides, and we will have umbrellas for the walk down Bridle Row.</p></details><details class=""><summary>Do you have a gift list?</summary><p>No gift list. Your company is plenty. If you would like to give something, a card with a memory in it would make us very happy.</p></details></div></div></section>
+<section class="sk-sec" id="visit"><div class="sk-wrap cc-end"><div><h2 class="sk-h2">Finding us in Corrisham</h2><p class="muted">The town hall sits on Market Square. Lantry Mead is at the bottom of Bridle Row, by the river path.</p><div class="cc-loc"><b>The ceremony</b><span>Corrisham Town Hall, Market Square, Corrisham</span><span class="muted">Sat 22 May 2027, seated by 11:45 AM · (555) 017-4402</span></div><div class="cc-loc"><b>Lunch in the marquee</b><span>Lantry Mead, Bridle Row, Corrisham</span><span class="muted">Sat 22 May 2027, 1:30 PM to 7:00 PM · (555) 017-4403</span></div></div><style>
+.wd-chips{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+.wd-chips legend{font-weight:500;font-size:13px;margin-bottom:8px}
+.wd-chip{position:relative;display:inline-flex}
+.wd-chip input{position:absolute;opacity:0;width:1px;height:1px}
+.wd-chip span{padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:var(--bg);font-weight:600;font-size:14px;cursor:pointer}
+.wd-chip input:checked+span{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.wd-chip input:focus-visible+span{outline:2px solid var(--primary);outline-offset:2px}
+.wd-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:760px){.wd-row{grid-template-columns:minmax(0,1fr)}}
+</style><form class="card " aria-label="RSVP"><h3 class="sk-h3">Ask us anything</h3><div class="wd-row"><div class="sk-field"><label for="f-name">Your name</label><input class="sk-input" id="f-name" name="name" type="text" autocomplete="name"></div><div class="sk-field"><label for="f-mail">Email</label><input class="sk-input" id="f-mail" name="email" type="email" autocomplete="email"></div></div>
+<fieldset class="wd-chips"><legend>Will you be there?</legend><label class="wd-chip"><input type="radio" name="f-choice" checked><span>Joyfully accepts</span></label><label class="wd-chip"><input type="radio" name="f-choice"><span>Sadly can't come</span></label></fieldset>
+<div class="sk-field"><label for="f-opt">Lunch choice</label><select class="sk-input" id="f-opt" name="option"><option>Slow-roast lamb with spring greens</option><option>Hake with samphire and new potatoes</option><option>Asparagus and pea risotto</option><option>Children's plate</option></select></div>
+<div class="sk-field"><label for="f-ask">Names, food needs, or a note for us</label><textarea class="sk-input" id="f-ask" name="message" rows="3"></textarea></div>
+<button class="btn primary block" type="submit">Send reply</button><p class="muted hc-formnote">Please reply by 10 April 2027. You can change your answer until then.</p></form></div></section>
+</main><aside class="hc-notice"><div class="sk-wrap"><p>Elodie &amp; Ravi are a fictional couple created for this template. Names, people, prices, dates and places on this page are sample content.</p></div></aside><footer class="sk-foot"><div class="sk-wrap"><div class="sk-foot-grid">
+<div style="display:grid;gap:12px;align-content:start;max-width:340px"><div class="logo"><b></b>Elodie &amp; Ravi</div><p class="muted">Elodie and Ravi, Saturday 22 May 2027, Corrisham.</p></div>
+<div><h4>The details</h4><ul><li>Save the date</li><li>The ceremony</li><li>Lunch in the garden</li><li>What to wear</li></ul></div><div><h4>Where</h4><ul><li>The ceremony</li><li>Corrisham Town Hall, Market Square, Corrisham</li><li>Sat 22 May 2027, seated by 11:45 AM</li></ul></div><div><h4>Ask us</h4><ul><li>(555) 017-4402</li><li>hello@elodieandravi.example</li></ul></div>
+</div><div class="sk-foot-base"><span>Made by Elodie and Ravi for their guests.</span><span>Privacy · Terms · Accessibility</span></div></div></footer></div></body></html>
