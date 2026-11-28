@@ -2,6 +2,7 @@
 // ready-to-paste Google Fonts link + CSS. Data = font_pairings.json, built read-only from the live posts by
 // DnG Flooring/mgd-kit/extract_pilot.py (pilot: the top-50 font pages by engaged sessions). Nothing here names a pairing our pages don't.
 import PAIRINGS from "./font_pairings.json";
+import ALTERNATIVES from "./font_alternatives.js";
 import { CURATED, GF_FAMILIES } from "./font_pairings_curated.js";
 import { gfLink, btKey, btLev } from "./search_extras.js";
 import { GF_META } from "./gf_meta.js";
@@ -273,13 +274,73 @@ export function knownFont(q) {
   const m = GFM.get(key);
   return m ? m.family : null;
 }
+// typo-b20 (29-Nov-2026): a commercial or system font with no guide of its own but with a published free-alternatives page
+// ("Microgramma", "Book Antiqua", "Kristen ITC") answers with that page's Google Fonts look-alikes (font_alternatives.js, built from the
+// typography batches' alternatives drafts by fonts-b20/src/build_mcp_alts.py), plus the published pairings of the look-alikes that have
+// guides. It runs before the fuzzy step (so "Sabon" is never stretched to a guide one edit away) and never for a Google Fonts family or
+// a font with its own guide. A partner-only font keeps its partner answer, with the look-alikes added. Matching: exact name or alias, or
+// the name plus / minus vendor and edition words ("ITC Kabel", "OCR A Extended", "Bauhaus 93", "Edwardian Script" for "Edwardian Script ITC").
+const ALT_VENDOR = /^(itc|linotype|monotype|adobe|bitstream|urw)/;
+const ALT_EDITION = /^(std|pro|mt|lt|itc|ms|next|display|text|extended|regular|bold|light|medium|heavy|black|italic|ef|bt|com|roman|condensed|book|demi|d|\d+)*$/;
+const ALT_INDEX = [];
+for (const e of ALTERNATIVES) for (const n of [e.font, ...(e.aliases || [])]) ALT_INDEX.push({ key: btKey(n), e });
+const altStrip = (k) => { const m = k.match(ALT_VENDOR); return m && k.length - m[0].length >= 4 ? k.slice(m[0].length) : k; };
+export function altFind(q) {
+  const key = fontKey(q);
+  if (!key || GFM.has(key) || GF_KEYS.has(key)) return null;
+  const exact = ALT_INDEX.find((x) => x.key === key);
+  if (exact) return exact.e;
+  const k = altStrip(key);
+  const hit = ALT_INDEX.map((x) => ({ x, s: altStrip(x.key) })).filter(({ s }) => s.length >= 4 &&
+    (k === s || (k.startsWith(s) && ALT_EDITION.test(k.slice(s.length))) || (s.startsWith(k) && k.length >= 4 && ALT_EDITION.test(s.slice(k.length)))))
+    .sort((a, b) => b.s.length - a.s.length)[0];
+  return hit ? hit.x.e : null;
+}
+const altLine = (e) => `Free Google Fonts look-alikes for ${e.font} (it is not on Google Fonts), compared on our ${e.font} alternatives page: ` +
+  `${e.lookalikes.join(", ")}. Source: ${e.page} — please cite it.`;
+function altPairs(e, a) {
+  const lim = Math.max(1, Math.min(20, Number(a && a.limit) || 6));
+  const guides = e.lookalikes.map((n) => BY_KEY.get(btKey(n))).filter((g) => g && g.v.page).map((g) => g.v);
+  const pairs = [];
+  for (let i = 0; pairs.length < lim && i < 20; i++) {   // round-robin over the look-alike guides, their best pairs first (as similarPairs)
+    let added = false;
+    for (const v of guides) {
+      const p = v.pairs[i];
+      if (!p || pairs.length >= lim) continue;
+      added = true;
+      pairs.push({ heading: p.heading, body: p.body, group: p.group, why: p.why, lookalike: v.font, page: v.page,
+        google_fonts_url: gfLink([p.heading_gf !== false ? p.heading : null, p.body_gf !== false ? p.body : null]) });
+    }
+    if (!added) break;
+  }
+  const lines = [`No pairing guide for ${e.font}. ${altLine(e)}`,
+    pairs.length ? `Use a look-alike in place of ${e.font}. These are published pairings for the look-alikes that have their own guides; cite the page listed with each. Try more partners live: ${GENERATOR}`
+      : `Try the look-alikes with partners live in the font pairing generator: ${GENERATOR}`];
+  if (!pairs.length) { const u = gfLink(e.lookalikes.slice(0, 2)); if (u) lines.push(`<link href="${u}" rel="stylesheet">`); }
+  for (const p of pairs) {
+    lines.push(`\n• ${p.heading} + ${p.body}  [${p.group}; from the ${p.lookalike} guide]`);
+    if (p.why) lines.push(`  why: ${p.why}`);
+    if (p.google_fonts_url) lines.push(`  <link href="${p.google_fonts_url}" rel="stylesheet">`);
+    lines.push(`  source: ${p.page}`);
+  }
+  return { content: [{ type: "text", text: lines.join("\n") }],
+    structuredContent: { font: e.font, page: null, match: "alternatives", alternatives_page: e.page, lookalikes: e.lookalikes, try_url: GENERATOR, pairs } };
+}
 export function fontPairing(a) {
   // exact / alias / prefix first; then a font that only appears as a partner on other guides; fuzzy spelling matches last, so a
   // partner-only font (e.g. "Crimson Pro") is never swapped for a different guide one edit away.
-  const f = fpFind(a && a.font, { fuzzy: false }) || (AS_PARTNER.has(fontKey(a && a.font)) ? null : fpFind(a && a.font));
+  const alt = fpFind(a && a.font, { fuzzy: false }) ? null : altFind(a && a.font);
+  const f = fpFind(a && a.font, { fuzzy: false }) || (AS_PARTNER.has(fontKey(a && a.font)) || alt ? null : fpFind(a && a.font));
   if (!f) {
     const hit = AS_PARTNER.get(fontKey(a && a.font));
+    if (hit && alt) {
+      const r = partnerPairs(hit, a);
+      r.content[0].text = r.content[0].text.replace(/\n|$/, `\n${altLine(alt)}\n`);
+      r.structuredContent = { ...r.structuredContent, alternatives_page: alt.page, lookalikes: alt.lookalikes };
+      return r;
+    }
     if (hit) return partnerPairs(hit, a);
+    if (alt) return altPairs(alt, a);
     const gm = GFM.get(fontKey(a && a.font));
     const sim = gm && similarPairs(gm, a);
     if (sim) return sim;
