@@ -193,7 +193,7 @@ export function categoryBlock(base, h, items) {
   const pic = {}; for (const it of items || []) if (it.platform === "web" && it.image && !pic[it.pattern]) pic[it.pattern] = it;
   const e = h.escHtml, B = e(base);
   const tile = (n) => { const it = pic[n.pattern], k = String((it && it.image) || "").replace(/^\/img\//, ""), d = liveDesigns(n).length;
-    const img = it ? `<img loading="lazy" decoding="async" width="320" height="${it.width && it.height ? Math.round((320 * it.height) / it.width) : 240}" src="${B}/img/t/${e(k)}?src=app" alt="${e(shortNiche(n))}"/>` : "";
+    const img = it ? `<img loading="lazy" decoding="async" width="320" height="${it.width && it.height ? Math.round((320 * it.height) / it.width) : 240}" src="${B}/img/t/${e(k)}?src=app" alt=""/>` : "";
     return `<a class="ct" href="${B}/ui/${e(nichePath(n))}"><span class="ti">${img}</span><span class="tl">${e(shortNiche(n))}</span><span class="tn">${count(d, "design")}</span></a>`; };
   const card = (title, href, inds) => {
     const ns = inds.flatMap((i) => industryNiches(i.id)).map((n, ix) => ({ n, ix, d: liveDesigns(n).length })).sort((a, b) => b.d - a.d || a.ix - b.ix).map((r) => r.n);

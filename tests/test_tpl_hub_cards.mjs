@@ -55,15 +55,21 @@ t(`each card: top ${P.CAT_TOP} tiles, the rest inside <details> "+N more"`, tile
 const tiles = [...cardsHtml.matchAll(/<a class="ct" href="[^"]+"><span class="ti">(<img [^>]*>)?<\/span>/g)];
 const imgs = tiles.map((m) => m[1]).filter(Boolean);
 t(`tiles = live niches (${tiles.length})`, tiles.length === niches.length, tiles.length);
-t("every tile image: lazy, alt, width/height, stored-only thumb route", imgs.length === tiles.length && imgs.every((i) => /loading="lazy"/.test(i) && /alt="[^"]+"/.test(i) && /width="320" height="\d+"/.test(i) && /src="\/inspiration\/img\/t\/ui\/[0-9a-f]{12}-k\.webp\?src=app"/.test(i)), imgs.find((i) => !/loading="lazy"/.test(i)));
+t('every tile image: lazy, alt="" (the label names the tile), width/height, stored-only thumb route', imgs.length === tiles.length && imgs.every((i) => /loading="lazy"/.test(i) && /alt=""/.test(i) && /width="320" height="\d+"/.test(i) && /src="\/inspiration\/img\/t\/ui\/[0-9a-f]{12}-k\.webp\?src=app"/.test(i)), imgs.find((i) => !/loading="lazy"/.test(i)));
 t("tile picture is the niche pattern's first web screen (deterministic)", (() => { const n = niches[0], m = cardsHtml.match(new RegExp(`href="${B}/ui/${T.nichePath(n).replace(/[/.]/g, "\\$&")}"><span class="ti"><img [^>]*src="([^"]+)"`)); const row = db.prepare("SELECT id FROM items WHERE category=? AND country='web' AND style='minimal'").get(n.pattern); return m && m[1].includes(row.id); })());
 t("tile labels drop a trailing ' website'", !/<span class="tl">[^<]* website<\/span>/i.test(cardsHtml));
 // filters fold
 const fstart = html.indexOf('<div class="filters">'), fhtml = html.slice(fstart, html.indexOf('id="count"'));
 t('filters wrapped in a closed <details class="ffold"> with a "Filters" summary', /^<div class="filters"><details class="ffold"><summary>Filters<\/summary>/.test(fhtml));
 const fold = fhtml.slice(0, fhtml.indexOf("</details>"));
-t("Platform, Screens, Components and Websites rows are inside the fold", ["<b>Platform</b>", "<b>Screens</b>", "<b>Components</b>", "<b>Websites</b>"].every((x) => fold.includes(x)), fold.slice(0, 200));
-t("Style row stays outside the fold", fhtml.includes("<b>Style</b>") && !fold.includes("<b>Style</b>"));
+t("Platform, Screens, Components, Websites and Style rows are all inside the fold", ["<b>Platform</b>", "<b>Screens</b>", "<b>Components</b>", "<b>Websites</b>", "<b>Style</b>"].every((x) => fold.includes(x)) && /<\/details><\/div>$/.test(fhtml.slice(0, fhtml.indexOf("</details>") + 16)), fold.slice(0, 200));
+// "Popular" row: the first POPULAR_N chips of the old websites sub row, same order and hrefs, directly above the cards
+{ const pi = html.indexOf('<nav class="pop"'), row = pi < 0 ? "" : html.slice(pi, html.indexOf("</nav>", pi));
+  const got = [...row.matchAll(/<a class="chip" href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, "&"));
+  const want = [SEO.cleanUiUrl({ platform: "", group: "websites", pattern: "", style: "" }, B), ...U.UI_PAGE_PATTERNS.slice(0, U.POPULAR_N - 1).map((p) => SEO.cleanUiUrl({ platform: "", group: "websites", pattern: p, style: "" }, B))];
+  t(`Popular row: ${U.POPULAR_N} chips, old order and hrefs`, got.length === U.POPULAR_N && got.join() === want.join(), got.join(" "));
+  t("Popular row sits after the intro, directly above the cards", pi > html.indexOf('<p class="lede">') && html.indexOf("</nav>", pi) + 6 === html.indexOf('<div class="cats">'));
+  t('Popular row starts with "All website templates", then short labels', /<b>Popular<\/b><a class="chip" href="[^"]+" aria-current="page">All website templates<\/a><a class="chip" href="[^"]+">Restaurant<\/a><a class="chip" href="[^"]+">Agency<\/a>/.test(row)); }
 t('the ~90-chip "websites" sub row is gone from the hub', !fhtml.includes('data-g="websites"') && !fhtml.includes(">All website templates</a>"));
 t("FILTER_JS opens the fold on a non-default filter", html.includes('document.querySelector(".filters .ffold")') && html.includes("fd.open=true"));
 t("hub CSS carries the card grid breakpoints (3/2/1)", html.includes(".cats{display:grid;grid-template-columns:repeat(3,") && /max-width:960px\)\{\.cats\{grid-template-columns:repeat\(2,/.test(html) && /max-width:620px\)\{\.cats\{grid-template-columns:minmax\(0,1fr\)\}/.test(html));
