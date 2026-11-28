@@ -36569,5 +36569,2132 @@
     "body_gf": true
    }
   ]
+ },
+ "redaction": {
+  "font": "Redaction",
+  "page": "https://madegooddesigns.com/redaction-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "MCKL"
+   ],
+   "added": 2026
+  },
+  "pairs": [
+   {
+    "heading": "Libre Franklin",
+    "body": "Redaction",
+    "group": "Sans-Serif Pairings",
+    "why": "Libre Franklin gives newspaper style gothic headlines that frame Redaction body text like a front page story about a court case.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Archivo Black",
+    "body": "Redaction",
+    "group": "Display Pairings",
+    "why": "Archivo Black supplies heavy, blunt titles, a loud counterweight to the fine hairlines of Redaction paragraphs below.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Public Sans",
+    "body": "Redaction",
+    "group": "Sans-Serif Pairings",
+    "why": "Public Sans has a plain, civic tone in its headings, which suits reports and policy pages set in Redaction text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Redaction",
+    "body": "Inter",
+    "group": "Sans-Serif Pairings",
+    "why": "Inter is a quiet interface sans, so a degraded Redaction headline can carry all the drama while long text stays crisp.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Redaction",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Pairings",
+    "why": "IBM Plex Mono reads like a case file or a typed record, a natural body face beneath Redaction titles on archive projects.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "redacted": {
+  "font": "Redacted",
+  "page": "https://madegooddesigns.com/redacted-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Christian Naths"
+   ],
+   "added": 2013
+  },
+  "pairs": [
+   {
+    "heading": "Inter",
+    "body": "Redacted",
+    "group": "Sans-Serif Pairings",
+    "why": "Inter is a common production choice for app interfaces, so headings and labels in the wireframe already look like the final screen.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Roboto",
+    "body": "Redacted",
+    "group": "Sans-Serif Pairings",
+    "why": "Roboto matches the default look of many Android style layouts, a familiar frame around grey Redacted placeholder lines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "IBM Plex Sans",
+    "body": "Redacted",
+    "group": "Sans-Serif Pairings",
+    "why": "IBM Plex Sans gives dashboards and admin screens a sturdy, engineered tone while Redacted marks where the copy will go.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Work Sans",
+    "body": "Redacted",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans has open, slightly wide headings that suit marketing page mockups with blocks of Redacted text beneath.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Kalam",
+    "body": "Redacted",
+    "group": "Script Pairings",
+    "why": "Kalam reads like marker on a whiteboard, a good match for Redacted Script in loose, hand drawn style concept sketches.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "libre barcode 39": {
+  "font": "Libre Barcode 39",
+  "page": "https://madegooddesigns.com/libre-barcode-39-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Lasse Fister"
+   ],
+   "added": 2017
+  },
+  "pairs": [
+   {
+    "heading": "Libre Barcode 39",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Pairings",
+    "why": "IBM Plex Mono prints item codes in even columns, so the readable code under the bars lines up like an inventory record.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Libre Barcode 39",
+    "body": "Roboto Condensed",
+    "group": "Sans-Serif Pairings",
+    "why": "Roboto Condensed packs product names and handling notes into narrow label space beside a wide Code 39 symbol.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Libre Barcode 39",
+    "body": "Space Mono",
+    "group": "Monospace Pairings",
+    "why": "Space Mono has a quirky, retro technical look that turns a barcode into a deliberate graphic on tickets and posters.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Libre Barcode 39",
+    "body": "Archivo Narrow",
+    "group": "Sans-Serif Pairings",
+    "why": "Archivo Narrow keeps shelf and bin labels compact and legible, a sober companion to the striped Code 39 bars.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Libre Barcode 39",
+    "body": "Inter",
+    "group": "Sans-Serif Pairings",
+    "why": "Inter suits on screen passes and membership cards, where the barcode sits inside a clean app style layout.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "libre barcode 128": {
+  "font": "Libre Barcode 128",
+  "page": "https://madegooddesigns.com/libre-barcode-128-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Lasse Fister"
+   ],
+   "added": 2017
+  },
+  "pairs": [
+   {
+    "heading": "Libre Barcode 128",
+    "body": "Roboto Mono",
+    "group": "Monospace Pairings",
+    "why": "Roboto Mono prints order numbers and references with fixed width figures, matching the precise rhythm of Code 128 bars.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Libre Barcode 128",
+    "body": "JetBrains Mono",
+    "group": "Monospace Pairings",
+    "why": "JetBrains Mono has tall, clear figures and distinct zero and O shapes, which helps staff check a code against its printed reference.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Libre Barcode 128",
+    "body": "Barlow Condensed",
+    "group": "Sans-Serif Pairings",
+    "why": "Barlow Condensed fits addresses and handling notes in a narrow column beside a compact barcode on parcel labels.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Libre Barcode 128",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans gives badges and passes a friendly, open voice for names while the barcode handles check in.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Libre Barcode 128",
+    "body": "Oswald",
+    "group": "Display Pairings",
+    "why": "Oswald sets bold, condensed route codes and zone letters that warehouse teams can read from across a room.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "manufacturing consent": {
+  "font": "Manufacturing Consent",
+  "page": "https://madegooddesigns.com/manufacturing-consent-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Fredrick Brennan"
+   ],
+   "added": 2025
+  },
+  "pairs": [
+   {
+    "heading": "Manufacturing Consent",
+    "body": "Newsreader",
+    "group": "Serif Pairings",
+    "why": "Newsreader is a text serif with a newsprint flavour, so it reads like a real paper beneath a blackletter nameplate.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Manufacturing Consent",
+    "body": "Old Standard TT",
+    "group": "Serif Pairings",
+    "why": "Old Standard TT recalls older book and newspaper printing, giving gazette and certificate layouts a period voice under the masthead.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Manufacturing Consent",
+    "body": "Libre Franklin",
+    "group": "Sans-Serif Pairings",
+    "why": "Libre Franklin is a plain American gothic that modernises the page and keeps blogs and newsletters easy to scan.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Manufacturing Consent",
+    "body": "Source Serif 4",
+    "group": "Serif Pairings",
+    "why": "Source Serif 4 has optical sizes for comfortable long reads, a steady body beneath ornate blackletter titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Manufacturing Consent",
+    "body": "EB Garamond",
+    "group": "Serif Pairings",
+    "why": "EB Garamond adds classical warmth to menus, invitations and certificates topped with a blackletter heading.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "nabla": {
+  "font": "Nabla",
+  "page": "https://madegooddesigns.com/nabla-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Arthur Reinders Folmer",
+    "Just van Rossum"
+   ],
+   "added": 2022
+  },
+  "pairs": [
+   {
+    "heading": "Nabla",
+    "body": "Chakra Petch",
+    "group": "Sans-Serif Pairings",
+    "why": "Chakra Petch has squared, angular corners that echo the isometric blocks while staying flat and readable in paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Nabla",
+    "body": "IBM Plex Mono",
+    "group": "Monospace Pairings",
+    "why": "IBM Plex Mono gives a technical, code like texture that suits the retro computer game roots of the extruded letters.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Nabla",
+    "body": "Space Grotesk",
+    "group": "Sans-Serif Pairings",
+    "why": "Space Grotesk is a quirky grotesque with enough personality to sit near Nabla without competing with its colour.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Nabla",
+    "body": "Outfit",
+    "group": "Sans-Serif Pairings",
+    "why": "Outfit is a clean geometric sans whose simple circles and straight stems keep busy colour headlines from feeling cluttered.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Nabla",
+    "body": "Rubik",
+    "group": "Sans-Serif Pairings",
+    "why": "Rubik has slightly rounded corners and a sturdy build, a friendly body face under playful, glossy block letters.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "honk": {
+  "font": "Honk",
+  "page": "https://madegooddesigns.com/honk-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Ek Type"
+   ],
+   "added": null
+  },
+  "pairs": [
+   {
+    "heading": "Honk",
+    "body": "Mukta",
+    "group": "Sans-Serif Pairings",
+    "why": "Mukta is also from Ek Type, so its clear, open sans text shares a design culture with the painted truck lettering.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Honk",
+    "body": "Baloo 2",
+    "group": "Sans-Serif Pairings",
+    "why": "Baloo 2, another Ek Type family, has soft rounded strokes that keep the cheerful tone going in subheads and short text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Honk",
+    "body": "Poppins",
+    "group": "Sans-Serif Pairings",
+    "why": "Poppins is a geometric sans from Indian Type Foundry whose even circles calm down the decorated, shadowed headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Honk",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans offers a plain, slightly wide grotesque with many weights, so prices, lists and captions stay easy to scan.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Honk",
+    "body": "Karla",
+    "group": "Sans-Serif Pairings",
+    "why": "Karla is a compact, quirky grotesque that adds a little character to body copy without stealing attention from Honk.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "tourney": {
+  "font": "Tourney",
+  "page": "https://madegooddesigns.com/tourney-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Tyler Finck",
+    "ETC"
+   ],
+   "added": 2021
+  },
+  "pairs": [
+   {
+    "heading": "Tourney",
+    "body": "Barlow",
+    "group": "Sans-Serif Pairings",
+    "why": "Barlow has a slightly rounded, road sign feel and many widths, a practical text partner under sharp sports headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Tourney",
+    "body": "Rajdhani",
+    "group": "Sans-Serif Pairings",
+    "why": "Rajdhani is squared and condensed, so fixtures, stats and short captions keep the angular rhythm of Tourney titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Tourney",
+    "body": "Exo 2",
+    "group": "Sans-Serif Pairings",
+    "why": "Exo 2 is a technological sans with many weights that reads cleanly in paragraphs while matching the futuristic mood.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Tourney",
+    "body": "Titillium Web",
+    "group": "Sans-Serif Pairings",
+    "why": "Titillium Web has crisp, squarish curves and good legibility on screens, a calm body face for tech product pages.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Tourney",
+    "body": "Inter",
+    "group": "Sans-Serif Pairings",
+    "why": "Inter is a neutral interface sans built for screens, so dense copy stays clear beneath the expressive display headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "protest strike": {
+  "font": "Protest Strike",
+  "page": "https://madegooddesigns.com/protest-strike-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Octavio Pardo"
+   ],
+   "added": null
+  },
+  "pairs": [
+   {
+    "heading": "Protest Strike",
+    "body": "Public Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Public Sans was made for government interfaces, so its neutral, accessible text suits campaign and civic pages.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Protest Strike",
+    "body": "Source Serif 4",
+    "group": "Serif Pairings",
+    "why": "Source Serif 4 brings a calm, editorial serif voice that balances the blunt weight of short, loud headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Protest Strike",
+    "body": "IBM Plex Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "IBM Plex Sans has a sober, engineered character that keeps reports, data and policy details credible.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Protest Strike",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans is a plain grotesque with many weights, covering subheads, buttons and body text beneath one heavy display line.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Protest Strike",
+    "body": "Literata",
+    "group": "Serif Pairings",
+    "why": "Literata is a sturdy reading serif designed for long text, a good match for essays and manifestos with strong titles.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "unkempt": {
+  "font": "Unkempt",
+  "page": "https://madegooddesigns.com/unkempt-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Sideshow"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Unkempt",
+    "body": "Nunito",
+    "group": "Sans-Serif Pairings",
+    "why": "Nunito has rounded terminals and a warm, even texture that softens the scruffy headline without losing readability.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Unkempt",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora is a calligraphic text serif with gentle contrast, a bookish balance for casual, hand lettered titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Unkempt",
+    "body": "Cabin",
+    "group": "Sans-Serif Pairings",
+    "why": "Cabin is a humanist sans with a slightly handmade warmth, steady enough for event details and short descriptions.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Unkempt",
+    "body": "Varela Round",
+    "group": "Sans-Serif Pairings",
+    "why": "Varela Round is a simple rounded sans in one weight, a tidy choice for short captions under playful lettering.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Unkempt",
+    "body": "Open Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Open Sans is a neutral, highly readable humanist sans that keeps long text clear while Unkempt adds the character.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "macondo": {
+  "font": "Macondo",
+  "page": "https://madegooddesigns.com/macondo-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "John Vargas Beltrán"
+   ],
+   "added": 2012
+  },
+  "pairs": [
+   {
+    "heading": "Macondo",
+    "body": "Alegreya",
+    "group": "Serif Pairings",
+    "why": "Alegreya has calligraphic roots of its own, so its lively text serif feels related to Macondo without copying the flourishes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Macondo",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora brings brushed curves and moderate contrast, a gentle book face that keeps long stories readable under storybook titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Macondo",
+    "body": "Cardo",
+    "group": "Serif Pairings",
+    "why": "Cardo is a scholarly old style serif, a fitting body for literary, folklore and historical content headed by pen written titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Macondo",
+    "body": "Quattrocento Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Quattrocento Sans is a humanist sans with classical proportions, adding clarity to menus and forms while still feeling warm.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Macondo",
+    "body": "Spectral",
+    "group": "Serif Pairings",
+    "why": "Spectral is a slim, screen friendly serif whose quiet texture lets the decorative capitals of Macondo do all the talking.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "hanalei": {
+  "font": "Hanalei",
+  "page": "https://madegooddesigns.com/hanalei-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Astigmatic"
+   ],
+   "added": 2012
+  },
+  "pairs": [
+   {
+    "heading": "Hanalei",
+    "body": "Cabin",
+    "group": "Sans-Serif Pairings",
+    "why": "Cabin is a humanist sans with a slightly retro flavour, readable in menus and friendly enough for a laid back island theme.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Hanalei",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato has warm, rounded details and a big weight range, so prices, times and fine print stay clear beneath bamboo titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Hanalei",
+    "body": "Karla",
+    "group": "Sans-Serif Pairings",
+    "why": "Karla is a compact grotesque with quirky details, a lively but tidy body that keeps party pages relaxed and easy to scan.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Hanalei",
+    "body": "Nunito",
+    "group": "Sans-Serif Pairings",
+    "why": "Nunito has rounded stroke ends that soften the page, giving bamboo titles a gentle, relaxed holiday mood around them.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Hanalei",
+    "body": "Libre Baskerville",
+    "group": "Serif Pairings",
+    "why": "Libre Baskerville is a sturdy screen serif that gives longer stories, histories and drink notes a more classic, crafted feel.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "rum raisin": {
+  "font": "Rum Raisin",
+  "page": "https://madegooddesigns.com/rum-raisin-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Astigmatic"
+   ],
+   "added": 2012
+  },
+  "pairs": [
+   {
+    "heading": "Rum Raisin",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans is a plain grotesque with open shapes, a neutral body that lets the chunky retro headings carry all the character.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Rum Raisin",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Merriweather is a sturdy serif made for screens, matching the heavy headings with weight while staying easy to read at length.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Rum Raisin",
+    "body": "PT Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "PT Sans is a compact humanist sans that fits long ingredient lists, nutrition notes and small print into tight packaging layouts.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Rum Raisin",
+    "body": "Varela Round",
+    "group": "Sans-Serif Pairings",
+    "why": "Varela Round is a simple rounded sans that brings a gentle, kid friendly tone to body text under loud retro headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Rum Raisin",
+    "body": "Crimson Text",
+    "group": "Serif Pairings",
+    "why": "Crimson Text is a classic book serif that turns the retro headline into a nostalgic, editorial look for food stories and essays.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "crushed": {
+  "font": "Crushed",
+  "page": "https://madegooddesigns.com/crushed-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Astigmatic"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Crushed",
+    "body": "Roboto",
+    "group": "Sans-Serif Pairings",
+    "why": "Roboto is a neutral, wider sans that balances the narrow headlines and keeps interface text, tables and captions clear.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Crushed",
+    "body": "Barlow",
+    "group": "Sans-Serif Pairings",
+    "why": "Barlow is a slightly rounded, low contrast grotesque, a friendly and wider body that suits the tall, sign like headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Crushed",
+    "body": "PT Serif",
+    "group": "Serif Pairings",
+    "why": "PT Serif is a sturdy transitional serif that adds a printed, newspaper style contrast beneath tall condensed headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Crushed",
+    "body": "Fira Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Fira Sans is a humanist sans with open counters, built for screens, so long reports stay legible under compact headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Crushed",
+    "body": "Crimson Pro",
+    "group": "Serif Pairings",
+    "why": "Crimson Pro is an elegant book serif whose fine details echo the tapered stems and give long features a refined tone.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "flavors": {
+  "font": "Flavors",
+  "page": "https://madegooddesigns.com/flavors-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Sideshow"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Flavors",
+    "body": "Quicksand",
+    "group": "Sans-Serif Pairings",
+    "why": "Quicksand is a light, rounded geometric sans that keeps the page airy and friendly beneath bouncy hand lettered headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Flavors",
+    "body": "Poppins",
+    "group": "Sans-Serif Pairings",
+    "why": "Poppins is a clean geometric sans with many weights, giving the playful headings a modern, well organised base.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Flavors",
+    "body": "Mulish",
+    "group": "Sans-Serif Pairings",
+    "why": "Mulish is a minimal sans with a calm rhythm, a quiet body that makes the zesty headings look even more lively.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Flavors",
+    "body": "Asap",
+    "group": "Sans-Serif Pairings",
+    "why": "Asap has soft, slightly rounded corners and a compact width, useful for menus, cards and buttons on busy screens.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Flavors",
+    "body": "Bitter",
+    "group": "Serif Pairings",
+    "why": "Bitter is a sturdy slab serif for screens, adding a warm, printed feel to recipes and stories under fun titles.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "aubrey": {
+  "font": "Aubrey",
+  "page": "https://madegooddesigns.com/aubrey-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Cyreal"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Aubrey",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora has gently curved strokes and moderate contrast, so its paragraphs echo the soft art nouveau curves without competing.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Aubrey",
+    "body": "Cormorant Garamond",
+    "group": "Serif Pairings",
+    "why": "Cormorant Garamond brings a refined old style texture that suits invitations and period themed pages under narrow titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Aubrey",
+    "body": "Libre Baskerville",
+    "group": "Serif Pairings",
+    "why": "Libre Baskerville is wide and sturdy at text sizes, a firm base that balances the very slim, decorative Aubrey letters.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Aubrey",
+    "body": "Josefin Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Josefin Sans has geometric, vintage leaning shapes, so it keeps a retro mood in body copy while staying clean and light.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Aubrey",
+    "body": "Raleway",
+    "group": "Sans-Serif Pairings",
+    "why": "Raleway is an elegant sans with many weights, giving long text and buttons a modern finish beneath the ornate headings.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "sarina": {
+  "font": "Sarina",
+  "page": "https://madegooddesigns.com/sarina-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "James Grieshaber"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Sarina",
+    "body": "Nunito",
+    "group": "Sans-Serif Pairings",
+    "why": "Nunito has rounded stroke ends that echo the soft brush terminals, so playful headings flow naturally into the body text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Sarina",
+    "body": "Quicksand",
+    "group": "Sans-Serif Pairings",
+    "why": "Quicksand is light and rounded, giving summer and lifestyle pages an airy reading face below the wide brush lettering.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Sarina",
+    "body": "Karla",
+    "group": "Sans-Serif Pairings",
+    "why": "Karla is a compact grotesque with quirky details, adding a little character to body copy while staying calm and legible.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Sarina",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato is a warm, semi rounded sans with many weights, a reliable base for menus, forms and long text under Sarina titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Sarina",
+    "body": "Mulish",
+    "group": "Sans-Serif Pairings",
+    "why": "Mulish is a clean minimalist sans with even spacing, so it keeps busy shop and blog layouts tidy around casual headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "cagliostro": {
+  "font": "Cagliostro",
+  "page": "https://madegooddesigns.com/cagliostro-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "MADType"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Cagliostro",
+    "body": "Crimson Pro",
+    "group": "Serif Pairings",
+    "why": "Crimson Pro is a bookish text serif with classic proportions, a calm partner that lets the lettered sans headings stand out.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cagliostro",
+    "body": "Source Serif 4",
+    "group": "Serif Pairings",
+    "why": "Source Serif 4 has sturdy, legible text shapes and optical sizes, so long articles stay comfortable under warm titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cagliostro",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Merriweather is designed for screen reading with a large x height, matching Cagliostro's roomy lowercase in body copy.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cagliostro",
+    "body": "Libre Franklin",
+    "group": "Sans-Serif Pairings",
+    "why": "Libre Franklin is a firm American grotesque, so it pairs a crafted heading with a crisp, many weight sans for text and data.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cagliostro",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans is a plain, slightly wide grotesque that keeps interfaces and product pages neutral below the friendly headings.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "arbutus": {
+  "font": "Arbutus",
+  "page": "https://madegooddesigns.com/arbutus-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Karolina Lach"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Arbutus",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato is smooth and warm with many weights, a quiet body face that lets the faceted wood type headings take the stage.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Arbutus",
+    "body": "Libre Franklin",
+    "group": "Sans-Serif Pairings",
+    "why": "Libre Franklin is a classic American grotesque, so it shares the period roots while keeping text, menus and data crisp.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Arbutus",
+    "body": "Crimson Text",
+    "group": "Serif Pairings",
+    "why": "Crimson Text is a gentle old style book face, giving stories and descriptions a printed texture beneath chiselled titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Arbutus",
+    "body": "Libre Baskerville",
+    "group": "Serif Pairings",
+    "why": "Libre Baskerville is a broad, sturdy text serif that holds its own next to the heavy slab without copying its spikes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Arbutus",
+    "body": "Arbutus Slab",
+    "group": "Serif Pairings",
+    "why": "Arbutus Slab comes from the same designer as a smoother workhorse slab, so it reads as a family member in body text.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "voltaire": {
+  "font": "Voltaire",
+  "page": "https://madegooddesigns.com/voltaire-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Yvonne Schüttler"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Voltaire",
+    "body": "Nunito Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Nunito Sans is wide and softly rounded, the natural opposite of the narrow poster letters and very easy to read on screens.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Voltaire",
+    "body": "IBM Plex Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "IBM Plex Sans has a precise, engineered feel that matches the orderly geometry of Voltaire while giving text more width.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Voltaire",
+    "body": "Karla",
+    "group": "Sans-Serif Pairings",
+    "why": "Karla is a compact grotesque with friendly quirks, adding a little warmth to body copy under tall, even headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Voltaire",
+    "body": "PT Serif",
+    "group": "Serif Pairings",
+    "why": "PT Serif is a sturdy, open text serif with clear details, giving articles a classic reading texture under condensed heads.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Voltaire",
+    "body": "Libre Baskerville",
+    "group": "Serif Pairings",
+    "why": "Libre Baskerville is broad and generous at body sizes, so it balances the slim headline letters with a bookish calm.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "atma": {
+  "font": "Atma",
+  "page": "https://madegooddesigns.com/atma-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Black Foundry"
+   ],
+   "added": null
+  },
+  "pairs": [
+   {
+    "heading": "Atma",
+    "body": "Hind Siliguri",
+    "group": "Sans-Serif Pairings",
+    "why": "Hind Siliguri is a plain Bengali and Latin sans with five weights, a neutral reading partner under the bouncy display headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Atma",
+    "body": "Noto Sans Bengali",
+    "group": "Sans-Serif Pairings",
+    "why": "Noto Sans Bengali has width and weight axes, so dense app screens and long articles stay tidy under informal Atma titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Atma",
+    "body": "Tiro Bangla",
+    "group": "Serif Pairings",
+    "why": "Tiro Bangla is a bookish Bengali serif with a true italic, adding traditional contrast below the casual display lettering.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Atma",
+    "body": "Anek Bangla",
+    "group": "Sans-Serif Pairings",
+    "why": "Anek Bangla offers a width axis, so narrow interface labels and menus fit easily under wide, friendly Atma headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Atma",
+    "body": "Noto Serif Bengali",
+    "group": "Serif Pairings",
+    "why": "Noto Serif Bengali brings a calm serif texture for long reading, letting the playful headline carry all the personality.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "mina": {
+  "font": "Mina",
+  "page": "https://madegooddesigns.com/mina-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Suman Bhandary",
+    "Natanael Gama",
+    "Mooniak"
+   ],
+   "added": null
+  },
+  "pairs": [
+   {
+    "heading": "Exo",
+    "body": "Mina",
+    "group": "Sans-Serif Pairings",
+    "why": "Exo is the Latin family Mina grew from, and its many weights and italics give English headings a related, wider range.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Galada",
+    "body": "Mina",
+    "group": "Sans-Serif Pairings",
+    "why": "Galada adds a flowing Bengali and Latin script for titles, a lively contrast with the even, geometric body strokes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Tiro Bangla",
+    "body": "Mina",
+    "group": "Serif Pairings",
+    "why": "Tiro Bangla sets classic Bengali serif headlines over clean sans text, a heritage tone for cultural or literary pages.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Mina",
+    "body": "Noto Serif Bengali",
+    "group": "Serif Pairings",
+    "why": "Noto Serif Bengali carries long articles in a calm serif while Mina Bold gives section titles a crisp, modern edge.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Mina",
+    "body": "Hind Siliguri",
+    "group": "Sans-Serif Pairings",
+    "why": "Hind Siliguri offers five weights for dense reading text, letting Mina Bold work as a distinct geometric heading.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "farsan": {
+  "font": "Farsan",
+  "page": "https://madegooddesigns.com/farsan-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "Pooja Saxena"
+   ],
+   "added": 2016
+  },
+  "pairs": [
+   {
+    "heading": "Farsan",
+    "body": "Mukta Vaani",
+    "group": "Sans-Serif Pairings",
+    "why": "Mukta Vaani is a Gujarati and Latin sans with seven weights, a clear reading face beneath the hand drawn display titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Farsan",
+    "body": "Hind Vadodara",
+    "group": "Sans-Serif Pairings",
+    "why": "Hind Vadodara offers five plain weights for Gujarati text, keeping menus and articles neutral under lively headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Farsan",
+    "body": "Noto Sans Gujarati",
+    "group": "Sans-Serif Pairings",
+    "why": "Noto Sans Gujarati has width and weight axes, useful for apps and forms that need many sizes under one display face.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Farsan",
+    "body": "Anek Gujarati",
+    "group": "Sans-Serif Pairings",
+    "why": "Anek Gujarati brings a variable width sans that fits long Gujarati labels into narrow cards and navigation bars.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Farsan",
+    "body": "Rasa",
+    "group": "Serif Pairings",
+    "why": "Rasa is a Gujarati and Latin serif whose italic styles give recipes and stories a bookish texture under informal headings.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "jomolhari": {
+  "font": "Jomolhari",
+  "page": "https://madegooddesigns.com/jomolhari-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Christopher J. Fynn"
+   ],
+   "added": 2019
+  },
+  "pairs": [
+   {
+    "heading": "Noto Serif Tibetan",
+    "body": "Jomolhari",
+    "group": "Serif Pairings",
+    "why": "Noto Serif Tibetan has a weight axis up to Black, giving bold Tibetan titles that a single style body face cannot supply.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Uchen",
+    "body": "Jomolhari",
+    "group": "Serif Pairings",
+    "why": "Uchen is another Tibetan script design by the same designer, so headings change voice while the hand behind both stays the same.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Noto Serif",
+    "body": "Jomolhari",
+    "group": "Serif Pairings",
+    "why": "Noto Serif offers many weights and italics for English headings, a broad Latin partner for bilingual reports and sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Libertinus Serif",
+    "body": "Jomolhari",
+    "group": "Serif Pairings",
+    "why": "Libertinus Serif adds scholarly Latin headings and italics, suited to academic and translation work around Tibetan text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "EB Garamond",
+    "body": "Jomolhari",
+    "group": "Serif Pairings",
+    "why": "EB Garamond lends classic book typography to English titles, a fitting frame for traditional Tibetan manuscript style text.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "dokdo": {
+  "font": "Dokdo",
+  "page": "https://madegooddesigns.com/dokdo-font-pairings/",
+  "about": {
+   "category": "Display",
+   "designers": [
+    "FONTRIX"
+   ],
+   "added": 2018
+  },
+  "pairs": [
+   {
+    "heading": "Dokdo",
+    "body": "Gothic A1",
+    "group": "Sans-Serif Pairings",
+    "why": "Gothic A1 offers nine weights for dense interfaces, letting one display title sit above many levels of Korean text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Dokdo",
+    "body": "Nanum Gothic",
+    "group": "Sans-Serif Pairings",
+    "why": "Nanum Gothic keeps long Korean paragraphs calm in three plain weights, so the rough Dokdo title carries all the character.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Dokdo",
+    "body": "IBM Plex Sans KR",
+    "group": "Sans-Serif Pairings",
+    "why": "IBM Plex Sans KR adds an engineered, corporate Korean text face, a cool foil for hand drawn titles on product pages.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Dokdo",
+    "body": "Nanum Myeongjo",
+    "group": "Serif Pairings",
+    "why": "Nanum Myeongjo brings serif contrast for essays and stories, a literary base under an informal display heading.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Dokdo",
+    "body": "Noto Sans KR",
+    "group": "Sans-Serif Pairings",
+    "why": "Noto Sans KR has a weight axis from Thin to Black, a complete Korean text system beneath the expressive one style titles.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "convergence": {
+  "font": "Convergence",
+  "page": "https://madegooddesigns.com/convergence-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Nicolás Silva",
+    "John Vargas Beltrán"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Bree Serif",
+    "body": "Convergence",
+    "group": "Serif Pairings",
+    "why": "Bree is one of the references the designers name, so Bree Serif headings share its curvy, upright italic flavour.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Zilla Slab",
+    "body": "Convergence",
+    "group": "Serif Pairings",
+    "why": "Zilla Slab adds firm slab serifs and several weights for headings, steady structure above the flowing sans text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Convergence",
+    "group": "Serif Pairings",
+    "why": "Playfair Display brings high contrast titles that set off the low contrast, even colour of Convergence paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Convergence",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Merriweather is a sturdy screen serif for long reading, so light Convergence headings sit over a dependable text block.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Convergence",
+    "body": "Source Serif 4",
+    "group": "Serif Pairings",
+    "why": "Source Serif 4 offers a neutral transitional body with optical sizes, letting the cursive sans headings carry the character.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "mohave": {
+  "font": "Mohave",
+  "page": "https://madegooddesigns.com/mohave-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Gumpita Rahayu"
+   ],
+   "added": 2020
+  },
+  "pairs": [
+   {
+    "heading": "Mohave",
+    "body": "Source Sans 3",
+    "group": "Sans-Serif Pairings",
+    "why": "Source Sans 3 is open and wide where Mohave is narrow, so long body text breathes under compact titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Mohave",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato has round, friendly bowls that soften the upright, engineered tone of Mohave headlines on brand sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Mohave",
+    "body": "Merriweather",
+    "group": "Serif Pairings",
+    "why": "Merriweather adds serif detail and a large x-height, a sturdy reading face below tall condensed headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Mohave",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans keeps a slightly grotesque, practical feel that matches the monolinear build of Mohave titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Mohave",
+    "body": "Crimson Pro",
+    "group": "Serif Pairings",
+    "why": "Crimson Pro is a classic book serif, giving editorial body copy a literary voice under modern condensed headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "antic": {
+  "font": "Antic",
+  "page": "https://madegooddesigns.com/antic-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Santiago Orozco"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Playfair Display",
+    "body": "Antic",
+    "group": "Serif Pairings",
+    "why": "Playfair Display gives sharp, high contrast headlines that frame the soft calligraphic sans paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Antic Didone",
+    "body": "Antic",
+    "group": "Serif Pairings",
+    "why": "Antic Didone shares the same handwriting stress and large x-height, with small ornate serifs for refined titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Antic Slab",
+    "body": "Antic",
+    "group": "Serif Pairings",
+    "why": "Antic Slab belongs to the same type system, adding discreet slab serifs and a strong headline presence over Antic text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bebas Neue",
+    "body": "Antic",
+    "group": "Display Pairings",
+    "why": "Bebas Neue sets tall uppercase headlines with real punch, a modern contrast to the gentle, single weight text face.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cormorant Garamond",
+    "body": "Antic",
+    "group": "Serif Pairings",
+    "why": "Cormorant Garamond brings delicate old style display shapes, a graceful partner for warm humanist body copy.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "jockey one": {
+  "font": "Jockey One",
+  "page": "https://madegooddesigns.com/jockey-one-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "TypeTogether"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Jockey One",
+    "body": "Roboto",
+    "group": "Sans-Serif Pairings",
+    "why": "Roboto is a neutral interface sans with many weights, so dense app or sports data stays clear under poster headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Jockey One",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato adds soft, rounded warmth beneath the hard, blunt edges of Jockey One, good for friendly brand sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Jockey One",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora is a contemporary serif with calligraphic roots, giving editorial body text a gentle contrast to poster titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Jockey One",
+    "body": "Barlow",
+    "group": "Sans-Serif Pairings",
+    "why": "Barlow shares a slightly rounded, signage inspired build, so its body text feels related to the compact headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Jockey One",
+    "body": "Libre Baskerville",
+    "group": "Serif Pairings",
+    "why": "Libre Baskerville brings a classic book texture, a vintage reading face to match the period poster flavour.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "puritan": {
+  "font": "Puritan",
+  "page": "https://madegooddesigns.com/puritan-font-pairings/",
+  "about": {
+   "category": "Sans Serif",
+   "designers": [
+    "Ben Weiner"
+   ],
+   "added": 2010
+  },
+  "pairs": [
+   {
+    "heading": "Bentham",
+    "body": "Puritan",
+    "group": "Serif Pairings",
+    "why": "Bentham is another typeface by the same designer, so its classic serif titles share a hand and sensibility with Puritan.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "EB Garamond",
+    "body": "Puritan",
+    "group": "Serif Pairings",
+    "why": "EB Garamond adds old style serif headings with history and grace above the plain, slightly narrow sans text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Crimson Text",
+    "body": "Puritan",
+    "group": "Serif Pairings",
+    "why": "Crimson Text gives book like titles and subheads, a natural partner for a sans shaped by serif proportions.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Puritan",
+    "body": "Libre Baskerville",
+    "group": "Serif Pairings",
+    "why": "Libre Baskerville is a sturdy screen serif for reading, letting compact Puritan Bold headings sit neatly above.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Puritan",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora has moderate contrast and brushed curves, a warm body face under the cool, upright narrow sans headings.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "imbue": {
+  "font": "Imbue",
+  "page": "https://madegooddesigns.com/imbue-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Tyler Finck",
+    "ETC"
+   ],
+   "added": 2020
+  },
+  "pairs": [
+   {
+    "heading": "Imbue",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans has wide, plain grotesque shapes that balance the narrow, high contrast Imbue headlines without competing.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Imbue",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora is a moderate contrast text serif with brushed curves, keeping a bookish tone under sharp didone titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Imbue",
+    "body": "Karla",
+    "group": "Sans-Serif Pairings",
+    "why": "Karla is a compact grotesque with a slightly quirky feel, a relaxed body face for fashion and lifestyle headlines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Imbue",
+    "body": "Crimson Pro",
+    "group": "Serif Pairings",
+    "why": "Crimson Pro is an old style text serif, so long reads stay soft and classical below a crisp condensed display.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Imbue",
+    "body": "Mulish",
+    "group": "Sans-Serif Pairings",
+    "why": "Mulish is a minimalist sans with clean, even strokes that lets the contrast of Imbue stay the only drama.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "alike": {
+  "font": "Alike",
+  "page": "https://madegooddesigns.com/alike-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Sveta Sebyakina",
+    "Cyreal"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Prata",
+    "body": "Alike",
+    "group": "Serif Pairings",
+    "why": "Prata is a sharp didone from the same foundry, adding high contrast headings over calm, low contrast Alike paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Marcellus",
+    "body": "Alike",
+    "group": "Serif Pairings",
+    "why": "Marcellus has flared, inscriptional capitals that give titles a classical lift while Alike handles the reading text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Josefin Sans",
+    "body": "Alike",
+    "group": "Sans-Serif Pairings",
+    "why": "Josefin Sans brings geometric, vintage headings whose thin strokes contrast neatly with the sturdy text serif below.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Alike",
+    "body": "Mulish",
+    "group": "Sans-Serif Pairings",
+    "why": "Mulish is a plain, even sans for interface and body text, letting short Alike titles add a gentle bookish note.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Alike",
+    "body": "Fira Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Fira Sans is a humanist sans with many weights, a practical body face under quiet serif headings in reports.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "bentham": {
+  "font": "Bentham",
+  "page": "https://madegooddesigns.com/bentham-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Ben Weiner"
+   ],
+   "added": 2010
+  },
+  "pairs": [
+   {
+    "heading": "Bentham",
+    "body": "Puritan",
+    "group": "Sans-Serif Pairings",
+    "why": "Puritan is a sans by the same designer, so its proportions sit comfortably under Bentham titles in a related voice.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bentham",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato has warm, semi rounded details and many weights, a friendly body face under quirky nineteenth century headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bentham",
+    "body": "Source Sans 3",
+    "group": "Sans-Serif Pairings",
+    "why": "Source Sans 3 is a clear humanist sans built for interfaces, keeping long body copy tidy beneath Bentham display lines.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bentham",
+    "body": "Crimson Text",
+    "group": "Serif Pairings",
+    "why": "Crimson Text is a book face with old style roots, a gentle reading serif that lets Bentham play the period headline.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Bentham",
+    "body": "Cabin",
+    "group": "Sans-Serif Pairings",
+    "why": "Cabin is a humanist sans with a slightly rounded, approachable feel that softens the stiffness of Bentham titles.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "belgrano": {
+  "font": "Belgrano",
+  "page": "https://madegooddesigns.com/belgrano-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "LatinoType"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Oswald",
+    "body": "Belgrano",
+    "group": "Display Pairings",
+    "why": "Oswald is a condensed gothic in many weights, the classic tall news headline above sturdy slab serif columns.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Playfair Display",
+    "body": "Belgrano",
+    "group": "Serif Pairings",
+    "why": "Playfair Display adds high contrast transitional headlines, a magazine feel over the rough, practical slab text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Abril Fatface",
+    "body": "Belgrano",
+    "group": "Display Pairings",
+    "why": "Abril Fatface is a heavy display didone for posters and covers, giving bold titles that the single weight slab lacks.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Belgrano",
+    "body": "Open Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Open Sans is a neutral humanist sans with many weights, good for interface text beneath compact slab headings.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Belgrano",
+    "body": "PT Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "PT Sans is a clear humanist sans made for public use, a practical body under short, sturdy Belgrano titles.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "linden hill": {
+  "font": "Linden Hill",
+  "page": "https://madegooddesigns.com/linden-hill-font-pairings/",
+  "about": {
+   "category": "Serif",
+   "designers": [
+    "Barry Schwartz"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Cinzel",
+    "body": "Linden Hill",
+    "group": "Serif Pairings",
+    "why": "Cinzel has Roman inscriptional capitals that give titles a formal frame above soft, old style Linden Hill paragraphs.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Cormorant Garamond",
+    "body": "Linden Hill",
+    "group": "Serif Pairings",
+    "why": "Cormorant Garamond brings sharp, high contrast display headings that contrast with the gentler revival text below.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Tenor Sans",
+    "body": "Linden Hill",
+    "group": "Sans-Serif Pairings",
+    "why": "Tenor Sans is a refined humanist sans with classical proportions, a calm heading face over literary serif text.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Linden Hill",
+    "body": "Karla",
+    "group": "Sans-Serif Pairings",
+    "why": "Karla is a compact grotesque that keeps modern body copy plain while Linden Hill titles add old style warmth.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Linden Hill",
+    "body": "Nunito Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Nunito Sans is a balanced sans with many weights, a clear body face under graceful roman or italic serif titles.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "twinkle star": {
+  "font": "Twinkle Star",
+  "page": "https://madegooddesigns.com/twinkle-star-font-pairings/",
+  "about": {
+   "category": "Handwriting",
+   "designers": [
+    "Robert Leuschke"
+   ],
+   "added": 2021
+  },
+  "pairs": [
+   {
+    "heading": "Twinkle Star",
+    "body": "Andika",
+    "group": "Sans-Serif Pairings",
+    "why": "Andika was drawn for clear letter recognition by new readers, so it is a natural text face beneath a playful juvenile script title.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Twinkle Star",
+    "body": "Nunito",
+    "group": "Sans-Serif Pairings",
+    "why": "Nunito has rounded terminals and many weights, giving a soft but tidy body texture that echoes the roundness of the script.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Twinkle Star",
+    "body": "Lexend",
+    "group": "Sans-Serif Pairings",
+    "why": "Lexend has wide, open letters and generous spacing, which keeps instructions and activity text easy to follow under bouncy titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Twinkle Star",
+    "body": "Comic Neue",
+    "group": "Script Pairings",
+    "why": "Comic Neue keeps the informal, hand drawn mood going in speech bubbles and captions while staying far more regular than the script.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Twinkle Star",
+    "body": "Atkinson Hyperlegible",
+    "group": "Sans-Serif Pairings",
+    "why": "Atkinson Hyperlegible makes similar letters easy to tell apart, a sensible choice when a cute title sits above important practical details.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "caramel": {
+  "font": "Caramel",
+  "page": "https://madegooddesigns.com/caramel-font-pairings/",
+  "about": {
+   "category": "Handwriting",
+   "designers": [
+    "Robert Leuschke"
+   ],
+   "added": 2021
+  },
+  "pairs": [
+   {
+    "heading": "Caramel",
+    "body": "Gideon Roman",
+    "group": "Sans-Serif Pairings",
+    "why": "Gideon Roman comes from the same designer, a classical Roman for subheads and short text that frames the sweet script with quiet formality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Caramel",
+    "body": "Lora",
+    "group": "Serif Pairings",
+    "why": "Lora is a balanced text serif with gentle curves, so product stories and recipes stay readable under a warm hand lettered name.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Caramel",
+    "body": "Josefin Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Josefin Sans brings geometric, slightly vintage capitals for labels and prices, a crisp contrast to the loose joined script.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Caramel",
+    "body": "Quicksand",
+    "group": "Sans-Serif Pairings",
+    "why": "Quicksand is a rounded sans with light, airy strokes, keeping cafe menus and social posts soft without competing with the headline.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Caramel",
+    "body": "Cormorant Garamond",
+    "group": "Serif Pairings",
+    "why": "Cormorant Garamond adds elegant old style contrast for invitations and boutique packaging where the script needs a refined companion.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "over the rainbow": {
+  "font": "Over the Rainbow",
+  "page": "https://madegooddesigns.com/over-the-rainbow-font-pairings/",
+  "about": {
+   "category": "Handwriting",
+   "designers": [
+    "Kimberly Geswein"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Over the Rainbow",
+    "body": "Karla",
+    "group": "Sans-Serif Pairings",
+    "why": "Karla is a compact grotesque with a slightly quirky feel, friendly enough to sit under a happy handwriting while staying very readable.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Over the Rainbow",
+    "body": "Work Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Work Sans has plain, even shapes and a wide range of weights, so menus, buttons and paragraphs stay crisp beneath loose titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Over the Rainbow",
+    "body": "Mulish",
+    "group": "Sans-Serif Pairings",
+    "why": "Mulish is a minimal sans with open curves, a calm reading face that lets the marker style handwriting supply all the personality.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Over the Rainbow",
+    "body": "Source Serif 4",
+    "group": "Serif Pairings",
+    "why": "Source Serif 4 is a sturdy text serif with optical sizes, giving journals and long posts a trustworthy texture under informal titles.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Over the Rainbow",
+    "body": "Bitter",
+    "group": "Serif Pairings",
+    "why": "Bitter has solid slab serifs that suit screens, a grounded partner for a medium weight handwriting on blogs and newsletters.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "dawning of a new day": {
+  "font": "Dawning of a New Day",
+  "page": "https://madegooddesigns.com/dawning-of-a-new-day-font-pairings/",
+  "about": {
+   "category": "Handwriting",
+   "designers": [
+    "Kimberly Geswein"
+   ],
+   "added": 2011
+  },
+  "pairs": [
+   {
+    "heading": "Dawning of a New Day",
+    "body": "EB Garamond",
+    "group": "Serif Pairings",
+    "why": "EB Garamond is a graceful old style text face whose fine serifs match the light hand, ideal for invitations and literary quotes.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Dawning of a New Day",
+    "body": "Cormorant",
+    "group": "Serif Pairings",
+    "why": "Cormorant has delicate, high contrast letters at large sizes, keeping a wedding or boutique layout airy and elegant from top to bottom.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Dawning of a New Day",
+    "body": "Lato",
+    "group": "Sans-Serif Pairings",
+    "why": "Lato is a warm, even sans that stays clear at small sizes, a modern frame for a thin script on photography and lifestyle sites.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Dawning of a New Day",
+    "body": "Montserrat",
+    "group": "Sans-Serif Pairings",
+    "why": "Montserrat offers geometric capitals that look smart with wide letter spacing, a crisp counterpoint to the curling handwritten script.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Dawning of a New Day",
+    "body": "Libre Baskerville",
+    "group": "Serif Pairings",
+    "why": "Libre Baskerville is a sturdy screen serif with a classic tone, giving longer stories and event details a steady, readable texture.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
+ },
+ "kristi": {
+  "font": "Kristi",
+  "page": "https://madegooddesigns.com/kristi-font-pairings/",
+  "about": {
+   "category": "Handwriting",
+   "designers": [
+    "Birgit Pulk"
+   ],
+   "added": 2010
+  },
+  "pairs": [
+   {
+    "heading": "Kristi",
+    "body": "Alegreya",
+    "group": "Serif Pairings",
+    "why": "Alegreya has a calligraphic rhythm of its own, so long literary text sits naturally beneath a chancery inspired felt pen title.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Kristi",
+    "body": "Crimson Text",
+    "group": "Serif Pairings",
+    "why": "Crimson Text is a classic book serif with modest contrast, giving essays and menus a traditional page under the lively script.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Kristi",
+    "body": "Spectral",
+    "group": "Serif Pairings",
+    "why": "Spectral is a refined screen serif with sharp details, a quiet partner that suits galleries, bookshops and cultural events.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Kristi",
+    "body": "Raleway",
+    "group": "Sans-Serif Pairings",
+    "why": "Raleway brings slender, elegant sans shapes that match the slim verticals of the script without copying its handwritten feel.",
+    "heading_gf": true,
+    "body_gf": true
+   },
+   {
+    "heading": "Kristi",
+    "body": "Fira Sans",
+    "group": "Sans-Serif Pairings",
+    "why": "Fira Sans is a clear humanist sans with many weights, keeping interfaces and practical details tidy under an expressive heading.",
+    "heading_gf": true,
+    "body_gf": true
+   }
+  ]
  }
 }
